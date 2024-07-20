@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <style>
+        body {
+            background: #ccc;
+            padding: 10px;
+            font-size: 0.6em;
+        }
+
+        h6 {
+            font-size: 1em;
+        }
+
+        .container {
+            width: 100%;
+            min-height: 29.7cm;
+        }
+
+        .invoice {
+            background: #fff;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .logo {
+            width: 4cm;
+        }
+
+        .document-type {
+            text-align: right;
+            color: #444;
+        }
+
+        .conditions {
+            font-size: 0.7em;
+            color: #666;
+        }
+
+        .bottom-page {
+            font-size: 0.7em;
+        }
+
+        .table {
+            width: 100%;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="invoice">
+            <div class="row">
+                <div class="col-7">
+                    {% comment %} <img src="http://mysam.fr/wp-content/uploads/2016/06/logo_facture.jpg" class="logo"/> {% endcomment %}
+                </div>
+                <div class="col-5">
+                    <h1 class="document-type display-4">FACTURE</h1>
+                    <p class="text-right"><strong>Référence facture : {{facturation.code_facturation}}</strong></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-7">
+                    <p class="addressMySam">
+                        <strong>Altivax</strong><br/>
+                        Lotissement les champs du printemps<br/>
+                        IMM F Bureaux 10-12 Casablanca- MAROC
+                    </p>
+                </div>
+                <div class="col-5">
+                    <br/><br/><br/>
+                    <p class="addressDriver">
+                        <strong>Société {{facturation.cliente.nom_entreprise}}</strong><br/>
+                        Réf. Client <em>{{facturation.cliente.code_client}}</em><br/>
+                        <span>{{facturation.cliente.prenom}}</span> <span>{{facturation.cliente.nom}}</span><br/>
+                        <span>{{facturation.cliente.address}}</span><br/>
+                        <span>{{facturation.cliente.numero_ice}}</span>
+                    </p>
+                </div>
+            </div>
+            <br/>
+            <br/>
+            <h6>Frais de services Altivax du <span>{{facturation.date_created}}</span></h6>
+            {% comment %} {% if facturation.location_website %}
+            <h6>Le type de facturation est Achat Website</h6>
+            {% elif facturation.achat_website %}
+            <h6>Le type de facturation est Loyer Website</h6>
+            {% elif facturation.achat_support %}
+            <h6>Le type de facturation est Achat Support</h6>
+            {% endif %} {% endcomment %}
+            <br/>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        {% if facturation.location_website %}
+                        <th>Date Fin Location</th>
+                        {% endif %}
+                        {% comment %} <th>TVA</th>
+                        <th class="text-right">Total HT</th> {% endcomment %}
+                        <th class="text-right">Total TTC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>    
+                        {% if facturation.location_website %}
+                        <td class="text-right">Site Web loué est {{ facturation.location_website.websites }}</td>
+                        {% elif facturation.achat_website %}
+                        <td class="text-right">Le site a été loué est {{ facturation.achat_website.websites }}</td>
+                        {% elif facturation.achat_support %}
+                        <td class="text-right">Support acheté est {{ facturation.achat_support.support }}</td>
+                        {% endif %}
+
+                        {% if facturation.location_website %}
+                        <td class="text-right">La data fin de Location est {{ facturation.location_website.date_fin }}</td>
+                        {% endif %}
+
+                        {% if facturation.location_website %}
+                        <td class="text-right">{{ facturation.location_website.prix_loyer }} MAD</td>
+                        {% elif facturation.achat_website %}
+                        <td class="text-right">{{ facturation.achat_website.prix_achat }} MAD</td>
+                        {% elif facturation.achat_support %}
+                        <td class="text-right">{{ facturation.achat_support.prix }} MAD</td>
+                        {% endif %}
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row">
+                <div class="col-8"></div>
+                <div class="col-4">
+                    <table class="table table-sm text-right">
+                        <tr>
+                            <td><strong>Total TTC</strong></td>
+                            {% if facturation.location_website %}
+                            <td class="text-right">{{ facturation.location_website.prix_loyer }} MAD</td>
+                            {% elif facturation.achat_website %}
+                            <td class="text-right">{{ facturation.achat_website.prix_achat }} MAD</td>
+                            {% elif facturation.achat_support %}
+                            <td class="text-right">{{ facturation.achat_support.prix }} MAD</td>
+                            {% endif %}
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <p class="conditions">
+                En votre aimable règlement<br/>
+                Et avec nos remerciements.<br/><br/>
+                Conditions de paiement : paiement à réception de facture.<br/>
+                Aucun escompte consenti pour règlement anticipé.<br/>
+                Règlement par virement bancaire ou carte bancaire.<br/><br/>
+                En cas de retard de paiement, indemnité forfaitaire pour frais de recouvrement : 40 euros (art. L.4413 et L.4416 code du commerce).
+            </p>
+            <br/><br/><br/><br/>
+            {% comment %} <p class="bottom-page text-right">
+                MYSAM SAS - N° SIRET 81754802700017 RCS ALBI<br/>
+                8, avenue de la Martelle - 81150 TERSSAC 06 32 97 00 22 - www.mysam.fr<br/>
+                Code APE 6312Z - N° TVA Intracom. FR 63 817548027
+            </p> {% endcomment %}
+        </div>
+    </div>
+</body>
+</html>
+
+
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background: #ccc;
+            padding: 30px;
+            font-size: 0.6em;
+        }
+        
+        h6 {
+            font-size: 1em;
+        }
+        
+        .container {
+            width: 21cm;
+            min-height: 29.7cm;
+        }
+        
+        .invoice {
+            background: #fff;
+            width: 100%;
+            padding: 50px;
+        }
+        
+        .logo {
+            width: 4cm;
+        }
+        
+        .document-type {
+            text-align: right;
+            color: #444;
+        }
+        
+        .conditions {
+            font-size: 0.7em;
+            color: #666;
+        }
+        
+        .bottom-page {
+            font-size: 0.7em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="invoice">
+            <div class="row">
+                <div class="col-7">
+       <img src="http://mysam.fr/wp-content/uploads/2016/06/logo_facture.jpg" class="logo"/> 
+                </div>
+                <div class="col-5">
+                    <h1 class="document-type display-4">FACTURE</h1>
+                    <p class="text-right"><strong>Référence facture</strong></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-7">
+                    <p class="addressMySam">
+                        <strong>Altivax</strong><br/>
+                        Lotissement les champs du printemps<br/>
+                        IMM F Bureaux 10-12 Casablanca- MAROC
+                    </p>
+                </div>
+                <div class="col-5">
+                    <br/><br/><br/>
+                    <p class="addressDriver">
+                        <strong>Société {{facturation.cliente.nom_entreprise}}</strong><br/>
+                        Réf. Client <em>{{facturation.cliente.code_client}}</em><br/>
+                        <span>{{facturation.cliente.prenom}}</span> <span>{{facturation.cliente.nom}}</span><br/>
+                        <span>{{facturation.cliente.address}}</span><br/>
+                        <span>{{facturation.cliente.numero_ice}}</span>
+                    </p>
+                </div>
+            </div>
+            <br/>
+            <br/>
+            <h6>Frais de services Altivax du <span>{{facturation.date_created}}</span></h6>
+            {% if facturation.location_website %}
+            <h6>Le type de facturation est Achat Website</h6>
+            {% elif facturation.achat_website %}
+            <h6>Le type de facturation est Loyer Website</h6>
+            {% elif facturation.achat_support %}
+            <h6>Le type de facturation est Achat Support</h6>
+            {% endif %}
+            <br/>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th class="text-right">Total TTC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Frais de service MySam à 5% pour la période du</td>
+                        {% if facturation.location_website %}
+                        <td class="text-right">{{ facturation.location_website.prix_loyer }} MAD</td>
+                        {% elif facturation.achat_website %}
+                        <td class="text-right">{{ facturation.achat_website.prix_achat }} MAD</td>
+                        {% elif facturation.achat_support %}
+                        <td class="text-right">{{ facturation.achat_support.prix }} MAD</td>
+                        {% endif %}
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row">
+                <div class="col-8"></div>
+                <div class="col-4">
+                    <table class="table table-sm text-right">
+                        <tr>
+                            <td><strong>Total TTC</strong></td>
+                            {% if facturation.location_website %}
+                            <td class="text-right">{{ facturation.location_website.prix_loyer }} MAD</td>
+                            {% elif facturation.achat_website %}
+                            <td class="text-right">{{ facturation.achat_website.prix_achat }} MAD</td>
+                            {% elif facturation.achat_support %}
+                            <td class="text-right">{{ facturation.achat_support.prix }} MAD</td>
+                            {% endif %}
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+ {% endcomment %}
+
+
+
+
+    {% comment %} 
+
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Facturation PDF</title>
+        <style>
+            /* Add your styles for the PDF */
+            body { font-family: Arial, sans-serif; }
+            .facturation-details { margin: 20px; }
+        </style>
+    </head>
+    <body>
+        <div class="facturation-details">
+            <h1>Facturation Details</h1>
+            <p><strong>Client:</strong> {{ facturation.cliente.nom_entreprise }}</p>
+            <p><strong>Code Facturation:</strong> {{ facturation.code_facturation }}</p>
+            {% if facturation.location_website %}
+            <p><strong>Prix Loyer:</strong> {{ facturation.location_website.prix_loyer }} MAD</p>
+            {% elif facturation.achat_website %}
+            <p><strong>Prix Achat:</strong> {{ facturation.achat_website.prix_achat }} MAD</p>
+            {% elif facturation.achat_support %}
+            <p><strong>Prix:</strong> {{ facturation.achat_support.prix }} MAD</p>
+            {% else %}
+            <p>N/A</p>
+            {% endif %}
+            <p><strong>Date Created:</strong> {{ facturation.date_created|date:"d M Y" }}</p>
+        </div>
+    </body>
+    </html> {% endcomment %}

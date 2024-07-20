@@ -1,0 +1,345 @@
+{% extends "websitebuilder/SupportTechnique/dashbordSupportTechnique.html" %}
+
+{% load static %}
+
+{% block content %}
+
+ <!-- partial -->
+ <div class="main-panel">
+  <div class="content-wrapper">
+  {% if messages %}
+  {% for message in messages %}
+      {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">
+          {{ message }}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+    <div class="row">
+      
+
+      {% comment %} <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Basic Table</h4>
+            <p class="card-description">
+              Add class <code>.table</code>
+            </p>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Profile</th>
+                    <th>VatNo.</th>
+                    <th>Created</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Jacob</td>
+                    <td>53275531</td>
+                    <td>12 May 2017</td>
+                    <td><label class="badge badge-danger">Pending</label></td>
+                  </tr>
+                  <tr>
+                    <td>Messsy</td>
+                    <td>53275532</td>
+                    <td>15 May 2017</td>
+                    <td><label class="badge badge-warning">In progress</label></td>
+                  </tr>
+                  <tr>
+                    <td>John</td>
+                    <td>53275533</td>
+                    <td>14 May 2017</td>
+                    <td><label class="badge badge-info">Fixed</label></td>
+                  </tr>
+                  <tr>
+                    <td>Peter</td>
+                    <td>53275534</td>
+                    <td>16 May 2017</td>
+                    <td><label class="badge badge-success">Completed</label></td>
+                  </tr>
+                  <tr>
+                    <td>Dave</td>
+                    <td>53275535</td>
+                    <td>20 May 2017</td>
+                    <td><label class="badge badge-warning">In progress</label></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div> {% endcomment %}
+      {% comment %} <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Hoverable Table</h4>
+            <p class="card-description">
+              Add class <code>.table-hover</code>
+            </p>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Product</th>
+                    <th>Sale</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Jacob</td>
+                    <td>Photoshop</td>
+                    <td class="text-danger"> 28.76% <i class="ti-arrow-down"></i></td>
+                    <td><label class="badge badge-danger">Pending</label></td>
+                  </tr>
+                  <tr>
+                    <td>Messsy</td>
+                    <td>Flash</td>
+                    <td class="text-danger"> 21.06% <i class="ti-arrow-down"></i></td>
+                    <td><label class="badge badge-warning">In progress</label></td>
+                  </tr>
+                  <tr>
+                    <td>John</td>
+                    <td>Premier</td>
+                    <td class="text-danger"> 35.00% <i class="ti-arrow-down"></i></td>
+                    <td><label class="badge badge-info">Fixed</label></td>
+                  </tr>
+                  <tr>
+                    <td>Peter</td>
+                    <td>After effects</td>
+                    <td class="text-success"> 82.00% <i class="ti-arrow-up"></i></td>
+                    <td><label class="badge badge-success">Completed</label></td>
+                  </tr>
+                  <tr>
+                    <td>Dave</td>
+                    <td>53275535</td>
+                    <td class="text-success"> 98.05% <i class="ti-arrow-up"></i></td>
+                    <td><label class="badge badge-warning">In progress</label></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div> {% endcomment %}
+      
+      {% comment %} <a href="{% url 'addAdministrateur' %}">
+        <button type="button" class="btn btn-primary" style="margin: 10px">Ajouter Administrateur</button>
+      </a> {% endcomment %}
+          <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Demande Support Not Done Yet</h4>
+            {% comment %} <p class="card-description">
+              Add class <code>.table-striped</code>
+            </p> {% endcomment %}
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Name Support</th>
+                        <th>Username Cliente</th>
+                        <th>Status Support</th>
+                        <th>Status Demande</th>
+                        <th>Code Demande</th>
+                        <th>Consomé</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for DemandeSupport in DemandeSupports %}
+                    <tr>
+                        <td class="py-1">{{ forloop.counter }}</td>
+                        <td>{{ DemandeSupport.achat_support.support.name }}</td>
+                        <td>{{ DemandeSupport.cliente.user.username }}</td>
+                        <td><span class="badge badge-danger">{{ DemandeSupport.achat_support.StatusConsomé }}</span></td>
+                        <td><span class="badge badge-danger">{{ DemandeSupport.status }}</span></td>
+                        <td>{{ DemandeSupport.code_DemandeSupport }}</td>
+                        <td>
+                            <button class="btn btn-primary" onclick="showConfirmationModal('{{ DemandeSupport.id }}' ,'{{ DemandeSupport.code_DemandeSupport }}')">Consomé</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <!-- Add this modal HTML at the end of your body -->
+            <div id="confirmationModal" class="modal">
+                <div class="modal-content">
+                    <!-- Confirmation content will be inserted here -->
+                </div>
+            </div>
+            
+            <script>
+                function showConfirmationModal(demandeSupportId,demandSupportCode) {
+                    var modal = document.getElementById('confirmationModal');
+                    var modalContent = modal.querySelector('.modal-content');
+                    modalContent.innerHTML = `
+                        <div class="close" onclick="hideConfirmationModal()">&times;</div>
+                        <h1>Confirm as Done</h1>
+                        <p>Are you sure you want to confirm this demande support ${demandSupportCode}  as done?</p>
+                        <form id="confirmDemandeSupportForm" action="{% url 'confirm_consome_support' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="demande_support_id" value="${demandeSupportId}">
+                            <button class="btn btn-primary" type="submit">Yes, Confirm as Done</button>
+                            <button class="btn btn-primary" type="button" onclick="hideConfirmationModal()">Cancel</button>
+                        </form>
+                    `;
+                    modal.style.display = 'block';
+                }
+            
+                function hideConfirmationModal() {
+                    var modal = document.getElementById('confirmationModal');
+                    modal.style.display = 'none';
+                }
+            </script>
+            
+
+
+            </div>
+          </div>
+        </div>
+        
+      </div>
+     
+      
+    
+      
+      
+    </div>
+  </div>
+  
+  
+</div>
+
+</div>
+
+
+
+
+<style>
+  /* Modal Styles */
+  .modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  {% comment %} z-index: 1; /* Sit on top */ {% endcomment %}
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+
+  /* Modal Content */
+  .modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 47%; /* Could be more or less, depending on screen size */
+  }
+
+  /* Close Button */
+  .close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+  }
+
+</style>
+
+
+
+{% comment %}<div class="container-fluid" id="container-wrapper">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h3 mb-0 text-gray-800">My Services</h1>
+       <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="./">Home</a></li>
+        <li class="breadcrumb-item">Tables</li>
+        <li class="breadcrumb-item active" aria-current="page">Simple Tables</li>
+      </ol> 
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12 mb-4">
+        <!-- Simple Tables -->
+        <div class="card">
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">My Services</h6>
+          </div>
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th>Service ID</th>
+                  <th>Name Service</th>
+                  <th>Image</th>
+                  <th>Description</th>
+                  <th>Prix</th>
+                  <th>Ticket</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                  <th>Détail</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><a href="#">SR6720</a></td>
+                  <td>Maintenance de DNS</td>
+                  <td><img style="width: 100px; height: 100px;" src="{% static 'img/dns-png-16.png' %}" alt="#"></td>
+                  <td><p style="width: 100px; height: 100px;">Lorem ipsum dolor sit amet consectetur adipisicing elit. </p></td>
+                  <td><span>200MAD</span></td>
+                  <td><span>286382</span></td>
+                  <td><span class="badge badge-success">Consomé</span></td>
+                  <td><a href="#" class="btn btn-sm btn-primary">Voir</a></td>
+                </tr>
+                <tr>
+                  <td><a href="#">SR5324</a></td>
+                  <td>Maintenance de SSL</td>
+                  <td><img style="width: 100px; height: 100px;" src="{% static 'img/MAINTENANCE-862x762-1.png' %}" alt="#"></td>
+                  <td><p style="width: 100px; height: 100px;">Lorem ipsum dolor sit amet consectetur adipisicing elit. </p></td>
+                  <td><span>200MAD</span></td>
+                  <td><span></span></td>
+                  <td><span class="badge badge-danger">Non Consomé!</span></td>
+                  <td><a href="#" class="btn btn-sm btn-primary">Voir</a></td>
+                  <td><a href="#" class="btn btn-sm btn-primary">Détail</a></td>
+
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer"></div>
+        </div>
+      </div>
+    </div>
+    <!--Row-->
+
+    
+  </div>
+  <!---Container Fluid-->
+</div>
+
+</div>
+</div>
+
+<!-- Scroll to top -->
+<a class="scroll-to-top rounded" href="#page-top">
+<i class="fas fa-angle-up"></i>
+</a>
+
+{% endcomment %}
+{% endblock %}

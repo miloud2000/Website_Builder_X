@@ -1,0 +1,744 @@
+{% extends "clients/dashboard2.html" %}
+
+{% load static %}
+
+{% block content %}
+<!-- partial -->
+<div class="main-panel">
+    <div class="content-wrapper">
+      <div class="row">
+        {% if messages %}
+          <script>
+              setTimeout(function() {
+                  $('.alert').alert('close');
+              }, 7000);
+          </script>
+          {% for message in messages %}
+              {% if message.tags == 'success' %}
+                  <div class="alert alert-success alert-dismissible fade show" role="alert">
+                      {{ message }}
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+              {% elif message.tags == 'error' %}
+                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                      {{ message }}
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+              {% endif %}
+          {% endfor %}
+      {% endif %}
+        <div class="col-md-12 grid-margin">
+          <div class="row">
+            <div class="col-12 col-xl-8 mb-4 mb-xl-0">
+              <h3 class="font-weight-bold">Mettre à jour les paramètres du site Web</h3>
+              <h6 class="font-weight-normal mb-0">Nom du site Web : <span class="font-weight-bold">{{getfree_website_builder.nameWebsite}}</span></h6>
+            </div>
+            {% comment %} <div class="col-12 col-xl-4">
+             <div class="justify-content-end d-flex">
+              <div class="dropdown flex-md-grow-1 flex-xl-grow-0">
+                <button class="btn btn-sm btn-light bg-white dropdown-toggle" type="button" id="dropdownMenuDate2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                 <i class="mdi mdi-calendar"></i> Today (10 Jan 2021)
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuDate2">
+                  <a class="dropdown-item" href="#">January - March</a>
+                  <a class="dropdown-item" href="#">March - June</a>
+                  <a class="dropdown-item" href="#">June - August</a>
+                  <a class="dropdown-item" href="#">August - November</a>
+                </div>
+              </div>
+             </div>
+            </div> {% endcomment %}
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        {% comment %} <div class="col-md-6 grid-margin stretch-card">
+          <div class="card tale-bg">
+            <div class="card-people mt-auto">
+              <img src="images/dashboard/people.svg" alt="people">
+              <div class="weather-info">
+                <div class="d-flex">
+                  <div>
+                    <h2 class="mb-0 font-weight-normal"><i class="icon-sun mr-2"></i>31<sup>C</sup></h2>
+                  </div>
+                  <div class="ml-2">
+                    <h4 class="location font-weight-normal">Bangalore</h4>
+                    <h6 class="font-weight-normal">India</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> {% endcomment %}
+        {% comment %} <div class="col-md-6 grid-margin transparent">
+          <div class="row">
+            <div class="col-md-6 mb-4 stretch-card transparent">
+              <div class="card card-tale">
+                <div class="card-body">
+                  <p class="mb-4">Today’s Bookings</p>
+                  <p class="fs-30 mb-2">4006</p>
+                  <p>10.00% (30 days)</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-4 stretch-card transparent">
+              <div class="card card-dark-blue">
+                <div class="card-body">
+                  <p class="mb-4">Total Bookings</p>
+                  <p class="fs-30 mb-2">61344</p>
+                  <p>22.00% (30 days)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-4 mb-lg-0 stretch-card transparent">
+              <div class="card card-light-blue">
+                <div class="card-body">
+                  <p class="mb-4">Number of Meetings</p>
+                  <p class="fs-30 mb-2">34040</p>
+                  <p>2.00% (30 days)</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 stretch-card transparent">
+              <div class="card card-light-danger">
+                <div class="card-body">
+                  <p class="mb-4">Number of Clients</p>
+                  <p class="fs-30 mb-2">47033</p>
+                  <p>0.22% (30 days)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> {% endcomment %}
+      </div>
+      <div class="row">
+        {% comment %} <div class="col-md-6 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <p class="card-title">Order Details</p>
+              <p class="font-weight-500">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
+              <div class="d-flex flex-wrap mb-5">
+                <div class="mr-5 mt-3">
+                  <p class="text-muted">Order value</p>
+                  <h3 class="text-primary fs-30 font-weight-medium">12.3k</h3>
+                </div>
+                <div class="mr-5 mt-3">
+                  <p class="text-muted">Orders</p>
+                  <h3 class="text-primary fs-30 font-weight-medium">14k</h3>
+                </div>
+                <div class="mr-5 mt-3">
+                  <p class="text-muted">Users</p>
+                  <h3 class="text-primary fs-30 font-weight-medium">71.56%</h3>
+                </div>
+                <div class="mt-3">
+                  <p class="text-muted">Downloads</p>
+                  <h3 class="text-primary fs-30 font-weight-medium">34040</h3>
+                </div> 
+              </div>
+              <canvas id="order-chart"></canvas>
+            </div>
+          </div>
+        </div> {% endcomment %}
+        {% comment %} <div class="col-md-6 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+             <div class="d-flex justify-content-between">
+              <p class="card-title">Sales Report</p>
+              <a href="#" class="text-info">View all</a>
+             </div>
+              <p class="font-weight-500">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
+              <div id="sales-legend" class="chartjs-legend mt-4 mb-2"></div>
+              <canvas id="sales-chart"></canvas>
+            </div>
+          </div>
+        </div> {% endcomment %}
+      </div>
+      <div class="row">
+        {% comment %} <div class="col-md-12 grid-margin stretch-card">
+          <div class="card position-relative">
+            <div class="card-body">
+              <div id="detailedReports" class="carousel slide detailed-report-carousel position-static pt-2" data-ride="carousel">
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <div class="row">
+                      <div class="col-md-12 col-xl-3 d-flex flex-column justify-content-start">
+                        <div class="ml-xl-4 mt-3">
+                        <p class="card-title">Detailed Reports</p>
+                          <h1 class="text-primary">$34040</h1>
+                          <h3 class="font-weight-500 mb-xl-4 text-primary">North America</h3>
+                          <p class="mb-2 mb-xl-0">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
+                        </div>  
+                        </div>
+                      <div class="col-md-12 col-xl-9">
+                        <div class="row">
+                          <div class="col-md-6 border-right">
+                            <div class="table-responsive mb-3 mb-md-0 mt-3">
+                              <table class="table table-borderless report-table">
+                                <tr>
+                                  <td class="text-muted">Illinois</td>
+                                  <td class="w-100 px-0">
+                                    <div class="progress progress-md mx-4">
+                                      <div class="progress-bar bg-primary" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                  </td>
+                                  <td><h5 class="font-weight-bold mb-0">713</h5></td>
+                                </tr>
+                                <tr>
+                                  <td class="text-muted">Washington</td>
+                                  <td class="w-100 px-0">
+                                    <div class="progress progress-md mx-4">
+                                      <div class="progress-bar bg-warning" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                  </td>
+                                  <td><h5 class="font-weight-bold mb-0">583</h5></td>
+                                </tr>
+                                <tr>
+                                  <td class="text-muted">Mississippi</td>
+                                  <td class="w-100 px-0">
+                                    <div class="progress progress-md mx-4">
+                                      <div class="progress-bar bg-danger" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                  </td>
+                                  <td><h5 class="font-weight-bold mb-0">924</h5></td>
+                                </tr>
+                                <tr>
+                                  <td class="text-muted">California</td>
+                                  <td class="w-100 px-0">
+                                    <div class="progress progress-md mx-4">
+                                      <div class="progress-bar bg-info" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                  </td>
+                                  <td><h5 class="font-weight-bold mb-0">664</h5></td>
+                                </tr>
+                                <tr>
+                                  <td class="text-muted">Maryland</td>
+                                  <td class="w-100 px-0">
+                                    <div class="progress progress-md mx-4">
+                                      <div class="progress-bar bg-primary" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                  </td>
+                                  <td><h5 class="font-weight-bold mb-0">560</h5></td>
+                                </tr>
+                                <tr>
+                                  <td class="text-muted">Alaska</td>
+                                  <td class="w-100 px-0">
+                                    <div class="progress progress-md mx-4">
+                                      <div class="progress-bar bg-danger" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                  </td>
+                                  <td><h5 class="font-weight-bold mb-0">793</h5></td>
+                                </tr>
+                              </table>
+                            </div>
+                          </div>
+                          <div class="col-md-6 mt-3">
+                            <canvas id="north-america-chart"></canvas>
+                            <div id="north-america-legend"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="row">
+                      <div class="col-md-12 col-xl-3 d-flex flex-column justify-content-start">
+                        <div class="ml-xl-4 mt-3">
+                        <p class="card-title">Detailed Reports</p>
+                          <h1 class="text-primary">$34040</h1>
+                          <h3 class="font-weight-500 mb-xl-4 text-primary">North America</h3>
+                          <p class="mb-2 mb-xl-0">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
+                        </div>  
+                        </div>
+                      <div class="col-md-12 col-xl-9">
+                        <div class="row">
+                          <div class="col-md-6 border-right">
+                            <div class="table-responsive mb-3 mb-md-0 mt-3">
+                              <table class="table table-borderless report-table">
+                                <tr>
+                                  <td class="text-muted">Illinois</td>
+                                  <td class="w-100 px-0">
+                                    <div class="progress progress-md mx-4">
+                                      <div class="progress-bar bg-primary" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                  </td>
+                                  <td><h5 class="font-weight-bold mb-0">713</h5></td>
+                                </tr>
+                                <tr>
+                                  <td class="text-muted">Washington</td>
+                                  <td class="w-100 px-0">
+                                    <div class="progress progress-md mx-4">
+                                      <div class="progress-bar bg-warning" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                  </td>
+                                  <td><h5 class="font-weight-bold mb-0">583</h5></td>
+                                </tr>
+                                <tr>
+                                  <td class="text-muted">Mississippi</td>
+                                  <td class="w-100 px-0">
+                                    <div class="progress progress-md mx-4">
+                                      <div class="progress-bar bg-danger" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                  </td>
+                                  <td><h5 class="font-weight-bold mb-0">924</h5></td>
+                                </tr>
+                                <tr>
+                                  <td class="text-muted">California</td>
+                                  <td class="w-100 px-0">
+                                    <div class="progress progress-md mx-4">
+                                      <div class="progress-bar bg-info" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                  </td>
+                                  <td><h5 class="font-weight-bold mb-0">664</h5></td>
+                                </tr>
+                                <tr>
+                                  <td class="text-muted">Maryland</td>
+                                  <td class="w-100 px-0">
+                                    <div class="progress progress-md mx-4">
+                                      <div class="progress-bar bg-primary" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                  </td>
+                                  <td><h5 class="font-weight-bold mb-0">560</h5></td>
+                                </tr>
+                                <tr>
+                                  <td class="text-muted">Alaska</td>
+                                  <td class="w-100 px-0">
+                                    <div class="progress progress-md mx-4">
+                                      <div class="progress-bar bg-danger" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                  </td>
+                                  <td><h5 class="font-weight-bold mb-0">793</h5></td>
+                                </tr>
+                              </table>
+                            </div>
+                          </div>
+                          <div class="col-md-6 mt-3">
+                            <canvas id="south-america-chart"></canvas>
+                            <div id="south-america-legend"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <a class="carousel-control-prev" href="#detailedReports" role="button" data-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#detailedReports" role="button" data-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div> {% endcomment %}
+      </div>
+      
+      <div class="row">
+        <div class="col-md-7 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <p class="card-title mb-0 font-weight-bold">les informations du site Web</p>
+              <div class="table-responsive">
+                <br>
+                <p>Nom du site Web :  <span class="font-weight-bold">{{getfree_website_builder.nameWebsite}}</span> </p>
+                <p>Date de Site Web du générateur :  <span class="font-weight-bold">{{getfree_website_builder.date_build}}</span> </p>
+                <p>Nom du template  :  <span class="font-weight-bold">{{getfree_website_builder.website.name}}</span> </p>
+                <p>Date Fin de Hebergement  :  <span class="font-weight-bold">{{getfree_website_builder.date_fin_hebergement}}</span> </p>
+                <p>Type d'achat : <span class="font-weight-bold">Free</span></p>
+                {% if getfree_website_builder.Statu_du_website == '1' %}
+                        <p>Statu du website  : <span class="badge badge-success">Active</span></p>
+                {% endif %}
+                {% if getfree_website_builder.Statu_du_website == '2' %}
+                        <p>Statu du website  : <span class="badge badge-warning">Suspendu</span></p>
+                {% endif %}
+                {% if getfree_website_builder.Statu_du_website == '3' %}
+                        <p>Statu du website  : <span class="badge badge-secondary">Demande de Résiliation</span></p>
+                {% endif %}
+                {% if getfree_website_builder.Statu_du_website == '4' %}
+                        <p>Statu du website  : <span class="badge badge-info">Paiement en retard pour l'hébergement</span></p>
+                {% endif %}
+                {% if getfree_website_builder.Statu_du_website == '5' %}
+                        <p>Statu du website  : <span class="badge badge-dark">En attente de Suppression </span></p>
+                {% endif %}
+                {% if getfree_website_builder.Statu_du_website == '6' %}
+                        <p>Statu du website  : <span class="badge badge-danger">Supprimé</span></p>
+                {% endif %}
+                {% if getfree_website_builder.Statu_du_website == '8' %}  {% comment %} and not delete_status == '1' {% endcomment %}
+                        <p>Statu du website  : <span class="badge badge-danger">Demande de Supprimé</span></p>
+                {% endif %}
+
+                {% if reset_status == '0' %}
+                <div class="table-responsive">
+                  <p>Statu du website Reset : <span class="badge badge-info">Reset en cours</span></p>
+                </div>
+                &nbsp;&nbsp;
+              {% endif %}
+
+              {% if reset_status == '1' %}
+              <div class="table-responsive">
+                <p>Statu du website Reset : <span class="badge badge-info">Reset Its Done</span></p>
+              </div>
+              &nbsp;&nbsp;
+              {% endif %}
+
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-5 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <img style="width: 329px; height: 267px;" src="{% static "img/css-image-gallery.jpg" %}" alt="#">
+                </div>
+            </div>
+          </div>
+
+          <div class="row" style="width: 100%; margin-left: -1px;">
+            {% comment %} <div class="col-md-12"> {% endcomment %}
+              <div class="col-md-7 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-title mb-0 font-weight-bold">Les Actions</p>
+                        <br>
+                        <div class="d-flex flex-wrap">
+                            <!-- Suspendre -->
+                            {% if not suspendre_exists and not delete_exists %}
+                            <div class="p-2">
+                                <button type="button" class="btn btn-sm badge badge-pill badge-warning" style="width: 131px; height: 26px;" data-toggle="modal" data-target="#confirmSuspendreModal">Suspendre</button>
+                                <form id="suspendreForm" method="POST" action="{% url 'add_website_suspendre' %}" style="display: none;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="cliente_id" value="{{ request.user.cliente.id }}">
+                                    <input type="hidden" name="location_website_builder_id" value="{{ website_builder_location.id }}">
+                                    <input type="hidden" name="website_builder_id" value="{{ website_builder.id }}">
+                                    <input type="hidden" name="getfree_website_builder_id" value="{{ getfree_website_builder.id }}">
+                                </form>
+                            </div>
+                            {% endif %}
+        
+                            <!-- Reprendre Suspendre -->
+                            {% if not reprendre_suspendre_exists and suspendre_exists and not delete_exists %}
+                            <div class="p-2">
+                                <button type="button" class="btn btn-sm badge badge-pill badge-warning" style="width: 158px; height: 26px;" data-toggle="modal" data-target="#confirmSuspendreModal2">Reprendre Suspendre</button>
+                                <form id="suspendreForm2" method="POST" action="{% url 'add_website_suspendre_reprendre' %}" style="display: none;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="cliente_id" value="{{ request.user.cliente.id }}">
+                                    <input type="hidden" name="location_website_builder_id" value="{{ website_builder_location.id }}">
+                                    <input type="hidden" name="website_builder_id" value="{{ website_builder.id }}">
+                                    <input type="hidden" name="getfree_website_builder_id" value="{{ getfree_website_builder.id }}">
+                                </form>
+                            </div>
+                            {% endif %}
+        
+                            <!-- Reset -->
+                            {% if not reset_request and not delete_exists %}
+                            <div class="p-2">
+                                <button type="button" class="btn btn-sm badge badge-pill badge-info" style="width: 131px; height: 26px;" data-toggle="modal" data-target="#confirmResetModal">Reset</button>
+                                <form id="resetForm" method="POST" action="{% url 'add_website_reset' %}" style="display: none;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="cliente_id" value="{{ request.user.cliente.id }}">
+                                    <input type="hidden" name="location_website_builder_id" value="{{ website_builder_location.id }}">
+                                    <input type="hidden" name="website_builder_id" value="{{ website_builder.id }}">
+                                    <input type="hidden" name="getfree_website_builder_id" value="{{ getfree_website_builder.id }}">
+                                </form>
+                            </div>
+                            {% endif %}
+
+                              <!-- Add period of Hébergement Button -->
+                              <div class="p-2">
+                                <button type="button" class="btn btn-sm badge badge-pill badge-secondary" style="width: 194px; height: 26px;" data-toggle="modal" data-target="#addPeriodModal">Add period of Hébergement</button>
+                              </div>
+
+                              <!-- Modal for Hébergement -->
+                              <div class="modal fade" id="addPeriodModal" tabindex="-1" role="dialog" aria-labelledby="addPeriodModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="addPeriodModalLabel">Add Period of Hébergement</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="addPeriodForm" method="POST" action="{% url 'add_period_free_hebergement' free_id=getfree_website_builder.getfree_website.id %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="getfree_website_builder_id" value="{{ getfree_website_builder.id }}">
+                                                <input type="hidden" name="free_id" value="{{ getfree_website_builder.getfree_website.id }}">
+
+                                                <div class="form-group">
+                                                    <label for="hebergement_period">Choose Hebergement period:</label>
+                                                    <select class="form-control" id="hebergement_period" name="hebergement_period">
+                                                        <option value="1">1 month</option>
+                                                        <option value="3">3 months</option>
+                                                        <option value="6">6 months</option>
+                                                        <option value="9">9 months</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="total_price">Total Price:</label>
+                                                    <input type="text" class="form-control" id="total_price" name="total_price" readonly>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Confirm</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+
+                              <script>
+                              document.getElementById('hebergement_period').addEventListener('change', function () {
+                                var selectedPeriod = this.value;
+                                var prixLoyer = parseFloat("{{ getfree_website_builder.getfree_website.websites.prix_hebergement }}");
+                                var totalPrice = prixLoyer * parseInt(selectedPeriod);
+                                document.getElementById('total_price').value = totalPrice.toFixed(2) + " MAD";
+                              });
+                              </script>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="width: 100%; margin-left: -1px;">
+              <div class="col-md-7 grid-margin stretch-card">
+                  <div class="card">
+                      <div class="card-body">
+                          <p class="font-weight-bold">Mettre à jour</p>
+                          <div class="table-responsive">
+                              <form method="post" action="{% url 'update_wordpress' %}">
+                                  {% csrf_token %}
+                                  <div class="form-group">
+                                      <input type="hidden" name="website_builder_id" value="{{ website_builder.id }}">
+                                      <input type="hidden" name="website_builder_location_id" value="{{ website_builder_location.id }}">
+                  
+                                      <label for="title">New Title:</label>
+                                      <input type="text" class="form-control" id="title" name="title" placeholder="Enter new title">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="description">New Description:</label>
+                                      <input type="text" class="form-control" id="description" name="description" placeholder="Enter new description">
+                                  </div>
+                                  <!-- Uncomment and add other fields if needed -->
+                                  <!-- <div class="form-group">
+                                      <label for="logo-url">New Logo URL:</label>
+                                      <input type="text" class="form-control" id="logo-url" name="logo_url" placeholder="Enter new logo URL">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="new-text">New Text:</label>
+                                      <input type="text" class="form-control" id="new-text" name="new_text" placeholder="Enter new text">
+                                  </div> -->
+                                  <div class="form-group">
+                                      <label for="admin-email">New Admin Email:</label>
+                                      <input type="email" class="form-control" id="admin-email" name="admin_email" placeholder="Enter new admin email">
+                                  </div>
+                                  <button type="submit" class="btn btn-primary">Update WordPress Site</button>
+                              </form>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              
+              <div class="col-md-5 grid-margin stretch-card">
+                  <div class="card">
+                      <div class="card-body">
+                        <p class="font-weight-bold">Mettre à jour Contactez-nous</p>
+                        <div class="table-responsive">
+                          <form method="post" action="">
+                              {% csrf_token %}
+                              <div class="form-group">
+                                  <input type="hidden" name="website_builder_id" value="{{ website_builder.id }}">
+                                  <input type="hidden" name="website_builder_location_id" value="{{ website_builder_location.id }}">
+              
+                                  <label for="title">New Address:</label>
+                                  <input type="text" class="form-control" id="title" name="title" placeholder="Enter new title">
+                              </div>
+                              <div class="form-group">
+                                  <label for="description">New Téléphone:</label>
+                                  <input type="text" class="form-control" id="description" name="description" placeholder="Enter new description">
+                              </div>
+                              <div class="form-group">
+                                <label for="admin-email">New Adresse e-mail:</label>
+                                <input type="email" class="form-control" id="admin-email" name="admin_email" placeholder="Enter new admin email">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update WordPress Site</button>
+                        </form>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <a href="{% url "generateur_description" %}" class="btn btn-primary btn-icon-split">
+            <span class="text">Générateur Description</span>
+         </a>
+
+            <!-- Modal confirmation Suspendre -->
+            <div class="modal fade" id="confirmSuspendreModal" tabindex="-1" role="dialog" aria-labelledby="confirmSuspendreModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmSuspendreModalLabel">Confirmation</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to submit a Suspendre request?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="submitSuspendreForm()">Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Modal confirmation Reprendre Suspendre -->
+            <div class="modal fade" id="confirmSuspendreModal2" tabindex="-1" role="dialog" aria-labelledby="confirmSuspendreModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmSuspendreModalLabel">Confirmation</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to submit a Reprendre Suspendre request?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="document.getElementById('suspendreForm2').submit()">Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Modal confirmation Reset -->
+            <div class="modal fade" id="confirmResetModal" tabindex="-1" role="dialog" aria-labelledby="confirmResetModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmResetModalLabel">Confirmation</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to submit a Reset request?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="document.getElementById('resetForm').submit()">Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <script>
+                function submitSuspendreForm() {
+                    document.getElementById("suspendreForm").submit();
+                }
+            </script>
+        </div>
+        
+
+        <!-- Modal confirmation delete -->
+        {% comment %} <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmation</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  <div class="modal-body">
+                      Are you sure you want to submit a Delete request?
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                      <!-- Submit the form when Confirm button is clicked -->
+                      <button type="button" class="btn btn-primary" onclick="document.getElementById('deleteForm').submit()">Confirm</button>
+                  </div>
+              </div>
+          </div>
+        </div> {% endcomment %}
+
+                
+            
+          
+        {% comment %} <div class="col-md-5 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">To Do Lists</h4>
+                                <div class="list-wrapper pt-2">
+                                    <ul class="d-flex flex-column-reverse todo-list todo-list-custom">
+                                        <li>
+                                            <div class="form-check form-check-flat">
+                                                <label class="form-check-label">
+                                                    <input class="checkbox" type="checkbox">
+                                                    Meeting with Urban Team
+                                                </label>
+                                            </div>
+                                            <i class="remove ti-close"></i>
+                                        </li>
+                                        <li class="completed">
+                                            <div class="form-check form-check-flat">
+                                                <label class="form-check-label">
+                                                    <input class="checkbox" type="checkbox" checked>
+                                                    Duplicate a project for new customer
+                                                </label>
+                                            </div>
+                                            <i class="remove ti-close"></i>
+                                        </li>
+                                        <li>
+                                            <div class="form-check form-check-flat">
+                                                <label class="form-check-label">
+                                                    <input class="checkbox" type="checkbox">
+                                                    Project meeting with CEO
+                                                </label>
+                                            </div>
+                                            <i class="remove ti-close"></i>
+                                        </li>
+                                        <li class="completed">
+                                            <div class="form-check form-check-flat">
+                                                <label class="form-check-label">
+                                                    <input class="checkbox" type="checkbox" checked>
+                                                    Follow up of team zilla
+                                                </label>
+                                            </div>
+                                            <i class="remove ti-close"></i>
+                                        </li>
+                                        <li>
+                                            <div class="form-check form-check-flat">
+                                                <label class="form-check-label">
+                                                    <input class="checkbox" type="checkbox">
+                                                    Level up for Antony
+                                                </label>
+                                            </div>
+                                            <i class="remove ti-close"></i>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="add-items d-flex mb-0 mt-2">
+                                    <input type="text" class="form-control todo-list-input"  placeholder="Add new task">
+                                    <button class="add btn btn-icon text-primary todo-list-add-btn bg-transparent"><i class="icon-circle-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+         </div> {% endcomment %}
+      </div>
+     
+          </div>
+        </div>
+    </div>
+
+
+    {% endblock %}

@@ -1,0 +1,91 @@
+{% extends "SuperAdmin/dashbordSuperAdmin.html" %}
+
+{% load static %}
+
+{% block content %}
+
+ <!-- partial -->
+ <div class="main-panel">
+  <div class="content-wrapper">
+  {% if messages %}
+  {% for message in messages %}
+      {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">
+          {{ message }}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+    <div class="row">
+
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Demande Suppprt Done</h4>
+            {% comment %} <p class="card-description">
+              Add class <code>.table-striped</code>
+            </p> {% endcomment %}
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Username Cliente</th>
+                        <th>Support Nom</th>
+                        <th>Prix</th>
+                        <th>Status</th>
+                        <th>Status Demande</th>
+                        <th>Date Created</th>
+                        <th>Code Demande</th>
+                        <th>Update By</th>
+                      </tr>
+                </thead>
+                <tbody>
+                  {% for DemandeSupportDone in DemandeSupportsDone %}
+                  <tr>
+                    <td class="py-1">{{ forloop.counter }}</td>
+                    <td>{{ DemandeSupportDone.cliente.user.username }}</td>
+                    <td>{{ DemandeSupportDone.achat_support.support.name }}</td>
+                    <td>{{ DemandeSupportDone.achat_support.prix }} <span class="font-weight-bold">MAD</span></td>
+
+                    {% if DemandeSupportDone.achat_support.Status == 'Active' %}  
+                    <td><span class="badge badge-success">{{ DemandeSupportDone.achat_support.Status }}</span></td>
+                    {% endif %}
+                    {% if DemandeSupportDone.achat_support.Status == 'No Active' %}  
+                    <td><span class="badge badge-danger">{{ DemandeSupportDone.achat_support.Status }}</span></td>
+                    {% endif %}
+
+                    {% if DemandeSupportDone.achat_support.StatusConsomé == 'Consomé' %}  
+                    <td><span class="badge badge-success">{{ DemandeSupportDone.achat_support.StatusConsomé }}</span></td>
+                    {% endif %}
+                    {% if DemandeSupportDone.achat_support.StatusConsomé == 'Not Consomé' %}  
+                    <td><span class="badge badge-danger">{{ DemandeSupportDone.achat_support.StatusConsomé }}</span></td>
+                    {% endif %}
+
+                    <td>{{ DemandeSupportDone.date_created }}</td>
+                    <td>{{ DemandeSupportDone.code_DemandeSupport }}</td>
+                    <td>{{ DemandeSupportDone.updated_by }}</td>
+                  </tr>
+                  {% endfor %}
+                  
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+     
+    </div>
+  </div>
+  
+</div>
+
+</div>
+
+
+
+<!-- Scroll to top -->
+<a class="scroll-to-top rounded" href="#page-top">
+<i class="fas fa-angle-up"></i>
+</a>
+{% endblock %}

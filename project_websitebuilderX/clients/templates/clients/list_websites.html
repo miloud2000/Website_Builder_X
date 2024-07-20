@@ -1,0 +1,336 @@
+{% extends "clients/dashboard2.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+	<br>
+	{% if messages %}
+	{% for message in messages %}
+	  {% if message.tags == 'error' %}
+		<div class="alert alert-danger" role="alert">
+		  {{ message }}
+		</div>
+	  {% endif %}
+	{% endfor %}
+	{% endif %}
+
+	{% if messages %}
+  {% for message in messages %}
+      {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">
+          {{ message }}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+	
+<section class="section-products">
+	<div class="row justify-content-center text-center">
+		<div class="col-md-8 col-lg-6">
+			<div class="header">
+				{% comment %} <h3>Featured Product</h3> {% endcomment %}
+				<h2>Popular WebSites</h2>
+                <h3><a href="{% url 'all_list_websites' %}"><button type="button" class="btn btn-primary btn-sm">All Websites</button></a></h3>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		{% for website in websites %}
+			<div class="col-md-6 col-lg-4 col-xl-3">
+				<div id="product-1" class="single-product">
+					<div class="part-1">
+						<img src="{% static 'img/css-image-gallery.jpg' %}" style="width: 100%; height: 100%;">
+						<ul>
+							<li><a href="{% url 'detail_website' website.slugWebsites %}"><i class="fas fa-expand"></i></a></li>
+						</ul>
+					</div>
+					<div class="part-2">
+						<h3 class="product-title">{{ website.name }}</h3>
+						<h4 class="product-price">{{ website.prix }} MAD</h4>
+						<a href="{% url 'detail_website' website.slugWebsites %}"><button type="button" class="btn btn-primary btn-sm">Voir</button></a>
+						{% comment %} <a href="#" onclick="showConfirmationModal('{{ website.id }}', '{{ website.name }}', '{{ website.prix }}')"><button type="button" class="btn btn-primary btn-sm">Achat</button></a>
+						<a href="#" onclick="showLoyerModal('{{ website.id }}', '{{ website.name }}', '{{ website.prix }}')"><button type="button" class="btn btn-primary btn-sm">Loyer</button></a> {% endcomment %}
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+	<!-- Modal for "Loyer" action -->
+	<div id="loyerModal" class="modal">
+		<div class="modal-content">
+			<!-- Loyer content -->
+		</div>
+	</div>
+	<script>
+		function showLoyerModal(websiteId, websiteName, websitePrice) {
+			var modal = document.getElementById('loyerModal');
+			var modalContent = modal.querySelector('.modal-content');
+			modalContent.innerHTML = `
+				<div class="close" onclick="hideLoyerModal()">&times;</div>
+				<h1>Confirmer location </h1>
+				<p>Please Confirmer your location of "${websiteName}" for ${websitePrice} MAD.</p>
+				<p><span class="badge badge-warning"> Alert: </span> The Location start date is the date now, not the date builder.</p>
+				<form action="{% url 'confirm_loyer_website' %}" method="post">
+					{% csrf_token %}
+					<input type="hidden" name="website_id" value="${websiteId}">
+					<button class="btn btn-primary" type="submit">Confirm</button>
+				</form>
+			`;
+			modal.style.display = 'block';
+		}
+	
+		function hideLoyerModal() {
+			var modal = document.getElementById('loyerModal');
+			modal.style.display = 'none';
+		}
+	</script>
+	
+	<script>
+		// Function to show the confirmation popup
+		function showConfirmationModal(websiteId, websiteName, websitePrice) {
+		// Get the modal element
+		var modal = document.getElementById('confirmationModal');
+	
+		// Set the website details in the modal
+		var modalContent = modal.querySelector('.modal-content');
+		modalContent.innerHTML = `
+			<div class="close" onclick="hideConfirmationModal()">&times;</div>
+			<h1>Confirmer l'achat</h1>
+			<p>Please Confirmer your l'achat of "${websiteName}" for ${websitePrice} MAD.</p>
+			<form action="{% url 'confirm_Achat_website' %}" method="post">
+			{% csrf_token %}
+			<input type="hidden" name="website_id" value="${websiteId}">
+			<button class="btn btn-primary" type="submit">Confirm</button>
+			</form>
+		`;
+	
+		// Show the modal
+		modal.style.display = 'block';
+		}
+
+	// Function to hide the confirmation popup
+		function hideConfirmationModal() {
+		var modal = document.getElementById('confirmationModal');
+		modal.style.display = 'none';
+		}
+	</script>
+
+
+
+<div id="confirmationModal" class="modal" >
+	<div class="modal-content">
+	  <!-- Confirmation content -->
+	</div>
+  </div>  
+
+
+
+
+<style>
+	/* Modal Styles */
+	.modal {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	{% comment %} z-index: 1; /* Sit on top */ {% endcomment %}
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	}
+
+	/* Modal Content */
+	.modal-content {
+	background-color: #fefefe;
+	margin: 15% auto; /* 15% from the top and centered */
+	padding: 20px;
+	border: 1px solid #888;
+	width: 47%; /* Could be more or less, depending on screen size */
+	}
+
+	/* Close Button */
+	.close {
+	color: #aaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+	}
+
+	.close:hover,
+	.close:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+	}
+
+</style>
+
+
+<style>
+	@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
+
+	body {
+		font-family: "Poppins", sans-serif;
+		color: #444444;
+	}
+
+	a,
+	a:hover {
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.section-products {
+		padding: 20px 0 54px;
+	}
+
+	.section-products .header {
+		margin-bottom: 50px;
+	}
+
+	.section-products .header h3 {
+		font-size: 1rem;
+		color: #fe302f;
+		font-weight: 500;
+	}
+
+	.section-products .header h2 {
+		font-size: 2.2rem;
+		font-weight: 400;
+		color: #444444; 
+	}
+
+	.section-products .single-product {
+		margin-bottom: 26px;
+	}
+
+	.section-products .single-product .part-1 {
+		position: relative;
+		height: 250px;
+		width: 100%;
+		max-height: 290px;
+		margin-bottom: 20px;
+		overflow: hidden;
+	}
+
+	.section-products .single-product .part-1::before {
+			position: absolute;
+			content: "";
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: -1;
+			transition: all 0.3s;
+	}
+
+	.section-products .single-product:hover .part-1::before {
+			transform: scale(1.2,1.2) rotate(5deg);
+	}
+
+	{% comment %} .section-products #product-1 .part-1::before {
+		background: url("https://i.ibb.co/L8Nrb7p/1.jpg") no-repeat center;
+		background-size: cover;
+			transition: all 0.3s;
+	} {% endcomment %}
+
+	{% comment %} .section-products #product-2 .part-1::before {
+		background: url("https://i.ibb.co/cLnZjnS/2.jpg") no-repeat center;
+		background-size: cover;
+	}
+
+	.section-products #product-3 .part-1::before {
+		background: url("https://i.ibb.co/L8Nrb7p/1.jpg") no-repeat center;
+		background-size: cover;
+	}
+
+	.section-products #product-4 .part-1::before {
+		background: url("https://i.ibb.co/cLnZjnS/2.jpg") no-repeat center;
+		background-size: cover;
+	} {% endcomment %}
+
+	.section-products .single-product .part-1 .discount,
+	.section-products .single-product .part-1 .new {
+		position: absolute;
+		top: 15px;
+		left: 20px;
+		color: #ffffff;
+		background-color: #fe302f;
+		padding: 2px 8px;
+		text-transform: uppercase;
+		font-size: 0.85rem;
+	}
+
+	.section-products .single-product .part-1 .new {
+		left: 0;
+		background-color: #444444;
+	}
+
+	.section-products .single-product .part-1 ul {
+		position: absolute;
+		bottom: -41px;
+		left: 20px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		opacity: 0;
+		transition: bottom 0.5s, opacity 0.5s;
+	}
+
+	.section-products .single-product:hover .part-1 ul {
+		bottom: 30px;
+		opacity: 1;
+	}
+
+	.section-products .single-product .part-1 ul li {
+		display: inline-block;
+		margin-right: 4px;
+	}
+
+	.section-products .single-product .part-1 ul li a {
+		display: inline-block;
+		width: 40px;
+		height: 40px;
+		line-height: 40px;
+		background-color: #ffffff;
+		color: #444444;
+		text-align: center;
+		box-shadow: 0 2px 20px rgb(50 50 50 / 10%);
+		transition: color 0.2s;
+	}
+
+	.section-products .single-product .part-1 ul li a:hover {
+		color: #fe302f;
+	}
+
+	.section-products .single-product .part-2 .product-title {
+		font-size: 1rem;
+	}
+
+	.section-products .single-product .part-2 h4 {
+		display: inline-block;
+		font-size: 1rem;
+	}
+
+	.section-products .single-product .part-2 .product-old-price {
+		position: relative;
+		padding: 0 7px;
+		margin-right: 2px;
+		opacity: 0.6;
+	}
+
+	.section-products .single-product .part-2 .product-old-price::after {
+		position: absolute;
+		content: "";
+		top: 50%;
+		left: 0;
+		width: 100%;
+		height: 1px;
+		background-color: #444444;
+		transform: translateY(-50%);
+	}
+</style>
+
+{% endblock %}

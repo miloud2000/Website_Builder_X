@@ -1,0 +1,113 @@
+{% extends "websitebuilder/Cliente/dashboard2.html" %}
+
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+      <div class="card">
+        
+  {% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-success" role="alert">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+<div class="row">
+  <div class="card-body">
+      <p class="card-title">mes services (WebSites)</p>
+    <div class="row">
+      <div class="col-12">
+        <div class="table-responsive">
+          <table id="example" class="display expandable-table" style="width:100%">
+            <thead>
+              <tr>
+                <th>Website N°</th>
+                <th>Website de nom</th>
+                <th>Prix</th>
+                <th>Date Ajouter</th>
+                <th>Builder Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for website in combined_websites %}
+              <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>
+                      {% if website.websites %}
+                          {{ website.websites.name }}
+                      {% else %}
+                          {{ website.nameWebsite }}
+                      {% endif %}
+                  </td>
+                  <td>
+                      {% if website.transaction_type == 'AchatWebsites' %}
+                          {{ website.prix_achat }} MAD
+                      {% elif website.transaction_type == 'LocationWebsites' %}
+                          {{ website.prix_loyer }} MAD
+                      {% elif website.transaction_type == 'GetFreeWebsite' %}
+                          {{ website.prix_free }} MAD
+                      {% else %}
+                         N/N
+                      {% endif %}
+                  </td>
+                  <td>{{ website.date_created|date:"d M Y" }}</td>
+                  <td>
+                      {% if website.BuilderStatus == 'Builder' %}
+                          <span class="badge badge-success">{{ website.BuilderStatus }}</span>
+                      {% else %}
+                          <span class="badge badge-danger">{{ website.BuilderStatus }}</span>
+                      {% endif %}
+                  </td>
+              </tr>
+          {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card-body">
+    <p class="card-title">mes services (Supports)</p>
+  <div class="row">
+    <div class="col-12">
+      <div class="table-responsive">
+        <table id="example" class="display expandable-table" style="width:100%">
+          <thead>
+            <tr>
+              <th>Support N°</th>
+              <th>Support de nom</th>
+              <th>Prix</th>
+              <th>Date Ajouter</th>
+              <th>Builder Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for achat_support in achat_supports %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{achat_support.support.name}}</td>
+                <td>{{achat_support.support.prix}} MAD</td>
+                <td>{{achat_support.support.date_created|date:"d M Y" }}</td>
+                {% if achat_support.StatusConsomé == 'Consomé' %}  
+                <td><span class="badge badge-success">{{ achat_support.StatusConsomé }}</span></td>
+                {% else %}
+                <td><span class="badge badge-danger">{{ achat_support.StatusConsomé }}</span></td>
+                {% endif %}
+              </tr>
+              {% endfor %}
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+{% endblock %}

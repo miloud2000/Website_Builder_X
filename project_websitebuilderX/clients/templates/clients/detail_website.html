@@ -1,0 +1,512 @@
+{% load static  %}
+<!doctype html>
+<html class="no-js" lang="zxx">
+    <head>
+        <!-- Meta Tags -->
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="keywords" content="Site keywords here">
+		<meta name="description" content="">
+		<meta name='copyright' content=''>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        
+        <!-- Title -->
+        <title>WebSite Detail</title>
+
+        <link rel="stylesheet" href="{% static 'detail_website.css' %} ">
+
+        <!--detail website-->
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+        <!-- Favicon -->
+        <link rel="icon" href="{% static 'img/websitebuilder-removebg-preview.png' %} ">
+    </head>
+    <body>
+		{%  include  'websitebuilder/navbar.html' %}
+
+		{% if messages %}
+      <script>
+          setTimeout(function() {
+              $('.alert').alert('close');
+          }, 7000);
+      </script>
+      {% for message in messages %}
+          {% if message.tags == 'success' %}
+              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+          {% elif message.tags == 'error' %}
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+          {% endif %}
+      {% endfor %}
+  {% endif %}
+  
+        <div class="product-count">
+            {% comment %} <label for="size">Quantity</label>
+            <form action="#" class="display-flex">
+                <div class="qtyminus">-</div>
+                <input type="text" name="quantity" value="1" class="qty">
+                <div class="qtyplus">+</div>
+            </form> {% endcomment %}
+            {% comment %} <a href="#" class="round-black-btn">Retour</a>
+            <a href="#" class="round-black-btn">Voir</a> {% endcomment %}
+        </div>
+ 
+		<div class="container">
+	        <div class="heading-section">
+	            <h2>Détails WebSite</h2>
+	        </div>
+	        <div class="row">
+	        	<div class="col-md-6">
+	        		<div id="slider" class="owl-carousel product-slider">
+						<div class="item">
+						  	<img style="height: 450px;"src="{% static 'img/jquerylightbox.jpg' %}" />
+						</div>
+						<div class="item">
+						  	<img src="{% static 'img/htmlimagegallery.jpg' %}" />
+						</div>
+						<div class="item">
+						  	<img src="{% static 'img/css-image-gallery.jpg' %}" />
+						</div>
+						<div class="item">
+						  	<img src="{% static 'img/jquerylightbox.jpg' %}" />
+						</div>
+						<div class="item">
+						  	<img src="{% static 'img/htmlimagegallery.jpg' %}" />
+						</div>
+						<div class="item">
+						  	<img src="{% static 'img/css-image-gallery.jpg' %}" />
+						</div>
+						<div class="item">
+						  	<img src="{% static 'img/jquerylightbox.jpg' %}" />
+						</div>
+					</div>
+					<div id="thumb" class="owl-carousel product-thumb" style="height: 104px;margin-top: -75px;">
+						<div class="item">
+						  	<img src="{% static 'img/jquerylightbox.jpg' %}" />
+						</div>
+						<div class="item">
+						  	<img src="{% static 'img/htmlimagegallery.jpg' %}" />
+						</div>
+						<div class="item">
+						  	<img src="{% static 'img/jquerylightbox.jpg' %}" />
+						</div>
+						<div class="item">
+						  	<img src="{% static 'img/css-image-gallery.jpg' %}" />
+						</div>
+						<div class="item">
+						  	<img src="{% static 'img/jquerylightbox.jpg' %}" />
+						</div>
+						<div class="item">
+						  	<img src="{% static 'img/htmlimagegallery.jpg' %}" />
+						</div>
+						<div class="item">
+						  	<img src="{% static 'img/css-image-gallery.jpg' %}" />
+						</div>
+					</div>
+	        	</div>
+	        	<div class="col-md-6">
+	        		<div class="product-dtl">
+        				<div class="product-info">
+		        			<div class="product-name">{{website_info.name}}</div>
+		        			{% comment %} <div class="reviews-counter">
+								<div class="rate">
+								    <input type="radio" id="star5" name="rate" value="5" checked />
+								    <label for="star5" title="text">5 stars</label>
+								    <input type="radio" id="star4" name="rate" value="4" checked />
+								    <label for="star4" title="text">4 stars</label>
+								    <input type="radio" id="star3" name="rate" value="3" checked />
+								    <label for="star3" title="text">3 stars</label>
+								    <input type="radio" id="star2" name="rate" value="2" />
+								    <label for="star2" title="text">2 stars</label>
+								    <input type="radio" id="star1" name="rate" value="1" />
+								    <label for="star1" title="text">1 star</label>
+								  </div>
+								<span>3 Reviews</span>
+							</div> {% endcomment %}
+							{% if website_info.prix > 0 and website_info.prix_loyer > 0 %}
+							<div class="product-price-discount" style="font-weight: 600;color: #050505;"><span>Prix achat : {{website_info.prix}} MAD</span><span class="line-through">{{ website_info.prix|add:100 }} MAD</span></div>
+							<div class="product-price-discount" style="font-weight: 600;color: #050505;"><span>Prix loyer : {{website_info.prix_loyer}} MAD</span><span class="line-through">{{ website_info.prix_loyer|add:100 }} MAD</span></div>
+							{% else %}
+							<div class="product-price-discount" style="font-weight: 600;color: #050505;"><span>Free : {{website_info.prix}} MAD</span><span class="line-through">{{ website_info.prix|add:100 }} MAD</span></div>
+							{% endif %}
+		        			
+		        		</div>
+	        			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+	        			{% comment %} <div class="row">
+	        				<div class="col-md-6">
+	        					<label for="size">Size</label>
+								<select id="size" name="size" class="form-control">
+									<option>S</option>
+									<option>M</option>
+									<option>L</option>
+									<option>XL</option>
+								</select>
+	        				</div>
+	        				<div class="col-md-6">
+	        					<label for="color">Color</label>
+								<select id="color" name="color" class="form-control">
+									<option>Blue</option>
+									<option>Green</option>
+									<option>Red</option>
+								</select>
+	        				</div>
+	        			</div> {% endcomment %}
+	        			<div class="product-count">
+	        				{% comment %} <label for="size">Quantity</label>
+	        				<form action="#" class="display-flex">
+							    <div class="qtyminus">-</div>
+							    <input type="text" name="quantity" value="1" class="qty">
+							    <div class="qtyplus">+</div>
+							</form> {% endcomment %}
+							{% if website_info.prix > 0 and website_info.prix_loyer > 0  %}
+								<a href="#" style="color: black;" onclick="showConfirmationModal('{{ website_info.id }}', '{{ website_info.name }}', '{{ website_info.prix }}')"><button type="button" style="padding: 5px;width: 126px;height: 40px;padding: 5px;" class="btn btn-inverse-info btn-icon">Achat</button></a>
+								<a href="#" style="color: black;" onclick="showLoyerModal('{{ website_info.id }}', '{{ website_info.name }}', '{{ website_info.prix_loyer }}')"><button type="button" style="padding: 5px;width: 126px;height: 40px;padding: 5px;" class="btn btn-inverse-info btn-icon">Loyer</button></a>
+							{% else %}
+							<a href="#" style="color: black;" onclick="showFreeModal('{{ website_info.id }}', '{{ website_info.name }}', '{{ website_info.prix }}')" ><button type="button" style="padding: 5px;width: 126px;height: 40px;padding: 5px;" class="btn btn-inverse-info btn-icon">Get Free</button></a>                              
+							{% endif %}
+							
+	        			</div>
+	        		</div>
+	        	</div>
+	        </div>
+			<script>
+				
+				function showConfirmationModal(websiteId, websiteName, websitePrice) {
+				  var modal = document.getElementById('confirmationModal');
+				  var modalContent = modal.querySelector('.modal-content');
+				  modalContent.innerHTML = `
+				  <div class="close" onclick="hideConfirmationModal()">&times;</div>
+				  <h1>Confirmer l'achat</h1>
+				  <p>Please Confirmer your purchase of "${websiteName}" for ${websitePrice} MAD.</p>
+				  <form action="{% url 'confirm_Achat_website' %}" method="post">
+					{% csrf_token %}
+					<input type="hidden" name="website_id" value="${websiteId}">
+					<button class="btn btn-primary" type="submit">Confirm</button>
+				  </form>
+				  `;
+				
+
+				  modal.style.display = 'block';
+				}
+			
+				function hideConfirmationModal() {
+				  var modal = document.getElementById('confirmationModal');
+				  modal.style.display = 'none';
+				}
+			  </script>
+
+			  <script>
+				function showFreeModal(websiteId, websiteName, websitePrice) {
+					var modal = document.getElementById('FreeModal');
+					var modalContent = modal.querySelector('.modal-content');
+					modalContent.innerHTML = `
+						<div class="close" onclick="hideConfirmationModal1()">&times;</div>
+						<h1>Confirmer l'achat For Free</h1>
+						<p>Please confirm your Get of "${websiteName}" for ${websitePrice} MAD.</p>
+						<form action="{% url 'GetFree_website' %}" method="post">
+							{% csrf_token %}
+							<input type="hidden" name="website_id" value="${websiteId}">
+							<button class="btn btn-primary" type="submit">Confirm</button>
+						</form>
+					`;
+					modal.style.display = 'block';
+				}
+			
+				function hideConfirmationModal1() {
+					var modal = document.getElementById('FreeModal');
+					modal.style.display = 'none';
+				}
+			
+				
+			</script>
+			
+			
+			  <div id="confirmationModal" class="modal" >
+				<div class="modal-content">
+				  <!-- Confirmation content -->
+				</div>
+			  </div>  
+			
+			<!-- Modal for "Loyer" action -->
+			  <div id="loyerModal" class="modal">
+				<div class="modal-content2">
+				  <!-- Loyer content  -->
+				</div>
+			  </div>
+
+			  <div id="FreeModal" class="modal">
+				<div class="modal-content">
+					<!-- Loyer content will be injected here -->
+				</div>
+			</div>
+			
+
+			  <script>
+				function showLoyerModal(websiteId, websiteName, websitePrice) {
+					var modal = document.getElementById('loyerModal');
+					var modalContent = modal.querySelector('.modal-content2');
+					modalContent.innerHTML = `
+						<div class="close" onclick="hideLoyerModal()">&times;</div>
+						<h1 class="modal-title">Confirmer location</h1>
+						<p>Please confirmer your location of "${websiteName}" for ${websitePrice} MAD per month.</p>
+						<p><span class="badge badge-warning"> Alert: </span> The Location start date is the date now, not the date builder.</p><br>
+						<form action="{% url 'confirm_loyer_website' %}" method="post">
+							{% csrf_token %}
+							<input type="hidden" name="website_id" value="${websiteId}">
+							<input type="hidden" name="rental_period" id="rental_period_input" value="1">
+							<input type="hidden" name="total_price" id="total_price_input" value="${websitePrice}">
+							<p>Choose rental period:</p>
+							{% comment %} <div class="btn-group" role="group"> {% endcomment %}
+								<button type="button" class="btn btn-primary" onclick="updatePrice(${websitePrice}, 1)">1 month</button>
+								<button type="button" class="btn btn-primary" onclick="updatePrice(${websitePrice}, 2)">2 months</button>
+								<button type="button" class="btn btn-primary" onclick="updatePrice(${websitePrice}, 3)">3 months</button><br><br>
+								<button type="button" class="btn btn-primary" onclick="updatePrice(${websitePrice}, 4)">4 months</button>
+								<button type="button" class="btn btn-primary" onclick="updatePrice(${websitePrice}, 5)">5 months</button>
+								<button type="button" class="btn btn-primary" onclick="updatePrice(${websitePrice}, 6)">6 months</button><br><br>
+							{% comment %} </div> {% endcomment %}
+							<p id="total_price_display">Total Price: ${websitePrice} MAD</p>
+							<button class="btn btn-primary" type="submit">Confirm</button>
+						</form>
+					`;
+					modal.style.display = 'block';
+				}
+			
+
+				function hideLoyerModal() {
+					var modal = document.getElementById('loyerModal');
+					modal.style.display = 'none';
+				}
+			
+
+				function updatePrice(basePrice, months) {
+					var totalPrice = basePrice * months;
+					var monthText = months === 1 ? "month" : "months";
+					document.getElementById('rental_period_input').value = months;
+					document.getElementById('total_price_input').value = totalPrice;
+					document.getElementById('total_price_display').innerText = `Total Price: ${totalPrice} MAD for ${months} ${monthText}`;
+				}
+				
+			</script>
+			
+
+			  <style>
+				.modal {
+					display: none; /* Hidden by default */
+					position: fixed; /* Stay in place */
+					{% comment %} z-index: 1; /* Sit on top */ {% endcomment %}
+					left: 0;
+					top: 0;
+					width: 100%; /* Full width */
+					height: 100%; /* Full height */
+					{% comment %} /*overflow: auto;  Enable scroll if needed */ {% endcomment %}
+					background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+					}
+				
+				.modal-content {
+					background-color: #fefefe;
+					margin: 15% auto; /* 15% from the top and centered */
+					padding: 20px;
+					border: 1px solid #888;
+					width: 47%; /* Could be more or less, depending on screen size */
+					}
+
+				.modal-content2 {
+					background-color: #fefefe;
+					margin: 7% auto; /* 15% from the top and centered */
+					padding: 20px;
+					border: 1px solid #888;
+					width: 54%; /* Could be more or less, depending on screen size */
+					height: 70%;
+					}
+			
+				.close {
+					color: #aaa;
+					float: right;
+					font-size: 28px;
+					font-weight: bold;
+					}
+			
+				.close:hover,
+				.close:focus {
+					color: black;
+					text-decoration: none;
+					cursor: pointer;
+					}
+
+
+				@media (max-width: 1200px) {
+					.modal-content, .modal-content2 {
+						width: 60%;
+					}
+				}
+
+				@media (max-width: 992px) {
+					.modal-content, .modal-content2 {
+						width: 70%;
+					}
+				}
+
+				@media (max-width: 768px) {
+					.modal-content, .modal-content2 {
+						width: 80%;
+						margin: 10% auto;
+					}
+				}
+
+				@media (max-width: 576px) {
+					.modal-content, .modal-content2 {
+						width: 90%;
+						margin: 15% auto;
+					}
+
+					.close {
+						font-size: 24px;
+					}
+				}
+
+				@media (max-width: 400px) {
+					.modal-content, .modal-content2 {
+						width: 95%;
+						margin: 20% auto;
+					}
+
+					.close {
+						font-size: 20px;
+					}
+				}
+			
+			</style>
+
+			<br><br>
+	        <div class="product-info-tabs">
+		        <ul class="nav nav-tabs" id="myTab" role="tablist">
+				  	<li class="nav-item">
+				    	<a class="nav-link active" id="description-tab" data-toggle="tab" href="#description" role="tab" aria-controls="description" aria-selected="true">Description</a>
+				  	</li>
+				  	<li class="nav-item">
+				    	<a class="nav-link" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review" aria-selected="false">Reviews (0)</a>
+				  	</li>
+				</ul>
+				<div class="tab-content" id="myTabContent">
+				  	<div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+				  		Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.
+				  	</div>
+				  	<div class="tab-pane fade" id="review" role="tabpanel" aria-labelledby="review-tab">
+				  		<div class="review-heading">REVIEWS</div>
+				  		<p class="mb-20">There are no reviews yet.</p>
+				  		<form class="review-form">
+		        			<div class="form-group">
+			        			<label>Your rating</label>
+			        			<div class="reviews-counter">
+									<div class="rate">
+									    <input type="radio" id="star5" name="rate" value="5" />
+									    <label for="star5" title="text">5 stars</label>
+									    <input type="radio" id="star4" name="rate" value="4" />
+									    <label for="star4" title="text">4 stars</label>
+									    <input type="radio" id="star3" name="rate" value="3" />
+									    <label for="star3" title="text">3 stars</label>
+									    <input type="radio" id="star2" name="rate" value="2" />
+									    <label for="star2" title="text">2 stars</label>
+									    <input type="radio" id="star1" name="rate" value="1" />
+									    <label for="star1" title="text">1 star</label>
+									</div>
+								</div>
+							</div>
+		        			<div class="form-group">
+			        			<label>Your message</label>
+			        			<textarea class="form-control" rows="10"></textarea>
+			        		</div>
+			        		<div class="row">
+				        		<div class="col-md-6">
+				        			<div class="form-group">
+					        			<input type="text" name="" class="form-control" placeholder="Name*">
+					        		</div>
+					        	</div>
+				        		{% comment %} <div class="col-md-6">
+				        			<div class="form-group">
+					        			<input type="text" name="" class="form-control" placeholder="Email Id*">
+					        		</div>
+					        	</div> {% endcomment %}
+					        </div>
+					        <button class="round-black-btn">Submit Review</button>
+			        	</form>
+				  	</div>
+				</div>
+			</div>
+			
+			{% comment %} <div style="text-align:center;font-size:14px;padding-bottom:20px;">Get free icon packs for your next project at <a href="http://iiicons.in/" target="_blank" style="color:#ff5e63;font-weight:bold;">www.iiicons.in</a></div> {% endcomment %}
+		</div>
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="	sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+
+    <style>
+       
+    </style>
+    <script>
+       
+    </script>
+
+    <!-- detail_website -->
+        <script src="{% static 'detail_website.js' %} "></script>
+    <!-- jquery Min JS -->
+        <script src="{% static 'js/jquery.min.js' %} "></script>
+		<!-- jquery Migrate JS -->
+		<script src="{% static 'js/jquery-migrate-3.0.0.js' %} "></script>
+		<!-- jquery Ui JS -->
+		<script src="{% static 'js/jquery-ui.min.js' %} "></script>
+		<!-- Easing JS -->
+        <script src="{% static 'js/easing.js' %} "></script>
+		<!-- Color JS -->
+		<script src="{% static 'js/colors.js' %} "></script>
+		<!-- Popper JS -->
+		<script src="{% static 'js/popper.min.js' %} "></script>
+		<!-- Bootstrap Datepicker JS -->
+		<script src="{% static 'js/bootstrap-datepicker.js' %} "></script>
+		<!-- Jquery Nav JS -->
+        <script src="{% static 'js/jquery.nav.js' %} "></script>
+		<!-- Slicknav JS -->
+		<script src="{% static 'js/slicknav.min.js' %} "></script>
+		<!-- ScrollUp JS -->
+        <script src="{% static 'js/jquery.scrollUp.min.js' %} "></script>
+		<!-- Niceselect JS -->
+		<script src="{% static 'js/niceselect.js' %} "></script>
+		<!-- Tilt Jquery JS -->
+		<script src="{% static 'js/tilt.jquery.min.js' %} "></script>
+		<!-- Owl Carousel JS -->
+        <script src="{% static 'js/owl-carousel.js' %} "></script>
+		<!-- counterup JS -->
+		<script src="{% static 'js/jquery.counterup.min.js' %} "></script>
+		<!-- Steller JS -->
+		<script src="{% static 'js/steller.js' %} "></script>
+		<!-- Wow JS -->
+		<script src="{% static 'js/wow.min.js' %} "></script>
+		<!-- Magnific Popup JS -->
+		<script src="{% static 'js/jquery.magnific-popup.min.js' %} "></script>
+		<!-- Counter Up CDN JS -->
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.3/waypoints.min.js"></script>
+		<!-- Bootstrap JS -->
+		<script src="{% static 'js/bootstrap.min.js' %} "></script>
+		<!-- Main JS -->
+		<script src="{% static 'js/main.js' %} "></script>
+        
+    </body>
+ 

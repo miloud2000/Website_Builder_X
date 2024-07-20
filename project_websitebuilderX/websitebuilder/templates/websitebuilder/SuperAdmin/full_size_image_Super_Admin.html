@@ -1,0 +1,62 @@
+{% extends "websitebuilder/SuperAdmin/dashbordSuperAdmin.html" %}
+
+{% load static %}
+
+{% block content %}
+  <div class="content">
+    <div class="container">
+      <br><br><br>
+        <div class="row">
+            <div class="col-md-6">
+                {% if status == 'inacceptable' %}   {% comment %} or status == 'Done'   {% endcomment %}
+                <a href="{% url 'traceDemandeRecharger' %}">
+                    <button type="button" class="btn btn-primary" style="margin: 10px">Retourner</button>
+                </a>
+                {% endif %} 
+                {% if status == 'Done' %}  
+                <a href="{% url 'traceDemandeRechargerDone' %}">
+                    <button type="button" class="btn btn-primary" style="margin: 10px">Retourner</button>
+                </a>
+                {% endif %} 
+                {% if status == 'Not Done yet' %}  
+                <a href="{% url 'DemandeRechargerNotDone' %}">
+                    <button type="button" class="btn btn-primary" style="margin: 10px">Retourner</button>
+                </a>
+                {% endif %}  
+
+                <br>
+                <h4 class="font-weight-bold">Détails La Trace Demande Recharger:</h4><br>
+                <h6 class="font-weight-normal">Nom d'utilisateur du client:  <span class="font-weight-bold">{{cliente}}</span> </h6><br>
+                <h6 class="font-weight-normal">La trace de solde Demande de recharge :  <span class="font-weight-bold">{{solde}} MAD</span> </h6><br>
+                <h6 class="font-weight-normal">Statut de la Demande
+                  {% if status == 'Not Done yet' %}  
+                  <td><span class="badge badge-warning">{{status}}</span></td>
+                  {% endif %}
+                  {% if status == 'inacceptable' %}  
+                  <td><span class="badge badge-danger">{{status}}</span></td>
+                  {% endif %}
+                  {% if status == 'Done' %}  
+                  <td><span class="badge badge-success">{{status}}</span></td>
+                  {% endif %}
+                </h6><br>   
+                {% if status == 'inacceptable' %}  
+                <h6 class="font-weight-normal">Motif de La Trace Demande Recharger inacceptable:  <span class="font-weight-bold">{{motif}} </span> </h6><br>                  
+                {% endif %}  
+                {% if status != 'Not Done yet' %}  
+                <h6 class="font-weight-normal">Mis à jour par: <span class="font-weight-bold">{{ updated_by }} </span> </h6><br>                  
+                {% endif %}            
+               </div>
+            <div class="col-md-6 contents">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="mb-4">
+                            <h3>La Trace de Virement</h3><br>
+                                <img src="{{image.url}}" style="width: 400px;height: 300px;border-radius: 0%">
+                            </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

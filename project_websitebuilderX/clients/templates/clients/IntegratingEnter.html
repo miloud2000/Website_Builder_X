@@ -1,0 +1,32 @@
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h3>Write an instrucation</h3>
+    <form method="post" action="{% url "chatbot" %}">
+        {% csrf_token %} 
+        <input type="text" class="form-control" name="user_input">
+        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+    </form>
+</body>
+</html> {% endcomment %}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Description Form</title>
+</head>
+<body>
+    <h1>Description Form</h1>
+    <form method="post" action="{% url 'get_description' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

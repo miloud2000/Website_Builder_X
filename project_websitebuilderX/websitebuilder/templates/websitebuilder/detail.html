@@ -1,0 +1,43 @@
+{% extends "websitebuilder/dashboard.html" %}
+
+{% load static %}
+
+{% block content %}
+{%  include  'websitebuilder/editerWebSites.html' %}
+
+      <br>
+      <br>
+
+      <div class="card mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-primary">Détail de Web Sites</h6>
+        </div>
+        <div class="card-body">
+          <p>Nom de WebSites.</p>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong"
+            id="#modalLong">alvaticon</button>
+
+          <p class="mt-3">Image</p>
+          <img src="/static/img/MAINTENANCE-862x762-1.png" alt="" style="width: 200px;height: 200px;"><br><br>
+          {% comment %} <button type="button" class="btn btn-primary" data-toggle="modal"
+            data-target="#exampleModalScrollable" id="#modalScroll">Launch Modal Srollable Title</button> {% endcomment %}
+            <p>Description de WebSites.</p>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong"
+            id="#modalLong">Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti nulla officia esse laboriosam laborum eum exercitationem voluptatibus aspernatur impedit. Magnam quas suscipit aliquam sint dolorem ad! Enim reprehenderit labore ipsum.</button>
+        </div>
+      </div>
+      <style>
+        p{
+            font-weight: bold;
+            color: black;
+        }
+      </style>
+      
+     
+      
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

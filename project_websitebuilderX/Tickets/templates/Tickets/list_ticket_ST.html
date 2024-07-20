@@ -1,0 +1,107 @@
+{% extends "SupportTechnique/dashbordSupportTechnique.html" %}
+
+{% load static %}
+
+{% block content %}
+<div class="container" style="margin-top: 30px;">
+    <div class="input-group">
+        <input type="text" class="form-control" value="" placeholder="Code Demande">&nbsp;&nbsp;
+        <input type="date" class="form-control" name="" id=""> &nbsp;&nbsp;
+        <input type="text" class="form-control" placeholder=""> &nbsp;&nbsp;
+        <span class="input-group-btn">
+          <button class="btn btn-primary" type="button"><i class="fa fa-search"></i></button>
+        </span>
+      </div><br>
+      {% comment %} <div class="input-group">
+        <input type="date" class="form-control" name="" id=""> &nbsp;&nbsp;
+        <span class="input-group-btn">
+          <button class="btn btn-primary" type="button"><i class="fa fa-search"></i></button>
+        </span>
+      </div><br> {% endcomment %}
+
+      <br>
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="header-title pb-3 mt-0">Les Tickets</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr class="align-self-center">
+                                    <th>Username Client</th>
+                                    <th>Sujet</th>
+                                    <th>Code Demande</th>
+                                    <th>Statut</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ticket in tickets %}
+                                <tr>
+                                    <td style="font-weight: bold;">{{ticket.cliente.user.username}}</td>
+                                    <td style="font-weight: bold;">{{ticket.Branche}}</td>     {% comment %}<img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="thumb-sm rounded-circle mr-2"> {% endcomment %}
+                                    <td style="font-weight: bold;">{{ticket.code_Demande}}</td>
+                                    <td style="font-weight: bold;"><span class="badge badge-boxed badge-soft-warning">{{ticket.status}}</span></td>
+                                    <td style="font-weight: bold;">{{ticket.date_created}}</td>
+                                    <td style="font-weight: bold;">
+                                        <a href="{% url 'details_ticket_ST' ticket.id %}" class="btn btn-primary">View</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--end table-responsive-->
+                    {% comment %} <div class="pt-3 border-top text-right"><a href="#" class="text-primary">View all <i class="mdi mdi-arrow-right"></i></a></div> {% endcomment %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    {% comment %} body{
+        background:#f5f5f5;
+        margin-top:20px;
+    } {% endcomment %}
+    .card {
+        border: none;
+        -webkit-box-shadow: 1px 0 20px rgba(96,93,175,.05);
+        box-shadow: 1px 0 20px rgba(96,93,175,.05);
+        margin-bottom: 30px;
+    }
+    .table th {
+        font-weight: 500;
+        color: #827fc0;
+    }
+    .table thead {
+        background-color: #f3f2f7;
+    }
+    .table>tbody>tr>td, .table>tfoot>tr>td, .table>thead>tr>td {
+        padding: 14px 12px;
+        vertical-align: middle;
+    }
+    .table tr td {
+        color: #8887a9;
+    }
+    .thumb-sm {
+        height: 32px;
+        width: 32px;
+    }
+    .badge-soft-warning {
+        background-color: rgba(248,201,85,.2);
+        color: #f8c955;
+    }
+    
+    .badge {
+        font-weight: 500;
+    }
+    .badge-soft-primary {
+        background-color: rgba(96,93,175,.2);
+        color: #605daf;
+    }
+</style>
+
+{% endblock %}

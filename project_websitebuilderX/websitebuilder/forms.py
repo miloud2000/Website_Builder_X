@@ -1,0 +1,121 @@
+from django.contrib.auth.forms import UserCreationForm,PasswordChangeForm
+
+from django import forms
+from .models import *
+
+
+
+class ClienteForm(UserCreationForm):
+    prenom = forms.CharField(max_length=100)
+    nom = forms.CharField(max_length=100)
+    email = forms.EmailField(max_length=100)
+    phone = forms.CharField(max_length=100)
+    
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ['username', 'email', 'password1', 'password2', 'prenom','nom','phone']
+        
+        
+        
+        
+
+class AdministrateurForm(UserCreationForm):
+    name = forms.CharField(max_length=100)
+    email = forms.EmailField(max_length=100)
+    phone = forms.CharField(max_length=100)
+    class Meta:
+        model = User
+        fields = ['username', 'password1', 'password2', 'name','email', 'phone']
+      
+      
+      
+
+class SupportTechniqueForm(UserCreationForm):
+    name = forms.CharField(max_length=100)
+    email = forms.EmailField(max_length=100)
+    phone = forms.CharField(max_length=100)
+    class Meta:
+        model = User
+        fields = ['username', 'password1', 'password2', 'name','email', 'phone']
+        
+        
+        
+
+
+class GestionnaireComptesForm(UserCreationForm):
+    name = forms.CharField(max_length=100)
+    email = forms.EmailField(max_length=100)
+    phone = forms.CharField(max_length=100)
+    class Meta:
+        model = User
+        fields = ['username', 'password1', 'password2', 'name','email', 'phone']
+        
+        
+        
+             
+        
+class DemandeRechargerForm(forms.ModelForm):
+    class Meta:
+        model = DemandeRecharger
+        fields = ['solde', 'image'] 
+   
+      
+      
+      
+        
+class ClienteForm(UserCreationForm):
+    prenom = forms.CharField(max_length=100, required=True)
+    nom = forms.CharField(max_length=100, required=True)
+    email = forms.EmailField(max_length=200, required=True)
+    phone = forms.CharField(max_length=100, required=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2', 'prenom', 'nom', 'phone']        
+        
+   
+   
+   
+   
+class AdditionalInfoForm(forms.ModelForm):
+    address = forms.CharField(max_length=100, required=True)
+    nom_entreprise = forms.CharField(max_length=100, required=True)
+    numero_ice = forms.CharField(max_length=100, required=True)
+
+    class Meta:
+        model = Cliente
+        fields = ['address', 'nom_entreprise', 'numero_ice']     
+
+
+
+
+
+class ClienteUpdateForm(forms.ModelForm):
+    prenom = forms.CharField(max_length=100, required=True)
+    nom = forms.CharField(max_length=100, required=True)
+    email = forms.CharField(max_length=100, required=True)
+    phone = forms.CharField(max_length=100, required=True)
+
+    class Meta:
+        model = Cliente
+        fields = ['prenom', 'nom', 'email', 'phone']
+        
+        
+        
+
+     
+        
+class ClientePasswordChangeForm(PasswordChangeForm):
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(user, *args, **kwargs)
+        for fieldname in ['old_password', 'new_password1', 'new_password2']:
+            self.fields[fieldname].widget.attrs.update({'class': 'form-control', 'placeholder': fieldname.capitalize()})
+            
+   
+
+
+class InputForm(forms.Form):
+    input_text = forms.CharField(label='Enter a Text for Générateur Description', max_length=1000)
+    
+    
+    
