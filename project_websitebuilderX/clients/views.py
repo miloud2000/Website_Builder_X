@@ -411,12 +411,19 @@ def solde_et_facturation(request):
 
 
 
-
 from django.http import HttpResponse
-from django.template.loader import get_template
-from django.shortcuts import get_object_or_404
-from weasyprint import HTML, CSS
-from django.contrib.auth.decorators import login_required
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from io import BytesIO
+from xml.sax.saxutils import escape
+from reportlab.platypus import Spacer
+from datetime import datetime
+from reportlab.lib.enums import TA_CENTER
+
+
 
 
 @login_required(login_url='login')
@@ -426,23 +433,149 @@ def generate_facturation_pdf(request, facturation_id):
     template_path = 'clients/facturation_pdf_template.html'
     context = {'facturation': facturation}
 
-    # Render the template to HTML
-    html_template = get_template(template_path)
-    html_string = html_template.render(context)
+    # Create a bytes buffer for the PDF
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    
+    # Create styles
+    styles = getSampleStyleSheet()
+    normal_style = styles['Normal']
+    header_style = styles['Heading2']
+    subheader_style = ParagraphStyle(name='SubHeader', fontSize=10, leading=12)
+    
+    # Start with the header
+    elements = []
+    elements.append(Paragraph('FACTURE', header_style))
+    
+    # Client Information
+    client_info = f"""
+    <b>Société:</b> {facturation.cliente.nom_entreprise}<br/>
+    <b>Réf. Client:</b> {facturation.cliente.code_client}<br/>
+    <b>Client:</b> {facturation.cliente.prenom} {facturation.cliente.nom}<br/>
+    <b>Adresse:</b> {facturation.cliente.address}<br/>
+    <b>ICE:</b> {facturation.cliente.numero_ice}<br/>
+    <br/>
+    """
+    elements.append(Paragraph(client_info, normal_style))
 
-    # Create a PDF file
-    response = HttpResponse(content_type='application/pdf')
+    Référence_facture = f"""<b>Référence facture:</b> {facturation.code_facturation}"""
+    elements.append(Paragraph(Référence_facture, subheader_style))
+    
+    formatted_date = facturation.date_created.strftime("%d %b %Y")
+    Frais_services = f"""<b>Frais de services Altivax du:</b> {formatted_date}<br/>"""
+    elements.append(Paragraph(Frais_services, subheader_style))
+    
+    
+    # Determine description and price
+    if facturation.location_website:
+        description = f"Site Web loué est {facturation.location_website.websites}"
+        total_ttc = facturation.location_website.prix_loyer
+        
+        # Format the end_date
+        formatted_end_date = facturation.location_website.date_fin.strftime("%d %b %Y")
+        end_date = f"La date fin de Location est {formatted_end_date}"
+    elif facturation.achat_website:
+        description = f"Le site a été acheté est {facturation.achat_website.websites}"
+        total_ttc = facturation.achat_website.prix_achat
+        end_date = ""
+    elif facturation.achat_support:
+        description = f"Support acheté est {facturation.achat_support.support}"
+        total_ttc = facturation.achat_support.prix
+        end_date = ""
+    else:
+        description = "N/A"
+        total_ttc = 0
+        end_date = ""
+
+
+    # Create table data
+    table_data = [['Description', 'Total TTC']]
+    row_data = [description, f"{total_ttc} MAD"]
+
+    if facturation.location_website:
+        table_data[0].insert(1, 'Date Fin Location')
+        row_data.insert(1, end_date)
+
+    table_data.append(row_data)
+
+    # Determine the number of columns in the table
+    num_cols = len(table_data[0])
+
+    # Create a table with automatic column widths
+    table = Table(table_data)
+
+    # Calculate 80% of the page width and adjust the table width
+    page_width = letter[0]
+    table_width = page_width * 0.8
+
+    # Calculate column widths based on content and total table width
+    column_widths = []
+    for col_index in range(num_cols):
+        max_width = max([len(str(row[col_index])) for row in table_data]) * 6  # Estimate width based on content length
+        column_widths.append(max_width)
+
+    # Adjust column widths to fit within the table width
+    total_content_width = sum(column_widths)
+    scale_factor = table_width / total_content_width
+    adjusted_column_widths = [width * scale_factor for width in column_widths]
+
+    # Apply adjusted column widths to the table
+    table._argW = adjusted_column_widths
+
+    # Style the table
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), '#f2f2f2'),
+        ('GRID', (0, 0), (-1, -1), 1, 'black'),
+        ('FONT', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONT', (0, 1), (-1, -1), 'Helvetica'),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('BACKGROUND', (0, 1), (-1, -1), '#ffffff'),
+    ]))
+
+    # Add space before the table
+    elements.append(Spacer(1, 12))  # (width, height) in points. 12 points = 1/6 inch
+
+    elements.append(table)
+
+    # Add space after the table
+    elements.append(Spacer(1, 12))
+
+  
+    # Add space before the Total TTC paragraph
+    elements.append(Spacer(1, 12))
+
+    # Define a center-aligned paragraph style
+    centered_style = ParagraphStyle(name='Centered', parent=subheader_style, alignment=TA_CENTER)
+
+    # Add the Total TTC paragraph with center alignment
+    elements.append(Paragraph(f"Total TTC: {total_ttc} MAD", centered_style))
+
+    # Add space after the Total TTC paragraph
+    elements.append(Spacer(1, 12))
+    
+    
+    # Payment Conditions
+    conditions = """
+    En votre aimable règlement<br/>
+    Et avec nos remerciements.<br/><br/>
+    Conditions de paiement : paiement à réception de facture.<br/>
+    Aucun escompte consenti pour règlement anticipé.<br/>
+    Règlement par virement bancaire ou carte bancaire.<br/><br/>
+    En cas de retard de paiement, indemnité forfaitaire pour frais de recouvrement : 40 euros (art. L.4413 et L.4416 code du commerce).
+    """
+    elements.append(Paragraph(conditions, subheader_style))
+    
+    # Build the PDF
+    doc.build(elements)
+    
+    # Get the value of the BytesIO buffer and write it to the response
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="facturation_{facturation.cliente.user.username}_{facturation.code_facturation}.pdf"'
-
-    # Load CSS separately to ensure it is applied
-    # css_urls = [
-    #     'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css',
-    # ]
-    # css_stylesheets = [CSS(url) for url in css_urls]
-
-    HTML(string=html_string).write_pdf(response)
-
     return response
+
+
+
 
 
 
@@ -1064,6 +1197,13 @@ def edite_website(request, website_name):
     suspendre_exists = Website_need_suspendre.objects.filter(website_builder=website_builder).exists()
     reprendre_suspendre_exists = Website_reprendre_suspendre.objects.filter(website_builder=website_builder).exists()
     
+    
+    suspendre_request = Website_need_suspendre.objects.filter(website_builder=website_builder).first()
+    suspendre_request_status = suspendre_request.statut if suspendre_request else None
+    
+    
+    
+    
     reset_request = website_need_reset.objects.filter(website_builder=website_builder).first()
     reset_status = reset_request.statut if reset_request else None
     
@@ -1080,9 +1220,10 @@ def edite_website(request, website_name):
         'reset_status': reset_status,
         'delete_exists':delete_exists,
         'delete_status':delete_status,
-        'WebsiteBuilders':WebsiteBuilders,     
+        'WebsiteBuilders':WebsiteBuilders,  
+        'suspendre_request_status':suspendre_request_status,   
     }
-    return render(request, "EditeWebsite.html", context)
+    return render(request, "clients/EditeWebsite.html", context)
 
 
 
@@ -1117,7 +1258,7 @@ def edite_free_website(request, website_name):
         'delete_status': delete_status,
         'WebsiteBuilders': WebsiteBuilders,     
     }
-    return render(request, "EditeWebsiteGetFree.html", context)
+    return render(request, "clients/EditeWebsiteGetFree.html", context)
 
 
 
@@ -1147,7 +1288,11 @@ def edite_website_Location(request, nameWebsite):
 
     suspendre_exists = Website_need_suspendre.objects.filter(location_website_builder=website_builder_location).exists()
     reprendre_suspendre_exists = Website_reprendre_suspendre.objects.filter(location_website_builder=website_builder_location).exists()
-
+    
+    
+    suspendre_request = Website_need_suspendre.objects.filter(location_website_builder=website_builder_location).first()
+    suspendre_request_status = suspendre_request.statut if suspendre_request else None
+    
     reset_request = website_need_reset.objects.filter(location_website_builder=website_builder_location).first()
     reset_status = reset_request.statut if reset_request else None
 
@@ -1166,9 +1311,11 @@ def edite_website_Location(request, nameWebsite):
         'reset_status': reset_status,
         'delete_exists':delete_exists,
         'delete_status':delete_status,
-        'WebsiteBuilders':WebsiteBuilders,     
+        'WebsiteBuilders':WebsiteBuilders, 
+        'suspendre_request':suspendre_request,  
+        'suspendre_request_status':suspendre_request_status,  
     }
-    return render(request, "EditeWebsiteLocation.html", context)
+    return render(request, "clients/EditeWebsiteLocation.html", context)
 
 
 

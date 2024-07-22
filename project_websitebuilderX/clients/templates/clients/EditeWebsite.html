@@ -119,7 +119,7 @@
                         <br>
                         <div class="d-flex flex-wrap">
                             <!-- Suspendre -->
-                            {% if not suspendre_exists and not delete_exists %}
+                            {% if not suspendre_exists and not reprendre_suspendre_exists and not delete_exists and website_builder.Statu_du_website == '1' %}
                             <div class="p-2">
                                 <button type="button" class="btn btn-sm badge badge-pill badge-warning" style="width: 131px; height: 26px;" data-toggle="modal" data-target="#confirmSuspendreModal">Suspendre</button>
                                 <form id="suspendreForm" method="POST" action="{% url 'add_website_suspendre' %}" style="display: none;">
@@ -132,7 +132,7 @@
                             {% endif %}
         
                             <!-- Reprendre Suspendre -->
-                            {% if not reprendre_suspendre_exists and suspendre_exists and not delete_exists %}
+                            {% if not reprendre_suspendre_exists and not suspendre_exists and not delete_exists and website_builder.Statu_du_website == '2'%}
                             <div class="p-2">
                                 <button type="button" class="btn btn-sm badge badge-pill badge-warning" style="width: 158px; height: 26px;" data-toggle="modal" data-target="#confirmSuspendreModal2">Reprendre Suspendre</button>
                                 <form id="suspendreForm2" method="POST" action="{% url 'add_website_suspendre_reprendre' %}" style="display: none;">
