@@ -287,7 +287,7 @@
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
           <li class="nav-item">
-            <a class="nav-link" href="">
+            <a class="nav-link" href="{% url "dashbordHomeGestionnaireComptes" %}">
               <i class="fa-solid fa-list"></i>&nbsp;
               <span class="menu-title">Dashboard</span>
             </a>
@@ -382,9 +382,9 @@
     
     </script>
           <li class="nav-item">
-            <a class="nav-link" href="" >
+            <a class="nav-link" href="{% url "list_ticket_GC" %}" >
               <i class="fa-solid fa-receipt"></i>&nbsp;
-              <span class="menu-title">Solde et facturation</span>
+              <span class="menu-title">Ticket</span>
             </a>
            
           </li>
@@ -438,15 +438,15 @@
         
         {% endblock  %}	 
       
-        <footer class="footer">
-          {% comment %} <div class="d-sm-flex justify-content-center justify-content-sm-between">
+      {% comment %}  <footer class="footer">
+           <div class="d-sm-flex justify-content-center justify-content-sm-between">
             <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2021.  Premium <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap admin template</a> from BootstrapDash. All rights reserved.</span>
             <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i class="ti-heart text-danger ml-1"></i></span>
           </div>
           <div class="d-sm-flex justify-content-center justify-content-sm-between">
             <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Distributed by <a href="https://www.themewagon.com/" target="_blank">Themewagon</a></span> 
-          </div> {% endcomment %}
-        </footer> 
+          </div> 
+        </footer> {% endcomment %}
       </div>
     </div>   
   </div>

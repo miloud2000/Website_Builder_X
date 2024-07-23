@@ -1,4 +1,4 @@
-{% extends "SupportTechnique/dashbordSupportTechnique.html" %}
+{% extends "GestionnaireComptes/dashbordGestionnaireComptes.html" %}
 
 {% load static %}
 
@@ -107,20 +107,20 @@
                     <div class="card-body">
                         <p class="font-weight-bold">Mettre à jour de Ticket</p>
                         <div class="table-responsive">
-                            <form method="post" action="{% url 'update_ticket_st' ticket.id %}" enctype="multipart/form-data">
+                            <form method="post" action="{% url 'update_ticket_gc' ticket.id %}" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <div class="form-group">
                                     <label for="description_updated_by">Description</label>
-                                    <textarea class="form-control" id="description_updated_by" name="description_updated_by" rows="4" >{{ ticket.description_updated_by }}</textarea> {% comment %} {{ ticket.description_updated_by }} {% endcomment %}
+                                    <textarea class="form-control" id="description_updated_by" name="description_updated_by" rows="4">{{ ticket.description_updated_by }}</textarea>
                                 </div>
                                 <div class="form-group">
-                                  <label for="piècejoint_updated_by">Pièce de joint</label>
-                                  {% if ticket.piècejoint_updated_by %}
-                                      <p>Pièce de joint actuelle :</p>
-                                      <img src="{{ ticket.piècejoint_updated_by.url }}" alt="Pièce de joint actuelle" style="width: 100px; height: 100px;">
-                                  {% endif %}
-                                  <input type="file" class="form-control" id="piècejoint_updated_by" name="piècejoint_updated_by">
-                              </div>
+                                    <label for="pièce_joint_updated_by">Pièce de joint</label>
+                                    {% if ticket.pièce_joint_updated_by %}
+                                        <p>Pièce de joint actuelle :</p>
+                                        <img src="{{ ticket.pièce_joint_updated_by.url }}" alt="Pièce de joint actuelle" style="width: 100px; height: 100px;">
+                                    {% endif %}
+                                    <input type="file" class="form-control" id="pièce_joint_updated_by" name="pièce_joint_updated_by">
+                                </div>
                                 <div class="form-group">
                                     <label for="status">Statut</label>
                                     <select class="form-control" id="status" name="status">
@@ -130,7 +130,7 @@
                                     </select>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Mettre à jour Ticket</button>
-                            </form>
+                            </form>                            
                         </div>
                     </div>
                 </div>
@@ -143,9 +143,9 @@
                           <p>Description de Ticket: <br>
                             <span class="font-weight-bold">{{ticket.description_updated_by}}</span> 
                             <p>pièce de joint : </p>
-                            {% if ticket.piècejoint_updated_by %}
+                            {% if ticket.pièce_joint_updated_by %}
                                 {% comment %} <a href="" target="_blank"> {% endcomment %}
-                                    <img src="{{ ticket.piècejoint_updated_by.url }}" style="width: 300px; height: 217px; border-radius: 0%;">
+                                    <img src="{{ ticket.pièce_joint_updated_by.url }}" style="width: 300px; height: 217px; border-radius: 0%;">
                                 {% comment %} </a> {% endcomment %}
                             {% else %}
                                 Non pièce de joint

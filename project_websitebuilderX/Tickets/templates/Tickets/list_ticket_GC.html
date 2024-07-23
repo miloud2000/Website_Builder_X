@@ -1,10 +1,10 @@
-{% extends "SupportTechnique/dashbordSupportTechnique.html" %}
+{% extends "GestionnaireComptes/dashbordGestionnaireComptes.html" %}
 
 {% load static %}
 
 {% block content %}
 <div class="container" style="margin-top: 30px;">
-    <form method="get" action="{% url 'list_ticket_ST' %}">
+    <form method="get" action="{% url 'list_ticket_GC' %}">
         <div class="container mt-4">
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-4 mb-3">
@@ -17,14 +17,10 @@
                     <input type="text" class="form-control rounded" name="username_client" value="{{ request.GET.username_client }}" placeholder="Username Client">
                 </div>
                 <div class="col-12 col-md-6 col-lg-4 mb-3">
-                    <input type="text" class="form-control rounded" name="code_demande" value="{{ request.GET.code_demande }}" placeholder="Code Demande">
-                </div>
-                <div class="col-12 col-md-6 col-lg-4 mb-3">
                     <select class="form-control rounded" name="branche">
                         <option value="">Tout Sujet</option>
-                        <option value="Website" {% if request.GET.branche == "Website" %}selected{% endif %}>Website</option>
-                        <option value="Service" {% if request.GET.branche == "Service" %}selected{% endif %}>Service</option>
-                        <option value="Application" {% if request.GET.branche == "Application" %}selected{% endif %}>Application</option>
+                        <option value="Problème de paiement" {% if request.GET.branche == "Problème de paiement" %}selected{% endif %}>Problème de paiement</option>
+                        <option value="Problème de solde" {% if request.GET.branche == "Problème de solde" %}selected{% endif %}>Problème de solde</option>
                         <option value="Autre" {% if request.GET.branche == "Autre" %}selected{% endif %}>Autre</option>
                     </select>
                 </div>
@@ -37,26 +33,18 @@
                     </select>
                 </div>
                 <div class="col-12 col-md-6 col-lg-4 mb-3">
-                    <button class="btn btn-primary w-100 rounded" type="submit"><i class="fa fa-search"></i> Rechercher</button>
+                    <button class="btn btn-primary w-100 rounded" style="margin: 3px;" type="submit"><i class="fa fa-search"></i> Rechercher</button><br>
+                    <button class="btn btn-secondary w-100 rounded" style="margin: 3px;"  type="reset" onclick="window.location.href='{% url 'list_ticket_GC' %}'"><i class="fa fa-refresh"></i> Réinitialiser</button>
+
                 </div>
-                <div class="col-12 col-md-6 col-lg-4 mb-3">
-                </div>
-                <div class="col-12 col-md-6 col-lg-4 mb-3">
-                    <button class="btn btn-secondary w-100 rounded" type="reset" onclick="window.location.href='{% url 'list_ticket_ST' %}'"><i class="fa fa-refresh"></i> Réinitialiser</button>
-                </div>
+                {% comment %} <div class="col-12 col-md-6 col-lg-4 mb-3">
+                    <button class="btn btn-secondary w-100 rounded" type="reset" onclick="window.location.href='{% url 'list_ticket_GC' %}'"><i class="fa fa-refresh"></i> Réinitialiser</button>
+                </div> {% endcomment %}
             </div>
         </div>
     </form>
-        
     <br>
-      {% comment %} <div class="input-group">
-        <input type="date" class="form-control" name="" id=""> &nbsp;&nbsp;
-        <span class="input-group-btn">
-          <button class="btn btn-primary" type="button"><i class="fa fa-search"></i></button>
-        </span>
-      </div><br> {% endcomment %}
 
-      <br>
     <div class="row">
         <div class="col-xl-12">
             <div class="card">
@@ -68,46 +56,43 @@
                                 <tr class="align-self-center">
                                     <th>Username Client</th>
                                     <th>Sujet</th>
-                                    <th>Code Demande</th>
+                                    <th>Code Ticket</th>
                                     <th>Statut</th>
-                                    <th>Code Ticket </th>
                                     <th>Date</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% if tickets %}
-                                {% for ticket in tickets %}
-                                <tr>
-                                    <td style="font-weight: bold;">{{ticket.cliente.user.username}}</td>
-                                    <td style="font-weight: bold;">{{ticket.Branche}}</td>     {% comment %}<img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="thumb-sm rounded-circle mr-2"> {% endcomment %}
-                                    <td style="font-weight: bold;">{{ticket.code_Demande}}</td>
-                                    <td >
-                                        {% if ticket.status == "Ouvert"%}
-                                            <span style="font-weight: bold;" class="badge badge-success">{{ ticket.status }}</span>
-                                        {% elif ticket.status == "En Cours de traitement" %}
-                                            <span style="font-weight: bold;" class="badge badge-warning">{{ ticket.status }}</span>
-                                        {% elif ticket.status == "Fermée" %}
-                                            <span style="font-weight: bold;" class="badge badge-danger">{{ ticket.status }}</span>
-                                        {% endif %}
-                                    </td>                        
-                                    <td style="font-weight: bold;">{{ticket.code_Ticket}}</td>            
-                                    <td style="font-weight: bold;">{{ticket.date_created}}</td>
-                                    <td style="font-weight: bold;">
-                                        <a href="{% url 'details_ticket_ST' ticket.id %}" class="btn btn-primary">View</a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
+                                    {% for ticket in tickets %}
+                                    <tr>
+                                        <td style="font-weight: bold;">{{ ticket.cliente.user.username }}</td>
+                                        <td style="font-weight: bold;">{{ ticket.Branche }}</td>
+                                        <td style="font-weight: bold;">{{ ticket.code_Ticket }}</td>
+                                        <td>
+                                            {% if ticket.status == "Ouvert" %}
+                                                <span class="badge badge-success" style="font-weight: bold;">{{ ticket.status }}</span>
+                                            {% elif ticket.status == "En Cours de traitement" %}
+                                                <span class="badge badge-warning" style="font-weight: bold;">{{ ticket.status }}</span>
+                                            {% elif ticket.status == "Fermée" %}
+                                                <span class="badge badge-danger" style="font-weight: bold;">{{ ticket.status }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td style="font-weight: bold;">{{ ticket.date_created|date:"d/m/Y H:i" }}</td>
+                                        <td style="font-weight: bold;">
+                                            <a href="{% url 'details_ticket_GC' ticket.id %}" class="btn btn-primary">View</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
                                 {% else %}
-                                <tr>
-                                    <td colspan="6" class="text-center font-weight-bold">Aucun ticket disponible</td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="6" class="text-center font-weight-bold">Aucun ticket disponible</td>
+                                    </tr>
                                 {% endif %}
                             </tbody>
                         </table>
                     </div>
                     <!--end table-responsive-->
-                    {% comment %} <div class="pt-3 border-top text-right"><a href="#" class="text-primary">View all <i class="mdi mdi-arrow-right"></i></a></div> {% endcomment %}
                 </div>
             </div>
         </div>

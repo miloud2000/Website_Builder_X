@@ -13,7 +13,7 @@ class GestionnaireComptes(models.Model):
         ('Active', 'Active'),
         ('No Active	', 'No Active'),
     ]
-    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, null=True, blank=False, on_delete=models.SET_NULL)
     name = models.CharField(max_length=100, null=True)
     email = models.EmailField(max_length=100, null=True)
     phone = models.CharField(max_length=100, null=True)
@@ -47,7 +47,7 @@ def generate_cliente_code(nom, prenom):
 
 
 class Cliente(models.Model):
-    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, null=True, blank=False, on_delete=models.SET_NULL)
     prenom = models.CharField(max_length=100, null=True)
     nom = models.CharField(max_length=100, null=True)
     email = models.CharField(max_length=100, null=True)
@@ -1025,6 +1025,8 @@ class Websites_hebergement_payment_reprendre(models.Model):
     
     
 
+from django.utils.crypto import get_random_string
+
 
 class Ticket(models.Model):
     STATUS_CHOICES = [
@@ -1038,15 +1040,33 @@ class Ticket(models.Model):
     status = models.CharField(max_length=40, choices=STATUS_CHOICES, default='Ouvert')
     typeTicket = models.CharField(max_length=40, null=False, blank=False)
     Branche = models.CharField(max_length=40, null=False, blank=False)
-    code_Demande = models.CharField(max_length=100, null=True, blank=True)  
+    code_Ticket = models.CharField(max_length=100, null=True, blank=True, unique=True)
     nameWebsite = models.CharField(max_length=100, null=True, blank=True)  
     nameSupport = models.CharField(max_length=100, null=True, blank=True) 
     date_created = models.DateTimeField(auto_now_add=True)
+    code_Demande = models.CharField(max_length=100, null=True, blank=True) 
     updated_by_ts = models.ForeignKey(SupportTechnique, on_delete=models.SET_NULL, null=True, blank=True)
+    updated_by_gc = models.ForeignKey(GestionnaireComptes, on_delete=models.SET_NULL, null=True, blank=True)
     description_updated_by = models.TextField(max_length=2000, null=True, blank=True) 
-    piècejoint_updated_by  = models.ImageField(null=True, blank=True)
+    pièce_joint_updated_by  = models.ImageField(null=True, blank=True)
     date_updated = models.DateTimeField(auto_now=True)
-    piècejoint = models.ImageField(null=True)
+    pièce_joint = models.ImageField(null=True)
 
     def __str__(self):
         return f"Ticket {self.id} - {self.cliente.user.username} - {self.typeTicket}"
+
+
+    def save(self, *args, **kwargs):
+        if not self.code_Ticket:
+            self.code_Ticket = self.generate_unique_code()
+        super().save(*args, **kwargs)
+
+    def generate_unique_code(self):
+        nom_initial = self.cliente.nom[0].upper() if self.cliente.nom else ''
+        prenom_initial = self.cliente.prenom[0].upper() if self.cliente.prenom else ''
+        code = f'TK{nom_initial}{prenom_initial}{get_random_string(length=5)}'
+        
+        while Ticket.objects.filter(code_Ticket=code).exists():
+            code = f'TK{nom_initial}{prenom_initial}{get_random_string(length=5)}'
+        
+        return code

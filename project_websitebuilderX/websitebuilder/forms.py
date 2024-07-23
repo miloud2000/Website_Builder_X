@@ -119,3 +119,20 @@ class InputForm(forms.Form):
     
     
     
+
+
+# class TicketFilterForm(forms.Form):
+#     code_ticket = forms.CharField(
+#         max_length=100,
+#         required=False,
+#         widget=forms.TextInput(attrs={'placeholder': 'Code Ticket'})
+#     )
+#     date_created = forms.DateField(
+#         required=False,
+#         widget=forms.DateInput(attrs={'type': 'date'})
+#     )
+#     username_client = forms.CharField(
+#         max_length=100,
+#         required=False,
+#         widget=forms.TextInput(attrs={'placeholder': 'Username Client'})
+#     )
