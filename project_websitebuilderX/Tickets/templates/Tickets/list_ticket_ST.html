@@ -94,7 +94,7 @@
                                     <td style="font-weight: bold;">{{ticket.code_Ticket}}</td>            
                                     <td style="font-weight: bold;">{{ticket.date_created}}</td>
                                     <td style="font-weight: bold;">
-                                        <a href="{% url 'details_ticket_ST' ticket.id %}" class="btn btn-primary">View</a>
+                                        <a href="{% url 'details_ticket_ST' ticket.code_Ticket %}" class="btn btn-primary">View</a>
                                     </td>
                                 </tr>
                                 {% endfor %}

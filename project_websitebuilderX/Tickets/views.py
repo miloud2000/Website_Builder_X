@@ -23,34 +23,50 @@ def ticket_list(request):
     cliente = request.user.cliente 
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
     tickets = Ticket.objects.filter(cliente=cliente).order_by('-date_created')
-
+    ticket_count = Ticket.objects.filter(cliente=cliente).count()
+    
     context = {
         'cliente': cliente,
         'WebsiteBuilders': WebsiteBuilders,
         'tickets' :tickets,
+        'ticket_count': ticket_count,
     }
     return render(request, "Tickets/ticket_list.html",context)
 
 
 
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 
 def add_ticket(request):
     cliente = request.user.cliente
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
-
+    websites = Websites.objects.all()
+    supports = Supports.objects.all()
+    
     if request.method == 'POST':
         typeTicket = request.POST.get('type')
         Branche = request.POST.get('branch')
         message = request.POST.get('message')
         code_Demande = request.POST.get('code_Demande')
-        nameWebsite = request.POST.get('nameWebsite')
-        nameSupport = request.POST.get('nameSupport')
+        nameWebsite_id = request.POST.get('nameWebsite')  # Fetch the Website ID
+        nameSupport_id = request.POST.get('nameSupport')  # Fetch the Support ID
         attachment = request.FILES.get('attachment')
 
         if typeTicket and Branche and message:
+            # Fetch the Websites instance if available
+            if nameWebsite_id:
+                nameWebsite = get_object_or_404(Websites, id=nameWebsite_id)
+            else:
+                nameWebsite = None
+
+            # Fetch the Supports instance
+            if nameSupport_id:
+                nameSupport = get_object_or_404(Supports, id=nameSupport_id)
+            else:
+                nameSupport = None
+
             ticket = Ticket(
                 cliente=cliente,
                 description=message,
@@ -58,8 +74,8 @@ def add_ticket(request):
                 typeTicket=typeTicket,
                 Branche=Branche,
                 code_Demande=code_Demande,
-                nameWebsite=nameWebsite,
-                nameSupport=nameSupport,
+                websiteName=nameWebsite,
+                supportName=nameSupport,
                 pièce_joint=attachment
             )
             ticket.save()
@@ -68,6 +84,8 @@ def add_ticket(request):
     context = {
         'cliente': cliente,
         'WebsiteBuilders': WebsiteBuilders,
+        'websites': websites, 
+        'supports' : supports,
     }
     return render(request, "Tickets/add_ticket.html", context)
 
@@ -153,11 +171,10 @@ def list_ticket_GC(request):
 
 from django.shortcuts import render, get_object_or_404
 
-
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SupportTechnique']) 
-def details_ticket_ST(request, ticket_id):
-    ticket = get_object_or_404(Ticket, id=ticket_id)
+def details_ticket_ST(request, code_Ticket):
+    ticket = get_object_or_404(Ticket, code_Ticket=code_Ticket)
     context = {
         'ticket': ticket,
     }
@@ -166,10 +183,11 @@ def details_ticket_ST(request, ticket_id):
 
 
 
+
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes']) 
-def details_ticket_GC(request, ticket_id):
-    ticket = get_object_or_404(Ticket, id=ticket_id)
+def details_ticket_GC(request, code_Ticket):
+    ticket = get_object_or_404(Ticket, code_Ticket=code_Ticket)
     context = {
         'ticket': ticket,
     }
@@ -197,8 +215,6 @@ def get_branch_options(request):
     
     
 
-    
-    
 
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SupportTechnique'])
@@ -212,17 +228,17 @@ def update_ticket_st(request, ticket_id):
     if request.method == 'POST':
         description_updated_by = request.POST.get('description_updated_by')
         status = request.POST.get('status')
-        piècejoint_updated_by = request.FILES.get('piècejoint_updated_by')
+        pièce_joint_updated_by = request.FILES.get('pièce_joint_updated_by')
 
         ticket.description_updated_by = description_updated_by
         ticket.status = status
         
-        if piècejoint_updated_by:
-            ticket.pièce_joint_updated_by = piècejoint_updated_by
+        if pièce_joint_updated_by:
+            ticket.pièce_joint_updated_by = pièce_joint_updated_by
         
         ticket.updated_by_ts = support_technique
         ticket.save()
-        return redirect('details_ticket_ST', ticket_id=ticket.id)
+        return redirect('details_ticket_ST', code_Ticket=ticket.code_Ticket)
     
     return render(request, 'details_ticket_ST.html', {'ticket': ticket})
 
@@ -251,6 +267,6 @@ def update_ticket_gc(request, ticket_id):
         
         ticket.updated_by_gc = gestionnaire_comptes
         ticket.save()
-        return redirect('details_ticket_GC', ticket_id=ticket.id)
+        return redirect('details_ticket_GC', code_Ticket=ticket.code_Ticket)
     
     return render(request, 'details_ticket_GC.html', {'ticket': ticket})

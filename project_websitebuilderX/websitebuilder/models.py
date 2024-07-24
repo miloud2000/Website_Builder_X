@@ -1024,6 +1024,20 @@ class Websites_hebergement_payment_reprendre(models.Model):
     
     
     
+    
+
+from django.utils.crypto import get_random_string
+
+
+class testing(models.Model):
+    description = models.TextField(max_length=2000, null=False, blank=False)
+    
+    def __str__(self):
+        return f"dfdfd"
+
+
+
+
 
 from django.utils.crypto import get_random_string
 
@@ -1041,8 +1055,8 @@ class Ticket(models.Model):
     typeTicket = models.CharField(max_length=40, null=False, blank=False)
     Branche = models.CharField(max_length=40, null=False, blank=False)
     code_Ticket = models.CharField(max_length=100, null=True, blank=True, unique=True)
-    nameWebsite = models.CharField(max_length=100, null=True, blank=True)  
-    nameSupport = models.CharField(max_length=100, null=True, blank=True) 
+    supportName = models.ForeignKey(Supports, on_delete=models.CASCADE, null=True, blank=True)
+    websiteName = models.ForeignKey(Websites, on_delete=models.CASCADE, null=True, blank=True) 
     date_created = models.DateTimeField(auto_now_add=True)
     code_Demande = models.CharField(max_length=100, null=True, blank=True) 
     updated_by_ts = models.ForeignKey(SupportTechnique, on_delete=models.SET_NULL, null=True, blank=True)

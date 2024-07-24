@@ -36,12 +36,22 @@
                     </div>
                     <div class="mb-3" id="nameWebsiteDiv" style="display: none;">
                         <label for="nameWebsite" class="form-label">Website Name</label>
-                        <input type="text" id="nameWebsite" class="form-control" name="nameWebsite">
+                        <select id="nameWebsite" class="form-control" name="nameWebsite">
+                            <option value="">Choose Website</option>
+                            {% for website in websites %}
+                                <option value="{{ website.id }}">{{ website.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="mb-3" id="nameSupportDiv" style="display: none;">
                         <label for="nameSupport" class="form-label">Support Name</label>
-                        <input type="text" id="nameSupport" class="form-control" name="nameSupport">
-                    </div>
+                        <select id="nameSupport" class="form-control" name="nameSupport"> 
+                            <option value="">Choose Support</option> 
+                            {% for support in supports %}
+                                <option value="{{ support.id }}">{{ support.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>                    
                     <div class="mb-3">
                         <label for="attachment" class="form-label">Attach File(s)</label>
                         <input type="file" class="d-block" id="attachment" name="attachment" accept=".csv,image/jpeg,image/jpg,image/png,image/bmp,image/gif,application/pdf,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple>

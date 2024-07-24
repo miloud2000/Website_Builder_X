@@ -15,7 +15,7 @@
     <div class="row align-items-center">
         <div class="col-md-6">
             <div class="mb-3">
-                <h5 class="card-title">Ticket List <span class="text-muted fw-normal ms-2">(1)</span></h5>
+                <h5 class="card-title">Ticket List <span class="text-muted fw-normal ms-2">({{ticket_count}})</span></h5>
             </div>
         </div>
         <div class="col-md-6">
@@ -48,7 +48,13 @@
                         {% comment %} <div><img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="avatar-md rounded-circle img-thumbnail" /></div> {% endcomment %}
                         <div class="flex-1 ms-3">
                             <h5 class="font-size-16 mb-1"><a href="#" class="text-dark">{{ticket.typeTicket}}</a></h5>
-                            <span class="badge badge-soft-success mb-0">{{ticket.status}}</span>
+                            {% if ticket.status == 'Ouvert' %}
+                            <span class="badge badge-success mb-0">{{ ticket.status }}</span>
+                            {% elif ticket.status == 'En Cours de traitement' %}
+                                <span class="badge badge-warning mb-0">{{ ticket.status }}</span>
+                            {% elif ticket.status == 'Fermée' %}
+                                <span class="badge badge-danger mb-0">{{ ticket.status }}</span>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="mt-3 pt-1">

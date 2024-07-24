@@ -12,8 +12,8 @@ urlpatterns = [
     path('list_ticket_GC/',views.list_ticket_GC, name="list_ticket_GC"), 
     
     
-    path('details_ticket_ST/<int:ticket_id>/',views.details_ticket_ST, name="details_ticket_ST"), 
-    path('details_ticket_GC/<int:ticket_id>/',views.details_ticket_GC, name="details_ticket_GC"), 
+    path('details_ticket_ST/<str:code_Ticket>/',views.details_ticket_ST, name="details_ticket_ST"), 
+    path('details_ticket_GC/<str:code_Ticket>/',views.details_ticket_GC, name="details_ticket_GC"), 
 
     path('update_ticket_st/<int:ticket_id>/', views.update_ticket_st, name='update_ticket_st'),
     path('update_ticket_gc/<int:ticket_id>/', views.update_ticket_gc, name='update_ticket_gc'),
