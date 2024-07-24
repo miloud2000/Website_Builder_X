@@ -104,7 +104,7 @@ DATABASES = {
         'NAME': 'website_builder_db',
         'USER': 'root',
         'PASSWORD': 'Password24',
-        'HOST': 'host.docker.internal',
+        'HOST': 'localhost',
         'PORT': '3306',
     }
 }
