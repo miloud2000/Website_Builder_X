@@ -101,10 +101,10 @@ WSGI_APPLICATION = 'project_websitebuilder.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'websitebuilder',
+        'NAME': 'website_builder_db',
         'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
+        'PASSWORD': 'Password24',
+        'HOST': 'host.docker.internal',
         'PORT': '3306',
     }
 }
