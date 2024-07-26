@@ -18,7 +18,8 @@ from django.contrib.auth.decorators import login_required
 
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['Cliente']) 
 def ticket_list(request):
     cliente = request.user.cliente 
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
@@ -32,6 +33,46 @@ def ticket_list(request):
         'ticket_count': ticket_count,
     }
     return render(request, "Tickets/ticket_list.html",context)
+
+
+
+
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['Cliente'])
+def details_ticket(request, code_Ticket):
+    ticket = get_object_or_404(Ticket, code_Ticket=code_Ticket)
+    conversations = ticket.conversations.all().order_by('timestamp')
+
+    if request.method == 'POST':
+        message = request.POST.get('message')
+        image = request.FILES.get('image')
+        if message or image:
+            # Determine the sender type and ID
+            if hasattr(request.user, 'cliente'):
+                sender_type = 'Cliente'
+                sender_id = request.user.cliente.id
+            else:
+                sender_type = 'SupportTechnique'
+                sender_id = request.user.supporttechnique.id
+            
+            # Create a new conversation
+            Conversation.objects.create(
+                ticket=ticket,
+                sender_type=sender_type,
+                sender_id=sender_id,
+                message=message,
+                image=image  # Add image if provided
+            )
+            return redirect('details_ticket', code_Ticket=code_Ticket)
+
+    context = {
+        'ticket': ticket,
+        'conversations': conversations,
+    }
+    return render(request, 'Tickets/details_ticket.html', context)
+
 
 
 
@@ -88,6 +129,7 @@ def add_ticket(request):
         'supports' : supports,
     }
     return render(request, "Tickets/add_ticket.html", context)
+
 
 
 
@@ -168,33 +210,96 @@ def list_ticket_GC(request):
 
 
 
-
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
 
 @login_required(login_url='login')
-@allowedUsers(allowedGroups=['SupportTechnique']) 
+@allowedUsers(allowedGroups=['SupportTechnique'])
 def details_ticket_ST(request, code_Ticket):
     ticket = get_object_or_404(Ticket, code_Ticket=code_Ticket)
+    conversations = ticket.conversations.all().order_by('timestamp')
+
+    if request.method == 'POST':
+        message = request.POST.get('message')
+        image = request.FILES.get('image')
+        status = request.POST.get('status')
+        
+        # Handle conversation updates
+        if message or image:
+            sender_type = 'SupportTechnique'
+            sender_id = request.user.supporttechnique.id
+            Conversation.objects.create(
+                ticket=ticket,
+                sender_type=sender_type,
+                sender_id=sender_id,
+                message=message,
+                image=image  # Add image if provided
+            )
+            messages.success(request, 'Message sent successfully')
+
+        # Handle status updates
+        if status:
+            if status in dict(Ticket.STATUS_CHOICES).keys():
+                ticket.status = status
+                ticket.updated_by_ts = request.user.supporttechnique
+                ticket.save()
+                messages.success(request, 'Ticket status updated successfully')
+            else:
+                messages.error(request, 'Invalid status selected')
+        
+        return redirect('details_ticket_ST', code_Ticket=code_Ticket)
+
     context = {
         'ticket': ticket,
+        'conversations': conversations,
+        'status_choices': Ticket.STATUS_CHOICES,
     }
     return render(request, 'Tickets/details_ticket_ST.html', context)
 
 
 
-
-
 @login_required(login_url='login')
-@allowedUsers(allowedGroups=['GestionnaireComptes']) 
+@allowedUsers(allowedGroups=['GestionnaireComptes'])
 def details_ticket_GC(request, code_Ticket):
     ticket = get_object_or_404(Ticket, code_Ticket=code_Ticket)
+    conversations = ticket.conversations.all().order_by('timestamp')
+
+    if request.method == 'POST':
+        message = request.POST.get('message')
+        image = request.FILES.get('image')
+        status = request.POST.get('status')  # Get the new status from the form
+
+        # Handle conversation updates
+        if message or image:
+            sender_type = 'GestionnaireComptes'
+            sender_id = request.user.gestionnairecomptes.id
+            Conversation.objects.create(
+                ticket=ticket,
+                sender_type=sender_type,
+                sender_id=sender_id,
+                message=message,
+                image=image  # Add image if provided
+            )
+            messages.success(request, 'Message sent successfully')
+
+        # Handle status updates
+        if status:
+            if status in dict(Ticket.STATUS_CHOICES).keys():
+                ticket.status = status
+                ticket.updated_by_gc = request.user.gestionnairecomptes
+                ticket.save()
+                messages.success(request, 'Ticket status updated successfully')
+            else:
+                messages.error(request, 'Invalid status selected')
+
+        return redirect('details_ticket_GC', code_Ticket=code_Ticket)
+
     context = {
         'ticket': ticket,
+        'conversations': conversations,
+        'status_choices': Ticket.STATUS_CHOICES,
     }
     return render(request, 'Tickets/details_ticket_GC.html', context)
-
-
-
 
 
 

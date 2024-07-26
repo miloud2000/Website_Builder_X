@@ -12,6 +12,7 @@ urlpatterns = [
     path('list_ticket_GC/',views.list_ticket_GC, name="list_ticket_GC"), 
     
     
+    path('details_ticket/<str:code_Ticket>/',views.details_ticket, name="details_ticket"), 
     path('details_ticket_ST/<str:code_Ticket>/',views.details_ticket_ST, name="details_ticket_ST"), 
     path('details_ticket_GC/<str:code_Ticket>/',views.details_ticket_GC, name="details_ticket_GC"), 
 

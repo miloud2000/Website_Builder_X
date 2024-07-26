@@ -1084,3 +1084,37 @@ class Ticket(models.Model):
             code = f'TK{nom_initial}{prenom_initial}{get_random_string(length=5)}'
         
         return code
+
+
+
+
+class Conversation(models.Model):
+    TICKET_TYPE_CHOICES = [
+        ('Cliente', 'Cliente'),
+        ('SupportTechnique', 'SupportTechnique'),
+        ('GestionnaireComptes', 'GestionnaireComptes'),
+    ]
+
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='conversations')
+    sender_type = models.CharField(max_length=20, choices=TICKET_TYPE_CHOICES)
+    sender_id = models.PositiveIntegerField()
+    message = models.TextField(max_length=2000, blank=True)
+    image = models.ImageField(upload_to='conversation_images/', blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        sender = self.get_sender()
+        return f"Conversation {self.id} - {self.ticket.code_Ticket} - {sender}"
+
+    def get_sender(self):
+        if self.sender_type == 'Cliente':
+            return Cliente.objects.get(id=self.sender_id).user.username
+        elif self.sender_type == 'SupportTechnique':
+            return SupportTechnique.objects.get(id=self.sender_id).name
+        elif self.sender_type == 'GestionnaireComptes':
+            return GestionnaireComptes.objects.get(id=self.sender_id).name
+        return None
+
+    @property
+    def sender(self):
+        return self.get_sender()

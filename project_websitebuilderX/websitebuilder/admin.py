@@ -32,6 +32,8 @@ admin.site.register(GetFreeWebsites),
 admin.site.register(GetFreeWebsiteBuilder),
 admin.site.register(Facturations),
 admin.site.register(Ticket),
+admin.site.register(Conversation),
+
 
 
 
