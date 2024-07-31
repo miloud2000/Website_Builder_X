@@ -248,7 +248,7 @@ def details_ticket_ST(request, code_Ticket):
                 messages.error(request, 'Invalid status selected')
         
         return redirect('details_ticket_ST', code_Ticket=code_Ticket)
-
+    
     context = {
         'ticket': ticket,
         'conversations': conversations,

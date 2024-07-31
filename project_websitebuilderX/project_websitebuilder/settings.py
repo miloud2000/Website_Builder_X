@@ -98,16 +98,29 @@ WSGI_APPLICATION = 'project_websitebuilder.wsgi.application'
 # }
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'website_builder_db',
+#         'USER': 'root',
+#         'PASSWORD': 'Password24',
+#         'HOST': '54.37.65.172',
+#         'PORT': '3306',
+#     }
+# }
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'website_builder_db',
+        'NAME': 'websitebuilder',
         'USER': 'root',
-        'PASSWORD': 'Password24',
-        'HOST': '54.37.65.172',
+        'PASSWORD': '',
+        'HOST': 'localhost',
         'PORT': '3306',
     }
 }
+
 
 
 

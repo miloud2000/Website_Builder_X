@@ -108,16 +108,17 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
         <div class="card-body">
-            <h4 class="font-weight-bold">Add a Conversation</h4>
+            <h4 class="font-weight-bold">Ajouter plus de détails</h4>
             <form method="post" enctype="multipart/form-data"> 
                 {% csrf_token %}
                 <div class="form-group">
-                    <textarea name="message" class="form-control" rows="4" placeholder="Type your message here..." required></textarea>
+                    <textarea name="message" class="form-control" rows="4" placeholder="Tapez votre message ici..." required></textarea>
                 </div>
                 <div class="form-group">
+                    <label for="image">Image</label>
                     <input type="file" name="image" class="form-control-file">
                 </div>
-                <button type="submit" class="btn btn-primary">Send</button>
+                <button type="submit" class="btn btn-primary">Envoyer</button>
             </form>
         </div>
     </div>
@@ -133,7 +134,16 @@
                 <div class="chat-box" style="max-height: 400px; overflow-y: auto;">
                     {% for conversation in conversations %}
                         <div class="message">
-                            <strong>{{ conversation.sender }}</strong> 
+                            <strong>
+                                {% if conversation.sender_type == 'Cliente' %}
+                                    {{ conversation.sender }} : (Moi)
+                                {% elif conversation.sender_type == 'SupportTechnique' %}
+                                    {{ conversation.sender }} : (Support Technique)
+                                {% elif conversation.sender_type == 'GestionnaireComptes' %}
+                                    {{ conversation.sender }} : (Gestionnaire des Comptes)
+                                {% endif %}
+                            </strong>
+                            
                             <span class="text-muted">{{ conversation.timestamp|date:"d M Y H:i" }}</span>
                             <p>{{ conversation.message }}</p>
                             {% if conversation.image %}
