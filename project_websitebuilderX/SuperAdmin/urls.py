@@ -48,6 +48,8 @@ urlpatterns = [
     path('DemandeSupportDoneSA/',views.DemandeSupportDoneSA, name="DemandeSupportDoneSA"), 
     path('DemandeSupportNotDoneyetSA/',views.DemandeSupportNotDoneyetSA, name="DemandeSupportNotDoneyetSA"), 
 
+    
+    path('history/', views.history, name='history'),
 
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

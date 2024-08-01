@@ -19,15 +19,17 @@ class Command(BaseCommand):
 
     def delete_records(self):
         # Query to find records where statut == '1'
-        records_to_delete = Website_need_suspendre.objects.filter(statut='1')
-        records_to_delete_Re = Website_reprendre_suspendre.objects.filter(statut='1')
-        records_to_delete_reset = website_need_reset.objects.filter(statut='1')
+        records_to_delete_need_suspendre = Website_need_suspendre.objects.filter(statut='1')
+        records_to_delete_reprendre_suspendr = Website_reprendre_suspendre.objects.filter(statut='1')
+        
+        records_to_delete_need_reset = website_need_reset.objects.filter(statut='1')
 
 
         # Delete the records and get the count
-        count_website_need_suspendre, _ = records_to_delete.delete()
-        count_website_reprendre_suspendre, _ = records_to_delete_Re.delete()
-        count_website_need_reset, _ = records_to_delete_reset.delete()
+        count_website_need_suspendre, _ = records_to_delete_need_suspendre.delete()
+        count_website_reprendre_suspendre, _ = records_to_delete_reprendre_suspendr.delete()
+        count_website_need_reset, _ = records_to_delete_need_reset.delete()
+
 
         # Log how many records were deleted
         self.stdout.write(f"Deleted {count_website_need_suspendre} records from Website_need_suspendre with statut = '1'.")

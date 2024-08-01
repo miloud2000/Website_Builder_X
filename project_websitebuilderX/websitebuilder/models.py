@@ -1118,3 +1118,35 @@ class Conversation(models.Model):
     @property
     def sender(self):
         return self.get_sender()
+
+
+
+
+
+
+class History(models.Model):
+    MODEL_CHOICES = [
+        ('Websites_location_payment_delay', 'Websites Location Payment Delay'),
+        ('Websites_location_payment_reprendre', 'Websites Location Payment Reprendre'),
+        ('Websites_Need_Delete', 'Websites Need Delete'),
+        ('Website_need_resiliation', 'Website Need Resiliation'),
+        ('Website_reprendre_resiliation', 'Website Reprendre Resiliation'),
+        ('Website_need_suspendre', 'Website Need Suspendre'),
+        ('Website_reprendre_suspendre', 'Website Reprendre Suspendre'),
+        ('website_need_reset', 'Website Need Reset'),
+        ('Websites_hebergement_payment_delay', 'Websites Hebergement Payment Delay'),
+        ('Websites_hebergement_payment_reprendre', 'Websites Hebergement Payment Reprendre'),
+    ]
+    
+    model_name = models.CharField(max_length=50, choices=MODEL_CHOICES)
+    instance_id = models.PositiveIntegerField()
+    cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
+    website = models.ForeignKey('Websites', on_delete=models.CASCADE, null=True, blank=True)
+    location_website_builder = models.ForeignKey('LocationWebsiteBuilder', on_delete=models.CASCADE, null=True, blank=True)
+    getfree_website_builder = models.ForeignKey('GetFreeWebsiteBuilder', on_delete=models.CASCADE, null=True, blank=True)
+    website_builder = models.ForeignKey('WebsiteBuilder', on_delete=models.CASCADE, null=True, blank=True)
+    statut = models.CharField(max_length=50, null=True, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.model_name} - {self.instance_id} - {self.cliente.user.username}"

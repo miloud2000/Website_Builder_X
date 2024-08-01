@@ -35,6 +35,13 @@ admin.site.register(Ticket),
 admin.site.register(Conversation),
 
 
+@admin.register(History)
+class HistoryAdmin(admin.ModelAdmin):
+    list_display = ('model_name', 'instance_id', 'cliente', 'website', 'date_created', 'statut')
+    list_filter = ('model_name', 'date_created')
+    search_fields = ('model_name', 'cliente__user__username')
+
+
 
 
 

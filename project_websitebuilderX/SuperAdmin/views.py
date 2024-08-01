@@ -405,3 +405,10 @@ def DemandeSupportNotDoneyetSA(request):
 
 
 
+
+
+
+
+def history(request):
+    history_entries = History.objects.all().order_by('-date_created')
+    return render(request, 'SuperAdmin/history.html', {'history_entries': history_entries})

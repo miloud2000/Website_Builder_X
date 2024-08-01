@@ -18,6 +18,8 @@ urlpatterns = [
 
     path('update_ticket_st/<int:ticket_id>/', views.update_ticket_st, name='update_ticket_st'),
     path('update_ticket_gc/<int:ticket_id>/', views.update_ticket_gc, name='update_ticket_gc'),
+    
+    
 
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

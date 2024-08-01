@@ -152,7 +152,13 @@
                         <div class="chat-box" style="max-height: 400px; overflow-y: auto;">
                             {% for conversation in conversations %}
                                 <div class="message">
-                                    <strong>{{ conversation.sender }}</strong>
+                                    <strong>
+                                        {% if conversation.sender_type == 'GestionnaireComptes' %}
+                                            {{ conversation.sender }} : (Moi)
+                                        {% elif conversation.sender_type == 'Cliente' %}
+                                            {{ conversation.sender }} (Client)
+                                        {% endif %}
+                                    </strong> 
                                     <span class="text-muted">{{ conversation.timestamp|date:"d M Y H:i" }}</span>
                                     <p>{{ conversation.message }}</p>
                                     {% if conversation.image %}

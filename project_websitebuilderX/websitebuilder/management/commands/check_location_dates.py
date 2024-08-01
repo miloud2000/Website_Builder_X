@@ -31,10 +31,15 @@ class Command(BaseCommand):
     def load_update_count(self, count_type):
         count_file = f'{count_type}.pkl'
         if os.path.exists(count_file):
-            with open(count_file, 'rb') as f:
-                return pickle.load(f)
+            try:
+                with open(count_file, 'rb') as f:
+                    return pickle.load(f)
+            except (pickle.UnpicklingError, EOFError, IOError) as e:
+                self.stdout.write(self.style.ERROR(f'Error loading pickle file: {e}'))
+                return 0
         else:
             return 0
+
 
     # def save_sent_emails(self, data, file):
     #     with open(file, 'wb') as f:
