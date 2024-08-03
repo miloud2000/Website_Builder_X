@@ -6,7 +6,7 @@ from django.core.management.base import BaseCommand
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
 from django.utils import timezone
-from websitebuilder.models import LocationWebsiteBuilder, LocationWebsites,Websites_location_payment_delay,Websites_Need_Delete
+from websitebuilder.models import LocationWebsiteBuilder, LocationWebsites,Websites_location_payment_delay,Websites_Need_Delete,Websites_location_payment_reprendre
 
 class Command(BaseCommand): 
     help = 'Check location dates and update statuses'
@@ -150,7 +150,6 @@ class Command(BaseCommand):
     def update_merged_website_status_0(self, location):
         location_website_builder = LocationWebsiteBuilder.objects.filter(location_website=location).first()
         if location_website_builder:
-
             if location_website_builder.Statu_du_website not in ['1', '2', '3', '7']: #7 DELETE 
                 location_website_builder.Statu_du_website = '1'
                 location_website_builder.save()
@@ -167,14 +166,20 @@ class Command(BaseCommand):
                 # Delete Websites_location_payment_delay
                 websites_location_payment_delay_entry = Websites_location_payment_delay.objects.filter(location_website_builder=location_website_builder).first()
                 if websites_location_payment_delay_entry:
+                    # Add an entry to Websites_location_payment_reprendre
+                    Websites_location_payment_reprendre.objects.create(
+                        cliente=websites_location_payment_delay_entry.cliente,
+                        location_website_builder=location_website_builder,
+                        statut='0',  # Adjust the status as needed
+                        website=websites_location_payment_delay_entry.website
+                    )
                     websites_location_payment_delay_entry.delete()
-                    self.stdout.write(self.style.SUCCESS(f'Corresponding entry from Websites_location_payment_delay deleted successfully'))
+                    self.stdout.write(self.style.SUCCESS(f'Corresponding entry from Websites_location_payment_delay deleted and moved to Websites_location_payment_reprendre successfully'))
                 else:
                     self.stdout.write(self.style.NOTICE(f'No corresponding entry in Websites_location_payment_delay found for location: {location}'))
                     
             else:
                 self.stdout.write(self.style.NOTICE(f'Status of {location_website_builder} is already "1"'))
-                
         else:
             self.stdout.write(self.style.ERROR(f'No LocationWebsiteBuilder found for location: {location}'))
 
@@ -193,7 +198,7 @@ class Command(BaseCommand):
                 payment_delay_instance, created = Websites_location_payment_delay.objects.get_or_create(
                     cliente=cliente,
                     location_website_builder=location_website_builder,
-                    Statu_du_website='0',
+                    statut='0',
                     website=location_website_builder.website  
                 )
 
@@ -241,7 +246,7 @@ class Command(BaseCommand):
                 payment_delay_instance, created = Websites_location_payment_delay.objects.get_or_create(
                     cliente=cliente,
                     location_website_builder=location_website_builder,
-                    Statu_du_website='0',
+                    statut='0',
                     website=location_website_builder.website  
                 )
 
@@ -262,14 +267,14 @@ class Command(BaseCommand):
             if location_website_builder.Statu_du_website != '7':
                 location_website_builder.Statu_du_website = '7'
                 location_website_builder.save()
-                    
+
                 cliente = location_website_builder.cliente
 
                 # Create an instance of Websites_Need_Delete
                 need_delete_instance, created = Websites_Need_Delete.objects.get_or_create(
                     cliente=location_website_builder.cliente,
                     location_website_builder=location_website_builder,
-                    Statu_du_website='0',
+                    statut='0',
                 )
 
                 self.send_payment_reminder_email_30(location)

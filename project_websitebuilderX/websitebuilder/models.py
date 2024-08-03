@@ -824,14 +824,14 @@ class Facturations(models.Model):
 
 
 
- 
 
- 
+
+
 #64
 class Websites_location_payment_delay(models.Model):
     STATUS_CHOICES = [
-        ('0', '0'),  #
-        ('1', '1'),  #
+        ('0', '0'),  # Status 0
+        ('1', '1'),  # Status 1
     ]
     
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
@@ -841,7 +841,8 @@ class Websites_location_payment_delay(models.Model):
     date_created = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
-        return f"{self.website.name}-{self.cliente.user.username}"
+        username = self.cliente.user.username if self.cliente.user else 'No username'
+        return f"{self.website.name}-{username}"
 
 
 
