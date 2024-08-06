@@ -819,8 +819,7 @@ class Facturations(models.Model):
     def __str__(self):
         return f"{self.code_facturation} for {self.cliente.user.username}"
     
- 
- 
+
 
 
 
@@ -1002,7 +1001,7 @@ class Websites_hebergement_payment_delay(models.Model):
     date_created = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
-        return f"{self.website_builder.nameWebsite}-{self.cliente.user.username}"
+        return f"{self.website}-{self.cliente.user.username}"
     
     
     

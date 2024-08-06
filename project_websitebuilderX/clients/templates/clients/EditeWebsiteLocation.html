@@ -546,7 +546,7 @@
                         <br>
                         <div class="d-flex flex-wrap">
                             <!-- Resiliation -->
-                            {% if expiration_passed and not resiliation_exists and not delete_exists %}
+                            {% if expiration_passed and not resiliation_exists and not reprendre_exists and not delete_exists and website_builder_location.Statu_du_website == '1' %}
                             <div class="p-2">
                                 <button type="button" class="btn btn-sm badge badge-pill badge-secondary" style="width: 131px; height: 26px;" data-toggle="modal" data-target="#confirmResiliationModal">Resiliation</button>
                                 <form id="resiliationForm" method="POST" action="{% url 'add_website_resiliation' %}" style="display: none;">
@@ -559,7 +559,7 @@
                             {% endif %}
         
                             <!-- Reprendre Resiliation -->
-                            {% if expiration_passed and resiliation_exists and not reprendre_exists and not delete_exists %}
+                            {% if expiration_passed and not resiliation_exists and not resiliation_exists and not delete_exists and website_builder_location.Statu_du_website == '3' %}
                             <div class="p-2">
                                 <button type="button" class="btn btn-sm badge badge-pill badge-secondary" style="width: 131px; height: 26px;" data-toggle="modal" data-target="#confirmResiliationModal2">Reprendre</button>
                                 <form id="resiliationForm" method="POST" action="{% url 'add_website_reprendre' %}" style="display: none;">
@@ -572,7 +572,8 @@
                             {% endif %}
         
                             <!-- Suspendre -->
-                            {% if expiration_passed and not suspendre_exists and not reset_exists and not delete_exists %}
+                            {% if expiration_passed and not suspendre_exists and not reprendre_suspendre_exists and not delete_exists and website_builder_location.Statu_du_website == '1' %}
+
                             <div class="p-2">
                                 <button type="button" class="btn btn-sm badge badge-pill badge-warning" style="width: 131px; height: 26px;" data-toggle="modal" data-target="#confirmSuspendreModal">Suspendre</button>
                                 <form id="suspendreForm" method="POST" action="{% url 'add_website_suspendre' %}" style="display: none;">
@@ -585,7 +586,7 @@
                             {% endif %}
         
                             <!-- Reprendre Suspendre -->
-                            {% if expiration_passed and suspendre_exists and not reprendre_suspendre_exists and not reset_exists and not delete_exists %}
+                            {% if expiration_passed and not reprendre_suspendre_exists and not suspendre_exists and not delete_exists and website_builder_location.Statu_du_website == '2' %}
                             <div class="p-2">
                                 <button type="button" class="btn btn-sm badge badge-pill badge-warning" style="width: 158px; height: 26px;" data-toggle="modal" data-target="#confirmSuspendreModal2">Reprendre Suspendre</button>
                                 <form id="suspendreForm2" method="POST" action="{% url 'add_website_suspendre_reprendre' %}" style="display: none;">

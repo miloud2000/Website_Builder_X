@@ -1282,14 +1282,18 @@ def edite_website_Location(request, nameWebsite):
     # Compare if the expiration date has passed
     expiration_passed = expiration_delta.days < 0
 
+
     # Check if a resiliation exists
     resiliation_exists = Website_need_resiliation.objects.filter(location_website_builder=website_builder_location).exists()
     reprendre_exists = Website_reprendre_resiliation.objects.filter(location_website_builder=website_builder_location).exists()
 
+    resiliation_request = Website_need_resiliation.objects.filter(location_website_builder=website_builder_location).first()
+    resiliation_request_status = resiliation_request.statut if resiliation_request else None
+
+
     suspendre_exists = Website_need_suspendre.objects.filter(location_website_builder=website_builder_location).exists()
     reprendre_suspendre_exists = Website_reprendre_suspendre.objects.filter(location_website_builder=website_builder_location).exists()
-    
-    
+        
     suspendre_request = Website_need_suspendre.objects.filter(location_website_builder=website_builder_location).first()
     suspendre_request_status = suspendre_request.statut if suspendre_request else None
     
@@ -1313,7 +1317,9 @@ def edite_website_Location(request, nameWebsite):
         'delete_status':delete_status,
         'WebsiteBuilders':WebsiteBuilders, 
         'suspendre_request':suspendre_request,  
-        'suspendre_request_status':suspendre_request_status,  
+        'suspendre_request_status':suspendre_request_status, 
+        'resiliation_request':resiliation_request,  
+        'resiliation_request_status':resiliation_request_status,  
     }
     return render(request, "clients/EditeWebsiteLocation.html", context)
 

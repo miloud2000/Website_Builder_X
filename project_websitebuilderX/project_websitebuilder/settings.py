@@ -28,7 +28,9 @@ SECRET_KEY = 'django-insecure-gn^(2cjg@i3wbfr2=k&shi+8ymqqj&ag58b+62q%viw7ze&t4!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = ['54.37.65.172']
 
 
 # Application definition
@@ -98,28 +100,30 @@ WSGI_APPLICATION = 'project_websitebuilder.wsgi.application'
 # }
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'website_builder_db',
-#         'USER': 'root',
-#         'PASSWORD': 'Password24',
-#         'HOST': '54.37.65.172',
-#         'PORT': '3306',
-#     }
-# }
+
 
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'websitebuilder',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
-}
+         'ENGINE': 'django.db.backends.mysql',
+         'NAME': 'db_website_builder',
+         'USER': 'root',
+         'PASSWORD': 'Password24',
+         'HOST': '54.37.65.172',
+         'PORT': '3306',
+     }
+ }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'websitebuilder',
+#         'USER': 'root',
+#         'PASSWORD': '',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#     }
+# }
 
 
 

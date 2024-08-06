@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
 from django.utils import timezone
-from websitebuilder.models import WebsiteBuilder, GetFreeWebsiteBuilder,Websites_hebergement_payment_delay
+from websitebuilder.models import WebsiteBuilder, GetFreeWebsiteBuilder,Websites_hebergement_payment_delay,Websites_hebergement_payment_reprendre
 
 class Command(BaseCommand): 
     help = 'Check hebergement dates and update statuses'
@@ -100,6 +100,12 @@ class Command(BaseCommand):
             
             # Delete related Websites_hebergement_payment_delay entries
             Websites_hebergement_payment_delay.objects.filter(website_builder=websiteBuilder).delete()
+            Websites_hebergement_payment_reprendre.objects.get_or_create(
+                cliente=websiteBuilder.cliente,
+                website_builder=websiteBuilder,
+                statut='0',
+                website=websiteBuilder.website
+            )
 
         else:
             self.stdout.write(self.style.NOTICE(f'Status of {websiteBuilder} is already "1"'))
@@ -114,7 +120,7 @@ class Command(BaseCommand):
             Websites_hebergement_payment_delay.objects.get_or_create(
                 cliente=websiteBuilder.cliente,
                 website_builder=websiteBuilder,
-                Statu_du_website='0',
+                statut='0',
                 website=websiteBuilder.website
             )
 
@@ -150,7 +156,7 @@ class Command(BaseCommand):
             Websites_hebergement_payment_delay.objects.get_or_create(
                 cliente=getfree_website_builder.cliente,
                 getfree_website_builder=getfree_website_builder,
-                Statu_du_website='0',
+                statut='0',
                 website=getfree_website_builder.website
             )
 
