@@ -33,6 +33,10 @@ urlpatterns = [
     path('addCliente/',views.addCliente, name="addCliente"), 
     
     
+    path('CommercialSuperAdmin/', views.CommercialSuperAdmin, name='CommercialSuperAdmin'),
+    path('add-commercial/', views.addCommercial, name='addCommercial'),
+
+    
     path('traceDemandeRecharger/',views.traceDemandeRecharger, name="traceDemandeRecharger"), 
     path('full_size_image_Super_Admin/<int:traceDemandeRecharger_id>/',views.full_size_image_Super_Admin, name="full_size_image_Super_Admin"), 
 

@@ -23,6 +23,7 @@ from websitebuilder.forms import (
     AdditionalInfoForm,
     ClienteUpdateForm,
     ClientePasswordChangeForm,
+    CommercialForm,
 )
 
 from websitebuilder.decorators import (  
@@ -240,6 +241,16 @@ def ClienteSuperAdmin(request):
 
 
 
+#Superadmin can show all Commercials
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
+def CommercialSuperAdmin(request): 
+    commercials = Commercial.objects.all()
+    context = {'commercials': commercials} 
+    return render(request, "SuperAdmin/CommercialSuperAdmin.html", context)
+
+
+
 
 #The SuperAdmin can add a clientes
 @login_required(login_url='login')
@@ -278,6 +289,42 @@ def addCliente(request):
     context = {'form': form}
     return render(request, 'SuperAdmin/addCliente.html', context)
 
+
+
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
+def addCommercial(request):
+    if request.method == 'POST':
+        form = CommercialForm(request.POST)
+        if form.is_valid():
+            user = User.objects.create_user(
+                username=form.cleaned_data.get('username'),
+                email=form.cleaned_data.get('email'),
+                password=form.cleaned_data.get('password1')
+            )
+
+            Commercial.objects.create(
+                user=user,
+                name=form.cleaned_data.get('name'),
+                email=form.cleaned_data.get('email'),
+                phone=form.cleaned_data.get('phone'),
+                status=form.cleaned_data.get('status'),
+            )
+
+            group = Group.objects.get(name="Commercial")
+            user.groups.add(group)
+
+            messages.success(request, f"Le commercial {user.username} a été créé avec succès !")
+            return redirect('CommercialSuperAdmin')
+        else:
+            messages.error(request, "Formulaire invalide. Veuillez corriger les erreurs ci-dessous.")
+    else:
+        form = CommercialForm()
+        
+    context = {'form': form}
+    return render(request, 'SuperAdmin/addCommercial.html', context)
 
 
 

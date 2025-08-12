@@ -35,12 +35,15 @@ def home(request):
         is_Cliente = request.user.groups.filter(name='Cliente').exists()
         is_SupportTechnique = request.user.groups.filter(name='SupportTechnique').exists()
         is_Administrateur = request.user.groups.filter(name='Administrateur').exists()
+        is_Commercial = request.user.groups.filter(name='Commercial').exists()
+
     else: 
         is_Cliente= False  
         is_SupportTechnique= False 
         is_Administrateur= False  
+        is_Commercial= False 
            
-    context = {"is_Cliente": is_Cliente,"is_SupportTechnique":is_SupportTechnique,"is_Administrateur":is_Administrateur}
+    context = {"is_Cliente": is_Cliente,"is_SupportTechnique":is_SupportTechnique,"is_Administrateur":is_Administrateur,"is_Commercial":is_Commercial}
     return render(request, "websitebuilder/home.html",context)
 
 
@@ -147,6 +150,8 @@ def user_login(request):
                 return redirect('/homeGestionnairesComptes')
             if request.user.groups.filter(name='Administrateur').exists():
                 return redirect('/homeAdministrateur')
+            if request.user.groups.filter(name='Commercial').exists():
+                return redirect('/homeCommercial')
             elif request.user.groups.filter(name='SuperAdmin').exists():
                 return redirect('homeSuperAdmin')
         else:
@@ -1914,8 +1919,17 @@ def homeAdministrateur(request):
 #     return render(request, "websitebuilder/Administrateur/dashbordHomeAdministrateur.html")
 
 
-
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['Commercial']) 
+def homeCommercial(request): 
+    if request.user.is_authenticated:
+        is_Commercial = request.user.groups.filter(name='Commercial').exists()
+    else: 
+        is_Commercial= False  
+           
+    context = {"is_Commercial":is_Commercial}
+ 
+    return render(request, "websitebuilder/Commercial/homeCommercial.html",context)
 
 
 # #SuperAdmin

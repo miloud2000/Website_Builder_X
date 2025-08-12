@@ -57,7 +57,7 @@ class Cliente(models.Model):
     slugCliente = models.SlugField(blank=True, null=True)
     code_client = models.CharField(max_length=100, null=True)
     updated_by = models.ForeignKey(GestionnaireComptes, on_delete=models.SET_NULL, null=True, blank=True)
-
+    added_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='added_clients')
     address = models.CharField(max_length=255, null=True, blank=True)
     nom_entreprise = models.CharField(max_length=255, null=True, blank=True)
     numero_ice = models.CharField(max_length=100, null=True, blank=True)
@@ -194,6 +194,33 @@ class SupportTechnique(models.Model):
     
     
     
+    
+    
+
+class Commercial(models.Model):
+    STATUS_CHOICES = [
+        ('Active', 'Active'),
+        ('Inactive', 'Inactive'),
+    ]
+
+    user = models.OneToOneField(User, null=True, blank=False, on_delete=models.SET_NULL)
+    name = models.CharField(max_length=100, null=True)  # اسم الشركة أو المسؤول التجاري
+    email = models.EmailField(max_length=100, null=True)
+    phone = models.CharField(max_length=100, null=True)
+    date_created = models.DateTimeField(auto_now_add=True, null=True)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Active', null=True)
+    slugCommercial = models.SlugField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slugCommercial and self.name:
+            self.slugCommercial = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+
     
     
     

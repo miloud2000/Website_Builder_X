@@ -104,6 +104,9 @@
                   {% if is_Administrateur %}
                   <li><a href="{% url 'dashbordHomeAdministrateur' %}">Place Administrateur</a></li>
                   {% endif %}
+                  {% if is_Commercial %}
+                  <li><a href="{% url 'dashbordHomeCommercial' %}">Place Commercial</a></li>
+                  {% endif %}
 
                   {% comment %} <li><a href="#">Liste des Websites </a>
                   <li><a href="">Listes des services</a></li> {% endcomment %}  

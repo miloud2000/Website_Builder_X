@@ -149,7 +149,8 @@ urlpatterns = [
     # path('dashbordHomeAdministrateur/',views.dashbordHomeAdministrateur, name="dashbordHomeAdministrateur"), 
     path('homeAdministrateur/',views.homeAdministrateur, name="homeAdministrateur"), 
 
-    
+    path('homeCommercial/',views.homeCommercial, name="homeCommercial"), 
+
     
     
     # #SupportTechnique

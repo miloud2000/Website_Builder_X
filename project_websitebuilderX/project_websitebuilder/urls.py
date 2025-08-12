@@ -26,4 +26,5 @@ urlpatterns = [
     path('SupportTechnique/', include('SupportTechnique.urls')),
     path('GestionnaireComptes/', include('GestionnaireComptes.urls')),
     path('Administrateur/', include('Administrateur.urls')),
+    path('commercial/', include('Commercial.urls')),
 ]

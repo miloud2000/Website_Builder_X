@@ -5,15 +5,19 @@ from .models import *
 
 
 
-class ClienteForm(UserCreationForm):
-    prenom = forms.CharField(max_length=100)
-    nom = forms.CharField(max_length=100)
-    email = forms.EmailField(max_length=100)
-    phone = forms.CharField(max_length=100)
-    
-    class Meta(UserCreationForm.Meta):
-        model = User
-        fields = ['username', 'email', 'password1', 'password2', 'prenom','nom','phone']
+from django import forms
+from django.contrib.auth.models import User
+from .models import Cliente
+
+class ClienteForm(forms.ModelForm):
+    username = forms.CharField()
+    email = forms.EmailField()
+    password1 = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = Cliente
+        fields = ['prenom', 'nom', 'email', 'phone']
+
         
         
         
@@ -27,7 +31,21 @@ class AdministrateurForm(UserCreationForm):
         model = User
         fields = ['username', 'password1', 'password2', 'name','email', 'phone']
       
-      
+
+
+from .models import Commercial
+
+class CommercialForm(UserCreationForm):
+    name = forms.CharField(max_length=100, required=True, label="Nom commercial")
+    phone = forms.CharField(max_length=100, required=True, label="Téléphone")
+    status = forms.ChoiceField(choices=Commercial.STATUS_CHOICES, label="Statut")
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2', 'name', 'phone', 'status']
+
+
+
       
 
 class SupportTechniqueForm(UserCreationForm):
