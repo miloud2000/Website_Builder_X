@@ -1,0 +1,487 @@
+{% load static  %}
+<!doctype html>
+<html class="no-js" lang="zxx">
+  <head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="keywords" content="Site keywords here">
+		<meta name="description" content="">
+		<meta name='copyright' content=''>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>All Websites</title>
+
+    <link rel="stylesheet" href="{% static 'all_list_websites.css' %} ">
+    <script defer src="{% static 'assets/plugins/fontawesome/js/all.min.js' %} "></script>
+    
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+        <!-- Favicon -->
+    <link rel="icon" href="{% static 'img/websitebuilder-removebg-preview.png' %} ">
+  </head>
+  <body>
+    {%  include  'websitebuilder/navbar.html' %}
+    <section class="section">
+      <div class="container">
+          <div class="row products-row">
+              <div class="col-md-3">
+                  <div>
+                      <h2 class="category-title">Website Categories</h2>
+                      <div class="category-group">
+                          <div class="open-category-list">
+                              <span>All Categories</span>
+                              {% comment %} <i class="fa-solid fa-chevron-down"></i> {% endcomment %}
+                          </div>
+                          <ul class="category-list">
+                              <li class="category-item {% if selected_category == 'All' or selected_category == '*' %}active{% endif %}">
+                                  <a href="?category=All">All</a>
+                              </li>
+                              <li class="category-item {% if selected_category == 'Ecommerce' %}active{% endif %}">
+                                  <a href="?category=Ecommerce">Ecommerce</a>
+                              </li>
+                              <li class="category-item {% if selected_category == 'Blogs' %}active{% endif %}">
+                                  <a href="?category=Blogs">Blogs</a>
+                              </li>
+                              <li class="category-item {% if selected_category == 'Business' %}active{% endif %}">
+                                  <a href="?category=Business">Business</a>
+                              </li>
+                              <li class="category-item {% if selected_category == 'portfolio' %}active{% endif %}">
+                                  <a href="?category=portfolio">Portfolio</a>
+                              </li>
+                              <li class="category-item {% if selected_category == 'Educational' %}active{% endif %}">
+                                  <a href="?category=Educational">Educational</a>
+                              </li>
+                              <li class="category-item {% if selected_category == 'News' %}active{% endif %}">
+                                  <a href="?category=News">News</a>
+                              </li>
+                          </ul>
+                      </div>
+
+                      <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            var categoryListToggle = document.querySelector('.open-category-list');
+                            var categoryList = document.querySelector('.category-list');
+                        
+                            categoryListToggle.addEventListener('click', function() {
+                                categoryListToggle.classList.toggle('active');
+                                categoryList.classList.toggle('show');
+                            });
+                        });
+                        
+                      </script>
+                      <div>
+                        <!-- Filter form -->
+                        <form id="filter-form" method="get" action="{% url 'all_list_websites_c' %}">
+                         <!-- CMS filter -->
+                         <br>
+                         <h2 class="category-title">CMS</h2>
+                         <select name="cms" id="cms-filter" class="form-control">
+                             <option value="">All</option>
+                             <option value="WordPress" {% if cms_filter == 'WordPress' %}selected{% endif %}>WordPress</option>
+                             <option value="Drupal" {% if cms_filter == 'Drupal' %}selected{% endif %}>Drupal</option>
+                         </select>
+                         <br>
+                         <!-- Langues filter -->
+                         <h2 class="category-title">Langues</h2>
+                         <select name="langues" id="langues-filter" class="form-control">
+                             <option value="">All</option>
+                             <option value="Français" {% if langues_filter == 'Français' %}selected{% endif %}>Français</option>
+                             <option value="Anglais" {% if langues_filter == 'Anglais' %}selected{% endif %}>Anglais</option>
+                         </select>
+                         <br>
+                         <!-- Plan filter -->
+                         <h2 class="category-title">Plan</h2>
+                         <select name="plan" id="plan-filter" class="form-control">
+                             <option value="">All</option>
+                             <option value="Free" {% if plan_filter == 'Free' %}selected{% endif %}>Free</option>
+                             <option value="Payant" {% if plan_filter == 'Payant' %}selected{% endif %}>Payant</option>
+                         </select>
+        
+                         <!-- Apply button -->
+                         <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Apply</button>
+                     </form>
+                 </div>
+                  </div>
+              </div>
+              <div class="col-md-9">
+                  <h2 class="d-none">Products</h2>
+                  <div class="products">
+                      {% for website in websites %}
+                      <div class="product-item" category="{{ website.catégorie }}">
+                          <div class="text-right">
+                              <!-- Optional search icon -->
+                          </div>
+                          <a href="{% url 'detail_website_c' website.slugWebsites %}">
+                              <img src="{% static "img/css-image-gallery.jpg" %}" alt="">
+                          </a>
+                          <div class="product-body">
+                              <div class="product-category" style="color: black;">
+                                  <a href="{% url 'detail_website_c' website.slugWebsites %}">{{ website.name }}</a>
+                              </div>
+                              {% if website.prix > 0 %}
+                              <h6 style="padding: 5px;">Achat :{{ website.prix }} MAD</h6>
+                              <h6 style="padding: 5px;">Loyer :{{ website.prix_loyer }} MAD</h6>
+                              {% else %}
+                              <h6 style="padding: 5px;">Free :{{ website.prix_loyer }} MAD</h6>
+                              {% endif %}
+                            
+                              {% comment %} {% if website.prix > 0  %}
+                                 <a href="#" onclick="showConfirmationModal('{{ website.id }}', '{{ website.name }}', '{{ website.prix }}')">
+                                <button type="button" style="padding: 5px;" class="btn btn-inverse-info btn-icon">Achat</button>
+                                </a>
+                                <a href="#" onclick="showLoyerModal('{{ website.id }}', '{{ website.name }}', '{{ website.prix_loyer }}')">
+                                    <button type="button" style="padding: 5px;" class="btn btn-inverse-info btn-icon">Loyer</button>
+                                </a>
+                              {% else %}
+                                <a href="#" >
+                                <button type="button" onclick="showFreeModal('{{ website.id }}', '{{ website.name }}', '{{ website.prix }}')" style="padding: 5px;" class="btn btn-inverse-info btn-icon">Get Free</button>
+                                </a>
+                              {% endif %} {% endcomment %}
+                             
+                          </div>
+                      </div>
+                      {% endfor %}
+                  </div>
+                  {% if not websites %}
+                      There is no website in this category!
+                  {% endif %}
+              </div>
+          </div>
+      </div>
+  </section>
+  
+  <!-- Modals and JavaScript for confirmation -->
+  <script>
+      function showConfirmationModal(websiteId, websiteName, websitePrice) {
+          var modal = document.getElementById('confirmationModal');
+          var modalContent = modal.querySelector('.modal-content');
+          modalContent.innerHTML = `
+              <div class="close" onclick="hideConfirmationModal()">&times;</div>
+              <h1>Confirmer l'achat</h1>
+              <p>Please confirm your purchase of "${websiteName}" for ${websitePrice} MAD.</p>
+              <form action="{% url 'confirm_Achat_website' %}" method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="website_id" value="${websiteId}">
+                  <button class="btn btn-primary" type="submit">Confirm</button>
+              </form>
+          `;
+          modal.style.display = 'block';
+      }
+  
+      function hideConfirmationModal() {
+          var modal = document.getElementById('confirmationModal');
+          modal.style.display = 'none';
+      }
+  
+      {% comment %} must delete this from here becuase a add it in bottom line 207 {% endcomment %}
+      {% comment %} function showLoyerModal(websiteId, websiteName, websitePrice) {
+          var modal = document.getElementById('loyerModal');
+          var modalContent = modal.querySelector('.modal-content');
+          modalContent.innerHTML = `
+              <div class="close" onclick="hideLoyerModal()">&times;</div>
+              <h1>Confirmer location</h1>
+              <p>Please confirm your lease of "${websiteName}" for ${websitePrice} MAD.</p>
+              <p><span class="badge badge-warning"> Alert: </span> The lease start date is today, not the builder's date.</p>
+              <br>
+              <form action="{% url 'confirm_loyer_website' %}" method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="website_id" value="${websiteId}">
+                  <button class="btn btn-primary" type="submit">Confirm</button>
+              </form>
+          `;
+          modal.style.display = 'block';
+      }
+  
+      function hideLoyerModal() {
+          var modal = document.getElementById('loyerModal');
+          modal.style.display = 'none';
+      } {% endcomment %}
+  </script>
+
+
+  <script>
+    function showFreeModal(websiteId, websiteName, websitePrice) {
+        var modal = document.getElementById('FreeModal');
+        var modalContent = modal.querySelector('.modal-content');
+        modalContent.innerHTML = `
+            <div class="close" onclick="hideConfirmationModal1()">&times;</div>
+            <h1>Confirmer l'achat For Free</h1>
+            <p>Please confirm your Get of "${websiteName}" for ${websitePrice} MAD.</p>
+            <form action="{% url 'GetFree_website' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="website_id" value="${websiteId}">
+                <button class="btn btn-primary" type="submit">Confirm</button>
+            </form>
+        `;
+        modal.style.display = 'block';
+    }
+
+    function hideConfirmationModal1() {
+        var modal = document.getElementById('FreeModal');
+        modal.style.display = 'none';
+    }
+
+    
+</script>
+
+  
+  <div id="confirmationModal" class="modal">
+      <div class="modal-content">
+          <!-- Confirmation content will be injected here -->
+      </div>
+  </div>
+  
+  <div id="loyerModal" class="modal">
+      <div class="modal-content2">
+          <!-- Loyer content will be injected here -->
+      </div>
+  </div>
+
+  <div id="FreeModal" class="modal">
+    <div class="modal-content">
+        <!-- Loyer content will be injected here -->
+    </div>
+</div>
+
+
+  <script>
+    function showLoyerModal(websiteId, websiteName, websitePrice) {
+        var modal = document.getElementById('loyerModal');
+        var modalContent = modal.querySelector('.modal-content2');
+        modalContent.innerHTML = `
+            <div class="close" onclick="hideLoyerModal()">&times;</div>
+            <h1 class="modal-title">Confirmer location</h1>
+            <p>Please confirmer your location of "${websiteName}" for ${websitePrice} MAD per month.</p>
+            <p><span class="badge badge-warning"> Alert: </span> The Location start date is the date now, not the date builder.</p><br>
+            <form action="{% url 'confirm_loyer_website' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="website_id" value="${websiteId}">
+                <input type="hidden" name="rental_period" id="rental_period_input" value="1">
+                <input type="hidden" name="total_price" id="total_price_input" value="${websitePrice}">
+                <p>Choose rental period:</p>
+                {% comment %} <div class="btn-group" role="group"> {% endcomment %}
+                    <button type="button" class="btn btn-primary" onclick="updatePrice(${websitePrice}, 1)">1 month</button>
+                    <button type="button" class="btn btn-primary" onclick="updatePrice(${websitePrice}, 2)">2 months</button>
+                    <button type="button" class="btn btn-primary" onclick="updatePrice(${websitePrice}, 3)">3 months</button><br><br>
+                    <button type="button" class="btn btn-primary" onclick="updatePrice(${websitePrice}, 4)">4 months</button>
+                    <button type="button" class="btn btn-primary" onclick="updatePrice(${websitePrice}, 5)">5 months</button>
+                    <button type="button" class="btn btn-primary" onclick="updatePrice(${websitePrice}, 6)">6 months</button><br><br>
+                {% comment %} </div> {% endcomment %}
+                <p id="total_price_display">Total Price: ${websitePrice} MAD</p>
+                <button class="btn btn-primary" type="submit">Confirm</button>
+            </form>
+        `;
+        modal.style.display = 'block';
+    }
+
+
+    function hideLoyerModal() {
+        var modal = document.getElementById('loyerModal');
+        modal.style.display = 'none';
+    }
+
+
+    function updatePrice(basePrice, months) {
+        var totalPrice = basePrice * months;
+        var monthText = months === 1 ? "month" : "months";
+        document.getElementById('rental_period_input').value = months;
+        document.getElementById('total_price_input').value = totalPrice;
+        document.getElementById('total_price_display').innerText = `Total Price: ${totalPrice} MAD for ${months} ${monthText}`;
+    }
+    
+</script>
+
+
+  
+  
+  <style>
+      .modal {
+          display: none; /* Hidden by default */
+          position: fixed; /* Stay in place */
+          left: 0;
+          top: 0;
+          width: 100%; /* Full width */
+          height: 100%; /* Full height */
+          overflow: auto; /* Enable scroll if needed */
+          background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+      }
+  
+      .modal-content {
+          background-color: #fefefe;
+          margin: 15% auto; /* 15% from the top and centered */
+          padding: 20px;
+          border: 1px solid #888;
+          width: 47%; /* Could be more or less, depending on screen size */
+      }
+      
+      .modal-content2 {
+        background-color: #fefefe;
+        margin: 7% auto; /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 54%; /* Could be more or less, depending on screen size */
+        height: 70%;
+        }
+
+      .close {
+          color: #aaa;
+          float: right;
+          font-size: 28px;
+          font-weight: bold;
+      }
+  
+      .close:hover,
+      .close:focus {
+          color: black;
+          text-decoration: none;
+          cursor: pointer;
+      }
+  </style>
+  
+  <style>
+    /* Basic styles for category list */
+    .category-group {
+    position: relative;
+    }
+
+    .open-category-list {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    }
+
+    .category-list {
+    display: none; /* Hidden by default */
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    }
+
+    .category-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    }
+
+    .category-item a {
+    text-decoration: none;
+    color: #000;
+    display: block;
+    }
+
+    .category-item.active a {
+    font-weight: bold;
+    }
+
+    .category-item:last-child {
+    border-bottom: none;
+    }
+
+    /* Media query for mobile devices */
+    @media (max-width: 767px) {
+    .category-group {
+    width: 100%;
+    }
+    .open-category-list {
+    width: 100%;
+    }
+    .category-list {
+    width: 100%;
+    }
+    .category-item {
+    width: 100%;
+    }
+    }
+
+    /* Toggle display for category list on mobile */
+    .open-category-list.active + .category-list {
+    display: block;
+    }
+
+  </style>
+
+  {% comment %} <script>
+       // PRODUCT FILTER
+            $("body").on("click", ".category-item:not(.active)", function () {
+                var category = $(this).attr("category");
+                var visibleItem = 0;
+                $(this).addClass("active").siblings().removeClass("active");
+                $(".open-category-list span").text($(this).text());
+            
+                if (category != "*") {
+                $(".product-item").hide();
+                $(".product-item[category='" + category + "']").show();
+                visibleItem = $(".product-item[category='" + category + "']").length;
+                } else {
+                $(".product-item").show();
+                visibleItem = $(".product-item").length;
+                }
+            
+                visibleItem == 0 ? $(".no-item").show() : $(".no-item").hide();
+            
+                if (isOpened == 1) {
+                $(".category-group.active .category-list").slideUp(300);
+                $(".category-group.active").removeClass("active");
+                }
+            });
+            
+            var isOpened = 0;
+            $(".open-category-list").click(function () {
+                $(this).parent().toggleClass("active");
+                $(this).siblings(".category-list").slideToggle(300);
+                isOpened = 1;
+            });
+  
+          </script> {% endcomment %}
+   <!-- detail_website -->
+    {% comment %} <script src="{% static 'detail_website.js' %} "></script> {% endcomment %}
+      <!-- jquery Min JS -->
+  <script src="{% static 'js/jquery.min.js' %} "></script>
+    <!-- jquery Migrate JS -->
+  <script src="{% static 'js/jquery-migrate-3.0.0.js' %} "></script>
+    <!-- jquery Ui JS -->
+  <script src="{% static 'js/jquery-ui.min.js' %} "></script>
+    <!-- Easing JS -->
+  <script src="{% static 'js/easing.js' %} "></script>
+    <!-- Color JS -->
+  <script src="{% static 'js/colors.js' %} "></script>
+    <!-- Popper JS -->
+  <script src="{% static 'js/popper.min.js' %} "></script>
+    <!-- Bootstrap Datepicker JS -->
+  <script src="{% static 'js/bootstrap-datepicker.js' %} "></script>
+    <!-- Jquery Nav JS -->
+  <script src="{% static 'js/jquery.nav.js' %} "></script>
+    <!-- Slicknav JS -->
+    <!-- This js admin for NavBar Mobile -->
+  <script src="{% static 'js/slicknav.min.js' %} "></script>
+    <!-- ScrollUp JS -->
+  <script src="{% static 'js/jquery.scrollUp.min.js' %} "></script>
+    <!-- Niceselect JS -->
+  <script src="{% static 'js/niceselect.js' %} "></script>
+    <!-- Tilt Jquery JS -->
+  <script src="{% static 'js/tilt.jquery.min.js' %} "></script>
+    <!-- Owl Carousel JS -->
+  <script src="{% static 'js/owl-carousel.js' %} "></script>
+    <!-- counterup JS -->
+  <script src="{% static 'js/jquery.counterup.min.js' %} "></script>
+    <!-- Steller JS -->
+  <script src="{% static 'js/steller.js' %} "></script>
+    <!-- Wow JS -->
+  <script src="{% static 'js/wow.min.js' %} "></script>
+    <!-- Magnific Popup JS -->
+  <script src="{% static 'js/jquery.magnific-popup.min.js' %} "></script>
+    <!-- Counter Up CDN JS -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.3/waypoints.min.js"></script>
+    <!-- Bootstrap JS -->
+  <script src="{% static 'js/bootstrap.min.js' %} "></script>
+    <!-- Main JS -->
+  <script src="{% static 'js/main.js' %} "></script> 
+
+  </body>
+</html>

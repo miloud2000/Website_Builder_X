@@ -100,3 +100,103 @@ def addCliente_c(request):
         form = ClienteForm()
 
     return render(request, 'Commercial/addCliente.html', {'form': form})
+
+
+
+
+
+#List of websites that are displayed to the Commercial
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['Commercial']) 
+def list_websites_c(request): 
+    websites = Websites.objects.all()
+    context = {
+        'websites': websites,
+        }  
+    return render(request, "Commercial/list_websites.html",context)
+
+
+
+
+
+
+#More detail of website
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['Commercial']) 
+def detail_website_c(request, slugWebsites):
+    if request.user.is_authenticated:
+        is_Cliente = request.user.groups.filter(name='Cliente').exists()
+        is_SupportTechnique = request.user.groups.filter(name='SupportTechnique').exists()
+        is_Administrateur = request.user.groups.filter(name='Administrateur').exists()
+        is_Commercial = request.user.groups.filter(name='Commercial').exists()
+    else: 
+        is_Cliente= False  
+        is_SupportTechnique= False 
+        is_Administrateur= False  
+        is_Commercial= False
+        
+    website_info = get_object_or_404(Websites, slugWebsites=slugWebsites)
+    
+    context = {
+        'website_info': website_info,
+        "is_Cliente": is_Cliente,
+        "is_SupportTechnique":is_SupportTechnique,
+        "is_Administrateur":is_Administrateur,
+        "is_Commercial" :is_Commercial
+    }
+    return render(request, "Commercial/detail_website.html", context)
+
+
+
+
+
+#List of All websites that are displayed to the Commercial
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['Commercial'])
+def all_list_websites_c(request):
+    if request.user.is_authenticated:
+        is_Cliente = request.user.groups.filter(name='Cliente').exists()
+        is_SupportTechnique = request.user.groups.filter(name='SupportTechnique').exists()
+        is_Administrateur = request.user.groups.filter(name='Administrateur').exists()
+        is_Commercial = request.user.groups.filter(name='Commercial').exists()
+
+    else:
+        is_Cliente = False  
+        is_SupportTechnique = False 
+        is_Administrateur = False  
+        is_Commercial= False
+
+
+    category = request.GET.get('category', 'All')
+    cms_filter = request.GET.get('cms', '')
+    langues_filter = request.GET.get('langues', '')
+    plan_filter = request.GET.get('plan', '')
+
+    websites = Websites.objects.all()
+
+    if category != 'All' and category != '*':
+        websites = websites.filter(catégorie=category)
+    
+    if cms_filter:
+        websites = websites.filter(CMS=cms_filter)
+    
+    if langues_filter:
+        websites = websites.filter(langues=langues_filter)
+    
+    if plan_filter:
+        websites = websites.filter(plan=plan_filter)
+    
+    context = {
+        'websites': websites,
+        "is_Cliente": is_Cliente,
+        "is_SupportTechnique": is_SupportTechnique,
+        "is_Administrateur": is_Administrateur,
+        "is_Commercial" :is_Commercial,
+        "selected_category": category,
+        "cms_filter": cms_filter,
+        "langues_filter": langues_filter,
+        "plan_filter": plan_filter,
+    }
+
+    return render(request, 'Commercial/all_list_websites.html', context)
+
