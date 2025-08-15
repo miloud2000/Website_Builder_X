@@ -1,0 +1,57 @@
+{% extends "SuperAdmin/dashbordSuperAdmin.html" %}
+{% load static %}
+{% block content %}
+
+<div class="main-panel">
+  <div class="content-wrapper">
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="page-header mb-4">
+      <h3 class="page-title text-danger"><i class="mdi mdi-delete"></i> Supprimer le Client</h3>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-md-6 grid-margin stretch-card">
+        <div class="card border-danger">
+          <div class="card-body">
+            <h4 class="card-title text-center text-danger">⚠️ Confirmation de suppression</h4>
+            <p class="text-center">Êtes-vous sûr de vouloir supprimer ce client ?</p>
+
+            <ul class="list-group mb-3">
+              <li class="list-group-item"><strong>Nom:</strong> {{ cliente.nom }} {{ cliente.prenom }}</li>
+              <li class="list-group-item"><strong>Email:</strong> {{ cliente.email }}</li>
+              <li class="list-group-item"><strong>Téléphone:</strong> {{ cliente.phone }}</li>
+              <li class="list-group-item"><strong>Code Client:</strong> {{ cliente.code_client }}</li>
+            </ul>
+
+            <form method="POST">
+              {% csrf_token %}
+              <div class="text-center">
+                <button type="submit" class="btn btn-danger mr-2">
+                  <i class="mdi mdi-delete"></i> Supprimer
+                </button>
+                <a href="{% url 'ClienteSuperAdmin' %}" class="btn btn-secondary">
+                  <i class="mdi mdi-arrow-left"></i> Annuler
+                </a>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

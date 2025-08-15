@@ -155,11 +155,16 @@
                     <td>{{ commercial.name }}</td>
                     <td>{{ commercial.email }}</td>
                     <td>{{ commercial.phone }}</td>
+                    {% comment %} <td><span class="badge badge-success">{{ commercial.status }}</span></td> {% endcomment %}
+                    {% if commercial.status == 'Active' %}  
                     <td><span class="badge badge-success">{{ commercial.status }}</span></td>
+                    {% else %}
+                    <td><span class="badge badge-danger">{{ commercial.status }}</span></td>
+                    {% endif %}
                     <td>{{ commercial.date_created }}</td>
                     <td>
-                      <a href="" class="btn btn-sm btn-primary">Éditer</a>
-                      <a href="" class="btn btn-sm btn-danger">Supprimer</a>
+                      <a href="{% url 'updateCommercial' commercial.pk %}" class="btn btn-sm btn-primary">Éditer</a>
+                      <a href="{% url 'deleteCommercial' commercial.pk %}" class="btn btn-sm btn-danger">Supprimer</a>
                     </td>
                   </tr>
                   {% endfor %}

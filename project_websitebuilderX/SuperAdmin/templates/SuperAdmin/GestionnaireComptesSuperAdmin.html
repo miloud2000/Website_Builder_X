@@ -165,8 +165,8 @@
                     {% endif %}
                     <td>{{ GestionnairesCompte.date_created }}</td>
                     <td>
-                      <a href="" class="btn btn-sm btn-primary">Editer</a>
-                      <a href="#" class="btn btn-sm btn-primary">Supprimer</a>
+                      <a href="{% url 'updateGestionnaireComptes' GestionnairesCompte.id %}" class="btn btn-sm btn-primary">Editer</a>
+                      <a href="{% url 'deleteGestionnaireComptes' GestionnairesCompte.id %}" class="btn btn-sm btn-danger">Supprimer</a>        
                     </td>
                   </tr>
                   {% endfor %}

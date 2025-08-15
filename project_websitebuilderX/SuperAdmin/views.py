@@ -24,6 +24,11 @@ from websitebuilder.forms import (
     ClienteUpdateForm,
     ClientePasswordChangeForm,
     CommercialForm,
+    UpdateAdministrateurForm,
+    UpdateSupportTechniqueForm,
+    UpdateGestionnaireComptesForm,
+    ClienteUpdateFormSuperAdmin,
+    CommercialUpdateForm,
 )
 
 from websitebuilder.decorators import (  
@@ -138,14 +143,138 @@ def addAdministrateur(request):
 
 
 
+
+from django.db.models import Q
+
 #Superadmin can show all Administrateur
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SuperAdmin']) 
 def AdministrateurSuperAdmin(request): 
-    Administrateurs = Administrateur.objects.all()
-    context = {'Administrateurs': Administrateurs} 
-    return render(request, "SuperAdmin/AdministrateurSuperAdmin.html",context)
+    query = request.GET.get('q')
+    status_filter = request.GET.get('status')
 
+    Administrateurs = Administrateur.objects.all()
+
+    if query:
+        Administrateurs = Administrateurs.filter(
+            Q(user__username__icontains=query) |
+            Q(name__icontains=query) |
+            Q(email__icontains=query) |
+            Q(phone__icontains=query)
+        )
+
+    if status_filter:
+        Administrateurs = Administrateurs.filter(Status__icontains=status_filter)
+
+    context = {'Administrateurs': Administrateurs}
+    return render(request, "SuperAdmin/AdministrateurSuperAdmin.html", context)
+
+
+import csv
+from django.http import HttpResponse
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
+def export_admins_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="administrateurs.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Username', 'Email', 'Phone', 'Status', 'Date ajout'])
+
+    for admin in Administrateur.objects.all():
+        writer.writerow([
+            admin.user.username,
+            admin.email,
+            admin.phone,
+            admin.Status,
+            admin.date_created.strftime('%d/%m/%Y %H:%M')
+        ])
+
+    return response
+
+
+import openpyxl
+from django.http import HttpResponse
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
+def export_admins_excel(request):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Administrateurs"
+
+    headers = ['Username', 'Email', 'Phone', 'Status', 'Date ajout']
+    ws.append(headers)
+
+    for admin in Administrateur.objects.all():
+        ws.append([
+            admin.user.username,
+            admin.email,
+            admin.phone,
+            admin.Status,
+            admin.date_created.strftime('%d/%m/%Y %H:%M')
+        ])
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="administrateurs.xlsx"'
+    wb.save(response)
+    return response
+
+
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from io import BytesIO
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
+def export_admins_pdf(request):
+    admins = Administrateur.objects.all()
+    template = get_template('SuperAdmin/pdf_admins_template.html')
+    html = template.render({'admins': admins})
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="administrateurs.pdf"'
+
+    pisa_status = pisa.CreatePDF(BytesIO(html.encode('utf-8')), dest=response)
+    return response
+
+
+
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
+def updateAdministrateur(request, pk):
+    administrateur = get_object_or_404(Administrateur, id=pk)
+    form = UpdateAdministrateurForm(instance=administrateur)
+
+    if request.method == 'POST':
+        form = UpdateAdministrateurForm(request.POST, instance=administrateur)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Administrateur mis à jour avec succès.")
+            return redirect('AdministrateurSuperAdmin')
+
+    context = {'form': form}
+    return render(request, 'SuperAdmin/updateAdministrateur.html', context)
+
+
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
+def deleteAdministrateur(request, pk):
+    administrateur = get_object_or_404(Administrateur, id=pk)
+    user = administrateur.user
+
+    if request.method == 'POST':
+        user.delete() 
+        messages.success(request, "Administrateur supprimé avec succès.")
+        return redirect('AdministrateurSuperAdmin')
+
+    context = {'administrateur': administrateur}
+    return render(request, 'SuperAdmin/deleteAdministrateur.html', context)
 
 
 
@@ -179,6 +308,42 @@ def addSupportTechnique(request):
         
     context = {'form': form}
     return render(request, 'SuperAdmin/addSupportTechnique.html', context)
+
+
+
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
+def updateSupportTechnique(request, pk):
+    support = get_object_or_404(SupportTechnique, id=pk)
+    form = UpdateSupportTechniqueForm(instance=support)
+
+    if request.method == 'POST':
+        form = UpdateSupportTechniqueForm(request.POST, instance=support)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "✅ Support Technique mis à jour avec succès.")
+            return redirect('SupportTechniqueSuperAdmin')
+
+    context = {'form': form}
+    return render(request, 'SuperAdmin/updateSupportTechnique.html', context)
+
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
+def deleteSupportTechnique(request, pk):
+    support = get_object_or_404(SupportTechnique, id=pk)
+    user = support.user
+
+    if request.method == 'POST':
+        user.delete()
+        messages.success(request, "🗑️ Support Technique supprimé avec succès.")
+        return redirect('SupportTechniqueSuperAdmin')
+
+    context = {'support': support}
+    return render(request, 'SuperAdmin/deleteSupportTechnique.html', context)
 
 
 
@@ -226,6 +391,43 @@ def addGestionnaireComptes(request):
         
     context = {'form': form}
     return render(request, 'SuperAdmin/addGestionnaireComptes.html', context)
+
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
+def updateGestionnaireComptes(request, pk):
+    gestionnaire = get_object_or_404(GestionnaireComptes, id=pk)
+    form = UpdateGestionnaireComptesForm(instance=gestionnaire)
+
+    if request.method == 'POST':
+        form = UpdateGestionnaireComptesForm(request.POST, instance=gestionnaire)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "✅ Gestionnaire mis à jour avec succès.")
+            return redirect('GestionnaireComptesSuperAdmin')
+
+    context = {'form': form}
+    return render(request, 'SuperAdmin/updateGestionnaireComptes.html', context)
+
+
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin'])
+def deleteGestionnaireComptes(request, pk):
+    gestionnaire = get_object_or_404(GestionnaireComptes, pk=pk)
+
+    if request.method == 'POST':
+        if gestionnaire.user:
+            gestionnaire.user.delete()
+        gestionnaire.delete()
+        messages.success(request, "✅ Le gestionnaire a été supprimé avec succès.")
+        return redirect('GestionnaireComptesSuperAdmin')
+
+    context = {'gestionnaire': gestionnaire}
+    return render(request, 'SuperAdmin/deleteGestionnaireComptes.html', context)
+
 
 
 
@@ -292,6 +494,45 @@ def addCliente(request):
 
 
 
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
+def updateCliente(request, pk):
+    cliente = get_object_or_404(Cliente, pk=pk)
+
+    if request.method == 'POST':
+        form = ClienteUpdateFormSuperAdmin(request.POST, instance=cliente)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "✅ Client modifié avec succès.")
+            return redirect('ClienteSuperAdmin')
+        else:
+            messages.error(request, "❌ Erreur dans le formulaire.")
+    else:
+        form = ClienteUpdateFormSuperAdmin(instance=cliente)
+
+    context = {'form': form, 'cliente': cliente}
+    return render(request, 'SuperAdmin/updateCliente.html', context)
+
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
+def deleteCliente(request, pk):
+    cliente = get_object_or_404(Cliente, pk=pk)
+
+    if request.method == 'POST':
+        if cliente.user:
+            cliente.user.delete()
+        cliente.delete()
+        messages.success(request, "✅ Client supprimé avec succès.")
+        return redirect('ClienteSuperAdmin')
+
+    context = {'cliente': cliente}
+    return render(request, 'SuperAdmin/deleteCliente.html', context)
+
+
+
+
 
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SuperAdmin']) 
@@ -327,6 +568,42 @@ def addCommercial(request):
     return render(request, 'SuperAdmin/addCommercial.html', context)
 
 
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
+def updateCommercial(request, pk):
+    commercial = get_object_or_404(Commercial, pk=pk)
+
+    if request.method == 'POST':
+        form = CommercialUpdateForm(request.POST, instance=commercial)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "✅ Commercial modifié avec succès.")
+            return redirect('CommercialSuperAdmin')
+        else:
+            messages.error(request, "❌ Erreur dans le formulaire.")
+    else:
+        form = CommercialUpdateForm(instance=commercial)
+
+    context = {'form': form, 'commercial': commercial}
+    return render(request, 'SuperAdmin/updateCommercial.html', context)
+
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
+def deleteCommercial(request, pk):
+    commercial = get_object_or_404(Commercial, pk=pk)
+
+    if request.method == 'POST':
+        if commercial.user:
+            commercial.user.delete()
+        commercial.delete()
+        messages.success(request, "✅ Commercial supprimé avec succès.")
+        return redirect('CommercialSuperAdmin')
+
+    context = {'commercial': commercial}
+    return render(request, 'SuperAdmin/deleteCommercial.html', context)
 
 
 

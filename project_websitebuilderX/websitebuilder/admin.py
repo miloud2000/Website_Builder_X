@@ -4,6 +4,7 @@ from .models import *
 
 admin.site.register(Cliente),
 admin.site.register(Administrateur),
+admin.site.register(AdminActionLog),
 admin.site.register(Websites),
 admin.site.register(AchatWebsites),
 admin.site.register(Supports),

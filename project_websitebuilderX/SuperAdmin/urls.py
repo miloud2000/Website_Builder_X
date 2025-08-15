@@ -21,20 +21,38 @@ urlpatterns = [
     
     path('AdministrateurSuperAdmin/',views.AdministrateurSuperAdmin, name="AdministrateurSuperAdmin"), 
     path('addAdministrateur/',views.addAdministrateur, name="addAdministrateur"), 
+    path('administrateur/update/<int:pk>/', views.updateAdministrateur, name='updateAdministrateur'),
+    path('administrateur/delete/<int:pk>/', views.deleteAdministrateur, name='deleteAdministrateur'),
     
+    
+    path('administrateurs/export/csv/', views.export_admins_csv, name='export_admins_csv'),
+    path('administrateurs/export/excel/', views.export_admins_excel, name='export_admins_excel'),
+    path('administrateurs/export/pdf/', views.export_admins_pdf, name='export_admins_pdf'),
+
+
+
     path('GestionnaireComptesSuperAdmin/',views.GestionnaireComptesSuperAdmin, name="GestionnaireComptesSuperAdmin"), 
     path('addGestionnaireComptes/',views.addGestionnaireComptes, name="addGestionnaireComptes"), 
+    path('gestionnaire/update/<int:pk>/', views.updateGestionnaireComptes, name='updateGestionnaireComptes'),
+    
         
     path('SupportTechniqueSuperAdmin/',views.SupportTechniqueSuperAdmin, name="SupportTechniqueSuperAdmin"), 
     path('addSupportTechnique/',views.addSupportTechnique, name="addSupportTechnique"), 
+    path('support/update/<int:pk>/', views.updateSupportTechnique, name='updateSupportTechnique'),
+    path('support/delete/<int:pk>/', views.deleteSupportTechnique, name='deleteSupportTechnique'),
+    path('gestionnaire/delete/<int:pk>/', views.deleteGestionnaireComptes, name='deleteGestionnaireComptes'),
     
     
     path('ClienteSuperAdmin/', views.ClienteSuperAdmin, name='ClienteSuperAdmin'),
     path('addCliente/',views.addCliente, name="addCliente"), 
+    path('cliente/update/<int:pk>/', views.updateCliente, name='updateCliente'),
+    path('cliente/delete/<int:pk>/', views.deleteCliente, name='deleteCliente'),
+    path('commercial/delete/<int:pk>/', views.deleteCommercial, name='deleteCommercial'),
     
     
     path('CommercialSuperAdmin/', views.CommercialSuperAdmin, name='CommercialSuperAdmin'),
     path('add-commercial/', views.addCommercial, name='addCommercial'),
+    path('commercial/update/<int:pk>/', views.updateCommercial, name='updateCommercial'),
 
     
     path('traceDemandeRecharger/',views.traceDemandeRecharger, name="traceDemandeRecharger"), 

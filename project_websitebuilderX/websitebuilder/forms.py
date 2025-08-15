@@ -33,6 +33,14 @@ class AdministrateurForm(UserCreationForm):
       
 
 
+class UpdateAdministrateurForm(forms.ModelForm):
+    class Meta:
+        model = Administrateur
+        fields = ['name', 'email', 'phone', 'Status']
+
+
+
+
 from .models import Commercial
 
 class CommercialForm(UserCreationForm):
@@ -44,6 +52,12 @@ class CommercialForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2', 'name', 'phone', 'status']
 
+
+
+class CommercialUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Commercial
+        fields = ['name', 'email', 'phone', 'status']
 
 
       
@@ -59,6 +73,14 @@ class SupportTechniqueForm(UserCreationForm):
         
         
 
+class UpdateSupportTechniqueForm(forms.ModelForm):
+    class Meta:
+        model = SupportTechnique
+        fields = ['name', 'email', 'phone', 'Status']
+
+
+
+
 
 class GestionnaireComptesForm(UserCreationForm):
     name = forms.CharField(max_length=100)
@@ -69,7 +91,15 @@ class GestionnaireComptesForm(UserCreationForm):
         fields = ['username', 'password1', 'password2', 'name','email', 'phone']
         
         
-        
+
+
+class UpdateGestionnaireComptesForm(forms.ModelForm):
+    class Meta:
+        model = GestionnaireComptes
+        fields = ['name', 'email', 'phone', 'Status']
+
+
+
              
         
 class DemandeRechargerForm(forms.ModelForm):
@@ -92,7 +122,21 @@ class ClienteForm(UserCreationForm):
         fields = ['username', 'email', 'password1', 'password2', 'prenom', 'nom', 'phone']        
         
    
-   
+
+
+class ClienteUpdateFormSuperAdmin(forms.ModelForm):
+    class Meta:
+        model = Cliente
+        fields = [
+            'prenom',
+            'nom',
+            'email',
+            'phone',
+            'address',
+            'nom_entreprise',
+            'numero_ice',
+        ]
+
    
    
 class AdditionalInfoForm(forms.ModelForm):

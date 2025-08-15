@@ -1,0 +1,41 @@
+{% extends "SuperAdmin/dashbordSuperAdmin.html" %}
+{% load static %}
+{% block content %}
+
+<div class="main-panel">
+  <div class="content-wrapper">
+
+    <div class="row justify-content-center">
+      <div class="col-md-6 grid-margin stretch-card">
+        <div class="card border-danger shadow">
+          <div class="card-body text-center">
+            <h3 class="text-danger mb-3">
+              <i class="mdi mdi-delete-forever"></i> Confirmation de suppression
+            </h3>
+
+            <hr>
+
+            <p class="lead">
+              Vous êtes sur le point de supprimer le Support Technique suivant :
+              <br><strong>{{ support.name }}</strong>
+              <br><em>{{ support.user.username }}</em>
+            </p>
+
+            <form method="POST" class="mt-4">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline-danger btn-lg">
+                <i class="mdi mdi-trash-can-outline"></i> Supprimer
+              </button>
+              <a href="{% url 'SupportTechniqueSuperAdmin' %}" class="btn btn-outline-secondary btn-lg ml-2">
+                <i class="mdi mdi-close-circle-outline"></i> Annuler
+              </a>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

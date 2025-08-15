@@ -1,0 +1,41 @@
+{% extends "SuperAdmin/dashbordSuperAdmin.html" %}
+{% load static %}
+{% block content %}
+
+<div class="main-panel">
+  <div class="content-wrapper">
+
+    <div class="row justify-content-center">
+      <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h3 class="text-center text-danger">
+              <i class="mdi mdi-delete-forever"></i> Confirmation de suppression
+            </h3>
+
+            <hr>
+
+            <p class="text-center">
+              Vous êtes sur le point de supprimer l'administrateur suivant :
+              <br><strong>{{ administrateur.name }}</strong>
+              <br><em>{{ administrateur.user.username }}</em>
+            </p>
+
+            <form method="POST" class="text-center mt-4">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline-danger btn-lg">
+                <i class="mdi mdi-trash-can-outline"></i> Supprimer
+              </button>
+              <a href="{% url 'AdministrateurSuperAdmin' %}" class="btn btn-outline-secondary btn-lg ml-2">
+                <i class="mdi mdi-close-circle-outline"></i> Annuler
+              </a>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "SuperAdmin/dashbordSuperAdmin.html" %}
+{% load static %}
+{% block content %}
+<div class="main-panel">
+  <div class="content-wrapper">
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="page-header mb-4">
+      <h3 class="page-title"><i class="mdi mdi-account-edit"></i> Modifier Commercial</h3>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <form method="POST">
+              {% csrf_token %}
+
+              <div class="form-group">
+                <label for="name">Nom</label>
+                <input type="text" name="name" class="form-control" value="{{ form.initial.name }}" required>
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" class="form-control" value="{{ form.initial.email }}" required>
+              </div>
+
+              <div class="form-group">
+                <label for="phone">Téléphone</label>
+                <input type="text" name="phone" class="form-control" value="{{ form.initial.phone }}">
+              </div>
+
+              <div class="form-group">
+                <label for="status">Statut</label>
+                <select name="status" class="form-control">
+                  <option value="Active" {% if form.initial.status == "Active" %}selected{% endif %}>✅ Active</option>
+                  <option value="Inactive" {% if form.initial.status == "Inactive" %}selected{% endif %}>⛔ Inactive</option>
+                </select>
+              </div>
+
+              <div class="form-group mt-4 text-center">
+                <button type="submit" class="btn btn-success mr-2">
+                  <i class="mdi mdi-content-save"></i> Enregistrer
+                </button>
+                <a href="{% url 'CommercialSuperAdmin' %}" class="btn btn-secondary">
+                  <i class="mdi mdi-arrow-left"></i> Retour
+                </a>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

@@ -163,7 +163,16 @@ class Administrateur(models.Model):
         return self.name
     
     
-    
+
+
+class AdminActionLog(models.Model):
+    admin = models.ForeignKey(User, on_delete=models.CASCADE) 
+    action_type = models.CharField(max_length=100)
+    description = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.admin.username} - {self.action_type} - {self.timestamp.strftime('%d/%m/%Y %H:%M')}"
 
     
     
@@ -204,7 +213,7 @@ class Commercial(models.Model):
     ]
 
     user = models.OneToOneField(User, null=True, blank=False, on_delete=models.SET_NULL)
-    name = models.CharField(max_length=100, null=True)  # اسم الشركة أو المسؤول التجاري
+    name = models.CharField(max_length=100, null=True)  
     email = models.EmailField(max_length=100, null=True)
     phone = models.CharField(max_length=100, null=True)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
