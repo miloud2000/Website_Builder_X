@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; font-size: 12px; }
+    h1 { color: #333; }
+    h2 { color: #007bff; margin-top: 30px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #333; padding: 5px; text-align: left; }
+    th { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h1>📊 Activités du client – {{ cliente.user.username }}</h1>
+  <p>Date d'export : {{ now|date:"d/m/Y H:i" }}</p>
+
+  {% if demandes %}
+  <h2>💰 Demandes de recharge</h2>
+  <table>
+    <thead><tr><th>Code</th><th>Montant</th><th>Statut</th><th>Date</th></tr></thead>
+    <tbody>
+      {% for d in demandes %}
+      <tr>
+        <td>{{ d.code_DemandeRecharger }}</td>
+        <td>{{ d.solde }} MAD</td>
+        <td>{{ d.status }}</td>
+        <td>{{ d.date_created|date:"d/m/Y H:i" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if achats %}
+  <h2>🛒 Achats</h2>
+  <table>
+    <thead><tr><th>Nom</th><th>Prix</th><th>Statut</th><th>Date</th></tr></thead>
+    <tbody>
+      {% for a in achats %}
+      <tr>
+        <td>{{ a.websites.name }}</td>
+        <td>{{ a.prix_achat }} MAD</td>
+        <td>{{ a.BuilderStatus }}</td>
+        <td>{{ a.date_created|date:"d/m/Y H:i" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if tickets %}
+  <h2>🎫 Tickets</h2>
+  <table>
+    <thead><tr><th>Sujet</th><th>Statut</th><th>Date</th></tr></thead>
+    <tbody>
+      {% for t in tickets %}
+      <tr>
+        <td>{{ t.description }}</td>
+        <td>{{ t.status }}</td>
+        <td>{{ t.date_created|date:"d/m/Y H:i" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if achat_supports %}
+  <h2>🧰 Supports achetés</h2>
+  <table>
+    <thead><tr><th>Support</th><th>Prix</th><th>Statut</th><th>Consommation</th><th>Technicien</th><th>Date</th></tr></thead>
+    <tbody>
+      {% for s in achat_supports %}
+      <tr>
+        <td>{{ s.support.name }}</td>
+        <td>{{ s.prix }} MAD</td>
+        <td>{{ s.Status }}</td>
+        <td>{{ s.StatusConsomé }}</td>
+        <td>{% if s.updated_by %}{{ s.updated_by.user.username }}{% else %}Non assigné{% endif %}</td>
+        <td>{{ s.date_created|date:"d/m/Y H:i" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if locations %}
+  <h2>🏠 Locations</h2>
+  <table>
+    <thead><tr><th>Site</th><th>Prix</th><th>Builder</th><th>Début</th><th>Fin</th><th>Création</th></tr></thead>
+    <tbody>
+      {% for l in locations %}
+      <tr>
+        <td>{{ l.websites.name }}</td>
+        <td>{{ l.prix_loyer }} MAD</td>
+        <td>{{ l.BuilderStatus }}</td>
+        <td>{% if l.date_debut %}{{ l.date_debut|date:"d/m/Y H:i" }}{% endif %}</td>
+        <td>{% if l.date_fin %}{{ l.date_fin|date:"d/m/Y H:i" }}{% endif %}</td>
+        <td>{{ l.date_created|date:"d/m/Y H:i" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if free_websites %}
+  <h2>🌐 Sites gratuits</h2>
+  <table>
+    <thead><tr><th>Site</th><th>Prix</th><th>Builder</th><th>Création</th></tr></thead>
+    <tbody>
+      {% for f in free_websites %}
+      <tr>
+        <td>{{ f.websites.name }}</td>
+        <td>{{ f.prix_free }} MAD</td>
+        <td>{{ f.BuilderStatus }}</td>
+        <td>{{ f.date_created|date:"d/m/Y H:i" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if supports %}
+  <h2>📞 Demandes support</h2>
+  <table>
+    <thead><tr><th>Code</th><th>Support</th><th>Statut</th><th>Technicien</th><th>Date</th></tr></thead>
+    <tbody>
+      {% for s in supports %}
+      <tr>
+        <td>{{ s.code_DemandeSupport }}</td>
+        <td>{{ s.achat_support.support.name }}</td>
+        <td>{{ s.status }}</td>
+        <td>{% if s.updated_by %}{{ s.updated_by.user.username }}{% else %}Non assigné{% endif %}</td>
+        <td>{{ s.date_created|date:"d/m/Y H:i" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+</body>
+</html>

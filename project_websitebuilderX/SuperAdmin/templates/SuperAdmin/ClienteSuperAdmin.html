@@ -128,67 +128,105 @@
         </div>
       </div> {% endcomment %}
       
-      <a href="{% url 'addCliente' %}">
-        <button type="button" class="btn btn-primary" style="margin: 10px">Ajouter Client</button>
-      </a>
-          <div class="col-lg-12 grid-margin stretch-card">
-        <div class="card">
+      <div class="container mt-4">
+
+        <!-- 🔘 Bouton Ajouter -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h3 class="fw-bold text-primary">
+            <i class="mdi mdi-account-multiple-outline"></i> Liste des Clients
+          </h3>
+          <a href="{% url 'addCliente' %}" class="btn btn-success">
+            <i class="mdi mdi-account-plus"></i> Ajouter Client
+          </a>
+        </div>
+      
+       <!-- 🔍 Formulaire de recherche -->
+      <form method="get" class="row g-3 mb-4">
+        <div class="col-md-6">
+          <input type="text" name="q" class="form-control"
+                placeholder="🔍 Rechercher par nom, prénom, email, téléphone ou code client"
+                value="{{ request.GET.q }}">
+        </div>
+        <div class="col-md-6 d-flex gap-2 justify-content-end">
+          <button type="submit" class="btn btn-primary">
+            <i class="mdi mdi-magnify"></i> Rechercher
+          </button>&nbsp;
+          <a href="{% url 'ClienteSuperAdmin' %}" class="btn btn-outline-secondary">
+            <i class="mdi mdi-filter-remove"></i> Réinitialiser
+          </a>
+        </div>
+      </form>
+      
+        <!-- 📤 Boutons Export -->
+        <div class="d-flex justify-content-end mb-3 gap-2">
+          <a href="{% url 'export_clientes_csv' %}" class="btn btn-outline-secondary">
+            <i class="mdi mdi-file-delimited-outline"></i> Export CSV
+          </a>&nbsp;
+          <a href="{% url 'export_clientes_excel' %}" class="btn btn-outline-success">
+            <i class="mdi mdi-file-excel"></i> Export Excel
+          </a>&nbsp;
+          <a href="{% url 'export_clientes_pdf' %}" class="btn btn-outline-danger">
+            <i class="mdi mdi-file-pdf-box"></i> Export PDF
+          </a>
+        </div>
+      
+        <!-- 📋 Tableau -->
+        <div class="card shadow-sm">
           <div class="card-body">
-            <h4 class="card-title">Support Technique</h4>
-            {% comment %} <p class="card-description">
-              Add class <code>.table-striped</code>
-            </p> {% endcomment %}
+            <h5 class="card-title mb-3">📄 Liste des clients enregistrés</h5>
             <div class="table-responsive">
-              <table class="table table-striped">
-                <thead>
+              <table class="table table-striped align-middle">
+                <thead class="table-light">
                   <tr>
-                    <th>N°</th>
+                    <th>#</th>
+                    {% comment %} <th>Photo</th> {% endcomment %}
                     <th>Username</th>
+                    <th>Nom et prénom</th>
                     <th>Email</th>
-                    {% comment %} <th>Nom</th> {% endcomment %}
-                    <th>Phone</th>
+                    <th>Téléphone</th>
                     <th>Code Client</th>
-                    <th>date Ajouter</th>
+                    <th>Date d'ajout</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for cliente in clientes %}
                   <tr>
-                    <td class="py-1">{{ forloop.counter }}</td>
+                    <td>{{ forloop.counter }}</td>
+                    {% comment %} <td>
+                      {% if cliente.photo %}
+                        <img src="{{ cliente.photo.url }}" alt="Photo" class="rounded-circle" width="40" height="40">
+                      {% else %}
+                        <span class="text-muted">—</span>
+                      {% endif %}
+                    </td> {% endcomment %}
                     <td>{{ cliente.user.username }}</td>
+                    <td>{{ cliente.nom }} {{ cliente.prenom }}</td>
                     <td>{{ cliente.email }}</td>
-                    {% comment %} <td>{{ cliente.name }}</td>   {% endcomment %}
-                    <td>{{ cliente.phone }}</td> 
-                    <td><span class="badge badge-success">{{ cliente.code_client }}</span></td>
-                    <td>{{ cliente.date_created }}</td>
+                    <td>{{ cliente.phone }}</td>
+                    <td><span class="badge bg-success" style="color-text: #ffffff;color: white;">{{ cliente.code_client }}</span></td>
+                    <td>{{ cliente.date_created|date:"d/m/Y" }}</td>
                     <td>
-                      <a href="{% url 'updateCliente' cliente.pk %}" class="btn btn-sm btn-primary">Editer</a>
-                      <a href="{% url 'deleteCliente' cliente.pk %}" class="btn btn-sm btn-danger">Supprimer</a>      
+                      <div class="btn-group" role="group">
+                        <a href="{% url 'updateCliente' cliente.pk %}" class="btn btn-sm btn-outline-primary">Editer</a>
+                        <a href="{% url 'deleteCliente' cliente.pk %}" class="btn btn-sm btn-outline-danger">Supprimer</a>
+                        <a href="{% url 'cliente_activity_dashboard' cliente.id %}" class="btn btn-sm btn-outline-danger">Activités</a>                        
+                      </div>
                     </td>
                   </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="10" class="text-center text-muted">Aucun client trouvé.</td>
+                  </tr>
                   {% endfor %}
-                  
                 </tbody>
               </table>
             </div>
           </div>
         </div>
+      
       </div>
       
-        </div>
-      </div>
-    </div>
-    
-      
-      
-    </div>
-  </div>
-  
-  
-</div>
-
-</div>
-
 
 
 

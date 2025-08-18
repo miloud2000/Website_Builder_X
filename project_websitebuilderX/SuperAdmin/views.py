@@ -349,14 +349,95 @@ def deleteSupportTechnique(request, pk):
 
 
 
+
+from django.db.models import Q
+
 #Superadmin can show all SupportTechnique
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SuperAdmin']) 
 def SupportTechniqueSuperAdmin(request): 
-    supportTechniques = SupportTechnique.objects.all()
-    context = {'supportTechniques': supportTechniques} 
-    return render(request, "SuperAdmin/SupportTechniqueSuperAdmin.html",context)
+    query = request.GET.get('q')
+    status_filter = request.GET.get('status')
 
+    supportTechniques = SupportTechnique.objects.all()
+
+    if query:
+        supportTechniques = supportTechniques.filter(
+            Q(user__username__icontains=query) |
+            Q(name__icontains=query) |
+            Q(email__icontains=query) |
+            Q(phone__icontains=query)
+        )
+
+    if status_filter:
+        supportTechniques = supportTechniques.filter(Status__icontains=status_filter)
+
+    context = {'supportTechniques': supportTechniques}
+    return render(request, "SuperAdmin/SupportTechniqueSuperAdmin.html", context)
+
+
+
+import csv
+from django.http import HttpResponse
+
+def export_support_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="support_technique.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Username', 'Email', 'Phone', 'Status', 'Date ajout'])
+
+    for s in SupportTechnique.objects.all():
+        writer.writerow([
+            s.user.username,
+            s.email,
+            s.phone,
+            s.Status,
+            s.date_created.strftime('%d/%m/%Y %H:%M')
+        ])
+
+    return response
+
+
+
+
+import openpyxl
+
+def export_support_excel(request):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Support Technique"
+
+    ws.append(['Username', 'Email', 'Phone', 'Status', 'Date ajout'])
+
+    for s in SupportTechnique.objects.all():
+        ws.append([
+            s.user.username,
+            s.email,
+            s.phone,
+            s.Status,
+            s.date_created.strftime('%d/%m/%Y %H:%M')
+        ])
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="support_technique.xlsx"'
+    wb.save(response)
+    return response
+
+
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from io import BytesIO
+
+def export_support_pdf(request):
+    supports = SupportTechnique.objects.all()
+    template = get_template('SuperAdmin/pdf_support_template.html')
+    html = template.render({'supports': supports})
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="support_technique.pdf"'
+    pisa.CreatePDF(BytesIO(html.encode('utf-8')), dest=response)
+    return response
 
 
 
@@ -430,26 +511,104 @@ def deleteGestionnaireComptes(request, pk):
 
 
 
+#Superadmin can show all GestionnaireComptes
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin'])
+def GestionnaireComptesSuperAdmin(request):
+    query = request.GET.get('q', '')
+    status = request.GET.get('status', '')
+    gestionnaires = GestionnaireComptes.objects.all()
+
+    if query:
+        gestionnaires = gestionnaires.filter(
+            models.Q(name__icontains=query) |
+            models.Q(email__icontains=query) |
+            models.Q(phone__icontains=query) |
+            models.Q(user__username__icontains=query)
+        )
+    if status:
+        gestionnaires = gestionnaires.filter(Status=status)
+
+    context = {'GestionnairesComptes': gestionnaires}
+    return render(request, "SuperAdmin/GestionnaireComptesSuperAdmin.html", context)
+
+
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin'])
+def export_gestionnaire_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="gestionnaires.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['Username', 'Name', 'Email', 'Phone', 'Status', 'Date Created'])
+    for g in GestionnaireComptes.objects.all():
+        writer.writerow([g.user.username, g.name, g.email, g.phone, g.Status, g.date_created])
+    return response
+
+
+import pandas as pd
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin'])
+def export_gestionnaire_excel(request):
+    data = []
+    for g in GestionnaireComptes.objects.all():
+        data.append({
+            'Username': g.user.username,
+            'Name': g.name,
+            'Email': g.email,
+            'Phone': g.phone,
+            'Status': g.Status,
+            'Date Created': g.date_created.replace(tzinfo=None), 
+        })
+
+    df = pd.DataFrame(data)
+    response = HttpResponse(content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="gestionnaires.xlsx"'
+    df.to_excel(response, index=False)
+    return response
+
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin'])
+def export_gestionnaire_pdf(request):
+    gestionnaires = GestionnaireComptes.objects.all()
+    html = render_to_string("SuperAdmin/pdf_gestionnaire_template.html", {'gestionnaires': gestionnaires})
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="gestionnaires.pdf"'
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse("Erreur lors de la génération du PDF")
+    return response
+
+
+
+
+
+
 
 
 #Superadmin can show all clientes
 @login_required(login_url='login')
-@allowedUsers(allowedGroups=['SuperAdmin']) 
-def ClienteSuperAdmin(request): 
+@allowedUsers(allowedGroups=['SuperAdmin'])
+def ClienteSuperAdmin(request):
+    query = request.GET.get('q', '')
     clientes = Cliente.objects.all()
-    context = {'clientes': clientes} 
-    return render(request, "SuperAdmin/ClienteSuperAdmin.html",context)
 
+    if query:
+        clientes = clientes.filter(
+            models.Q(nom__icontains=query) |
+            models.Q(prenom__icontains=query) |
+            models.Q(email__icontains=query) |
+            models.Q(phone__icontains=query) |
+            models.Q(user__username__icontains=query) |
+            models.Q(code_client__icontains=query) 
+        )
 
+    context = {'clientes': clientes}
+    return render(request, "SuperAdmin/ClienteSuperAdmin.html", context)
 
-
-#Superadmin can show all Commercials
-@login_required(login_url='login')
-@allowedUsers(allowedGroups=['SuperAdmin']) 
-def CommercialSuperAdmin(request): 
-    commercials = Commercial.objects.all()
-    context = {'commercials': commercials} 
-    return render(request, "SuperAdmin/CommercialSuperAdmin.html", context)
 
 
 
@@ -532,6 +691,119 @@ def deleteCliente(request, pk):
 
 
 
+def export_clientes_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="clientes.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['Username', 'Nom', 'Prenom', 'Email', 'Téléphone', 'Solde', 'Date'])
+    for c in Cliente.objects.all():
+        writer.writerow([
+            c.user.username,
+            c.nom,
+            c.prenom,
+            c.email,
+            c.phone,
+            c.solde,
+            c.date_created.replace(tzinfo=None) if c.date_created else ''
+        ])
+    return response
+
+
+
+def export_clientes_excel(request):
+    data = []
+    for c in Cliente.objects.all():
+        date_created = c.date_created.replace(tzinfo=None) if c.date_created else ''
+        data.append({
+            'Username': c.user.username,
+            'Nom': c.nom,
+            'Prenom': c.prenom,
+            'Email': c.email,
+            'Téléphone': c.phone,
+            'Solde': c.solde,
+            'Date': date_created,
+        })
+    df = pd.DataFrame(data)
+    response = HttpResponse(content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="clientes.xlsx"'
+    df.to_excel(response, index=False)
+    return response
+
+
+
+def export_clientes_pdf(request):
+    clientes = Cliente.objects.all()
+    html = render_to_string("SuperAdmin/pdf_cliente_template.html", {'clientes': clientes, 'now': timezone.now()})
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="clientes.pdf"'
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse("Erreur lors de la génération du PDF")
+    return response
+
+
+
+
+
+
+@login_required
+def cliente_activity_dashboard(request, cliente_id):
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+
+    demandes = DemandeRecharger.objects.filter(cliente=cliente).order_by('-date_created')
+    achats = AchatWebsites.objects.filter(cliente=cliente).order_by('-date_created')
+    tickets = Ticket.objects.filter(cliente=cliente).order_by('-date_created')
+    supports = DemandeSupport.objects.filter(cliente=cliente).order_by('-date_created')
+    achat_supports = AchatSupport.objects.filter(cliente=cliente).order_by('-date_created')
+    locations = LocationWebsites.objects.filter(cliente=cliente).order_by('-date_created')
+    free_websites = GetFreeWebsites.objects.filter(cliente=cliente).order_by('-date_created') 
+
+    context = {
+        'cliente': cliente,
+        'demandes': demandes,
+        'achats': achats,
+        'tickets': tickets,
+        'supports': supports,
+        'achat_supports': achat_supports,
+        'locations': locations,
+        'free_websites': free_websites,  
+    }
+    return render(request, 'SuperAdmin/cliente_activity_dashboard.html', context)
+
+
+
+
+
+
+
+
+from django.db.models import Q
+
+#Superadmin can show all Commercials
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
+def CommercialSuperAdmin(request): 
+    query = request.GET.get('q', '')
+    status_filter = request.GET.get('status', '')
+
+    commercials = Commercial.objects.all()
+
+    if query:
+        commercials = commercials.filter(
+            Q(name__icontains=query) |
+            Q(email__icontains=query) |
+            Q(phone__icontains=query) |
+            Q(user__username__icontains=query)
+        )
+
+    if status_filter:
+        commercials = commercials.filter(status=status_filter)
+
+    context = {'commercials': commercials}
+    return render(request, "SuperAdmin/CommercialSuperAdmin.html", context)
+
+
+
 
 
 @login_required(login_url='login')
@@ -607,13 +879,62 @@ def deleteCommercial(request, pk):
 
 
 
-#Superadmin can show all GestionnaireComptes
-@login_required(login_url='login')
-@allowedUsers(allowedGroups=['SuperAdmin']) 
-def GestionnaireComptesSuperAdmin(request): 
-    GestionnairesComptes = GestionnaireComptes.objects.all()
-    context = {'GestionnairesComptes': GestionnairesComptes} 
-    return render(request, "SuperAdmin/GestionnaireComptesSuperAdmin.html",context)
+import csv
+from django.http import HttpResponse
+def export_commercials_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="commercials.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Nom', 'Email', 'Téléphone', 'Statut'])
+
+    for c in Commercial.objects.all():
+        writer.writerow([c.name, c.email, c.phone, c.status])
+
+    return response
+
+
+
+
+from django.http import HttpResponse
+from openpyxl import Workbook
+
+def export_commercials_excel(request):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Commercials"
+
+    ws.append(['Nom', 'Email', 'Téléphone', 'Statut'])
+
+    for c in Commercial.objects.all():
+        ws.append([c.name, c.email, c.phone, c.status])
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=commercials.xlsx'
+    wb.save(response)
+    return response
+
+
+
+
+def export_commercials_pdf(request):
+    commercials = Commercial.objects.all()
+    html = render_to_string("SuperAdmin/pdf_commercial_template.html", {
+        'commercials': commercials,
+        'now': timezone.now()
+    })
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="commercials.pdf"'
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse("Erreur lors de la génération du PDF")
+    return response
+
+
+
+
+
+
 
 
 
@@ -702,8 +1023,30 @@ def DemandeRechargerNotDone(request):
 @allowedUsers(allowedGroups=['SuperAdmin']) 
 def DemandeSupportAll(request): 
     DemandeSupports = DemandeSupport.objects.order_by('-date_created')
-    context = {'DemandeSupports': DemandeSupports} 
-    return render(request, "SuperAdmin/DemandeSupportAll.html",context)
+
+    status = request.GET.get('status')
+    status_consome = request.GET.get('status_consome')
+    updated_by = request.GET.get('updated_by')
+    code = request.GET.get('code')
+
+    if status:
+        DemandeSupports = DemandeSupports.filter(status=status)
+    if status_consome:
+        DemandeSupports = DemandeSupports.filter(achat_support__StatusConsomé=status_consome)
+    if updated_by:
+        DemandeSupports = DemandeSupports.filter(updated_by__user__username__icontains=updated_by)
+    if code:
+        DemandeSupports = DemandeSupports.filter(code_DemandeSupport__icontains=code)
+
+    context = {
+        'DemandeSupports': DemandeSupports,
+        'status': status,
+        'status_consome': status_consome,
+        'updated_by': updated_by,
+        'code': code,
+    }
+    return render(request, "SuperAdmin/DemandeSupportAll.html", context)
+
 
 
 

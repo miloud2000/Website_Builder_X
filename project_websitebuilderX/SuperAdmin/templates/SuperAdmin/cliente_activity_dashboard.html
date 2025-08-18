@@ -1,0 +1,237 @@
+{% extends "SuperAdmin/dashbordSuperAdmin.html" %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+  <h3 class="text-primary mb-4">📊 Activités du client – {{ cliente.user.username }}</h3>
+  {% comment %} <div class="export-buttons" style="margin-top: 20px;">
+    <h4>📤 Exporter les activités du client</h4>
+    <a href="{% url 'export_activites_pdf' cliente.id %}" class="btn btn-danger" target="_blank">
+      🧾 Télécharger PDF
+    </a>
+    
+    
+    <a href="{% url 'export_activites_excel' cliente.id %}" class="btn btn-outline-success">
+      📊 Exporter en Excel
+    </a>
+  </div> {% endcomment %}
+  
+  
+  
+  <!-- ✅ Demandes de recharge -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header bg-info text-white">💰 Demandes de recharge</div>
+    <div class="card-body">
+      <table class="table table-bordered table-sm mb-0">
+        <thead>
+          <tr><th>Code</th><th>Montant</th><th>Statut</th><th>Date</th></tr>
+        </thead>
+        <tbody>
+          {% for d in demandes %}
+          <tr>
+            <td>{{ d.code_DemandeRecharger }}</td>
+            <td>{{ d.solde }} MAD</td>
+            <td>{{ d.status }}</td>
+            <td>{{ d.date_created|date:"d/m/Y H:i" }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" class="text-center text-muted">Aucune demande.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 🌐 Sites achetés -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header bg-success text-white">🌐 Sites achetés</div>
+    <div class="card-body">
+      <table class="table table-bordered table-sm mb-0">
+        <thead>
+          <tr><th>Nom</th><th>Prix</th><th>Statut</th><th>Date</th></tr>
+        </thead>
+        <tbody>
+          {% for a in achats %}
+          <tr>
+            <td>{{ a.websites.name }}</td>
+            <td>{{ a.prix_achat }} MAD</td>
+            <td>{{ a.BuilderStatus }}</td>
+            <td>{{ a.date_created|date:"d/m/Y H:i" }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" class="text-center text-muted">Aucun site acheté.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 🎫 Tickets -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header bg-primary text-white">🎫 Tickets</div>
+    <div class="card-body">
+      <table class="table table-bordered table-sm mb-0">
+        <thead>
+          <tr><th>Sujet</th><th>Statut</th><th>Date</th></tr>
+        </thead>
+        <tbody>
+          {% for t in tickets %}
+          <tr>
+            <td>{{ t.description }}</td>
+            <td>{{ t.status }}</td>
+            <td>{{ t.date_created|date:"d/m/Y H:i" }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" class="text-center text-muted">Aucun ticket.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 🧾 Supports achetés -->
+<div class="card mb-4 shadow-sm">
+  <div class="card-header bg-secondary text-white">🧾 Supports achetés</div>
+  <div class="card-body">
+    <table class="table table-bordered table-sm mb-0">
+      <thead>
+        <tr>
+          <th>Support</th>
+          <th>Prix</th>
+          <th>Statut</th>
+          <th>Consommation</th>
+          <th>Technicien</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in achat_supports %}
+        <tr>
+          <td>{{ s.support.name }}</td>
+          <td>{{ s.prix }} MAD</td>
+          <td>{{ s.Status }}</td>
+          <td>{{ s.StatusConsomé }}</td>
+          <td>
+            {% if s.updated_by %}
+              {{ s.updated_by.user.username }}
+            {% else %}
+              <span class="text-muted">Non assigné</span>
+            {% endif %}
+          </td>
+          <td>{{ s.date_created|date:"d/m/Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-center text-muted">Aucun support acheté.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 🏠 Locations de sites web -->
+<div class="card mb-4 shadow-sm">
+  <div class="card-header bg-dark text-white">🏠 Locations de sites web</div>
+  <div class="card-body">
+    <table class="table table-bordered table-sm mb-0">
+      <thead>
+        <tr>
+          <th>Site Web</th>
+          <th>Prix du loyer</th>
+          <th>Statut du builder</th>
+          <th>Date début</th>
+          <th>Date fin</th>
+          <th>Date de création</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for l in locations %}
+        <tr>
+          <td>{{ l.websites.name }}</td>
+          <td>{{ l.prix_loyer }} MAD</td>
+          <td>{{ l.BuilderStatus }}</td>
+          <td>{{ l.date_debut|date:"d/m/Y H:i" }}</td>
+          <td>
+            {% if l.date_fin %}
+              {{ l.date_fin|date:"d/m/Y H:i" }}
+            {% else %}
+              <span class="text-muted">Non définie</span>
+            {% endif %}
+          </td>
+          <td>{{ l.date_created|date:"d/m/Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-center text-muted">Aucune location enregistrée.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- 🆓 Sites web gratuits -->
+<div class="card mb-4 shadow-sm">
+  <div class="card-header bg-info text-white">🆓 Sites web gratuits</div>
+  <div class="card-body">
+    <table class="table table-bordered table-sm mb-0">
+      <thead>
+        <tr>
+          <th>Site Web</th>
+          <th>Prix (gratuit)</th>
+          <th>Statut du builder</th>
+          <th>Date de création</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for f in free_websites %}
+        <tr>
+          <td>{{ f.websites.name }}</td>
+          <td>{{ f.prix_free }} MAD</td>
+          <td>{{ f.BuilderStatus }}</td>
+          <td>{{ f.date_created|date:"d/m/Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="text-center text-muted">Aucun site gratuit attribué.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+  <!-- 🛠 Demandes de support technique -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header bg-warning text-dark">🛠 Demandes de support technique</div>
+    <div class="card-body">
+      <table class="table table-bordered table-sm mb-0">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Support demandé</th>
+            <th>Statut</th>
+            <th>Technicien</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in supports %}
+          <tr>
+            <td>{{ s.code_DemandeSupport }}</td>
+            <td>{{ s.achat_support.support.name }}</td>
+            <td>{{ s.status }}</td>
+            <td>
+              {% if s.updated_by %}
+                {{ s.updated_by.user.username }}
+              {% else %}
+                <span class="text-muted">Non assigné</span>
+              {% endif %}
+            </td>
+            <td>{{ s.date_created|date:"d/m/Y H:i" }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" class="text-center text-muted">Aucune demande de support enregistrée.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

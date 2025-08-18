@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: "DejaVu Sans", sans-serif;
+            font-size: 12px;
+            margin: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #999;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .status-active {
+            color: green;
+            font-weight: bold;
+        }
+        .status-inactive {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>📄 Liste du Support Technique</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nom d'utilisateur</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Statut</th>
+                <th>Date d'ajout</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for support in supports %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ support.user.username }}</td>
+                <td>{{ support.email }}</td>
+                <td>{{ support.phone }}</td>
+                <td>
+                    {% if support.Status == 'Active' %}
+                        <span class="status-active">Active</span>
+                    {% else %}
+                        <span class="status-inactive">No Active</span>
+                    {% endif %}
+                </td>
+                <td>{{ support.date_created|date:"d/m/Y H:i" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

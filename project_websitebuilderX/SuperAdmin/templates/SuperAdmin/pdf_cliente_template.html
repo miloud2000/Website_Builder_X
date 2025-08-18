@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        th, td { border: 1px solid #999; padding: 6px 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .footer { margin-top: 30px; text-align: center; font-size: 10px; color: #888; }
+    </style>
+</head>
+<body>
+
+    <h2>📋 Liste des Clients</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nom d'utilisateur</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Solde</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in clientes %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ c.user.username }}</td>
+                <td>{{ c.nom }}</td>
+                <td>{{ c.prenom }}</td>
+                <td>{{ c.email }}</td>
+                <td>{{ c.phone }}</td>
+                <td>{{ c.solde }} MAD</td>
+                <td>{{ c.date_created|date:"d/m/Y H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="8" style="text-align:center;">Aucun client trouvé.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        Généré automatiquement – {{ now|date:"d/m/Y H:i" }}
+    </div>
+
+</body>
+</html>

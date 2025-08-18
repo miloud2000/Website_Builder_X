@@ -127,45 +127,98 @@
           </div>
         </div>
       </div> {% endcomment %}
-      <a href="{% url 'addCommercial' %}">
-        <button type="button" class="btn btn-primary" style="margin: 10px">Ajouter Commercial</button>
-      </a>
+      <div class="container mt-4">
+
+        <!-- 🔘 Bouton Ajouter -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h3 class="fw-bold text-primary">
+            <i class="mdi mdi-account-tie"></i> Liste des commerciaux
+          </h3>
+          <a href="{% url 'addCommercial' %}" class="btn btn-success">
+            <i class="mdi mdi-account-plus"></i> Ajouter Commercial
+          </a>
+        </div>
       
-      <div class="col-lg-12 grid-margin stretch-card">
-        <div class="card">
+        <!-- 🔍 Formulaire de recherche -->
+        <form method="get" class="row g-3 mb-4">
+          <div class="col-md-6">
+            <input type="text" name="q" class="form-control"
+              placeholder="🔍 Rechercher par nom, email, téléphone ou username"
+              value="{{ request.GET.q }}">
+
+          </div>
+          <div class="col-md-6 d-flex gap-2 justify-content-end">
+            <select name="status" class="form-select w-50">
+              <option value="">📋 Tous les statuts</option>
+              <option value="Active" {% if request.GET.status == "Active" %}selected{% endif %}>✅ Active</option>
+              <option value="Inactive" {% if request.GET.status == "Inactive" %}selected{% endif %}>❌ Inactive</option>
+            </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="submit" class="btn btn-primary">
+              <i class="mdi mdi-magnify"></i> Filtrer
+            </button>&nbsp;
+            <a href="{% url 'CommercialSuperAdmin' %}" class="btn btn-outline-secondary">
+              <i class="mdi mdi-filter-remove"></i> Réinitialiser
+            </a>
+          </div>
+        </form>
+      
+        <!-- 📤 Boutons Export -->
+        <div class="d-flex justify-content-end mb-3 gap-2">
+          <a href="{% url 'export_commercials_csv' %}" class="btn btn-outline-secondary">
+            <i class="mdi mdi-file-delimited-outline"></i> Export CSV
+          </a>&nbsp;
+          <a href="{% url 'export_commercials_excel' %}" class="btn btn-outline-success">
+            <i class="mdi mdi-file-excel"></i> Export Excel
+          </a>&nbsp;
+          <a href="{% url 'export_commercials_pdf' %}" class="btn btn-outline-danger">
+            <i class="mdi mdi-file-pdf-box"></i> Export PDF
+          </a>
+        </div>
+      
+        <!-- 📋 Tableau -->
+        <div class="card shadow-sm">
           <div class="card-body">
-            <h4 class="card-title">Profils Commerciaux</h4>
+            <h5 class="card-title mb-3">📄 Liste des commerciaux enregistrés</h5>
             <div class="table-responsive">
-              <table class="table table-striped">
-                <thead>
+              <table class="table table-striped align-middle">
+                <thead class="table-light">
                   <tr>
-                    <th>N°</th>
+                    <th>#</th>
+                    <th>Username</th>
                     <th>Nom</th>
                     <th>Email</th>
                     <th>Téléphone</th>
                     <th>Statut</th>
-                    <th>Date de création</th>
+                    <th>Date Création</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for commercial in commercials %}
                   <tr>
-                    <td class="py-1">{{ forloop.counter }}</td>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ commercial.user.username }}</td>
                     <td>{{ commercial.name }}</td>
                     <td>{{ commercial.email }}</td>
                     <td>{{ commercial.phone }}</td>
-                    {% comment %} <td><span class="badge badge-success">{{ commercial.status }}</span></td> {% endcomment %}
-                    {% if commercial.status == 'Active' %}  
-                    <td><span class="badge badge-success">{{ commercial.status }}</span></td>
-                    {% else %}
-                    <td><span class="badge badge-danger">{{ commercial.status }}</span></td>
-                    {% endif %}
-                    <td>{{ commercial.date_created }}</td>
                     <td>
-                      <a href="{% url 'updateCommercial' commercial.pk %}" class="btn btn-sm btn-primary">Éditer</a>
-                      <a href="{% url 'deleteCommercial' commercial.pk %}" class="btn btn-sm btn-danger">Supprimer</a>
+                      {% if commercial.status == "Active" %}
+                        <span class="badge bg-success" style="color-text: #ffffff;color: white;">Active</span>
+                      {% else %}
+                        <span class="badge bg-danger" style="color-text: #ffffff;color: white;">Inactive</span>
+                      {% endif %}
                     </td>
+                    <td>{{ commercial.date_created|date:"d/m/Y H:i" }}</td>
+                    <td>
+                      <div class="btn-group" role="group">
+                        <a href="{% url 'updateCommercial' commercial.id %}" class="btn btn-sm btn-outline-primary">Editer</a>
+                        <a href="{% url 'deleteCommercial' commercial.id %}" class="btn btn-sm btn-outline-danger">Supprimer</a>
+                      </div>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="8" class="text-center text-muted">Aucun commercial trouvé.</td>
                   </tr>
                   {% endfor %}
                 </tbody>
@@ -173,10 +226,9 @@
             </div>
           </div>
         </div>
+      
       </div>
       
-
-
 
 
 {% comment %}<div class="container-fluid" id="container-wrapper">

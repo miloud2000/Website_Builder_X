@@ -17,7 +17,27 @@
     {% endfor %}
   {% endif %}
     <div class="row">
-
+      <form method="get" class="form-inline mb-3">
+        <input type="text" name="code" placeholder="Code Demande" class="form-control mr-2" value="{{ code }}">
+        
+        <select name="status" class="form-control mr-2">
+          <option value="">-- Status --</option>
+          <option value="Done" {% if status == 'Done' %}selected{% endif %}>Done</option>
+          <option value="Not Done yet" {% if status == 'Not Done yet' %}selected{% endif %}>Not Done yet</option>
+        </select>
+      
+        <select name="status_consome" class="form-control mr-2">
+          <option value="">-- Status Demande --</option>
+          <option value="Consomé" {% if status_consome == 'Consomé' %}selected{% endif %}>Consomé</option>
+          <option value="Not Consomé" {% if status_consome == 'Not Consomé' %}selected{% endif %}>Not Consomé</option>
+        </select>
+      
+        <input type="text" name="updated_by" placeholder="Updated By" class="form-control mr-2" value="{{ updated_by }}">
+      
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+      </form>
+      
+      
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
