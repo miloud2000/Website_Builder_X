@@ -18,24 +18,45 @@
   {% endif %}
     <div class="row">
       <form method="get" class="form-inline mb-3">
-        <input type="text" name="code" placeholder="Code Demande" class="form-control mr-2" value="{{ code }}">
-        
-        <select name="status" class="form-control mr-2">
+        <input type="text" name="code" placeholder="Code Demande" class="form-control mr-2" >
+      
+        {% comment %} <select name="status" class="form-control mr-2">
           <option value="">-- Status --</option>
           <option value="Done" {% if status == 'Done' %}selected{% endif %}>Done</option>
           <option value="Not Done yet" {% if status == 'Not Done yet' %}selected{% endif %}>Not Done yet</option>
-        </select>
+        </select> {% endcomment %}
       
         <select name="status_consome" class="form-control mr-2">
-          <option value="">-- Status Demande --</option>
+          <option value="">-- Status Consomé --</option>
           <option value="Consomé" {% if status_consome == 'Consomé' %}selected{% endif %}>Consomé</option>
           <option value="Not Consomé" {% if status_consome == 'Not Consomé' %}selected{% endif %}>Not Consomé</option>
         </select>
       
-        <input type="text" name="updated_by" placeholder="Updated By" class="form-control mr-2" value="{{ updated_by }}">
-      
-        <button type="submit" class="btn btn-primary">Filtrer</button>
+        <select name="updated_by" class="form-control mr-2">
+          <option value="">-- Technicien --</option>
+          {% for tech in techniciens %}
+            <option value="{{ tech.id }}" {% if updated_by == tech.id|stringformat:"s" %}selected{% endif %}>
+              {{ tech.name }}
+            </option>
+          {% endfor %}
+        </select>
+        <!-- Bouton Réinitialiser -->
+        <button type="submit" class="btn btn-primary">Filtrer</button>&nbsp;
+        <a href="{% url 'DemandeSupportAll' %}" class="btn btn-secondary ml-2">🔄 Réinitialiser</a>&nbsp;&nbsp;
+
+
+        <div class="mb-3" style="margin-left: 437px;">
+          <a href="{% url 'export_demande_support_filtered' format='excel' %}?status={{ status }}&status_consome={{ status_consome }}&updated_by={{ updated_by }}&code={{ code }}&cliente_username={{ cliente_username }}" class="btn btn-success">
+            📥 Télécharger Excel
+          </a>
+        
+          <a href="{% url 'export_demande_support_filtered' format='pdf' %}?status={{ status }}&status_consome={{ status_consome }}&updated_by={{ updated_by }}&code={{ code }}&cliente_username={{ cliente_username }}" class="btn btn-danger">
+            🧾 Télécharger PDF
+          </a>
+        </div>
+        
       </form>
+      
       
       
     <div class="col-lg-12 grid-margin stretch-card">

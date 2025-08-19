@@ -1019,33 +1019,142 @@ def DemandeRechargerNotDone(request):
 
 
 #List of Demands Support all [SuperAdmin]
-@login_required(login_url='login')
-@allowedUsers(allowedGroups=['SuperAdmin']) 
 def DemandeSupportAll(request): 
-    DemandeSupports = DemandeSupport.objects.order_by('-date_created')
+    DemandeSupports = DemandeSupport.objects.select_related('achat_support', 'updated_by', 'cliente')
 
     status = request.GET.get('status')
     status_consome = request.GET.get('status_consome')
     updated_by = request.GET.get('updated_by')
     code = request.GET.get('code')
+    cliente_username = request.GET.get('cliente_username')
 
     if status:
         DemandeSupports = DemandeSupports.filter(status=status)
     if status_consome:
         DemandeSupports = DemandeSupports.filter(achat_support__StatusConsomé=status_consome)
     if updated_by:
-        DemandeSupports = DemandeSupports.filter(updated_by__user__username__icontains=updated_by)
+        DemandeSupports = DemandeSupports.filter(updated_by__id=updated_by)
     if code:
         DemandeSupports = DemandeSupports.filter(code_DemandeSupport__icontains=code)
+    if cliente_username:
+        DemandeSupports = DemandeSupports.filter(cliente__username=cliente_username)
+
+    techniciens = SupportTechnique.objects.filter(Status='Active')
+    clients = User.objects.filter(groups__name='Client')  
 
     context = {
-        'DemandeSupports': DemandeSupports,
+        'DemandeSupports': DemandeSupports.order_by('-date_created'),
         'status': status,
         'status_consome': status_consome,
         'updated_by': updated_by,
         'code': code,
+        'cliente_username': cliente_username,
+        'techniciens': techniciens,
+        'clients': clients,
     }
     return render(request, "SuperAdmin/DemandeSupportAll.html", context)
+
+
+
+
+from io import BytesIO
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+import xlwt
+
+def export_demande_support_filtered(request, format):
+    demandes = DemandeSupport.objects.select_related('achat_support', 'updated_by', 'cliente')
+
+    status = request.GET.get('status')
+    if status and status != 'None':
+        demandes = demandes.filter(status=status)
+
+    status_consome = request.GET.get('status_consome')
+    if status_consome and status_consome != 'None':
+        demandes = demandes.filter(achat_support__StatusConsomé=status_consome)
+
+    updated_by = request.GET.get('updated_by')
+    if updated_by and updated_by != 'None' and updated_by.isdigit():
+        demandes = demandes.filter(updated_by__id=int(updated_by))
+
+    code = request.GET.get('code')
+    if code and code != 'None':
+        demandes = demandes.filter(code_DemandeSupport__icontains=code)
+
+    cliente_username = request.GET.get('cliente_username')
+    if cliente_username and cliente_username != 'None':
+        demandes = demandes.filter(cliente__user__username=cliente_username)
+
+    if format == 'excel':
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="demandes_support.xls"'
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Demandes')
+        row_num = 0
+        columns = ['Client', 'Support', 'Prix', 'Status', 'Consommé', 'Technicien', 'Date', 'Code']
+        for col_num, col in enumerate(columns):
+            ws.write(row_num, col_num, col)
+        for d in demandes:
+            ws.write(row_num + 1, 0, d.cliente.user.username if d.cliente and d.cliente.user else "Sans nom")
+            ws.write(row_num + 1, 1, d.achat_support.support.name if d.achat_support and d.achat_support.support else "")
+            ws.write(row_num + 1, 2, float(d.achat_support.prix) if d.achat_support else 0)
+            ws.write(row_num + 1, 3, d.status)
+            ws.write(row_num + 1, 4, d.achat_support.StatusConsomé if d.achat_support else "")
+            ws.write(row_num + 1, 5, d.updated_by.name if d.updated_by else "Non assigné")
+            ws.write(row_num + 1, 6, d.date_created.strftime("%d/%m/%Y %H:%M"))
+            ws.write(row_num + 1, 7, d.code_DemandeSupport)
+            row_num += 1
+        wb.save(response)
+        return response
+
+    elif format == 'pdf':
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=A4)
+        elements = []
+        styles = getSampleStyleSheet()
+
+        elements.append(Paragraph("📋 Liste des demandes de support", styles['Title']))
+        elements.append(Spacer(1, 12))
+
+        data = [
+            ['Client', 'Support', 'Prix', 'Status', 'Consommé', 'Technicien', 'Date', 'Code']
+        ]
+
+        for d in demandes:
+            data.append([
+                d.cliente.user.username if d.cliente and d.cliente.user else "Sans nom",
+                d.achat_support.support.name if d.achat_support and d.achat_support.support else "",
+                f"{d.achat_support.prix} MAD" if d.achat_support else "",
+                d.status,
+                d.achat_support.StatusConsomé if d.achat_support else "",
+                d.updated_by.name if d.updated_by else "Non assigné",
+                d.date_created.strftime("%d/%m/%Y %H:%M"),
+                d.code_DemandeSupport
+            ])
+
+        table = Table(data, repeatRows=1)
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#d3d3d3')),
+            ('TEXTCOLOR', (0,0), (-1,0), colors.black),
+            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0,0), (-1,-1), 9),
+            ('BOTTOMPADDING', (0,0), (-1,0), 8),
+            ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
+        ]))
+
+        elements.append(table)
+        doc.build(elements)
+
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="demandes_support_table.pdf"'
+        response.write(buffer.getvalue())
+        buffer.close()
+        return response
+
+    return HttpResponse("Format non supporté", status=400)
 
 
 
@@ -1079,3 +1188,41 @@ def DemandeSupportNotDoneyetSA(request):
 def history(request):
     history_entries = History.objects.all().order_by('-date_created')
     return render(request, 'SuperAdmin/history.html', {'history_entries': history_entries})
+
+
+
+
+
+def WebsitesListSuperAdmin(request):
+    websites = Websites.objects.all()
+
+    status = request.GET.get('status')
+    catégorie = request.GET.get('catégorie')
+    CMS = request.GET.get('CMS')
+    langues = request.GET.get('langues')
+    plan = request.GET.get('plan')
+
+    if status and status != 'None':
+        websites = websites.filter(status=status)
+    if catégorie and catégorie != 'None':
+        websites = websites.filter(catégorie=catégorie)
+    if CMS and CMS != 'None':
+        websites = websites.filter(CMS=CMS)
+    if langues and langues != 'None':
+        websites = websites.filter(langues=langues)
+    if plan and plan != 'None':
+        websites = websites.filter(plan=plan)
+
+    context = {
+        'websites': websites.order_by('-date_created'),
+        'status': status,
+        'catégorie': catégorie,
+        'CMS': CMS,
+        'langues': langues,
+        'plan': plan,
+        'catégories_list': ['Ecommerce','Blogs','Business','portfolio','Educational','News'],
+        'cms_list': ['WordPress','Drupal'],
+        'langues_list': ['Français','Anglais'],
+        'plans_list': ['Free','Payant'],
+    }
+    return render(request, "SuperAdmin/websites_list.html", context)

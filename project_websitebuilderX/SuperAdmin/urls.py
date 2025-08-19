@@ -82,11 +82,16 @@ urlpatterns = [
 
 
     path('DemandeSupportAll/',views.DemandeSupportAll, name="DemandeSupportAll"), 
+    path('export-demande-support/<str:format>/', views.export_demande_support_filtered, name='export_demande_support_filtered'),
+
     path('DemandeSupportDoneSA/',views.DemandeSupportDoneSA, name="DemandeSupportDoneSA"), 
     path('DemandeSupportNotDoneyetSA/',views.DemandeSupportNotDoneyetSA, name="DemandeSupportNotDoneyetSA"), 
 
     
     path('history/', views.history, name='history'),
+    
+    path('SuperAdmin/websites/', views.WebsitesListSuperAdmin, name='websites_list_superadmin'),
+
 
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
