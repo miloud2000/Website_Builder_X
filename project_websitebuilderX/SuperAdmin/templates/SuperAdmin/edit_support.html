@@ -1,0 +1,36 @@
+{% extends "SuperAdmin/dashbordSuperAdmin.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">Modifier le support : {{ support.name }}</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-warning">
+      <i class="bi bi-pencil-square"></i> Enregistrer les modifications
+    </button>
+    <a href="{% url 'supports_list_superadmin' %}" class="btn btn-secondary">Annuler</a>
+  </form>
+</div>
+
+<style>
+    .btn-edit {
+        background-color: #fff3cd;
+        color: #ffc107;
+        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.2s ease;
+      }
+      
+      .btn-edit:hover {
+        background-color: #ffc107;
+        color: #212529;
+      }
+      
+</style>
+{% endblock %}

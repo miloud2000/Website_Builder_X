@@ -91,6 +91,23 @@ urlpatterns = [
     path('history/', views.history, name='history'),
     
     path('SuperAdmin/websites/', views.WebsitesListSuperAdmin, name='websites_list_superadmin'),
+    path('SuperAdmin/websites/add/', views.add_website, name='add_website'),
+    path('SuperAdmin/websites/<int:id>/', views.website_details, name='website_details'),
+    path('SuperAdmin/websites/<int:id>/edit/', views.edit_website, name='edit_website'),
+    path('SuperAdmin/websites/<int:id>/hide/', views.hide_website, name='hide_website'),
+
+
+    path('SuperAdmin/supports/', views.supports_list_superadmin, name='supports_list_superadmin'),
+    path('SuperAdmin/supports/add/', views.add_support, name='add_support'),
+    path('SuperAdmin/supports/<int:id>/', views.support_details, name='support_details'),
+    path('SuperAdmin/supports/<int:id>/edit/', views.edit_support, name='edit_support'),
+    path('SuperAdmin/supports/<int:id>/hide/', views.hide_support, name='hide_support'),
+    path('SuperAdmin/tickets/', views.tickets_list, name='tickets_list'),
+    path('SuperAdmin/tickets/<int:ticket_id>/', views.ticket_detail, name='ticket_detail'),
+
+
+
+
 
 
     

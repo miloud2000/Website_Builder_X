@@ -198,3 +198,34 @@ class InputForm(forms.Form):
 #         required=False,
 #         widget=forms.TextInput(attrs={'placeholder': 'Username Client'})
 #     )
+
+
+
+
+class WebsiteForm(forms.ModelForm):
+    class Meta:
+        model = Websites
+        fields = [
+            'name', 'prix', 'prix_loyer', 'prix_hebergement',
+            'status', 'catégorie', 'CMS', 'langues', 'plan',
+            'image', 'description', 'video'
+        ]
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+            'video': forms.URLInput(attrs={'placeholder': 'https://www.youtube.com/watch?v=...'}),
+        }
+
+
+from django import forms
+from .models import Supports
+
+class SupportForm(forms.ModelForm):
+    class Meta:
+        model = Supports
+        fields = ['name', 'description', 'status', 'prix']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'status': forms.Select(attrs={'class': 'form-select'}),
+            'prix': forms.NumberInput(attrs={'class': 'form-control'}),
+        }

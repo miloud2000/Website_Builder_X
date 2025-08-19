@@ -29,6 +29,8 @@ from websitebuilder.forms import (
     UpdateGestionnaireComptesForm,
     ClienteUpdateFormSuperAdmin,
     CommercialUpdateForm,
+    WebsiteForm,
+    SupportForm,
 )
 
 from websitebuilder.decorators import (  
@@ -1226,3 +1228,198 @@ def WebsitesListSuperAdmin(request):
         'plans_list': ['Free','Payant'],
     }
     return render(request, "SuperAdmin/websites_list.html", context)
+
+
+
+
+
+
+def add_website(request):
+    if request.method == 'POST':
+        form = WebsiteForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('websites_list_superadmin')
+    else:
+        form = WebsiteForm()
+    return render(request, 'SuperAdmin/add_website.html', {'form': form})
+
+
+
+
+def website_details(request, id):
+    website = get_object_or_404(Websites, id=id)
+    return render(request, 'SuperAdmin/website_details.html', {'website': website})
+
+
+
+
+def edit_website(request, id):
+    website = get_object_or_404(Websites, id=id)
+    if request.method == 'POST':
+        form = WebsiteForm(request.POST, request.FILES, instance=website)
+        if form.is_valid():
+            form.save()
+            return redirect('websites_list_superadmin')
+    else:
+        form = WebsiteForm(instance=website)
+    return render(request, 'SuperAdmin/edit_website.html', {'form': form, 'website': website})
+
+
+
+def hide_website(request, id):
+    website = get_object_or_404(Websites, id=id)
+    website.is_visible = False
+    website.save()
+    return redirect('websites_list_superadmin')
+
+
+
+
+def supports_list_superadmin(request):
+    supports = Supports.objects.all()
+
+    status = request.GET.get('status')
+    if status and status != 'None':
+        supports = supports.filter(status=status)
+
+    context = {
+        'supports': supports.order_by('-date_created'),
+        'status': status,
+        'status_choices': ['Disponible', 'No Disponible'],
+    }
+    return render(request, 'SuperAdmin/supports_list.html', context)
+
+
+
+
+def add_support(request):
+    if request.method == 'POST':
+        form = SupportForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('supports_list_superadmin')  
+    else:
+        form = SupportForm()
+    return render(request, 'SuperAdmin/add_support.html', {'form': form})
+
+
+
+
+def support_details(request, id):
+    support = get_object_or_404(Supports, id=id)
+    return render(request, 'SuperAdmin/support_details.html', {'support': support})
+
+
+
+
+def edit_support(request, id):
+    support = get_object_or_404(Supports, id=id)
+    if request.method == 'POST':
+        form = SupportForm(request.POST, instance=support)
+        if form.is_valid():
+            form.save()
+            return redirect('supports_list_superadmin')  
+    else:
+        form = SupportForm(instance=support)
+    return render(request, 'SuperAdmin/edit_support.html', {'form': form, 'support': support})
+
+
+
+
+
+def hide_support(request, id):
+    support = get_object_or_404(Supports, id=id)
+    support.status = 'No Disponible'
+    support.save()
+    return redirect('supports_list_superadmin')
+
+
+
+
+
+
+
+
+def tickets_list(request):
+    tickets = Ticket.objects.all()
+
+    # 🔍 Recherche rapide
+    search_query = request.GET.get('search')
+    if search_query:
+        tickets = tickets.filter(
+            Q(code_Ticket__icontains=search_query) |
+            Q(description__icontains=search_query) |
+            Q(typeTicket__icontains=search_query) |
+            Q(Branche__icontains=search_query) |
+            Q(cliente__user__username__icontains=search_query)
+        )
+
+    # ✅ Filtres
+    status = request.GET.get('status')
+    typeTicket = request.GET.get('typeTicket')
+    branche = request.GET.get('Branche')
+    cliente_id = request.GET.get('cliente')
+    date_start = request.GET.get('date_start')
+    date_end = request.GET.get('date_end')
+
+    if status and status != 'None':
+        tickets = tickets.filter(status=status)
+    if typeTicket and typeTicket != 'None':
+        tickets = tickets.filter(typeTicket=typeTicket)
+    if branche and branche != 'None':
+        tickets = tickets.filter(Branche=branche)
+    if cliente_id and cliente_id != 'None':
+        tickets = tickets.filter(cliente_id=cliente_id)
+    if date_start and date_end:
+        tickets = tickets.filter(date_created__date__range=[date_start, date_end])
+
+    # 🔃 Tri
+    sort_by = request.GET.get('sort_by')
+
+    if sort_by == 'date_asc':
+        tickets = tickets.order_by('date_created')
+    elif sort_by == 'date_desc':
+        tickets = tickets.order_by('-date_created')
+    elif sort_by == 'status_asc':
+        tickets = tickets.order_by('status')
+    elif sort_by == 'status_desc':
+        tickets = tickets.order_by('-status')
+    else:
+        tickets = tickets.order_by('-date_created')
+
+
+    context = {
+        'tickets': tickets,
+        'status_choices': Ticket.STATUS_CHOICES,
+        'type_choices': Ticket.objects.values_list('typeTicket', flat=True).distinct(),
+        'branche_choices': Ticket.objects.values_list('Branche', flat=True).distinct(),
+        'clientes': Ticket.objects.values_list('cliente__id', 'cliente__user__username').distinct(),
+        'status': status,
+        'typeTicket': typeTicket,
+        'branche': branche,
+        'cliente_id': cliente_id,
+        'date_start': date_start,
+        'date_end': date_end,
+        'search_query': search_query,
+        'sort_by': sort_by,
+    }
+    return render(request, 'SuperAdmin/tickets_list.html', context)
+
+
+
+
+
+
+
+
+def ticket_detail(request, ticket_id):
+    ticket = get_object_or_404(Ticket, id=ticket_id)
+    conversations = ticket.conversations.order_by('timestamp')
+
+    context = {
+        'ticket': ticket,
+        'conversations': conversations,
+    }
+    return render(request, 'SuperAdmin/ticket_detail.html', context)
+

@@ -1,0 +1,15 @@
+{% extends "SuperAdmin/dashbordSuperAdmin.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">{{ support.name }}</h2>
+  <div class="card p-4 shadow-sm">
+    <p><strong>Description:</strong> {{ support.description }}</p>
+    <p><strong>Statut:</strong> {{ support.status }}</p>
+    <p><strong>Prix:</strong> {{ support.prix }} MAD</p>
+    <p><strong>Date de création:</strong> {{ support.date_created|date:"d/m/Y" }}</p>
+  </div>
+  <a href="{% url 'supports_list_superadmin' %}" class="btn btn-secondary mt-3">⬅ Retour</a>
+</div>
+{% endblock %}

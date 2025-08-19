@@ -281,6 +281,7 @@ class Websites(models.Model):
     langues = models.CharField(max_length=50, choices=langues, default='Français', null=True)
     catégorie = models.CharField(max_length=50, choices=Catégories, default='Ecommerce', null=True)
     plan = models.CharField(max_length=50, choices=plans, default='Free', null=True)
+    is_visible = models.BooleanField(default=True)
     # code_Website = models.CharField(max_length=100, null=True)
 
 

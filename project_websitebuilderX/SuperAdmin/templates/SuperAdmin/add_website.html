@@ -1,0 +1,40 @@
+{% extends "SuperAdmin/dashbordSuperAdmin.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+  <h2 class="mb-4 text-primary">➕ Ajouter un nouveau site</h2>
+
+  <form method="post" enctype="multipart/form-data" class="card p-4 shadow-sm">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="row g-3">
+      {% for field in form %}
+        <div class="col-md-6">
+          <label class="form-label">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            <div class="text-danger small">{{ field.errors }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+    <div class="mt-4 d-flex justify-content-end gap-2">
+      <a href="{% url 'websites_list_superadmin' %}" class="btn btn-outline-secondary">↩️ Annuler</a>&nbsp;&nbsp;
+      <button type="submit" class="btn btn-success">💾 Enregistrer</button>
+    </div>
+  </form>
+</div>
+
+<style>
+  input, select, textarea {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  .form-label {
+    font-weight: 500;
+  }
+</style>
+{% endblock %}

@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'GestionnaireComptes',
     'Administrateur',
     'Commercial',
+    'widget_tweaks',
+
 ]
 
 MIDDLEWARE = [
