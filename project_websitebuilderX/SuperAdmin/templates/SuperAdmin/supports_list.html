@@ -50,10 +50,10 @@
               </div>
               <div class="action-buttons mt-3">
                 <a href="{% url 'support_details' support.id %}" class="btn btn-view" title="Voir">
-                  <i class="bi bi-eye"></i>Voir
+                  <i class="bi bi-eye"></i>
                 </a>
                 <a href="{% url 'edit_support' support.id %}" class="btn btn-edit" title="Modifier">
-                  <i class="bi bi-pencil"></i>Upadte
+                  <i class="bi bi-pencil"></i>
                 </a>
                 <a href="{% url 'hide_support' support.id %}" class="btn btn-hide" title="Masquer"
                    onclick="return confirm('Masquer {{ support.name }} ?')">

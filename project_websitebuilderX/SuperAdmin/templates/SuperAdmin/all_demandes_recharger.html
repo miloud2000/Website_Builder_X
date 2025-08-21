@@ -1,0 +1,148 @@
+{% extends "SuperAdmin/dashbordSuperAdmin.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">
+            <i class="bi bi-arrow-down-square me-2"></i>Gestion des demandes de recharge
+        </h2>
+    </div>
+
+    <form method="get">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h6 class="card-title mb-0"><i class="bi bi-funnel me-2"></i>Filtrer les demandes</h6>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Filtrer">
+                        <i class="bi bi-search"></i>Filtrer
+                    </button>
+                    <a href="{% url 'all_demandes_recharger' %}" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Annuler les filtres">
+                        <i class="bi bi-x-circle"></i>Annuler
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label for="status-filter" class="form-label text-muted small">Statut</label><br>
+                        <select name="status" id="status-filter" class="form-select form-select-sm">
+                            <option value="">Tout</option>
+                            <option value="Done" {% if request.GET.status == 'Done' %}selected{% endif %}>✅ Validée</option>
+                            <option value="inacceptable" {% if request.GET.status == 'inacceptable' %}selected{% endif %}>❌ Refusée</option>
+                            <option value="Not Done yet" {% if request.GET.status == 'Not Done yet' %}selected{% endif %}>⏳ En attente</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="date-filter" class="form-label text-muted small">Date de création</label>
+                        <input type="date" name="date" id="date-filter" class="form-control form-control-sm" value="{{ request.GET.date }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="code-filter" class="form-label text-muted small">Code de la demande</label>
+                        <input type="text" name="code" id="code-filter" class="form-control form-control-sm" placeholder="Code" value="{{ request.GET.code }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="updated-by-filter" class="form-label text-muted small">Modifiée par</label>
+                        <select name="updated_by" id="updated-by-filter" class="form-select form-select-sm">
+                            <option value="">Tout</option>
+                            {% for g in gestionnaires %}
+                            <option value="{{ g.id }}" {% if request.GET.updated_by|stringformat:"i" == g.id|stringformat:"i" %}selected{% endif %}>{{ g.user.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="d-flex justify-content-end mb-3 gap-2">
+      <a href="{% url 'export_demandes_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-outline-danger btn-sm" target="_blank">
+        <i class="bi bi-file-earmark-pdf"></i> PDF
+      </a>
+      {% comment %} <a href="{% url 'export_demandes_csv' %}?{{ request.GET.urlencode }}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-file-earmark-spreadsheet"></i> CSV
+      </a> {% endcomment %}
+      <a href="{% url 'export_demandes_excel' %}?{{ request.GET.urlencode }}" class="btn btn-outline-success btn-sm">
+        <i class="bi bi-file-earmark-excel"></i> Excel
+      </a>
+    </div>
+    
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="card-title my-1"><i class="bi bi-list-check me-2 text-primary"></i>Liste des demandes de recharge</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="border-bottom-0"><small>#</small></th>
+                            <th class="border-bottom-0"><small>Client</small></th>
+                            <th class="text-end border-bottom-0"><small>Solde</small></th>
+                            <th class="text-center border-bottom-0"><small>Statut</small></th>
+                            <th class="border-bottom-0"><small>Motif (si refus)</small></th>
+                            <th class="border-bottom-0"><small>Date</small></th>
+                            <th class="border-bottom-0"><small>Code</small></th>
+                            <th class="border-bottom-0"><small>Mis à jour par</small></th>
+                            <th class="text-center border-bottom-0"><small>Preuve</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for demande in demandes %}
+                        <tr>
+                            <td class="align-middle text-muted">{{ forloop.counter }}</td>
+                            <td class="align-middle fw-bold">{{ demande.cliente.user.username }}</td>
+                            <td class="align-middle text-end">{{ demande.solde }} MAD</td>
+                            <td class="align-middle text-center">
+                                {% if demande.status == 'Done' %}
+                                <span class="badge bg-success">Validée</span>
+                                {% elif demande.status == 'Not Done yet' %}
+                                <span class="badge bg-warning text-dark">En attente</span>
+                                {% elif demande.status == 'inacceptable' %}
+                                <span class="badge bg-danger">Refusée</span>
+                                {% endif %}
+                            </td>
+                            <td class="align-middle text-muted small">{{ demande.motifNonAcceptation|default:"—" }}</td>
+                            <td class="align-middle">{{ demande.date_created|date:"d/m/Y H:i" }}</td>
+                            <td class="align-middle text-muted small">{{ demande.code_DemandeRecharger }}</td>
+                            <td class="align-middle">
+                                {% if demande.updated_by and demande.updated_by.user %}
+                                <a href="{% url 'gestionnaire_detail' demande.updated_by.id %}" class="text-decoration-none">
+                                    {{ demande.updated_by.user.username }}
+                                </a>
+                                {% else %}
+                                <span class="text-muted small">Non attribué</span>
+                                {% endif %}
+                            </td>
+                            <td class="align-middle text-center">
+                                {% if demande.image %}
+                                <a href="{{ demande.image.url }}" target="_blank">
+                                    <img src="{{ demande.image.url }}" class="img-thumbnail rounded" alt="Preuve" style="width: 50px; height: 50px; object-fit: cover;">
+                                </a>
+                                {% else %}
+                                <span class="text-muted small">Aucune</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-5">
+                                <i class="bi bi-folder-x display-5 d-block mb-3"></i>
+                                Aucune demande de recharge ne correspond à ces critères.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+</script>
+{% endblock %}

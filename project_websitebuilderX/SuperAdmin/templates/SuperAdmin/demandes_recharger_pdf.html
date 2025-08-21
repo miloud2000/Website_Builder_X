@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Rapport - Demandes de Recharge</title>
+    <style>
+        body { 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+            font-size: 10px; 
+            line-height: 1.4;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .header h1 {
+            color: #007bff;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            padding: 0;
+        }
+        .report-info {
+            font-size: 10px;
+            color: #666;
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 10px; 
+            font-size: 10px;
+        }
+        th, td { 
+            border: 1px solid #e0e0e0; 
+            padding: 8px; 
+            text-align: left; 
+        }
+        th { 
+            background-color: #f8f9fa; 
+            color: #495057;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        tr:nth-child(even) {
+            background-color: #fbfbfb;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            font-size: 9px;
+            font-weight: bold;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .status-done { background-color: #d4edda; color: #155724; }
+        .status-not-done { background-color: #fff3cd; color: #856404; }
+        .status-inacceptable { background-color: #f8d7da; color: #721c24; }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 9px;
+            color: #999;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Rapport des Demandes de Recharge</h1>
+        </div>
+        <div class="report-info">
+            Date d'impression: {{ "now"|date:"d/m/Y H:i" }}
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Client</th>
+                    <th>Solde</th>
+                    <th>Statut</th>
+                    <th>Motif</th>
+                    <th>Date</th>
+                    <th>Code</th>
+                    <th>Mis à jour par</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in demandes %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ d.cliente.user.username }}</td>
+                    <td>{{ d.solde }} MAD</td>
+                    <td>
+                        {% if d.status == 'Done' %}
+                        <span class="status-badge status-done">Validée</span>
+                        {% elif d.status == 'Not Done yet' %}
+                        <span class="status-badge status-not-done">En attente</span>
+                        {% elif d.status == 'inacceptable' %}
+                        <span class="status-badge status-inacceptable">Refusée</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ d.motifNonAcceptation|default:"—" }}</td>
+                    <td>{{ d.date_created|date:"d/m/Y H:i" }}</td>
+                    <td>{{ d.code_DemandeRecharger }}</td>
+                    <td>
+                        {% if d.updated_by %}
+                            {{ d.updated_by.user.username }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div class="footer">
+            Rapport généré par le système de gestion.
+        </div>
+    </div>
+</body>
+</html>

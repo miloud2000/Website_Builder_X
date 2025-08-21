@@ -1,401 +1,94 @@
 {% extends "SuperAdmin/dashbordSuperAdmin.html" %}
-
 {% load static %}
+{% load history_tags %}
+
 
 {% block content %}
-
- <!-- partial -->
- <div class="main-panel">
-  <div class="content-wrapper">
-  {% if messages %}
-  {% for message in messages %}
-      {% if message.tags == 'success' %}
-        <div class="alert alert-success" role="alert">
-          {{ message }}
-        </div>
-      {% endif %}
-    {% endfor %}
-  {% endif %}
-    <div class="row">
-      
-
-      {% comment %} <div class="col-lg-6 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">Basic Table</h4>
-            <p class="card-description">
-              Add class <code>.table</code>
-            </p>
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Profile</th>
-                    <th>VatNo.</th>
-                    <th>Created</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Jacob</td>
-                    <td>53275531</td>
-                    <td>12 May 2017</td>
-                    <td><label class="badge badge-danger">Pending</label></td>
-                  </tr>
-                  <tr>
-                    <td>Messsy</td>
-                    <td>53275532</td>
-                    <td>15 May 2017</td>
-                    <td><label class="badge badge-warning">In progress</label></td>
-                  </tr>
-                  <tr>
-                    <td>John</td>
-                    <td>53275533</td>
-                    <td>14 May 2017</td>
-                    <td><label class="badge badge-info">Fixed</label></td>
-                  </tr>
-                  <tr>
-                    <td>Peter</td>
-                    <td>53275534</td>
-                    <td>16 May 2017</td>
-                    <td><label class="badge badge-success">Completed</label></td>
-                  </tr>
-                  <tr>
-                    <td>Dave</td>
-                    <td>53275535</td>
-                    <td>20 May 2017</td>
-                    <td><label class="badge badge-warning">In progress</label></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div> {% endcomment %}
-      {% comment %} <div class="col-lg-6 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">Hoverable Table</h4>
-            <p class="card-description">
-              Add class <code>.table-hover</code>
-            </p>
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th>User</th>
-                    <th>Product</th>
-                    <th>Sale</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Jacob</td>
-                    <td>Photoshop</td>
-                    <td class="text-danger"> 28.76% <i class="ti-arrow-down"></i></td>
-                    <td><label class="badge badge-danger">Pending</label></td>
-                  </tr>
-                  <tr>
-                    <td>Messsy</td>
-                    <td>Flash</td>
-                    <td class="text-danger"> 21.06% <i class="ti-arrow-down"></i></td>
-                    <td><label class="badge badge-warning">In progress</label></td>
-                  </tr>
-                  <tr>
-                    <td>John</td>
-                    <td>Premier</td>
-                    <td class="text-danger"> 35.00% <i class="ti-arrow-down"></i></td>
-                    <td><label class="badge badge-info">Fixed</label></td>
-                  </tr>
-                  <tr>
-                    <td>Peter</td>
-                    <td>After effects</td>
-                    <td class="text-success"> 82.00% <i class="ti-arrow-up"></i></td>
-                    <td><label class="badge badge-success">Completed</label></td>
-                  </tr>
-                  <tr>
-                    <td>Dave</td>
-                    <td>53275535</td>
-                    <td class="text-success"> 98.05% <i class="ti-arrow-up"></i></td>
-                    <td><label class="badge badge-warning">In progress</label></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div> {% endcomment %}
-      
-      
-          <div class="col-lg-12 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">All Website Builder</h4>
-            {% comment %} <p class="card-description">
-              Add class <code>.table-striped</code>
-            </p> {% endcomment %}
-            <div class="table-responsive">
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Model</th>
-                        <th>Object ID</th>
-                        <th>Timestamp</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                  {% for history in history_entries %}
-                      <tr>
-                          <td>{{ history.id }}</td>
-                          <td>{{ history.get_model_name_display }}</td>
-                          <td>{{ history.instance_id }}</td>
-                          <td>{{ history.date_created }}</td>
-                          <td>
-                              {% if history.model_name == 'Website_need_suspendre' %}
-                                  {% if history.website_builder %}
-                                      {{ history.website_builder.nameWebsite }} - Suspendre
-                                  {% elif history.location_website_builder %}
-                                      {{ history.location_website_builder.nameWebsite }} - Suspendre
-                                  {% elif history.getfree_website_builder %}
-                                      {{ history.getfree_website_builder.nameWebsite }} - Suspendre
-                                  {% else %}
-                                      No website data available - Suspendre
-                                  {% endif %}
-                              {% endif %}
-
-                              {% if history.model_name == 'Website_reprendre_suspendre' %}
-                                {% if history.website_builder %}
-                                    {{ history.website_builder.nameWebsite }} - Reprendre Suspendre
-                                {% elif history.location_website_builder %}
-                                    {{ history.location_website_builder.nameWebsite }} - Reprendre Suspendre
-                                {% elif history.getfree_website_builder %}
-                                    {{ history.getfree_website_builder.nameWebsite }} - Reprendre Suspendre
-                                {% else %}
-                                    No website data available - Reprendre Suspendre
-                                {% endif %}
-                              {% endif %}
-
-                              {% if history.model_name == 'website_need_reset' %}
-                                {% if history.website_builder %}
-                                    {{ history.website_builder.nameWebsite }} - Need Reset
-                                {% elif history.location_website_builder %}
-                                    {{ history.location_website_builder.nameWebsite }} - Need Reset
-                                {% elif history.getfree_website_builder %}
-                                    {{ history.getfree_website_builder.nameWebsite }} - Need Reset
-                                {% else %}
-                                    No website data available - Need Reset
-                                {% endif %}
-                              {% endif %}
-
-                              {% if history.model_name == 'Websites_location_payment_delay' %}
-                                {% if history.website_builder %}
-                                    {{ history.website_builder.nameWebsite }} - Payment Location Delay
-                                {% elif history.location_website_builder %}
-                                    {{ history.location_website_builder.nameWebsite }} - Payment Location Delay
-                                {% elif history.getfree_website_builder %}
-                                    {{ history.getfree_website_builder.nameWebsite }} - Payment Location Delay
-                                {% else %}
-                                    No website data available - Payment Location Delay
-                                {% endif %}
-                              {% endif %}
-
-                              {% if history.model_name == 'Websites_location_payment_reprendre' %}
-                                {% if history.website_builder %}
-                                    {{ history.website_builder.nameWebsite }} - Payment Location Reprendre
-                                {% elif history.location_website_builder %}
-                                    {{ history.location_website_builder.nameWebsite }} - Payment Location Reprendre
-                                {% elif history.getfree_website_builder %}
-                                    {{ history.getfree_website_builder.nameWebsite }} - Payment Location Reprendre
-                                {% else %}
-                                    No website data available - Payment Location Reprendre
-                                {% endif %}
-                              {% endif %}
-
-                              {% if history.model_name == 'Websites_Need_Delete' %}
-                                {% if history.website_builder %}
-                                    {{ history.website_builder.nameWebsite }} - Need Delete
-                                {% elif history.location_website_builder %}
-                                    {{ history.location_website_builder.nameWebsite }} - Need Delete
-                                {% elif history.getfree_website_builder %}
-                                    {{ history.getfree_website_builder.nameWebsite }} - Need Delete
-                                {% else %}
-                                    No website data available - Need Delete
-                                {% endif %}
-                              {% endif %}
-
-                              {% if history.model_name == 'Website_need_resiliation' %}
-                                {% if history.website_builder %}
-                                    {{ history.website_builder.nameWebsite }} - Need Resiliation
-                                {% elif history.location_website_builder %}
-                                    {{ history.location_website_builder.nameWebsite }} - Need Resiliation
-                                {% elif history.getfree_website_builder %}
-                                    {{ history.getfree_website_builder.nameWebsite }} - Need Resiliation
-                                {% else %}
-                                    No website data available - Need Resiliation
-                                {% endif %}
-                              {% endif %}
-
-                              {% if history.model_name == 'Website_reprendre_resiliation' %}
-                                {% if history.website_builder %}
-                                    {{ history.website_builder.nameWebsite }} - Need Reprendre Resiliation
-                                {% elif history.location_website_builder %}
-                                    {{ history.location_website_builder.nameWebsite }} - Need Reprendre Resiliation
-                                {% elif history.getfree_website_builder %}
-                                    {{ history.getfree_website_builder.nameWebsite }} - Need Reprendre Resiliation
-                                {% else %}
-                                    No website data available - Need Reprendre Resiliation
-                                {% endif %}
-                              {% endif %}
-
-
-                              {% if history.model_name == 'Website_reprendre_resiliation' %}
-                                {% if history.website_builder %}
-                                    {{ history.website_builder.nameWebsite }} - Need Reprendre Resiliation
-                                {% elif history.location_website_builder %}
-                                    {{ history.location_website_builder.nameWebsite }} - Need Reprendre Resiliation
-                                {% elif history.getfree_website_builder %}
-                                    {{ history.getfree_website_builder.nameWebsite }} - Need Reprendre Resiliation
-                                {% else %}
-                                    No website data available - Need Reprendre Resiliation
-                                {% endif %}
-                              {% endif %}
-
-                              {% if history.model_name == 'Websites_hebergement_payment_delay' %}
-                                {% if history.website_builder %}
-                                    {{ history.website_builder.nameWebsite }} - Hebergement Payment Delay
-                                {% elif history.location_website_builder %}
-                                    {{ history.location_website_builder.nameWebsite }} - Hebergement Payment Delay
-                                {% elif history.getfree_website_builder %}
-                                    {{ history.getfree_website_builder.nameWebsite }} - Hebergement Payment Delay
-                                {% else %}
-                                    No website data available - Hebergement Payment Delay
-                                {% endif %}
-                              {% endif %}
-
-                              {% if history.model_name == 'Websites_hebergement_payment_reprendre' %}
-                                {% if history.website_builder %}
-                                    {{ history.website_builder.nameWebsite }} - Hebergement Reprendre Payment Delay
-                                {% elif history.location_website_builder %}
-                                    {{ history.location_website_builder.nameWebsite }} - Hebergement Reprendre Payment Delay
-                                {% elif history.getfree_website_builder %}
-                                    {{ history.getfree_website_builder.nameWebsite }} - Hebergement Reprendre Payment Delay
-                                {% else %}
-                                    No website data available - Hebergement Reprendre Payment Delay
-                                {% endif %}
-                              {% endif %}
-
-                          </td>
-                      </tr>
-                  {% empty %}
-                  <tr>
-                      <td colspan="5">No history records available</td>
-                  </tr>
-                  {% endfor %}
-              </tbody>
-              
-            </table>
-            </div>
-          </div>
-        </div>
-      </div>
+<div class="container py-4">
+  <form method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+      <label class="form-label">Type d'action</label>
+      <select name="model_name" class="form-select">
+        <option value="">Tous</option>
+        {% for value, label in model_choices %}
+          <option value="{{ value }}" {% if value == selected_model %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
     </div>
-  </div>
-</div>
-    
-      
-      
+  
+    <div class="col-md-4">
+      <label class="form-label">Utilisateur</label><br>
+      <select name="cliente" class="form-select">
+        <option value="">Tous</option>
+        {% for client in clientes %}
+          <option value="{{ client.id }}" {% if client.id|stringformat:"s" == selected_cliente %}selected{% endif %}>{{ client.user.username }}</option>
+        {% endfor %}
+      </select>
     </div>
+  
+    <div class="col-md-2">
+      <label class="form-label">Date début</label>
+      <input type="date" name="date_start" value="{{ date_start }}" class="form-control">
+    </div>
+  
+    <div class="col-md-2">
+      <label class="form-label">Date fin</label>
+      <input type="date" name="date_end" value="{{ date_end }}" class="form-control">
+    </div>
+  
+    <div class="col-12 text-end">
+      <button type="submit" class="btn btn-primary">Filtrer</button>
+      <a href="{% url 'history' %}" class="btn btn-secondary">Réinitialiser</a>
+    </div>
+  </form>
+
+  <div class="d-flex justify-content-end mb-3 gap-2">
+    <a href="{% url 'export_history_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-outline-danger btn-sm" target="_blank">
+      <i class="bi bi-file-earmark-pdf"></i> PDF
+    </a>
+    <a href="{% url 'export_history_excel' %}?{{ request.GET.urlencode }}" class="btn btn-outline-success btn-sm">
+      <i class="bi bi-file-earmark-excel"></i> Excel
+    </a>
   </div>
   
   
-</div>
+  <h3 class="mb-4"><i class="bi bi-clock-history me-2"></i>Historique des actions</h3>
 
-</div>
-
-
-
-
-
-{% comment %}<div class="container-fluid" id="container-wrapper">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-      <h1 class="h3 mb-0 text-gray-800">My Services</h1>
-       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="./">Home</a></li>
-        <li class="breadcrumb-item">Tables</li>
-        <li class="breadcrumb-item active" aria-current="page">Simple Tables</li>
-      </ol> 
-    </div>
-
-    <div class="row">
-      <div class="col-lg-12 mb-4">
-        <!-- Simple Tables -->
-        <div class="card">
-          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">My Services</h6>
-          </div>
-          <div class="table-responsive">
-            <table class="table align-items-center table-flush">
-              <thead class="thead-light">
-                <tr>
-                  <th>Service ID</th>
-                  <th>Name Service</th>
-                  <th>Image</th>
-                  <th>Description</th>
-                  <th>Prix</th>
-                  <th>Ticket</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                  <th>Détail</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><a href="#">SR6720</a></td>
-                  <td>Maintenance de DNS</td>
-                  <td><img style="width: 100px; height: 100px;" src="{% static 'img/dns-png-16.png' %}" alt="#"></td>
-                  <td><p style="width: 100px; height: 100px;">Lorem ipsum dolor sit amet consectetur adipisicing elit. </p></td>
-                  <td><span>200MAD</span></td>
-                  <td><span>286382</span></td>
-                  <td><span class="badge badge-success">Consomé</span></td>
-                  <td><a href="#" class="btn btn-sm btn-primary">Voir</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">SR5324</a></td>
-                  <td>Maintenance de SSL</td>
-                  <td><img style="width: 100px; height: 100px;" src="{% static 'img/MAINTENANCE-862x762-1.png' %}" alt="#"></td>
-                  <td><p style="width: 100px; height: 100px;">Lorem ipsum dolor sit amet consectetur adipisicing elit. </p></td>
-                  <td><span>200MAD</span></td>
-                  <td><span></span></td>
-                  <td><span class="badge badge-danger">Non Consomé!</span></td>
-                  <td><a href="#" class="btn btn-sm btn-primary">Voir</a></td>
-                  <td><a href="#" class="btn btn-sm btn-primary">Détail</a></td>
-
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="card-footer"></div>
-        </div>
-      </div>
-    </div>
-    <!--Row-->
-
-    
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Type d'action</th>
+          <th>ID Instance</th>
+          <th>Date</th>
+          <th>Détail</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for history in history_entries %}
+        <tr>
+          <td>{{ history.id }}</td>
+          <td>{{ history.get_model_name_display }}</td>
+          <td>{{ history.instance_id }}</td>
+          <td>{{ history.date_created|date:"d/m/Y H:i" }}</td>
+          <td>
+            {% get_website_name history as website_name %}
+            {% get_action_label history.model_name as action_label %}
+            {{ website_name }} - {{ action_label }}
+          </td>
+          
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="text-center text-muted py-4">
+            <i class="bi bi-folder-x display-6 d-block mb-2"></i>
+            Aucun historique trouvé.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
-  <!---Container Fluid-->
 </div>
-
-</div>
-</div>
-
-<!-- Scroll to top -->
-<a class="scroll-to-top rounded" href="#page-top">
-<i class="fas fa-angle-up"></i>
-</a>
-
-{% endcomment %}
 {% endblock %}

@@ -359,10 +359,10 @@
                   </a>
                   <div class="collapse" id="collapsDemande1">
                       <ul class="nav flex-column sub-menu" style="margin-left: -32px;">
-                          <li class="nav-item"> <a class="nav-link" href="{% url 'traceDemandeRecharger' %}">Toutes les Trace</a></li>
-                          <li class="nav-item"> <a class="nav-link" href="{% url 'traceDemandeRechargerDone' %}">Demandes Complété</a></li>
+                          <li class="nav-item"> <a class="nav-link" href="{% url 'all_demandes_recharger' %}">Toutes les Trace</a></li>
+                          {% comment %} <li class="nav-item"> <a class="nav-link" href="{% url 'traceDemandeRechargerDone' %}">Demandes Complété</a></li>
                           <li class="nav-item"> <a class="nav-link" href="{% url 'DemandeRechargerNotDone'%}">Demandes En attente</a></li>
-                          <li class="nav-item"> <a class="nav-link" href="{% url 'traceDemandeRechargerInacceptable'%}">Demandes Annulé</a></li>
+                          <li class="nav-item"> <a class="nav-link" href="{% url 'traceDemandeRechargerInacceptable'%}">Demandes Annulé</a></li> {% endcomment %}
                       </ul>
                   </div>
               </li>

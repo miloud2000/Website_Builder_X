@@ -68,8 +68,8 @@
         <div class="d-flex flex-wrap gap-2">
           <a href="?sort_by=date_asc&{% querystring_without_sort request %}" class="btn btn-outline-dark btn-sm">📅 Date ↑</a>
           <a href="?sort_by=date_desc&{% querystring_without_sort request %}" class="btn btn-outline-dark btn-sm">📅 Date ↓</a>
-          <a href="?sort_by=status_asc&{% querystring_without_sort request %}" class="btn btn-outline-dark btn-sm">📌 Statut A→Z</a>
-          <a href="?sort_by=status_desc&{% querystring_without_sort request %}" class="btn btn-outline-dark btn-sm">📌 Statut Z→A</a>
+          {% comment %} <a href="?sort_by=status_asc&{% querystring_without_sort request %}" class="btn btn-outline-dark btn-sm">📌 Statut A→Z</a>
+          <a href="?sort_by=status_desc&{% querystring_without_sort request %}" class="btn btn-outline-dark btn-sm">📌 Statut Z→A</a> {% endcomment %}
         </div>
       </div>
     </div>

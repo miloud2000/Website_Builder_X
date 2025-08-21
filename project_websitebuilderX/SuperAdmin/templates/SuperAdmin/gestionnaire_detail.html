@@ -1,0 +1,14 @@
+{% extends "SuperAdmin/dashbordSuperAdmin.html" %}
+{% block content %}
+<div class="container py-4">
+  <h3>👤 Détails du gestionnaire</h3>
+  <div class="card">
+    <div class="card-body">
+      <p><strong>Nom d'utilisateur:</strong> {{ gestionnaire.user.username }}</p>
+      <p><strong>Email:</strong> {{ gestionnaire.user.email }}</p>
+      <!-- Ajoute ici d'autres infos du gestionnaire -->
+    </div>
+  </div>
+  <a href="{% url 'all_demandes_recharger' %}" class="btn btn-secondary mt-3">⬅ Retour</a>
+</div>
+{% endblock %}

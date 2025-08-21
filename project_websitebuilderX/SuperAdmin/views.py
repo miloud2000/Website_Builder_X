@@ -959,12 +959,129 @@ def full_size_image_Super_Admin(request, traceDemandeRecharger_id):
 
 
 #List of LaTraceDemandeRecharger Demandes Recharge  [SuperAdmin]
+def all_demandes_recharger(request):
+    demandes = DemandeRecharger.objects.all().order_by('-date_created')
+
+    status = request.GET.get('status')
+    type_demande = request.GET.get('type_demande')
+    date = request.GET.get('date')
+    code = request.GET.get('code')
+    updated_by = request.GET.get('updated_by')
+
+    if status:
+        demandes = demandes.filter(status=status)
+    if type_demande:
+        demandes = demandes.filter(type_demande=type_demande)
+    if date:
+        demandes = demandes.filter(date_created__date=date)
+    if code:
+        demandes = demandes.filter(code_DemandeRecharger=code)
+    if updated_by:
+        demandes = demandes.filter(updated_by__id=updated_by)
+        
+    gestionnaires = GestionnaireComptes.objects.all()
+    context = {
+        'demandes': demandes,
+        'gestionnaires': gestionnaires,
+    }
+    return render(request, 'SuperAdmin/all_demandes_recharger.html', context)
+
+
+
+def get_filtered_demandes(request):
+    demandes = DemandeRecharger.objects.select_related('cliente', 'updated_by').all()
+    status = request.GET.get('status')
+    date = request.GET.get('date')
+    code = request.GET.get('code')
+    updated_by = request.GET.get('updated_by')
+
+    if status:
+        demandes = demandes.filter(status=status)
+    if date:
+        demandes = demandes.filter(date_created__date=date)
+    if code:
+        demandes = demandes.filter(code_DemandeRecharger__icontains=code)
+    if updated_by:
+        demandes = demandes.filter(updated_by__id=updated_by)
+
+    return demandes.order_by('-date_created')
+
+
+
+
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from django.http import HttpResponse
+import io
+
+def export_demandes_pdf(request):
+    demandes = get_filtered_demandes(request)  # fonction à créer pour réutiliser les filtres
+    template = get_template('SuperAdmin/demandes_recharger_pdf.html')
+    html = template.render({'demandes': demandes})
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="demandes.pdf"'
+    pisa.CreatePDF(io.BytesIO(html.encode('UTF-8')), dest=response)
+    return response
+
+
+
+import csv
+
+# def export_demandes_csv(request):
+#     demandes = get_filtered_demandes(request)
+#     response = HttpResponse(content_type='text/csv')
+#     response['Content-Disposition'] = 'attachment; filename="demandes.csv"'
+#     writer = csv.writer(response)
+#     writer.writerow(['Client', 'Solde', 'Statut', 'Motif', 'Date', 'Code', 'Mis à jour par'])
+#     for d in demandes:
+#         writer.writerow([
+#             d.cliente.user.username,
+#             d.solde,
+#             d.status,
+#             d.motifNonAcceptation,
+#             d.date_created.strftime('%d/%m/%Y %H:%M'),
+#             d.code_DemandeRecharger,
+#             d.updated_by.user.username if d.updated_by else '—'
+#         ])
+#     return response
+
+
+
+from openpyxl import Workbook
+
+def export_demandes_excel(request):
+    demandes = get_filtered_demandes(request)
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Demandes de recharge"
+    ws.append(['Client', 'Solde', 'Statut', 'Motif', 'Date', 'Code', 'Mis à jour par'])
+    for d in demandes:
+        ws.append([
+            d.cliente.user.username,
+            float(d.solde),
+            d.status,
+            d.motifNonAcceptation,
+            d.date_created.strftime('%d/%m/%Y %H:%M'),
+            d.code_DemandeRecharger,
+            d.updated_by.user.username if d.updated_by else '—'
+        ])
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="demandes.xlsx"'
+    wb.save(response)
+    return response
+
+
+
+
+
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SuperAdmin']) 
-def traceDemandeRecharger(request): 
-    traceDemandeRechargers = LaTraceDemandeRecharger.objects.order_by('-date_created')
-    context = {'traceDemandeRechargers': traceDemandeRechargers} 
-    return render(request, "SuperAdmin/traceDemandeRecharger.html",context)
+def gestionnaire_detail(request, gestionnaire_id):
+    gestionnaire = get_object_or_404(GestionnaireComptes, id=gestionnaire_id)
+    context = {'gestionnaire': gestionnaire}
+    return render(request, 'SuperAdmin/gestionnaire_detail.html', context)
+
+
 
 
 
@@ -1186,11 +1303,102 @@ def DemandeSupportNotDoneyetSA(request):
 
 
 
+from django.utils.dateparse import parse_date
 
 def history(request):
-    history_entries = History.objects.all().order_by('-date_created')
-    return render(request, 'SuperAdmin/history.html', {'history_entries': history_entries})
+    model_name = request.GET.get('model_name')
+    cliente_id = request.GET.get('cliente')
+    date_start = request.GET.get('date_start')
+    date_end = request.GET.get('date_end')
 
+    history_entries = History.objects.all().order_by('-date_created')
+
+    if model_name:
+        history_entries = history_entries.filter(model_name=model_name)
+
+    if cliente_id:
+        history_entries = history_entries.filter(cliente_id=cliente_id)
+
+    if date_start:
+        history_entries = history_entries.filter(date_created__date__gte=parse_date(date_start))
+
+    if date_end:
+        history_entries = history_entries.filter(date_created__date__lte=parse_date(date_end))
+
+    clientes = Cliente.objects.all()
+
+    return render(request, 'SuperAdmin/history.html', {
+        'history_entries': history_entries,
+        'model_choices': History.MODEL_CHOICES,
+        'clientes': clientes,
+        'selected_model': model_name,
+        'selected_cliente': cliente_id,
+        'date_start': date_start,
+        'date_end': date_end,
+    })
+
+
+from django.utils.dateparse import parse_date
+
+def get_filtered_history(request):
+    model_name = request.GET.get('model_name')
+    cliente_id = request.GET.get('cliente')
+    date_start = request.GET.get('date_start')
+    date_end = request.GET.get('date_end')
+
+    history_entries = History.objects.all().order_by('-date_created')
+
+    if model_name:
+        history_entries = history_entries.filter(model_name=model_name)
+    if cliente_id:
+        history_entries = history_entries.filter(cliente_id=cliente_id)
+    if date_start:
+        history_entries = history_entries.filter(date_created__date__gte=parse_date(date_start))
+    if date_end:
+        history_entries = history_entries.filter(date_created__date__lte=parse_date(date_end))
+
+    return history_entries
+
+
+
+
+from django.template.loader import get_template
+from django.http import HttpResponse
+from xhtml2pdf import pisa
+import io
+
+def export_history_pdf(request):
+    history_entries = get_filtered_history(request)
+    template = get_template('SuperAdmin/history_pdf.html')
+    html = template.render({'history_entries': history_entries})
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="historique.pdf"'
+    pisa.CreatePDF(io.BytesIO(html.encode('UTF-8')), dest=response)
+    return response
+
+
+from openpyxl import Workbook
+
+def export_history_excel(request):
+    history_entries = get_filtered_history(request)
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Historique"
+    ws.append(['ID', 'Type d’action', 'Instance ID', 'Client', 'Date'])
+
+    for h in history_entries:
+        ws.append([
+            h.id,
+            h.get_model_name_display(),
+            h.instance_id,
+            h.cliente.user.username if h.cliente else '—',
+            h.date_created.strftime('%d/%m/%Y %H:%M')
+        ])
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="historique.xlsx"'
+    wb.save(response)
+    return response
 
 
 
@@ -1423,3 +1631,30 @@ def ticket_detail(request, ticket_id):
     }
     return render(request, 'SuperAdmin/ticket_detail.html', context)
 
+
+
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+import io
+
+def ticket_pdf(request, ticket_id):
+    ticket = get_object_or_404(Ticket, id=ticket_id)
+    conversations = ticket.conversations.order_by('timestamp')
+
+    template_path = 'SuperAdmin/detail_ticket_pdf.html'
+    context = {'ticket': ticket, 'conversations': conversations}
+    template = get_template(template_path)
+    html = template.render(context)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="ticket_{ticket.code_Ticket}.pdf"'
+
+    result = io.BytesIO()
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("UTF-8")), result)
+
+    if not pdf.err:
+        response.write(result.getvalue())
+        return response
+    else:
+        return HttpResponse("Erreur lors de la génération du PDF", status=500)

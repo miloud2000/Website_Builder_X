@@ -69,9 +69,14 @@ urlpatterns = [
     path('commercial/export/pdf/', views.export_commercials_pdf, name='export_commercials_pdf'),
     path('commercial/export/excel/', views.export_commercials_excel, name='export_commercials_excel'),
 
-    
-    path('traceDemandeRecharger/',views.traceDemandeRecharger, name="traceDemandeRecharger"), 
+    path('demandes-recharger/', views.all_demandes_recharger, name='all_demandes_recharger'),
+    path('demandes/export/pdf/', views.export_demandes_pdf, name='export_demandes_pdf'),
+    # path('demandes/export/csv/', views.export_demandes_csv, name='export_demandes_csv'),
+    path('demandes/export/excel/', views.export_demandes_excel, name='export_demandes_excel'),
+
     path('full_size_image_Super_Admin/<int:traceDemandeRecharger_id>/',views.full_size_image_Super_Admin, name="full_size_image_Super_Admin"), 
+    path('gestionnaire/<int:gestionnaire_id>/', views.gestionnaire_detail, name='gestionnaire_detail'),
+
 
     path('traceDemandeRechargerDone/',views.traceDemandeRechargerDone, name="traceDemandeRechargerDone"), 
     path('traceDemandeRechargerInacceptable/',views.traceDemandeRechargerInacceptable, name="traceDemandeRechargerInacceptable"), 
@@ -89,6 +94,9 @@ urlpatterns = [
 
     
     path('history/', views.history, name='history'),
+    path('history/export/pdf/', views.export_history_pdf, name='export_history_pdf'),
+    path('history/export/excel/', views.export_history_excel, name='export_history_excel'),
+
     
     path('SuperAdmin/websites/', views.WebsitesListSuperAdmin, name='websites_list_superadmin'),
     path('SuperAdmin/websites/add/', views.add_website, name='add_website'),
@@ -104,6 +112,8 @@ urlpatterns = [
     path('SuperAdmin/supports/<int:id>/hide/', views.hide_support, name='hide_support'),
     path('SuperAdmin/tickets/', views.tickets_list, name='tickets_list'),
     path('SuperAdmin/tickets/<int:ticket_id>/', views.ticket_detail, name='ticket_detail'),
+    path('tickets/<int:ticket_id>/pdf/', views.ticket_pdf, name='ticket_pdf'),
+
 
 
 
