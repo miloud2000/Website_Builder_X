@@ -1187,3 +1187,18 @@ class History(models.Model):
 
     def __str__(self):
         return f"{self.model_name} - {self.instance_id} - {self.cliente.user.username}"
+
+
+
+
+
+
+class HistoriqueAction(models.Model):
+    utilisateur = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    action = models.CharField(max_length=255)
+    objet = models.CharField(max_length=255)
+    details = models.TextField(null=True, blank=True)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.action} par {self.utilisateur} le {self.date.strftime('%d/%m/%Y %H:%M')}"

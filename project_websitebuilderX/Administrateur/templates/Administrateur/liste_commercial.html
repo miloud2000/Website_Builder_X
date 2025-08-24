@@ -1,0 +1,65 @@
+{% extends "Administrateur/dashbordAdministrateur.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark">📋 Liste des commerciaux</h2>
+        <a href="{% url 'ajouter_commercial' %}" class="btn btn-success shadow-sm rounded-pill px-4">
+            ➕ Ajouter un commercial
+        </a>
+    </div>
+
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-body p-4">
+            <table class="table table-hover align-middle">
+                <thead class="table-success text-center">
+                    <tr>
+                        <th>👤 Nom</th>
+                        <th>📧 Email</th>
+                        <th>📞 Téléphone</th>
+                        <th>📅 Date de création</th>
+                        <th>⚙️ Statut</th>
+                        <th>🛠️ Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in commerciaux %}
+                    <tr class="text-center">
+                        <td class="fw-semibold">{{ c.name }}</td>
+                        <td>{{ c.email }}</td>
+                        <td>{{ c.phone }}</td>
+                        <td>{{ c.date_created|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            {% if c.status == "Active" %}
+                                <span class="badge bg-success px-3 py-2">✅ Actif</span>
+                            {% elif c.status == "Inactive" %}
+                                <span class="badge bg-danger px-3 py-2">⛔ Inactif</span>
+                            {% else %}
+                                <span class="badge bg-secondary px-3 py-2">⚪ Inconnu</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'modifier_commercial' c.id %}" class="btn btn-sm btn-outline-primary me-2">
+                                ✏️ Modifier
+                            </a>
+                            <a href="{% url 'supprimer_commercial' c.id %}" class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('⚠️ Êtes-vous sûr de vouloir supprimer ce commercial ?');">
+                                🗑️ Supprimer
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            Aucun commercial trouvé.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

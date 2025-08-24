@@ -1,0 +1,27 @@
+<h2>➕ Ajouter un support technique</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="username" class="form-label">👤 Nom d'utilisateur</label>
+        <input type="text" name="username" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">🔒 Mot de passe</label>
+        <input type="password" name="password" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="name" class="form-label">🧑 Nom complet</label>
+        <input type="text" name="name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">📧 Email</label>
+        <input type="email" name="email" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="phone" class="form-label">📞 Téléphone</label>
+        <input type="text" name="phone" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-success">✅ Ajouter</button>
+</form>
+

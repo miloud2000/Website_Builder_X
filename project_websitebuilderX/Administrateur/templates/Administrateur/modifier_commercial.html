@@ -1,0 +1,23 @@
+<form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label>Nom</label>
+        <input type="text" name="name" value="{{ commercial.name|default:'' }}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Email</label>
+        <input type="email" name="email" value="{{ commercial.email|default:'' }}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Téléphone</label>
+        <input type="text" name="phone" value="{{ commercial.phone|default:'' }}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Statut</label>
+        <select name="status" class="form-control">
+            <option value="Active" {% if commercial.status == 'Active' %}selected{% endif %}>✅ Actif</option>
+            <option value="Inactive" {% if commercial.status == 'Inactive' %}selected{% endif %}>⛔ Inactif</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">💾 Enregistrer</button>
+</form>

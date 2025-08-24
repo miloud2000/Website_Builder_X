@@ -1,0 +1,8 @@
+<h2>⚠️ Confirmation de suppression</h2>
+<p>Voulez-vous vraiment supprimer le support <strong>{{ support.name }}</strong> ?</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">🗑️ Supprimer</button>
+    <a href="{% url 'liste_support_technique' %}" class="btn btn-secondary">↩️ Annuler</a>
+</form>

@@ -1,0 +1,33 @@
+<h2 class="fw-bold mb-4">➕ Ajouter un commercial</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label>Nom d'utilisateur</label>
+        <input type="text" name="username" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Mot de passe</label>
+        <input type="password" name="password" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Nom</label>
+        <input type="text" name="name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Email</label>
+        <input type="email" name="email" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Téléphone</label>
+        <input type="text" name="phone" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Statut</label>
+        <select name="status" class="form-control">
+            <option value="Active">✅ Actif</option>
+            <option value="Inactive">⛔ Inactif</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">💾 Enregistrer</button>
+</form>

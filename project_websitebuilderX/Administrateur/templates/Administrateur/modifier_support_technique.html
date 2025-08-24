@@ -1,0 +1,29 @@
+<h2>✏️ Modifier le support technique</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <div class="form-group mb-3">
+        <label>Nom</label>
+        <input type="text" name="name" value="{{ support.name }}" class="form-control" required>
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Email</label>
+        <input type="email" name="email" value="{{ support.email }}" class="form-control" required>
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Téléphone</label>
+        <input type="text" name="phone" value="{{ support.phone }}" class="form-control" required>
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Statut</label>
+        <select name="Status" class="form-control">
+            <option value="Active" {% if support.Status == 'Active' %}selected{% endif %}>Active</option>
+            <option value="No Active" {% if support.Status == 'No Active' %}selected{% endif %}>No Active</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">💾 Enregistrer</button>
+</form>

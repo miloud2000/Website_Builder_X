@@ -35,6 +35,7 @@ admin.site.register(GetFreeWebsiteBuilder),
 admin.site.register(Facturations),
 admin.site.register(Ticket),
 admin.site.register(Conversation),
+admin.site.register(HistoriqueAction),
 
 
 @admin.register(History)
