@@ -4,17 +4,22 @@
 {% block content %}
 <div class="container py-4">
 
+    <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-dark">📋 Liste des commerciaux</h2>
-        <a href="{% url 'ajouter_commercial' %}" class="btn btn-success shadow-sm rounded-pill px-4">
+        <h2 class="fw-bold text-success mb-0">
+            📋 Liste des commerciaux
+        </h2>
+        <a href="{% url 'ajouter_commercial' %}" class="btn btn-success shadow-sm rounded-pill px-4 py-2">
             ➕ Ajouter un commercial
         </a>
     </div>
 
-    <div class="card shadow-lg border-0 rounded-3">
-        <div class="card-body p-4">
-            <table class="table table-hover align-middle">
-                <thead class="table-success text-center">
+    <!-- Card for Table -->
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-0">
+
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-success text-white text-center">
                     <tr>
                         <th>👤 Nom</th>
                         <th>📧 Email</th>
@@ -33,18 +38,20 @@
                         <td>{{ c.date_created|date:"d/m/Y H:i" }}</td>
                         <td>
                             {% if c.status == "Active" %}
-                                <span class="badge bg-success px-3 py-2">✅ Actif</span>
+                                <span class="badge bg-success px-3 py-2 rounded-pill">✅ Actif</span>
                             {% elif c.status == "Inactive" %}
-                                <span class="badge bg-danger px-3 py-2">⛔ Inactif</span>
+                                <span class="badge bg-danger px-3 py-2 rounded-pill">⛔ Inactif</span>
                             {% else %}
-                                <span class="badge bg-secondary px-3 py-2">⚪ Inconnu</span>
+                                <span class="badge bg-secondary px-3 py-2 rounded-pill">⚪ Inconnu</span>
                             {% endif %}
                         </td>
                         <td>
-                            <a href="{% url 'modifier_commercial' c.id %}" class="btn btn-sm btn-outline-primary me-2">
+                            <a href="{% url 'modifier_commercial' c.id %}" 
+                               class="btn btn-sm btn-outline-primary rounded-pill px-3 me-2">
                                 ✏️ Modifier
                             </a>
-                            <a href="{% url 'supprimer_commercial' c.id %}" class="btn btn-sm btn-outline-danger"
+                            <a href="{% url 'supprimer_commercial' c.id %}" 
+                               class="btn btn-sm btn-outline-danger rounded-pill px-3"
                                onclick="return confirm('⚠️ Êtes-vous sûr de vouloir supprimer ce commercial ?');">
                                 🗑️ Supprimer
                             </a>
@@ -59,7 +66,20 @@
                     {% endfor %}
                 </tbody>
             </table>
+
         </div>
     </div>
 </div>
+
+<!-- Extra Styling -->
+<style>
+    .table th {
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    .table td {
+        font-size: 0.9rem;
+    }
+</style>
 {% endblock %}

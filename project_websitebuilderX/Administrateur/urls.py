@@ -25,6 +25,12 @@ urlpatterns = [
     path('commercial/supprimer/<int:commercial_id>/', views.supprimer_commercial, name='supprimer_commercial'),
 
 
+
+    path('clientes/', views.liste_cliente, name='liste_cliente'),
+    path('clientes/ajouter/', views.ajouter_cliente, name='ajouter_cliente'),
+    path('clientes/modifier/<slug:slugCliente>/', views.modifier_cliente, name='modifier_cliente'),
+    path('clientes/supprimer/<slug:slugCliente>/', views.supprimer_cliente, name='supprimer_cliente'),
+
     
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -381,3 +381,118 @@ def supprimer_commercial(request, commercial_id):
         return redirect('liste_commercial')
 
     return render(request, 'Administrateur/confirmer_suppression_commercial.html', {'commercial': commercial})
+
+
+
+
+
+@login_required
+def liste_cliente(request):
+    clientes = Cliente.objects.select_related('user').order_by('-date_created')
+
+    context = {
+        'clientes': clientes
+    }
+    return render(request, 'Administrateur/liste_cliente.html', context)
+
+
+
+@login_required
+def modifier_cliente(request, slugCliente):
+    cliente = get_object_or_404(Cliente, slugCliente=slugCliente)
+
+    if request.method == 'POST':
+        cliente.prenom = request.POST.get('prenom')
+        cliente.nom = request.POST.get('nom')
+        cliente.email = request.POST.get('email')
+        cliente.phone = request.POST.get('phone')
+        cliente.address = request.POST.get('address')
+        cliente.nom_entreprise = request.POST.get('nom_entreprise')
+        cliente.numero_ice = request.POST.get('numero_ice')
+        cliente.updated_by = request.user.gestionnairecomptes if hasattr(request.user, 'gestionnairecomptes') else None
+
+        cliente.save()
+
+        HistoriqueAction.objects.create(
+            utilisateur=request.user,
+            action="Modification d'un client",
+            objet="Cliente",
+            details=f"Client '{cliente.nom} {cliente.prenom}' modifié"
+        )
+
+        messages.success(request, "✅ Client modifié avec succès.")
+        return redirect('liste_cliente')
+
+    return render(request, 'Administrateur/modifier_cliente.html', {'cliente': cliente})
+
+
+@login_required
+def supprimer_cliente(request, slugCliente):
+    cliente = get_object_or_404(Cliente, slugCliente=slugCliente)
+
+    if request.method == 'POST':
+        HistoriqueAction.objects.create(
+            utilisateur=request.user,
+            action="Suppression d'un client",
+            objet="Cliente",
+            details=f"Client '{cliente.nom} {cliente.prenom}' supprimé"
+        )
+        cliente.delete()
+        messages.success(request, "🗑 Client supprimé avec succès.")
+        return redirect('liste_cliente')
+
+    return render(request, 'Administrateur/supprimer_cliente.html', {'cliente': cliente})
+
+
+
+
+@login_required
+def ajouter_cliente(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        prenom = request.POST.get('prenom')
+        nom = request.POST.get('nom')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+        nom_entreprise = request.POST.get('nom_entreprise')
+        numero_ice = request.POST.get('numero_ice')
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "❌ Ce nom d'utilisateur existe déjà.")
+        else:
+            # Création du compte utilisateur
+            user = User.objects.create_user(username=username, password=password, email=email)
+
+            # Ajout au groupe "Cliente"
+            group = Group.objects.get(name="Cliente")
+            user.groups.add(group)
+
+            # Création du modèle Cliente
+            cliente = Cliente.objects.create(
+                user=user,
+                prenom=prenom,
+                nom=nom,
+                email=email,
+                phone=phone,
+                address=address,
+                nom_entreprise=nom_entreprise,
+                numero_ice=numero_ice,
+                added_by=request.user,
+                slugCliente=slugify(username),
+                code_client=generate_cliente_code(nom, prenom)
+            )
+
+            # Historique
+            HistoriqueAction.objects.create(
+                utilisateur=request.user,
+                action="Ajout d'un client",
+                objet="Cliente",
+                details=f"Client '{cliente.nom} {cliente.prenom}' créé avec le compte '{user.username}'"
+            )
+
+            messages.success(request, "✅ Client ajouté avec succès.")
+            return redirect('liste_cliente')
+
+    return render(request, 'Administrateur/ajouter_cliente.html')

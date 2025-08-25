@@ -1,27 +1,65 @@
-<h2>➕ Ajouter un support technique</h2>
+{% extends "Administrateur/dashbordAdministrateur.html" %}
+{% load static %}
 
-<form method="POST">
-    {% csrf_token %}
-    <div class="mb-3">
-        <label for="username" class="form-label">👤 Nom d'utilisateur</label>
-        <input type="text" name="username" class="form-control" required>
-    </div>
-    <div class="mb-3">
-        <label for="password" class="form-label">🔒 Mot de passe</label>
-        <input type="password" name="password" class="form-control" required>
-    </div>
-    <div class="mb-3">
-        <label for="name" class="form-label">🧑 Nom complet</label>
-        <input type="text" name="name" class="form-control" required>
-    </div>
-    <div class="mb-3">
-        <label for="email" class="form-label">📧 Email</label>
-        <input type="email" name="email" class="form-control" required>
-    </div>
-    <div class="mb-3">
-        <label for="phone" class="form-label">📞 Téléphone</label>
-        <input type="text" name="phone" class="form-control" required>
-    </div>
-    <button type="submit" class="btn btn-success">✅ Ajouter</button>
-</form>
+{% block content %}
+<div class="container py-5 d-flex justify-content-center">
+    <div class="card shadow-lg border-0 rounded-4 p-4" style="width: 420px;">
 
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h4 class="fw-bold text-primary">➕ Ajouter un support</h4>
+            <p class="text-muted small mb-0">Remplissez les informations ci-dessous</p>
+        </div>
+
+        <!-- Form -->
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">👤 Nom d'utilisateur</label>
+                <input type="text" name="username" class="form-control form-control-sm rounded-3" placeholder="Nom d'utilisateur" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">🔒 Mot de passe</label>
+                <input type="password" name="password" class="form-control form-control-sm rounded-3" placeholder="Mot de passe" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">🧑 Nom complet</label>
+                <input type="text" name="name" class="form-control form-control-sm rounded-3" placeholder="Ex: Jean Dupont" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">📧 Email</label>
+                <input type="email" name="email" class="form-control form-control-sm rounded-3" placeholder="exemple@email.com" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label small fw-semibold">📞 Téléphone</label>
+                <input type="text" name="phone" class="form-control form-control-sm rounded-3" placeholder="+212 600 000 000" required>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'liste_support_technique' %}" class="btn btn-sm btn-outline-secondary rounded-3 px-3">⬅ Retour</a>
+                <button type="submit" class="btn btn-sm btn-success rounded-3 px-3">✅ Ajouter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 4px rgba(13, 110, 253, 0.25);
+    }
+    .btn-success {
+        background: linear-gradient(90deg, #28a745, #20c997);
+        border: none;
+    }
+    .btn-success:hover {
+        background: linear-gradient(90deg, #20c997, #28a745);
+    }
+</style>
+{% endblock %}

@@ -172,6 +172,167 @@ def AdministrateurSuperAdmin(request):
     return render(request, "SuperAdmin/AdministrateurSuperAdmin.html", context)
 
 
+
+
+@login_required
+@allowedUsers(allowedGroups=['SuperAdmin'])
+def historique_administrateur(request, admin_id):
+    administrateur = get_object_or_404(Administrateur, id=admin_id)
+    actions = HistoriqueAction.objects.filter(utilisateur=administrateur.user).order_by('-date')
+
+    # Filtres
+    query = request.GET.get('q')
+    action_filter = request.GET.get('action')
+    objet_filter = request.GET.get('objet')
+    date_min = request.GET.get('date_min')
+    date_max = request.GET.get('date_max')
+
+    if query:
+        actions = actions.filter(
+            Q(action__icontains=query) |
+            Q(objet__icontains=query) |
+            Q(details__icontains=query)
+        )
+    if action_filter:
+        actions = actions.filter(action=action_filter)
+    if objet_filter:
+        actions = actions.filter(objet=objet_filter)
+    if date_min:
+        actions = actions.filter(date__date__gte=date_min)
+    if date_max:
+        actions = actions.filter(date__date__lte=date_max)
+
+    # Valeurs uniques pour les dropdowns
+    action_choices = HistoriqueAction.objects.values_list('action', flat=True).distinct()
+    objet_choices = HistoriqueAction.objects.values_list('objet', flat=True).distinct()
+
+    context = {
+        'administrateur': administrateur,
+        'actions': actions,
+        'action_choices': action_choices,
+        'objet_choices': objet_choices,
+    }
+    return render(request, 'SuperAdmin/historique_administrateur.html', context)
+
+
+
+
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import cm
+from reportlab.lib import colors
+from reportlab.platypus import (
+    BaseDocTemplate, Frame, PageTemplate,
+    Table, TableStyle, Paragraph, Spacer
+)
+from reportlab.lib.styles import getSampleStyleSheet
+
+class PDFWithHeaderFooter(BaseDocTemplate):
+    def __init__(self, filename, admin_name, **kwargs):
+        super().__init__(filename, **kwargs)
+        self.admin_name = admin_name
+
+        # Cadre principal (tout sauf footer)
+        frame = Frame(
+            self.leftMargin,
+            self.bottomMargin,
+            self.width,
+            self.height - 2*cm,  # espace pour footer
+            id='normal'
+        )
+        self.addPageTemplates([
+            PageTemplate(
+                id='Standard',
+                frames=frame,
+                onPage=self._header,
+                onPageEnd=self._footer
+            )
+        ])
+
+    def _header(self, canvas, doc):
+        canvas.saveState()
+        canvas.setFont('Helvetica-Bold', 14)
+        canvas.drawString(2*cm, A4[1] - 2*cm,
+                          f"Historique des actions de {self.admin_name}")
+        canvas.restoreState()
+
+    def _footer(self, canvas, doc):
+        canvas.saveState()
+        page_num = f"Page {canvas.getPageNumber()}"
+        canvas.setFont('Helvetica', 9)
+        canvas.drawRightString(
+            A4[0] - 2*cm, 1.5*cm, page_num
+        )
+        canvas.restoreState()
+
+
+
+@login_required
+@allowedUsers(allowedGroups=['SuperAdmin'])
+def export_historique_pdf(request, admin_id):
+    administrateur = get_object_or_404(Administrateur, id=admin_id)
+    actions = HistoriqueAction.objects.filter(
+        utilisateur=administrateur.user
+    ).order_by('-date')
+
+    # Préparation de la réponse PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = (
+        f'attachment; filename="historique_{administrateur.user.username}.pdf"'
+    )
+
+    # Création du document
+    doc = PDFWithHeaderFooter(
+        filename=response,
+        admin_name=administrateur.name,
+        pagesize=A4,
+        leftMargin=2*cm, rightMargin=2*cm,
+        topMargin=3*cm, bottomMargin=2*cm
+    )
+    styles = getSampleStyleSheet()
+    story = []
+
+    # Petite marge sous l'en-tête
+    story.append(Spacer(1, 1*cm))
+
+    # Construction des données du tableau
+    data = [['Date', 'Action', 'Objet', 'Détails']]
+    for a in actions:
+        data.append([
+            a.date.strftime('%d/%m/%Y %H:%M'),
+            a.action,
+            a.objet,
+            a.details or ''
+        ])
+
+    # Création et style du tableau
+    table = Table(data, colWidths=[3*cm, 4*cm, 4*cm, 6*cm], repeatRows=1)
+    table.setStyle(TableStyle([
+        # En-tête
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#e9ecef')),
+        ('FONTNAME',    (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE',    (0, 0), (-1, 0), 11),
+        ('ALIGN',       (0, 0), (-1, 0), 'CENTER'),
+
+        # Bordures et alignement
+        ('GRID',        (0, 0), (-1, -1), 0.5, colors.grey),
+        ('VALIGN',      (0, 0), (-1, -1), 'TOP'),
+
+        # Zebra-striping automatique
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f7f7f7')]),
+    ]))
+
+    story.append(table)
+    doc.build(story)
+    return response
+
+
+
+
+
+
 import csv
 from django.http import HttpResponse
 

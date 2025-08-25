@@ -27,6 +27,8 @@ urlpatterns = [
     path('administrateurs/export/csv/', views.export_admins_csv, name='export_admins_csv'),
     path('administrateurs/export/excel/', views.export_admins_excel, name='export_admins_excel'),
     path('administrateurs/export/pdf/', views.export_admins_pdf, name='export_admins_pdf'),
+    path('administrateurs/<int:admin_id>/historique/', views.historique_administrateur, name='historique_administrateur'),
+    path('administrateurs/<int:admin_id>/historique/pdf/', views.export_historique_pdf, name='export_historique_pdf'),
 
 
 

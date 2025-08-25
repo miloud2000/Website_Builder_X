@@ -1,29 +1,67 @@
-<h2>✏️ Modifier le support technique</h2>
+{% extends "Administrateur/dashbordAdministrateur.html" %}
+{% load static %}
 
-<form method="POST">
-    {% csrf_token %}
-    <div class="form-group mb-3">
-        <label>Nom</label>
-        <input type="text" name="name" value="{{ support.name }}" class="form-control" required>
+{% block content %}
+<div class="container py-5 d-flex justify-content-center">
+    <div class="card shadow-lg border-0 rounded-4 p-4" style="width: 420px;">
+
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h4 class="fw-bold text-primary">✏️ Modifier le support</h4>
+            <p class="text-muted small mb-0">Mettez à jour les informations du support technique</p>
+        </div>
+
+        <!-- Form -->
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- Name -->
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">🧑 Nom complet</label>
+                <input type="text" name="name" value="{{ support.name }}" class="form-control form-control-sm rounded-3" required>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">📧 Email</label>
+                <input type="email" name="email" value="{{ support.email }}" class="form-control form-control-sm rounded-3" required>
+            </div>
+
+            <!-- Phone -->
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">📞 Téléphone</label>
+                <input type="text" name="phone" value="{{ support.phone }}" class="form-control form-control-sm rounded-3" required>
+            </div>
+
+            <!-- Status -->
+            <div class="mb-4">
+                <label class="form-label small fw-semibold">⚙️ Statut</label>
+                <select name="Status" class="form-select form-select-sm rounded-3">
+                    <option value="Active" {% if support.Status == 'Active' %}selected{% endif %}>✅ Active</option>
+                    <option value="No Active" {% if support.Status == 'No Active' %}selected{% endif %}>❌ No Active</option>
+                </select>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'liste_support_technique' %}" class="btn btn-sm btn-outline-secondary rounded-3 px-3">⬅ Annuler</a>
+                <button type="submit" class="btn btn-sm btn-success rounded-3 px-3">💾 Enregistrer</button>
+            </div>
+        </form>
     </div>
+</div>
 
-    <div class="form-group mb-3">
-        <label>Email</label>
-        <input type="email" name="email" value="{{ support.email }}" class="form-control" required>
-    </div>
-
-    <div class="form-group mb-3">
-        <label>Téléphone</label>
-        <input type="text" name="phone" value="{{ support.phone }}" class="form-control" required>
-    </div>
-
-    <div class="form-group mb-3">
-        <label>Statut</label>
-        <select name="Status" class="form-control">
-            <option value="Active" {% if support.Status == 'Active' %}selected{% endif %}>Active</option>
-            <option value="No Active" {% if support.Status == 'No Active' %}selected{% endif %}>No Active</option>
-        </select>
-    </div>
-
-    <button type="submit" class="btn btn-success">💾 Enregistrer</button>
-</form>
+<style>
+    .form-control:focus, .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 4px rgba(13, 110, 253, 0.25);
+    }
+    .btn-success {
+        background: linear-gradient(90deg, #28a745, #20c997);
+        border: none;
+    }
+    .btn-success:hover {
+        background: linear-gradient(90deg, #20c997, #28a745);
+    }
+</style>
+{% endblock %}
