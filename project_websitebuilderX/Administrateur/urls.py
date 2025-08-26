@@ -31,6 +31,15 @@ urlpatterns = [
     path('clientes/modifier/<slug:slugCliente>/', views.modifier_cliente, name='modifier_cliente'),
     path('clientes/supprimer/<slug:slugCliente>/', views.supprimer_cliente, name='supprimer_cliente'),
 
-    
+    path('liste_demandes_recharge/', views.liste_demandes_recharge, name='liste_demandes_recharge'),
+    path('demandes-recharge/<int:id>/',views.detail_demande_recharge,name='detail_demande_recharge'),
+
+    path('demandes-support/',views.liste_demandes_support,name='liste_demandes_support'),
+    path('demandes-support/<int:pk>/',views.detail_demande_support, name='detail_demande_support'),
+
+    path('websites/', views.liste_websites, name='liste_websites'),
+    path('websites/ajouter/', views.ajouter_website, name='ajouter_website'),
+    path('websites/<int:pk>/modifier/',  views.modifier_website, name='modifier_website'),
+    path('websites/<int:pk>/supprimer/', views.supprimer_website,name='supprimer_website'),
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

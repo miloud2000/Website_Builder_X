@@ -1,0 +1,40 @@
+{% extends "Administrateur/dashbordAdministrateur.html" %}
+{% load static %}
+
+{% block content %}
+<div class="dashboard-content">
+  <div class="main-card">
+    <h2>
+      <i class="fas fa-info-circle text-primary me-2"></i>
+      Détail de la demande {{ demande.code_DemandeSupport }}
+    </h2>
+
+    <ul class="list-group mb-4">
+      <li class="list-group-item">
+        <strong>Client :</strong> {{ demande.cliente.user.username }}
+      </li>
+      <li class="list-group-item">
+        <strong>Support :</strong> {{ demande.achat_support.support.name }}
+      </li>
+      <li class="list-group-item">
+        <strong>Statut :</strong> {{ demande.status }}
+      </li>
+      <li class="list-group-item">
+        <strong>Date :</strong> {{ demande.date_created|date:"d/m/Y H:i" }}
+      </li>
+      <li class="list-group-item">
+        <strong>Gestionnaire :</strong>
+        {% if demande.updated_by %}
+          {{ demande.updated_by.user.username }}
+        {% else %}
+          —
+        {% endif %}
+      </li>
+    </ul>
+
+    <a href="{% url 'liste_demandes_support' %}" class="btn btn-secondary mt-3">
+      <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+    </a>
+  </div>
+</div>
+{% endblock %}

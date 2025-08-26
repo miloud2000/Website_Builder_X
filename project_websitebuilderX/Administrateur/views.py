@@ -23,6 +23,8 @@ from websitebuilder.forms import (
     AdditionalInfoForm,
     ClienteUpdateForm,
     ClientePasswordChangeForm,
+    WebsiteForm,
+    
 )
 
 from websitebuilder.decorators import (  
@@ -496,3 +498,283 @@ def ajouter_cliente(request):
             return redirect('liste_cliente')
 
     return render(request, 'Administrateur/ajouter_cliente.html')
+
+
+
+
+
+# views.py
+
+from django.shortcuts import render
+from django.db.models import Q
+
+
+def liste_demandes_recharge(request):
+    qs = (DemandeRecharger.objects
+          .select_related('cliente__user', 'updated_by__user')
+          .all())
+
+    # 1. Récupération des paramètres GET
+    client      = request.GET.get('client', '').strip()
+    statut      = request.GET.get('statut', '').strip()
+    date_start  = request.GET.get('date_start', '')
+    date_end    = request.GET.get('date_end', '')
+    montant_min = request.GET.get('montant_min', '')
+    montant_max = request.GET.get('montant_max', '')
+
+    # 2. Construction dynamique du filtre
+    if client:
+        qs = qs.filter(cliente__user__username__icontains=client)
+
+    if statut:
+        qs = qs.filter(status=statut)
+
+    if date_start:
+        qs = qs.filter(date_created__date__gte=date_start)
+
+    if date_end:
+        qs = qs.filter(date_created__date__lte=date_end)
+
+    if montant_min:
+        qs = qs.filter(solde__gte=montant_min)
+
+    if montant_max:
+        qs = qs.filter(solde__lte=montant_max)
+
+    demandes = qs.order_by('-date_created')
+
+    # 3. On renvoie aussi les valeurs de filtre pour pré-remplissage
+    return render(request, "Administrateur/liste_demandes.html", {
+        'demandes': demandes,
+        'filter_values': {
+            'client':      client,
+            'statut':      statut,
+            'date_start':  date_start,
+            'date_end':    date_end,
+            'montant_min': montant_min,
+            'montant_max': montant_max,
+        }
+    })
+
+
+
+
+from django.shortcuts import render, get_object_or_404
+
+def detail_demande_recharge(request, id):
+    demande = get_object_or_404(
+        DemandeRecharger.objects
+            .select_related('cliente__user', 'updated_by__user'),
+        id=id
+    )
+    traces_qs = demande.latracedemanderecharger_set.select_related(
+        'updated_by__user'
+    ).order_by('-date_created')
+
+    # on transforme chaque trace en dict prêt à l’usage
+    traces = [
+        {
+            "date": t.date_created.strftime("%d/%m/%Y %H:%M"),
+            "gestionnaire": t.updated_by.user.username if t.updated_by else "—",
+            "solde": f"{t.solde:.2f} MAD",
+        }
+        for t in traces_qs
+    ]
+
+    contexte = {
+        'demande': {
+            'code': demande.code_DemandeRecharger,
+            'client': demande.cliente.user.username,
+            'montant': f"{demande.solde:.2f} MAD",
+            'statut': demande.status,
+            'date': demande.date_created.strftime("%d/%m/%Y %H:%M"),
+            'gestionnaire': (
+                demande.updated_by.user.username
+                if demande.updated_by else '—'
+            ),
+            'motif': demande.motifNonAcceptation or '',
+            'image_url': demande.image.url if demande.image else None,
+        },
+        'traces': traces,
+    }
+    return render(request, 'Administrateur/detail_demande.html', contexte)
+
+
+
+# support/views.py (ou dans votre views.py existant)
+
+
+def liste_demandes_support(request):
+    qs = (DemandeSupport.objects
+          .select_related('cliente__user',
+                          'achat_support__support',
+                          'updated_by__user')
+          .all())
+
+    # Récupération des paramètres GET
+    client       = request.GET.get('client', '').strip()
+    statut       = request.GET.get('statut', '').strip()
+    support_nom  = request.GET.get('support', '').strip()
+    date_start   = request.GET.get('date_start', '')
+    date_end     = request.GET.get('date_end', '')
+
+    # Application dynamique des filtres
+    if client:
+        qs = qs.filter(cliente__user__username__icontains=client)
+    if statut:
+        qs = qs.filter(status=statut)
+    if support_nom:
+        qs = qs.filter(achat_support__support__name__icontains=support_nom)
+    if date_start:
+        qs = qs.filter(date_created__date__gte=date_start)
+    if date_end:
+        qs = qs.filter(date_created__date__lte=date_end)
+
+    demandes = qs.order_by('-date_created')
+
+    return render(request, "Administrateur/liste_demandes_support.html", {
+        'demandes': demandes,
+        'filter_values': {
+            'client':     client,
+            'statut':     statut,
+            'support':    support_nom,
+            'date_start': date_start,
+            'date_end':   date_end,
+        }
+    })
+
+
+
+
+def detail_demande_support(request, pk):
+    demande = get_object_or_404(
+        DemandeSupport.objects
+            .select_related('cliente__user',
+                            'achat_support__support',
+                            'updated_by__user'),
+        pk=pk
+    )
+    return render(request, "Administrateur/detail_demande_support.html", {
+        'demande': demande
+    })
+
+
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+
+
+@login_required
+def liste_websites(request):
+    """
+    Liste simple des sites (visible uniquement).
+    """
+    websites = Websites.objects.filter(is_visible=True).order_by('-date_created')
+    return render(request, "Administrateur/liste_websites.html", {
+        'websites': websites
+    })
+
+
+
+@login_required
+def ajouter_website(request):
+    """
+    Ajout d’un nouveau site via WebsiteForm + historique.
+    """
+    if request.method == 'POST':
+        form = WebsiteForm(request.POST, request.FILES)
+        if form.is_valid():
+            site = form.save()  # slug et tout le reste sont gérés par save() du model
+
+            # Création de l'entrée d'historique
+            HistoriqueAction.objects.create(
+                utilisateur=request.user,
+                action="Ajout d'un site web",
+                objet="Websites",
+                details=(
+                    f"Site '{site.name}' créé (slug: {site.slugWebsites}, "
+                    f"prix: {site.prix} €)"
+                )
+            )
+
+            messages.success(request, "Le site a été ajouté avec succès.")
+            return redirect('liste_websites')
+        else:
+            messages.error(request, "Veuillez corriger les erreurs dans le formulaire.")
+    else:
+        form = WebsiteForm()
+
+    return render(request, "Administrateur/ajouter_website.html", {
+        'form': form
+    })
+
+
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+
+
+@login_required
+def modifier_website(request, pk):
+    """
+    Modifier un site existant et tracer l'action.
+    """
+    site = get_object_or_404(Websites, pk=pk, is_visible=True)
+
+    if request.method == 'POST':
+        form = WebsiteForm(request.POST, request.FILES, instance=site)
+        if form.is_valid():
+            ancien = Websites.objects.get(pk=pk)  # pour comparer si nécessaire
+            site_modifie = form.save()
+
+            # Historique
+            HistoriqueAction.objects.create(
+                utilisateur=request.user,
+                action="Modification d'un site web",
+                objet="Websites",
+                details=(
+                    f"Site '{site_modifie.name}' (ID : {site_modifie.pk}) modifié. "
+                    f"Changements appliqués sur les champs."
+                )
+            )
+
+            messages.success(request, "Le site a été mis à jour avec succès.")
+            return redirect('liste_websites')
+        else:
+            messages.error(request, "Veuillez corriger les erreurs du formulaire.")
+    else:
+        form = WebsiteForm(instance=site)
+
+    return render(request, "Administrateur/modifier_website.html", {
+        'form': form,
+        'site': site
+    })
+
+
+@login_required
+def supprimer_website(request, pk):
+    """
+    Confirmation et suppression d'un site, puis historique.
+    """
+    site = get_object_or_404(Websites, pk=pk, is_visible=True)
+
+    if request.method == 'POST':
+        # On ne supprime pas physiquement pour auditabilité
+        site.is_visible = False
+        site.save()
+
+        HistoriqueAction.objects.create(
+            utilisateur=request.user,
+            action="Suppression d'un site web",
+            objet="Websites",
+            details=f"Site '{site.name}' (ID : {site.pk}) masqué (is_visible=False)."
+        )
+
+        messages.success(request, "Le site a été supprimé avec succès.")
+        return redirect('liste_websites')
+
+    return render(request, "Administrateur/confirmer_supprimer_website.html", {
+        'site': site
+    })

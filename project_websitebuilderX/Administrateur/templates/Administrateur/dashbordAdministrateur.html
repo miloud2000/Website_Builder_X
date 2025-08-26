@@ -352,6 +352,9 @@
                       </a>
                     </li>
                   </li>
+
+
+                  
                     {% comment %} <li class="nav-item">
                         <a class="nav-link" data-toggle="collapse" href="#collapseServices" aria-expanded="false" aria-controls="collapseServices">
                             Services
@@ -369,7 +372,71 @@
             </div>
         </li>
 
-
+         <li class="nav-item">
+      <a class="nav-link" data-toggle="collapse" href="#ui-tarce" aria-expanded="false" aria-controls="ui-facturation">
+          <i class="fa-solid fa-receipt"></i>&nbsp;
+          <span class="menu-title">La Tarce Demandes</span>
+          <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse" id="ui-tarce">
+          <ul class="nav flex-column sub-menu" style="margin-left: -32px;">
+              <li class="nav-item">
+                  <a class="nav-link" href="#ui-basic2" data-toggle="collapse" data-target="#collapsDemande1">
+                      <span class="menu-title">List Demande Recharger</span>
+                      <i class="menu-arrow"></i>
+                  </a>
+                  <div class="collapse" id="collapsDemande1">
+                      <ul class="nav flex-column sub-menu" style="margin-left: -32px;">
+                          <li class="nav-item"> <a class="nav-link" href="{% url 'liste_demandes_recharge' %}">Toutes les Trace</a></li>
+                          {% comment %} <li class="nav-item"> <a class="nav-link" href="{% url 'traceDemandeRechargerDone' %}">Demandes Complété</a></li>
+                          <li class="nav-item"> <a class="nav-link" href="{% url 'DemandeRechargerNotDone'%}">Demandes En attente</a></li>
+                          <li class="nav-item"> <a class="nav-link" href="{% url 'traceDemandeRechargerInacceptable'%}">Demandes Annulé</a></li> {% endcomment %}
+                      </ul>
+                  </div>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="#ui-basic2" data-toggle="collapse" data-target="#collapsDemande2">
+                      <span class="menu-title">List Demande Support</span>
+                      <i class="menu-arrow"></i>
+                  </a>
+                  <div class="collapse" id="collapsDemande2">
+                      <ul class="nav flex-column sub-menu" style="margin-left: -32px;">
+                          <li class="nav-item"> <a class="nav-link" href="{% url 'liste_demandes_support' %}">Toutes les Demandes</a></li>
+                          {% comment %} <li class="nav-item"> <a class="nav-link" href="{% url 'DemandeSupportDoneSA' %}">Demandes Complété</a></li>
+                          <li class="nav-item"> <a class="nav-link" href="{% url 'DemandeSupportNotDoneyetSA' %}">Demandes En attente</a></li> {% endcomment %}
+                      </ul>
+                  </div>
+              </li>
+          </ul>
+      </div>
+  </li>
+  
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          // Get the "ui-basic2" links
+          var uiBasic2Links = document.querySelectorAll('[href="#ui-basic2"]');
+          
+          // Add event listeners to each link
+          uiBasic2Links.forEach(function(link) {
+              link.addEventListener('click', function(event) {
+                  // Prevent the default anchor behavior
+                  event.preventDefault();
+                  
+                  // Stop the event from propagating to the parent collapse
+                  event.stopPropagation();
+                  
+                  // Get the data-target attribute value to determine which collapse to toggle
+                  var targetId = link.getAttribute('data-target');
+                  var target = document.querySelector(targetId);
+                  
+                  // Toggle the visibility of the collapse
+                  if (target) {
+                      target.classList.toggle('show');
+                  }
+              });
+          });
+      });
+  </script>
     <!-- Your JavaScript code -->
     <script>
       document.addEventListener('DOMContentLoaded', function() {
@@ -405,15 +472,15 @@
     });
     
     </script>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link" href="" >
               <i class="fa-solid fa-receipt"></i>&nbsp;
               <span class="menu-title">Solde et facturation</span>
             </a>
            
-          </li>
+          </li> -->
           <li class="nav-item">
-            <a class="nav-link" href="" >
+            <a class="nav-link" href="{% url 'liste_websites' %}" >
               <i class="fa-solid fa-rectangle-list"></i>&nbsp;
               <span class="menu-title">Liste des Websites</span>
             </a>

@@ -31,7 +31,6 @@ urlpatterns = [
     path('administrateurs/<int:admin_id>/historique/pdf/', views.export_historique_pdf, name='export_historique_pdf'),
 
 
-
     path('GestionnaireComptesSuperAdmin/',views.GestionnaireComptesSuperAdmin, name="GestionnaireComptesSuperAdmin"), 
     path('addGestionnaireComptes/',views.addGestionnaireComptes, name="addGestionnaireComptes"), 
     path('gestionnaire/update/<int:pk>/', views.updateGestionnaireComptes, name='updateGestionnaireComptes'),
