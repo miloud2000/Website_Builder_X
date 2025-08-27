@@ -513,14 +513,16 @@ def deleteSupportTechnique(request, pk):
 
 
 
-from django.db.models import Q
 
 #Superadmin can show all SupportTechnique
+from django.db.models import Q
+
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SuperAdmin']) 
 def SupportTechniqueSuperAdmin(request): 
     query = request.GET.get('q')
     status_filter = request.GET.get('status')
+    history_id = request.GET.get('history')  # ID of selected SupportTechnique
 
     supportTechniques = SupportTechnique.objects.all()
 
@@ -535,8 +537,35 @@ def SupportTechniqueSuperAdmin(request):
     if status_filter:
         supportTechniques = supportTechniques.filter(Status__icontains=status_filter)
 
-    context = {'supportTechniques': supportTechniques}
+    history_actions = []
+    if history_id:
+        history_actions = HistoriqueAction.objects.filter(utilisateur__supporttechnique__id=history_id).order_by('-date')
+
+    context = {
+        'supportTechniques': supportTechniques,
+        'history_actions': history_actions,
+        'selected_id': history_id,
+    }
     return render(request, "SuperAdmin/SupportTechniqueSuperAdmin.html", context)
+
+
+
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin'])
+def support_technique_history(request, pk):
+    support = get_object_or_404(SupportTechnique, pk=pk)
+    actions = HistoriqueAction.objects.filter(utilisateur__supporttechnique__id=pk).order_by('-date')
+
+    context = {
+        'support': support,
+        'actions': actions,
+    }
+    return render(request, "SuperAdmin/support_technique_history.html", context)
 
 
 

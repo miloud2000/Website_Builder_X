@@ -84,30 +84,72 @@ def consome_support(request, demande_support_id):
 
 
 #SupportTechnique can consume a demand support and update status to 'Consomé' with confirmation
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect
+from django.utils.timezone import now
+
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SupportTechnique'])
 def confirm_consome_support(request):
     if request.method == 'POST':
         demande_support_id = request.POST.get('demande_support_id')
-        if demande_support_id:
-            demande_support = get_object_or_404(DemandeSupport, pk=demande_support_id)
-            support_technique = request.user.supporttechnique
-            if demande_support and support_technique:
-                demande_support.status = 'Done'
-                demande_support.updated_by = support_technique
-                demande_support.save()
-                if demande_support.achat_support:
-                    demande_support.achat_support.StatusConsomé = 'Consomé'
-                    demande_support.achat_support.updated_by = support_technique
-                    demande_support.achat_support.save()
-                return redirect('DemandeSupportNotDoneyet')
-            else:
-                messages.error(request, "Invalid demande support or support technique.")
+        if not demande_support_id:
+            messages.error(request, "ID de la demande introuvable.")
+            return redirect('DemandeSupportNotDoneyet')
+
+        demande_support = get_object_or_404(DemandeSupport, pk=demande_support_id)
+        support_technique = getattr(request.user, 'supporttechnique', None)
+
+        if not support_technique:
+            messages.error(request, "Profil SupportTechnique introuvable.")
+            return redirect('DemandeSupportNotDoneyet')
+
+        # Mise à jour de la demande
+        demande_support.status = 'Done'
+        demande_support.updated_by = support_technique
+        demande_support.save()
+
+        # Historique pour la demande
+        try:
+            HistoriqueAction.objects.create(
+                utilisateur=request.user,
+                action="Consommation d'une demande de support",
+                objet="DemandeSupport",
+                details=f"Demande « {demande_support.code_DemandeSupport} » consommée par {support_technique.user.username}.",
+                date=now()
+            )
+        except Exception as e:
+            print("❌ Erreur historique demande :", e)
+            messages.warning(request, "Demande mise à jour, mais historique non enregistré.")
+
+        # Mise à jour de l’achat lié
+        achat = getattr(demande_support, 'achat_support', None)
+        if achat:
+            achat.StatusConsomé = 'Consomé'
+            achat.updated_by = support_technique
+            achat.save()
+
+            # Historique pour l’achat
+            support_name = getattr(achat.support, 'name', 'Inconnu')
+            try:
+                HistoriqueAction.objects.create(
+                    utilisateur=request.user,
+                    action="Mise à jour d'un achat support",
+                    objet="AchatSupport",
+                    details=f"AchatSupport (ID {achat.pk}) pour « {support_name} » marqué comme « Consomé » par {support_technique.user.username}.",
+                    date=now()
+                )
+            except Exception as e:
+                print("❌ Erreur historique achat :", e)
+                messages.warning(request, "Achat mis à jour, mais historique non enregistré.")
         else:
-            messages.error(request, "Invalid demande support ID.")
+            messages.info(request, "Aucun achat lié à cette demande.")
+
+        messages.success(request, "Demande consommée avec succès.")
+        return redirect('DemandeSupportNotDoneyet')
+
     return redirect('DemandeSupportNotDoneyet')
-
-
 
 
 

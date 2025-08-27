@@ -41,5 +41,16 @@ urlpatterns = [
     path('websites/ajouter/', views.ajouter_website, name='ajouter_website'),
     path('websites/<int:pk>/modifier/',  views.modifier_website, name='modifier_website'),
     path('websites/<int:pk>/supprimer/', views.supprimer_website,name='supprimer_website'),
+
+
+
+    path('supports/', views.liste_supports,   name='liste_supports'),
+    path('supports/ajouter/',  views.ajouter_support,  name='ajouter_support'),
+    path('supports/<int:pk>/modifier/',  views.modifier_support, name='modifier_support'),
+    path('supports/<int:pk>/supprimer/', views.supprimer_support,name='supprimer_support'),
+
+    path('tickets/', views.tickets_list,    name='tickets_list'),
+    path('tickets/<int:ticket_id>/', views.ticket_detail, name='ticket_detail'),
+
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

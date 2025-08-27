@@ -24,6 +24,7 @@ from websitebuilder.forms import (
     ClienteUpdateForm,
     ClientePasswordChangeForm,
     WebsiteForm,
+    SupportForm,
     
 )
 
@@ -778,3 +779,194 @@ def supprimer_website(request, pk):
     return render(request, "Administrateur/confirmer_supprimer_website.html", {
         'site': site
     })
+
+
+
+
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+
+
+
+@login_required
+def liste_supports(request):
+    supports = Supports.objects.order_by('-date_created')
+    return render(request, "Administrateur/liste_supports.html", {
+        'supports': supports
+    })
+
+@login_required
+def ajouter_support(request):
+    if request.method == 'POST':
+        form = SupportForm(request.POST)
+        if form.is_valid():
+            support = form.save()
+            # Historique
+            HistoriqueAction.objects.create(
+                utilisateur=request.user,
+                action="Ajout d'un support",
+                objet="Supports",
+                details=f"Support « {support.name} » créé (prix : {support.prix} MAD)."
+            )
+            messages.success(request, "Le support a été ajouté avec succès.")
+            return redirect('liste_supports')
+        messages.error(request, "Merci de corriger les erreurs ci-dessous.")
+    else:
+        form = SupportForm()
+    return render(request, "Administrateur/ajouter_support.html", {'form': form})
+
+@login_required
+def modifier_support(request, pk):
+    support = get_object_or_404(Supports, pk=pk)
+    if request.method == 'POST':
+        form = SupportForm(request.POST, instance=support)
+        if form.is_valid():
+            support_mod = form.save()
+            HistoriqueAction.objects.create(
+                utilisateur=request.user,
+                action="Modification d'un support",
+                objet="Supports",
+                details=f"Support « {support_mod.name} » (ID {support_mod.pk}) modifié."
+            )
+            messages.success(request, "Le support a été mis à jour avec succès.")
+            return redirect('liste_supports')
+        messages.error(request, "Merci de corriger les erreurs ci-dessous.")
+    else:
+        form = SupportForm(instance=support)
+    return render(request, "Administrateur/modifier_support.html", {
+        'form': form,
+        'support': support
+    })
+
+
+
+@login_required
+def supprimer_support(request, pk):
+    support = get_object_or_404(Supports, pk=pk)
+    if request.method == 'POST':
+        # Suppression définitive (ou basculez un flag 'actif' si vous préférez)
+        support.delete()
+        HistoriqueAction.objects.create(
+            utilisateur=request.user,
+            action="Suppression d'un support",
+            objet="Supports",
+            details=f"Support « {support.name} » (ID {support.pk}) supprimé."
+        )
+        messages.success(request, "Le support a été supprimé avec succès.")
+        return redirect('liste_supports')
+    return render(request, "Administrateur/confirmer_supprimer_support.html", {
+        'support': support
+    })
+
+
+
+
+
+
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Q
+
+def tickets_list(request):
+    tickets = Ticket.objects.all()
+
+    # 🔍 Recherche rapide
+    search_query = request.GET.get('search')
+    if search_query:
+        tickets = tickets.filter(
+            Q(code_Ticket__icontains=search_query) |
+            Q(description__icontains=search_query) |
+            Q(typeTicket__icontains=search_query) |
+            Q(Branche__icontains=search_query) |
+            Q(cliente__user__username__icontains=search_query)
+        )
+
+    # ✅ Filtres
+    status     = request.GET.get('status')
+    typeTicket = request.GET.get('typeTicket')
+    branche    = request.GET.get('Branche')
+    cliente_id = request.GET.get('cliente')
+    date_start = request.GET.get('date_start')
+    date_end   = request.GET.get('date_end')
+
+    if status and status != 'None':
+        tickets = tickets.filter(status=status)
+    if typeTicket and typeTicket != 'None':
+        tickets = tickets.filter(typeTicket=typeTicket)
+    if branche and branche != 'None':
+        tickets = tickets.filter(Branche=branche)
+    if cliente_id and cliente_id != 'None':
+        tickets = tickets.filter(cliente_id=cliente_id)
+    if date_start and date_end:
+        tickets = tickets.filter(date_created__date__range=[date_start, date_end])
+
+    # 🔃 Tri
+    sort_by = request.GET.get('sort_by')
+    if sort_by == 'date_asc':
+        tickets = tickets.order_by('date_created')
+    elif sort_by == 'date_desc':
+        tickets = tickets.order_by('-date_created')
+    else:
+        tickets = tickets.order_by('-date_created')
+
+    context = {
+        'tickets'        : tickets,
+        'status_choices' : Ticket.STATUS_CHOICES,
+        'type_choices'   : Ticket.objects.values_list('typeTicket', flat=True).distinct(),
+        'branche_choices': Ticket.objects.values_list('Branche',    flat=True).distinct(),
+        'clientes'       : Ticket.objects.values_list('cliente__id','cliente__user__username').distinct(),
+        'search_query'   : search_query,
+        'status'         : status,
+        'typeTicket'     : typeTicket,
+        'branche'        : branche,
+        'cliente_id'     : cliente_id,
+        'date_start'     : date_start,
+        'date_end'       : date_end,
+        'sort_by'        : sort_by,
+    }
+    return render(request, 'Administrateur/tickets_list.html', context)
+
+
+
+
+def ticket_detail(request, ticket_id):
+    ticket = get_object_or_404(Ticket, id=ticket_id)
+    conversations = ticket.conversations.order_by('timestamp')
+
+    context = {
+        'ticket': ticket,
+        'conversations': conversations,
+    }
+    return render(request, 'Administrateur/ticket_detail.html', context)
+
+
+
+
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+import io
+
+def ticket_pdf(request, ticket_id):
+    ticket = get_object_or_404(Ticket, id=ticket_id)
+    conversations = ticket.conversations.order_by('timestamp')
+
+    template_path = 'Administrateur/detail_ticket_pdf.html'
+    context = {'ticket': ticket, 'conversations': conversations}
+    template = get_template(template_path)
+    html = template.render(context)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="ticket_{ticket.code_Ticket}.pdf"'
+
+    result = io.BytesIO()
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("UTF-8")), result)
+
+    if not pdf.err:
+        response.write(result.getvalue())
+        return response
+    else:
+        return HttpResponse("Erreur lors de la génération du PDF", status=500)

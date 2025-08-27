@@ -47,6 +47,7 @@ urlpatterns = [
     path('support/export/csv/', views.export_support_csv, name='export_support_csv'),
     path('support/export/excel/', views.export_support_excel, name='export_support_excel'),
     path('support/export/pdf/', views.export_support_pdf, name='export_support_pdf'),
+    path('support-technique/<int:pk>/historique/', views.support_technique_history, name='support_technique_history'),
 
     
     
