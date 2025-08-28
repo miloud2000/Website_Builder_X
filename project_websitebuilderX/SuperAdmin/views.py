@@ -511,6 +511,25 @@ def deleteSupportTechnique(request, pk):
 
 
 
+from django.template.loader import get_template
+from django.http import HttpResponse
+from xhtml2pdf import pisa
+from django.utils.encoding import smart_str
+
+def export_support_history_pdf(request, support_id):
+    support = SupportTechnique.objects.get(id=support_id)
+    actions = HistoriqueAction.objects.filter(utilisateur__supporttechnique=support)
+
+    template = get_template("SuperAdmin/pdf_support_history.html")
+    html = template.render({"support": support, "actions": actions})
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="historique_{smart_str(support.user.username)}.pdf"'
+
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    return response if not pisa_status.err else HttpResponse("Erreur lors de la génération du PDF", status=500)
+
+
 
 
 
@@ -540,7 +559,7 @@ def SupportTechniqueSuperAdmin(request):
     history_actions = []
     if history_id:
         history_actions = HistoriqueAction.objects.filter(utilisateur__supporttechnique__id=history_id).order_by('-date')
-
+    
     context = {
         'supportTechniques': supportTechniques,
         'history_actions': history_actions,
@@ -559,13 +578,41 @@ from django.contrib.auth.decorators import login_required
 @allowedUsers(allowedGroups=['SuperAdmin'])
 def support_technique_history(request, pk):
     support = get_object_or_404(SupportTechnique, pk=pk)
-    actions = HistoriqueAction.objects.filter(utilisateur__supporttechnique__id=pk).order_by('-date')
+    actions = HistoriqueAction.objects.filter(utilisateur=support.user)
+
+    # Filtres
+    model_name = request.GET.get('model_name')
+    date_start = request.GET.get('date_start')
+    date_end = request.GET.get('date_end')
+
+    if model_name:
+        actions = actions.filter(objet=model_name)
+
+    if date_start and date_end:
+        actions = actions.filter(date__date__range=[date_start, date_end])
+
+    # Valeurs uniques pour les dropdowns
+    action_choices = HistoriqueAction.objects.values_list('action', flat=True).distinct()
+    objet_choices = HistoriqueAction.objects.values_list('objet', flat=True).distinct()
 
     context = {
+        'action_choices': action_choices,
+        'objet_choices': objet_choices,
         'support': support,
-        'actions': actions,
+        'actions': actions.order_by('-date'),
+        'selected_model': model_name,
+        'date_start': date_start,
+        'date_end': date_end,
+        'model_choices': [
+            ('DemandeSupport', 'DemandeSupport'),
+            ('AchatSupport', 'AchatSupport'),
+            ('Supports', 'Supports'),
+            ('Ticket', 'Ticket'),
+        ],
     }
     return render(request, "SuperAdmin/support_technique_history.html", context)
+
+
 
 
 
@@ -723,6 +770,78 @@ def GestionnaireComptesSuperAdmin(request):
 
     context = {'GestionnairesComptes': gestionnaires}
     return render(request, "SuperAdmin/GestionnaireComptesSuperAdmin.html", context)
+
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin'])
+def gestionnaire_comptes_history(request, pk):
+    gestionnaire = get_object_or_404(GestionnaireComptes, pk=pk)
+    actions = HistoriqueAction.objects.filter(utilisateur=gestionnaire.user)
+
+    # Filtres
+    model_name = request.GET.get('model_name')
+    date_start = request.GET.get('date_start')
+    date_end = request.GET.get('date_end')
+
+    if model_name:
+        actions = actions.filter(objet=model_name)
+
+    if date_start and date_end:
+        actions = actions.filter(date__date__range=[date_start, date_end])
+
+    # Dropdowns dynamiques
+    action_choices = HistoriqueAction.objects.values_list('action', flat=True).distinct()
+    objet_choices = HistoriqueAction.objects.values_list('objet', flat=True).distinct()
+
+    context = {
+        'gestionnaire': gestionnaire,
+        'actions': actions.order_by('-date'),
+        'action_choices': action_choices,
+        'objet_choices': objet_choices,
+        'selected_model': model_name,
+        'date_start': date_start,
+        'date_end': date_end,
+        'model_choices': [
+            ('DemandeRecharger', 'DemandeRecharger'),
+            ('Ticket', 'Ticket'),
+            ('Supports', 'Supports'),
+            ('Recharge', 'Recharge'),
+        ],
+    }
+    return render(request, "SuperAdmin/gestionnaire_comptes_history.html", context)
+
+
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.template.loader import get_template
+from django.http import HttpResponse
+from xhtml2pdf import pisa
+import io
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin'])
+def gestionnaire_history_pdf(request, id):
+    gestionnaire = get_object_or_404(GestionnaireComptes, id=id)
+    actions = HistoriqueAction.objects.filter(utilisateur=gestionnaire.user).order_by('-date')
+
+    template_path = 'SuperAdmin/gestionnaire_history_pdf.html'
+    context = {
+        'gestionnaire': gestionnaire,
+        'actions': actions,
+    }
+
+    template = get_template(template_path)
+    html = template.render(context)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'filename="historique_{gestionnaire.user.username}.pdf"'
+
+    pisa_status = pisa.CreatePDF(io.StringIO(html), dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Erreur lors de la génération du PDF', status=500)
+    return response
 
 
 

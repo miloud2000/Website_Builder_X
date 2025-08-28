@@ -6,7 +6,49 @@
   <h3 class="fw-bold text-primary mb-3">
     <i class="mdi mdi-history"></i> Historique du support : {{ support.user.username }}
   </h3>
+  <div class="mb-4">
+            <span class="badge bg-info me-2">Total actions : {{ actions|length }}</span>
+            {% if actions %}
+            <span class="badge bg-success me-2">Dernière : {{ actions.0.date|date:"d/m/Y H:i" }}</span>
+            {% endif %}
+            <span class="badge bg-secondary">Utilisateur : {{ support.user.username }}</span>
+        </div>
+  <!-- 🔍 Formulaire de filtre -->
+  <form method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+      <label class="form-label">Type d'action</label>
+      <select name="model_name" class="form-select">
+        <option value="">Tous</option>
+        {% for value, label in model_choices %}
+          <option value="{{ value }}" {% if value == selected_model %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
 
+    <div class="col-md-3">
+      <label class="form-label">Date début</label>
+      <input type="date" name="date_start" value="{{ date_start }}" class="form-control">
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Date fin</label>
+      <input type="date" name="date_end" value="{{ date_end }}" class="form-control">
+    </div>
+
+    <div class="col-md-2 d-flex align-items-end justify-content-end">
+      <button type="submit" class="btn btn-primary me-2">Filtrer</button>
+      <a href="{% url 'support_technique_history' support.id %}" class="btn btn-secondary">Réinitialiser</a>
+    </div>
+
+    <div class="mb-3 text-end">
+      <a href="{% url 'support_history_pdf' support.id %}" class="btn btn-outline-danger">
+        <i class="mdi mdi-file-pdf-box"></i> Télécharger en PDF
+      </a>
+    </div>
+
+  </form>
+
+  <!-- 📋 Tableau des actions -->
   <div class="card shadow-sm">
     <div class="card-body">
       {% if actions %}

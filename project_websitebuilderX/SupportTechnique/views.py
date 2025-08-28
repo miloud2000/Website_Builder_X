@@ -153,6 +153,10 @@ def confirm_consome_support(request):
 
 
 
+
+
+
+
 #List of Demands Support Not Done yet [SupportTechnique]
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SupportTechnique']) 

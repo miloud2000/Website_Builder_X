@@ -38,7 +38,9 @@ urlpatterns = [
     path('gestionnaires/export/csv/', views.export_gestionnaire_csv, name='export_gestionnaire_csv'),
     path('gestionnaires/export/excel/', views.export_gestionnaire_excel, name='export_gestionnaire_excel'),
     path('gestionnaires/export/pdf/', views.export_gestionnaire_pdf, name='export_gestionnaire_pdf'),
-    
+    path('gestionnaire/history/<int:pk>/', views.gestionnaire_comptes_history, name='gestionnaire_comptes_history'),
+    path('gestionnaire/<int:id>/historique/pdf/', views.gestionnaire_history_pdf, name='gestionnaire_history_pdf'),
+        
         
     path('SupportTechniqueSuperAdmin/',views.SupportTechniqueSuperAdmin, name="SupportTechniqueSuperAdmin"), 
     path('addSupportTechnique/',views.addSupportTechnique, name="addSupportTechnique"), 
@@ -48,6 +50,7 @@ urlpatterns = [
     path('support/export/excel/', views.export_support_excel, name='export_support_excel'),
     path('support/export/pdf/', views.export_support_pdf, name='export_support_pdf'),
     path('support-technique/<int:pk>/historique/', views.support_technique_history, name='support_technique_history'),
+    path('support/<int:support_id>/historique/pdf/', views.export_support_history_pdf, name='support_history_pdf'),
 
     
     

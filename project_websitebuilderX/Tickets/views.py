@@ -209,9 +209,9 @@ def list_ticket_GC(request):
 
 
 
-
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SupportTechnique'])
@@ -223,8 +223,8 @@ def details_ticket_ST(request, code_Ticket):
         message = request.POST.get('message')
         image = request.FILES.get('image')
         status = request.POST.get('status')
-        
-        # Handle conversation updates
+
+        # 💬 Ajout de message
         if message or image:
             sender_type = 'SupportTechnique'
             sender_id = request.user.supporttechnique.id
@@ -233,22 +233,36 @@ def details_ticket_ST(request, code_Ticket):
                 sender_type=sender_type,
                 sender_id=sender_id,
                 message=message,
-                image=image  # Add image if provided
+                image=image
             )
-            messages.success(request, 'Message sent successfully')
+            messages.success(request, 'Message envoyé avec succès')
 
-        # Handle status updates
+            HistoriqueAction.objects.create(
+                utilisateur=request.user,
+                action="Ajout de message",
+                objet="Ticket",
+                details=f"Message ajouté au ticket {ticket.code_Ticket} : « {message} »" + (" avec image" if image else "")  
+            )
+
+        # 🔄 Changement de statut
         if status:
             if status in dict(Ticket.STATUS_CHOICES).keys():
                 ticket.status = status
                 ticket.updated_by_ts = request.user.supporttechnique
                 ticket.save()
-                messages.success(request, 'Ticket status updated successfully')
+                messages.success(request, 'Statut du ticket mis à jour')
+
+                HistoriqueAction.objects.create(
+                    utilisateur=request.user,
+                    action="Modification du statut",
+                    objet="Ticket",
+                    details=f"Statut changé en '{ticket.get_status_display()}' pour le ticket {ticket.code_Ticket}"
+                )
             else:
-                messages.error(request, 'Invalid status selected')
-        
+                messages.error(request, 'Statut invalide sélectionné')
+
         return redirect('details_ticket_ST', code_Ticket=code_Ticket)
-    
+
     context = {
         'ticket': ticket,
         'conversations': conversations,
@@ -256,6 +270,12 @@ def details_ticket_ST(request, code_Ticket):
     }
     return render(request, 'Tickets/details_ticket_ST.html', context)
 
+
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.timezone import now
 
 
 @login_required(login_url='login')
@@ -267,30 +287,56 @@ def details_ticket_GC(request, code_Ticket):
     if request.method == 'POST':
         message = request.POST.get('message')
         image = request.FILES.get('image')
-        status = request.POST.get('status')  # Get the new status from the form
+        status = request.POST.get('status')
 
-        # Handle conversation updates
+        # ✅ Ajout d'une conversation
         if message or image:
             sender_type = 'GestionnaireComptes'
             sender_id = request.user.gestionnairecomptes.id
+
             Conversation.objects.create(
                 ticket=ticket,
                 sender_type=sender_type,
                 sender_id=sender_id,
                 message=message,
-                image=image  # Add image if provided
+                image=image
             )
-            messages.success(request, 'Message sent successfully')
+            messages.success(request, 'Message envoyé avec succès.')
 
-        # Handle status updates
+            # 🔍 Détail de l'action pour l'historique
+            contenu_detail = f"Message ajouté au ticket #{ticket.code_Ticket} par le gestionnaire. "
+            if message and image:
+                contenu_detail += f"Contenu : « {message[:100]} » + image jointe."
+            elif message:
+                contenu_detail += f"Contenu : « {message[:100]} »"
+            elif image:
+                contenu_detail += "Message avec image uniquement."
+
+            HistoriqueAction.objects.create(
+                utilisateur=request.user,
+                action="Ajout d'un message dans un ticket",
+                objet="Ticket",
+                details=contenu_detail,
+                date=now()
+            )
+
+        # ✅ Mise à jour du statut du ticket
         if status:
             if status in dict(Ticket.STATUS_CHOICES).keys():
                 ticket.status = status
                 ticket.updated_by_gc = request.user.gestionnairecomptes
                 ticket.save()
-                messages.success(request, 'Ticket status updated successfully')
+                messages.success(request, 'Statut du ticket mis à jour avec succès.')
+
+                HistoriqueAction.objects.create(
+                    utilisateur=request.user,
+                    action="Modification du statut d'un ticket",
+                    objet="Ticket",
+                    details=f"Statut du ticket #{ticket.code_Ticket} modifié en « {status} ».",
+                    date=now()
+                )
             else:
-                messages.error(request, 'Invalid status selected')
+                messages.error(request, 'Statut sélectionné invalide.')
 
         return redirect('details_ticket_GC', code_Ticket=code_Ticket)
 
@@ -300,6 +346,7 @@ def details_ticket_GC(request, code_Ticket):
         'status_choices': Ticket.STATUS_CHOICES,
     }
     return render(request, 'Tickets/details_ticket_GC.html', context)
+
 
 
 
