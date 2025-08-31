@@ -215,6 +215,9 @@
                         <a href="{% url 'deleteSupportTechnique' supportTechnique.id %}" class="btn btn-sm btn-light border text-danger" title="Supprimer">
                           <i class="mdi mdi-delete">Supprimer</i>
                         </a>
+                        <a href="{% url 'support_technique_history' supportTechnique.id %}" class="btn btn-sm btn-light border text-info" title="Historique">
+                          <i class="mdi mdi-history"></i> Historique
+                        </a>
                       </div>
                     </td>
                   </tr>

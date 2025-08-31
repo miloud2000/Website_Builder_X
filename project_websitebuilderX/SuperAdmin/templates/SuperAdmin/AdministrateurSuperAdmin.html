@@ -208,16 +208,19 @@
                       {% endif %}
                     </td>
                     <td>{{ Administrateur.date_created|date:"d/m/Y H:i" }}</td>
-                    <td class="text-center">
-                      <div class="btn-group" role="group" aria-label="Actions">
-                        <a href="{% url 'updateAdministrateur' Administrateur.id %}" class="btn btn-sm btn-light border text-primary" title="Modifier">
-                          <i class="mdi mdi-pencil">Editer</i>
-                        </a>
-                        <a href="{% url 'deleteAdministrateur' Administrateur.id %}" class="btn btn-sm btn-light border text-danger" title="Supprimer">
-                          <i class="mdi mdi-delete">Supprimer</i>
-                        </a>
-                      </div>
-                    </td>
+                      <td class="text-center">
+                          <div class="d-flex justify-content-center" style="gap: 10px;">
+                              <a href="{% url 'updateAdministrateur' Administrateur.id %}" class="btn btn-sm btn-outline-secondary" title="Modifier">
+                                  <i class="fas fa-edit"></i>
+                              </a>
+                              <a href="{% url 'deleteAdministrateur' Administrateur.id %}" class="btn btn-sm btn-outline-danger" title="Supprimer">
+                                  <i class="fas fa-trash-alt"></i>
+                              </a>
+                              <a href="{% url 'historique_administrateur' Administrateur.id %}" class="btn btn-sm btn-outline-primary" title="Voir les actions">
+                                  <i class="fas fa-history"></i>
+                              </a>
+                          </div>
+                      </td>
                     
                   </tr>
                   {% empty %}

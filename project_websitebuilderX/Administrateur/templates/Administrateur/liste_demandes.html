@@ -1,0 +1,306 @@
+{% extends "Administrateur/dashbordAdministrateur.html" %}
+{% load static %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    /* Global styles for a polished, clean look */
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
+    }
+
+    /* Main content container styling */
+    .dashboard-content {
+        padding: 50px;
+    }
+
+    /* Main card container for the content */
+    .main-card {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        padding: 40px;
+    }
+
+    /* Heading styles */
+    .main-card h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    /* Form and input styles */
+    .form-label {
+        font-weight: 500;
+        color: #555;
+    }
+
+    .form-control, .form-select {
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        border: 1px solid #dcdfe6;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+    }
+    
+    /* Table styles for a sleek look */
+    .recharge-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        table-layout: fixed;
+    }
+
+    .recharge-table thead {
+        background-color: #f8f9fa;
+        color: #6c757d;
+        font-weight: 600;
+    }
+
+    .recharge-table th, .recharge-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #e9ecef;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: 400;
+        color: #555;
+    }
+
+    .recharge-table tbody tr:hover {
+        background-color: #f9fafb;
+        cursor: pointer;
+    }
+    
+    /* Optimized column widths */
+    .recharge-table th:nth-child(1), .recharge-table td:nth-child(1) { width: 10%; } /* Code */
+    .recharge-table th:nth-child(2), .recharge-table td:nth-child(2) { width: 20%; } /* Client */
+    .recharge-table th:nth-child(3), .recharge-table td:nth-child(3) { width: 15%; } /* Montant */
+    .recharge-table th:nth-child(4), .recharge-table td:nth-child(4) { width: 15%; } /* Statut */
+    .recharge-table th:nth-child(5), .recharge-table td:nth-child(5) { width: 20%; } /* Gestionnaire */
+    .recharge-table th:nth-child(6), .recharge-table td:nth-child(6) { width: 20%; text-align: center; } /* Actions */
+
+    /* Status badges */
+    .badge {
+        display: inline-block;
+        padding: 0.5em 0.8em;
+        font-size: 75%;
+        font-weight: 700;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.375rem;
+    }
+
+    .badge-pending {
+        color: #664d03;
+        background-color: #fff3cd;
+    }
+
+    .badge-approved {
+        color: #0f5132;
+        background-color: #d1e7dd;
+    }
+
+    .badge-rejected {
+        color: #842029;
+        background-color: #f8d7da;
+    }
+
+    /* Empty state for the table */
+    .empty-state {
+        text-align: center;
+        padding: 50px;
+        color: #999;
+    }
+
+    /* Button styles */
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 10px 20px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+    }
+
+    .btn-outline-secondary {
+        border-radius: 8px;
+        padding: 10px;
+        font-weight: 600;
+    }
+</style>
+
+<div class="dashboard-content">
+  <div class="main-card">
+    
+    <h2 class="fw-bold mb-4">
+      <i class="fas fa-filter me-3 text-primary"></i>
+      Filtres de recherche
+    </h2>
+
+    {# === Formulaire de filtre === #}
+    <form method="get" class="mb-4">
+      <div class="row g-3">
+        <div class="col-md-2">
+          <label for="client" class="form-label">Client</label>
+          <input
+            type="text"
+            id="client"
+            name="client"
+            class="form-control"
+            placeholder="Nom d'utilisateur"
+            value="{{ filter_values.client }}"
+          />
+        </div>
+
+        <div class="col-md-2">
+          <label for="statut" class="form-label">Statut</label>
+          <select id="statut" name="statut" class="form-select">
+            <option value="">Tous</option>
+            <option value="Not Done yet" {% if filter_values.statut == 'Not Done yet' %}selected{% endif %}>En Attente</option>
+            <option value="Done" {% if filter_values.statut == 'Done' %}selected{% endif %}>Validé</option>
+            <option value="inacceptable" {% if filter_values.statut == 'inacceptable' %}selected{% endif %}>Refusé</option>
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label">Date de création</label>
+          <div class="d-flex">
+            <input
+              type="date"
+              name="date_start"
+              class="form-control me-2"
+              value="{{ filter_values.date_start }}"
+            />&nbsp;
+            <input
+              type="date"
+              name="date_end"
+              class="form-control"
+              value="{{ filter_values.date_end }}"
+            />
+          </div>
+        </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+        <div class="col-md-3">
+          <label class="form-label">Montant (MAD)</label>
+          <div class="d-flex">
+            <input
+              type="number"
+              step="0.01"
+              name="montant_min"
+              class="form-control me-2"
+              placeholder="Min"
+              value="{{ filter_values.montant_min }}"
+            />&nbsp;
+            <input
+              type="number"
+              step="0.01"
+              name="montant_max"
+              class="form-control"
+              placeholder="Max"
+              value="{{ filter_values.montant_max }}"
+            />
+          </div>
+        </div>
+        <br><br><br><br>
+        <div class="col-auto d-flex align-items-end justify-content-start">
+          <button type="submit" class="btn btn-primary me-2">
+            <i class="fas fa-search me-1"></i> Filtrer
+          </button>&nbsp;&nbsp;
+          <a href="{% url 'liste_demandes_recharge' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-undo"></i>
+          </a>
+        </div>
+      </div>
+    </form>
+
+    <hr class="mb-4">
+
+    <h2 class="fw-bold">
+      <i class="fas fa-money-check-alt me-3 text-primary"></i>
+      Toutes les demandes de recharge
+    </h2>
+    <div class="table-responsive">
+      <table class="table recharge-table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Client</th>
+            <th>Montant (MAD)</th>
+            <th>Statut</th>
+            <th>Gestionnaire</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for demande in demandes %}
+            <tr>
+              <td>{{ demande.code_DemandeRecharger }}</td>
+              <td>{{ demande.cliente.user.username }}</td>
+              <td>{{ demande.solde|floatformat:2 }}</td>
+              <td>
+                {% if demande.status == 'En Attente' %}
+                  <span class="badge badge-pending">{{ demande.status }}</span>
+                {% elif demande.status == 'Validé' %}
+                  <span class="badge badge-approved">{{ demande.status }}</span>
+                {% elif demande.status == 'Refusé' %}
+                  <span class="badge badge-rejected">{{ demande.status }}</span>
+                {% else %}
+                  {{ demande.status }}
+                {% endif %}
+              </td>
+              <td>
+                {% if demande.updated_by %}
+                  {{ demande.updated_by.user.username }}
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+              <td class="text-center">
+                <a
+                  href="{% url 'detail_demande_recharge' demande.id %}"
+                  class="btn btn-sm btn-outline-secondary"
+                  title="Voir les détails"
+                >
+                  <i class="fas fa-eye"></i>
+                </a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="6">
+                <div class="empty-state">
+                  <i class="fas fa-inbox fa-3x"></i>
+                  <p class="mt-3">Aucune demande de recharge n'a été trouvée.</p>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

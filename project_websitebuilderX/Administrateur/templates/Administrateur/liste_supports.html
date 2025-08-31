@@ -1,0 +1,204 @@
+{% extends "Administrateur/dashbordAdministrateur.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Add Google Fonts and Font Awesome for a professional look -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    /* Global styles for a polished, clean look */
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
+    }
+
+    /* Main content container styling */
+    .dashboard-content {
+        padding: 50px;
+    }
+
+    /* Main card container for the content */
+    .main-card {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        padding: 40px;
+    }
+
+    /* Heading styles */
+    .main-card h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    /* Table styles for a sleek look */
+    .supports-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        table-layout: fixed;
+    }
+
+    .supports-table thead {
+        background-color: #f8f9fa;
+        color: #6c757d;
+        font-weight: 600;
+    }
+
+    .supports-table th, .supports-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #e9ecef;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: 400;
+        color: #555;
+    }
+
+    .supports-table tbody tr:hover {
+        background-color: #f9fafb;
+    }
+    
+    /* Optimized column widths for better readability */
+    .supports-table th:nth-child(1), .supports-table td:nth-child(1) { width: 30%; } /* Nom */
+    .supports-table th:nth-child(2), .supports-table td:nth-child(2) { width: 15%; } /* Statut */
+    .supports-table th:nth-child(3), .supports-table td:nth-child(3) { width: 15%; } /* Prix */
+    .supports-table th:nth-child(4), .supports-table td:nth-child(4) { width: 20%; } /* Date de création */
+    .supports-table th:nth-child(5), .supports-table td:nth-child(5) { width: 20%; text-align: center; } /* Actions */
+
+    /* Button styles */
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 10px 20px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.2);
+    }
+    
+    .btn-outline-secondary {
+        border-color: #6c757d;
+        color: #6c757d;
+        border-radius: 8px;
+        padding: 10px 20px;
+        transition: transform 0.2s, background-color 0.2s;
+    }
+    
+    .btn-outline-secondary:hover {
+        background-color: #f8f9fa;
+        transform: translateY(-2px);
+    }
+
+    .btn-action {
+        color: #6c757d;
+        font-size: 1.1rem;
+        padding: 0 8px;
+        transition: color 0.2s, transform 0.2s;
+    }
+
+    .btn-action:hover {
+        color: #007bff;
+        transform: scale(1.1);
+    }
+
+    .btn-action.text-danger:hover {
+        color: #dc3545;
+    }
+
+    /* Empty state for the table */
+    .empty-state {
+        text-align: center;
+        padding: 50px;
+        color: #999;
+    }
+</style>
+
+<div class="dashboard-content">
+  <div class="main-card">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="fw-bold m-0">
+        <i class="fas fa-life-ring me-3 text-primary"></i>
+        Liste des supports
+      </h2>
+      <a href="{% url 'ajouter_support' %}" class="btn btn-success">
+        <i class="fas fa-plus me-1"></i> Ajouter
+      </a>
+    </div>
+
+    <div class="mb-4">
+      <form method="get" class="d-flex align-items-center">
+        <label for="status-filter" class="me-2 text-muted fw-bold">Filtrer par statut:</label>
+        <select id="status-filter" name="status" class="form-select me-2" onchange="this.form.submit()">
+          <option value="">— Tous —</option>
+          <option value="Disponible" {% if request.GET.status == "Disponible" %}selected{% endif %}>Disponible</option>
+          <option value="No Disponible" {% if request.GET.status == "No Disponible" %}selected{% endif %}>No Disponible</option>
+        </select>
+        <a href="{% url 'liste_supports' %}" class="btn btn-outline-secondary">Réinitialiser</a>
+      </form>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table supports-table">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Statut</th>
+            <th>Prix (€)</th>
+            <th>Date de création</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in supports %}
+            <tr>
+              <td>{{ s.name }}</td>
+              <td>
+                <span class="badge 
+                  {% if s.status == 'Disponible' %} bg-success {% else %} bg-secondary {% endif %}">
+                  {{ s.status }}
+                </span>
+              </td>
+              <td>{{ s.prix }}</td>
+              <td>{{ s.date_created|date:"d/m/Y H:i" }}</td>
+              <td class="text-center">
+                <a href="{% url 'modifier_support' s.pk %}" class="btn-action" title="Modifier">
+                  <i class="fas fa-edit"></i>
+                </a>
+                <a href="{% url 'supprimer_support' s.pk %}" class="btn-action text-danger ms-3" title="Supprimer">
+                  <i class="fas fa-trash-alt"></i>
+                </a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="5">
+                <div class="empty-state">
+                  <i class="fas fa-box-open fa-3x"></i>
+                  <p class="mt-3">Aucun support disponible.</p>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

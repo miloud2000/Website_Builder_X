@@ -1,0 +1,30 @@
+{% extends "Administrateur/dashbordAdministrateur.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="card shadow-lg rounded-4 border-0">
+        <div class="card-body text-center p-5">
+            <!-- Titre -->
+            <h2 class="fw-bold text-danger mb-4">⚠️ Confirmation de suppression</h2>
+            
+            <!-- Message -->
+            <p class="fs-5">
+                Voulez-vous vraiment supprimer le gestionnaire 
+                <strong class="text-primary">{{ gestionnaire.name }}</strong> ?
+            </p>
+
+            <!-- Form -->
+            <form method="POST" class="d-inline-block mt-4">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-lg px-4 me-3">
+                    🗑️ Supprimer
+                </button>
+                <a href="{% url 'liste_gestionnaires' %}" class="btn btn-secondary btn-lg px-4">
+                    ↩️ Annuler
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

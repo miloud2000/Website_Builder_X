@@ -1,0 +1,173 @@
+{% extends "Administrateur/dashbordAdministrateur.html" %}
+{% load static %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    /* Global styles for a polished, clean look */
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
+    }
+
+    /* Main content container for centering */
+    .dashboard-content {
+        padding: 30px;
+        display: flex;
+        justify-content: center;
+    }
+
+    /* Main card container for the form */
+    .form-card {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08); /* Stronger, more professional shadow */
+        padding: 40px;
+        max-width: 900px;
+        width: 100%;
+    }
+
+    /* Heading and separator */
+    .form-card h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e9ecef; /* Thicker, more intentional separator */
+    }
+
+    /* Sub-headings for form sections */
+    .form-section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #6c757d;
+        margin-bottom: 20px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #f2f2f2; /* Subtle sub-section separator */
+    }
+
+    /* Style for form fields */
+    .form-group {
+        margin-bottom: 25px; /* Increased spacing between fields */
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #555;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        padding: 12px 15px;
+        font-size: 1rem;
+        border: 1px solid #dcdfe6; /* More defined border */
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+    }
+    
+    /* Buttons */
+    .btn-save {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+        font-weight: 600; /* Bolder font for buttons */
+        padding: 12px 25px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(40, 167, 69, 0.25);
+    }
+
+    .btn-save:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(40, 167, 69, 0.35);
+    }
+    
+    .btn-cancel {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: white;
+        font-weight: 600;
+        padding: 12px 25px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-cancel:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+        transform: translateY(-2px);
+    }
+</style>
+
+<div class="dashboard-content">
+    <div class="form-card">
+        <h2 class="fw-bold"><i class="fas fa-user-plus me-3 text-primary"></i>Ajouter un client</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="form-section-title">Détails personnels</h5>
+                    <div class="form-group">
+                        <label class="form-label">Nom d'utilisateur</label>
+                        <input type="text" name="username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mot de passe</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Prénom</label>
+                        <input type="text" name="prenom" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nom</label>
+                        <input type="text" name="nom" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h5 class="form-section-title">Détails de l'entreprise</h5>
+                    <div class="form-group">
+                        <label class="form-label">Nom de l'entreprise</label>
+                        <input type="text" name="nom_entreprise" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Numéro ICE</label>
+                        <input type="text" name="numero_ice" class="form-control">
+                    </div>
+                    
+                    <h5 class="form-section-title mt-4">Informations de contact</h5>
+                    <div class="form-group">
+                        <label class="form-label">Téléphone</label>
+                        <input type="text" name="phone" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Adresse</label>
+                        <input type="text" name="address" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4">
+                <a href="{% url 'liste_cliente' %}" class="btn btn-cancel me-2"><i class="fas fa-times me-2"></i>Annuler</a>
+                <button type="submit" class="btn btn-success btn-save"><i class="fas fa-save me-2"></i>Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

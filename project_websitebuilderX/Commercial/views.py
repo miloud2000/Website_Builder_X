@@ -68,29 +68,51 @@ def ClienteCommercial(request):
 
 
 
+
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User, Group
+from django.utils.timezone import now
+
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['Commercial']) 
 def addCliente_c(request):
     if request.method == 'POST':
         form = ClienteForm(request.POST)
         if form.is_valid():
+            # ✅ Création du compte utilisateur
             user = User.objects.create_user(
                 username=form.cleaned_data['username'],
                 email=form.cleaned_data['email'],
                 password=form.cleaned_data['password1']
             )
 
-            Cliente.objects.create(
+            # ✅ Création du client
+            cliente = Cliente.objects.create(
                 user=user,
                 prenom=form.cleaned_data['prenom'],
                 nom=form.cleaned_data['nom'],
                 email=form.cleaned_data['email'],
                 phone=form.cleaned_data['phone'],
-                added_by=request.user  # ✅ فقط من أضافه
+                added_by=request.user
             )
 
+            # ✅ Ajout au groupe "Cliente"
             group = Group.objects.get(name="Cliente")
             user.groups.add(group)
+
+            # ✅ Historique d'ajout
+            HistoriqueAction.objects.create(
+                utilisateur=request.user,
+                action="Ajout d'un nouveau client",
+                objet="Cliente",
+                details=(
+                    f"Client « {cliente.prenom} {cliente.nom} » (username: {user.username}) ajouté par "
+                    f"{request.user.username}."
+                ),
+                date=now()
+            )
 
             messages.success(request, f"{user.username} ajouté avec succès !")
             return redirect('ClienteCommercial')
@@ -100,7 +122,6 @@ def addCliente_c(request):
         form = ClienteForm()
 
     return render(request, 'Commercial/addCliente.html', {'form': form})
-
 
 
 

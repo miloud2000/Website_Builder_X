@@ -1,0 +1,205 @@
+{% extends "Administrateur/dashbordAdministrateur.html" %}
+{% load static %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    /* New modern design styles */
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
+    }
+
+    /* Main content wrapper with space for dashboard navigation */
+    .dashboard-content {
+        padding: 30px;
+    }
+
+    /* Main card container for the client list */
+    .client-card {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+    }
+
+    /* Header for the client list section */
+    .client-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .client-header h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #2c3e50;
+    }
+
+    .btn-add-client {
+        background-color: #007bff;
+        border-color: #007bff;
+        font-weight: 500;
+        padding: 12px 25px;
+        border-radius: 8px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-add-client:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Corrected Table styles for a sleek, fixed-width look */
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .client-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        table-layout: fixed; /* This is the key fix! */
+    }
+    
+    .client-table thead {
+        background-color: #f8f9fa;
+        color: #555;
+        font-weight: 600;
+    }
+
+    .client-table th, .client-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #e9ecef;
+        overflow: hidden; /* Prevents content from spilling out */
+        text-overflow: ellipsis; /* Adds "..." for long text */
+        white-space: nowrap; /* Keeps all text on one line */
+    }
+
+    /* Column widths are now set proportionally */
+    .client-table th:nth-child(1), .client-table td:nth-child(1) { width: 5%; }
+    .client-table th:nth-child(2), .client-table td:nth-child(2) { width: 15%; }
+    .client-table th:nth-child(3), .client-table td:nth-child(3) { width: 15%; }
+    .client-table th:nth-child(4), .client-table td:nth-child(4) { width: 20%; }
+    .client-table th:nth-child(5), .client-table td:nth-child(5) { width: 10%; }
+    .client-table th:nth-child(6), .client-table td:nth-child(6) { width: 10%; }
+    .client-table th:nth-child(7), .client-table td:nth-child(7) { width: 10%; }
+    .client-table th:nth-child(8), .client-table td:nth-child(8) { width: 10%; }
+    .client-table th:nth-child(9), .client-table td:nth-child(9) { width: 5%; }
+
+    .client-table tbody tr:hover {
+        background-color: #f9fafb;
+        cursor: pointer;
+    }
+
+    .client-table .actions {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+    }
+    
+    .table-actions-btn {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+        border-radius: 6px;
+        transition: background-color 0.2s;
+    }
+
+    .badge-success {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .badge-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 50px;
+        color: #999;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #ddd;
+    }
+</style>
+
+<div class="dashboard-content">
+    <div class="client-card">
+        <div class="client-header">
+            <h2><i class="fas fa-users me-3 text-primary"></i>Liste des clients</h2>
+            <a href="{% url 'ajouter_cliente' %}" class="btn btn-primary btn-add-client">
+                <i class="fas fa-plus-circle me-2"></i>Ajouter un client
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover client-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <!-- <th>Nom complet</th> -->
+                        <th>Nom d'utilisateur</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
+                        <th>Solde</th>
+                        <th>Entreprise</th>
+                        <!-- <th>Ajouté le</th> -->
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for client in clientes %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <!-- <td>{{ client.nom }} {{ client.prenom }}</td> -->
+                        <td>{{ client.user.username }}</td>
+                        <td>{{ client.email }}</td>
+                        <td>{{ client.phone }}</td>
+                        <td>
+                            {% if client.solde > 0 %}
+                                <span class="badge rounded-pill badge-success">{{ client.solde }} MAD</span>
+                            {% else %}
+                                <span class="badge rounded-pill badge-secondary">0 MAD</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ client.nom_entreprise|default:"—" }}</td>
+                        <!-- <td>{{ client.date_created|date:"d/m/Y H:i" }}</td> -->
+                        <td class="text-center">
+                            <div class="actions">
+                                <a href="{% url 'modifier_cliente' client.slugCliente %}" class="btn btn-sm btn-warning" title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'supprimer_cliente' client.slugCliente %}" class="btn btn-sm btn-danger" onclick="return confirm('Confirmer la suppression ?')" title="Supprimer">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9">
+                            <div class="empty-state">
+                                <i class="fas fa-users-slash"></i>
+                                <p>Aucun client enregistré pour le moment.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

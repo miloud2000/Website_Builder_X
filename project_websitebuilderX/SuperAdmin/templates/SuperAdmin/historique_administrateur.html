@@ -1,0 +1,218 @@
+{% extends "SuperAdmin/dashbordSuperAdmin.html" %}
+{% load static %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
+    }
+
+    .dashboard-content {
+        padding: 50px;
+    }
+
+    .main-card {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        padding: 40px;
+    }
+
+    .main-card h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .search-form {
+        margin-bottom: 25px;
+    }
+
+    .search-input,
+    .form-select.search-input {
+        border-radius: 8px;
+        padding: 12px 15px;
+        font-size: 1rem;
+        border: 1px solid #dcdfe6;
+        width: 100%;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input:focus,
+    .form-select.search-input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+    }
+
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        table-layout: fixed;
+    }
+
+    .history-table thead {
+        background-color: #f8f9fa;
+        color: #6c757d;
+        font-weight: 600;
+    }
+
+    .history-table th, .history-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #e9ecef;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .history-table th:nth-child(1), .history-table td:nth-child(1) { width: 20%; }
+    .history-table th:nth-child(2), .history-table td:nth-child(2) { width: 15%; }
+    .history-table th:nth-child(3), .history-table td:nth-child(3) { width: 25%; }
+    .history-table th:nth-child(4), .history-table td:nth-child(4) {
+        width: 40%;
+        white-space: normal;
+    }
+
+    .history-table tbody tr:hover {
+        background-color: #f9fafb;
+        cursor: pointer;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 50px;
+        color: #999;
+    }
+
+    .btn-back {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: white;
+        font-weight: 600;
+        padding: 12px 25px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+        transform: translateY(-2px);
+    }
+
+    .badge {
+        font-size: 0.95rem;
+        padding: 8px 12px;
+        border-radius: 6px;
+    }
+</style>
+
+<div class="dashboard-content">
+    <div class="main-card">
+        <h2 class="fw-bold"><i class="fas fa-history me-3 text-primary"></i>Historique des actions de {{ administrateur.name }}</h2>
+
+        <!-- Résumé -->
+        <div class="mb-4">
+            <span class="badge bg-info me-2">Total actions : {{ actions|length }}</span>
+            {% if actions %}
+            <span class="badge bg-success me-2">Dernière : {{ actions.0.date|date:"d/m/Y H:i" }}</span>
+            {% endif %}
+            <span class="badge bg-secondary">Utilisateur : {{ administrateur.user.username }}</span>
+        </div>
+
+        <!-- Formulaire de recherche avancée -->
+        <form method="GET" class="search-form row g-3">
+            <div class="col-md-4">
+                <input type="text" name="q" class="form-control search-input" placeholder="🔍 Mot-clé (action, objet, détails)" value="{{ request.GET.q }}">
+            </div>
+
+            <div class="col-md-2">
+                <select name="action" class="form-select search-input">
+                    <option value="">-- Action --</option>
+                    {% for val in action_choices %}
+                        <option value="{{ val }}" {% if request.GET.action == val %}selected{% endif %}>{{ val }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <select name="objet" class="form-select search-input">
+                    <option value="">-- Objet --</option>
+                    {% for val in objet_choices %}
+                        <option value="{{ val }}" {% if request.GET.objet == val %}selected{% endif %}>{{ val }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <input type="date" name="date_min" class="form-control search-input" value="{{ request.GET.date_min }}">
+            </div>
+
+            <div class="col-md-2">
+                <input type="date" name="date_max" class="form-control search-input" value="{{ request.GET.date_max }}">
+            </div>
+
+            <div class="col-12 text-end">
+                <button type="submit" class="btn btn-primary px-4">🔍 Filtrer</button>
+                <a href="{% url 'historique_administrateur' administrateur.id %}" class="btn btn-outline-secondary px-4">♻️ Réinitialiser</a>
+            </div>
+            <br><br>
+            <div class="text-end mb-3">
+                <a href="{% url 'export_historique_pdf' administrateur.id %}" class="btn btn-outline-dark">
+                    <i class="fas fa-file-pdf me-2"></i>Télécharger en PDF
+                </a>
+            </div>
+
+        </form>
+
+        <!-- Tableau des actions -->
+        <div class="table-responsive">
+            <table class="table history-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Action</th>
+                        <th>Objet</th>
+                        <th>Détails</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in actions %}
+                    <tr>
+                        <td>{{ a.date|date:"d/m/Y H:i" }}</td>
+                        <td>{{ a.action }}</td>
+                        <td>{{ a.objet }}</td>
+                        <td>{{ a.details }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                <i class="fas fa-box-open fa-3x"></i>
+                                <p class="mt-3">Aucune action enregistrée pour le moment.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Bouton retour -->
+        <div class="mt-4">
+            <a href="{% url 'AdministrateurSuperAdmin' %}" class="btn btn-secondary btn-back">
+                <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

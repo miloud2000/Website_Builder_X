@@ -1,0 +1,109 @@
+{% extends "Administrateur/dashbordAdministrateur.html" %}
+{% load static %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    /* Global styles for a polished, clean look */
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
+    }
+
+    /* Main content container styling */
+    .dashboard-content {
+        padding: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 100px); /* Centers the card vertically */
+    }
+
+    /* Card container for the confirmation dialog */
+    .confirmation-card {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        padding: 40px;
+        max-width: 500px; /* Limits the card width for better readability */
+        text-align: center;
+    }
+    
+    .confirmation-card h3 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-top: 15px;
+        margin-bottom: 10px;
+    }
+
+    .confirmation-card p {
+        font-size: 1rem;
+        color: #666;
+        margin-bottom: 25px;
+    }
+
+    /* Icon styling */
+    .confirmation-card .fa-icon {
+        font-size: 3.5rem;
+        color: #dc3545; /* A strong red for danger confirmation */
+    }
+
+    /* Button styles */
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 10px 20px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: white;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 10px 20px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(108, 117, 125, 0.2);
+    }
+</style>
+
+<div class="dashboard-content">
+    <div class="confirmation-card">
+        <i class="fas fa-exclamation-circle fa-icon mb-3"></i>
+        <h3>Confirmer la suppression</h3>
+        <p>Êtes-vous sûr de vouloir supprimer le site **"{{ site.name }}"** ? Cette action est irréversible.</p>
+
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger me-2">
+                <i class="fas fa-trash-alt me-1"></i> Oui, supprimer
+            </button>
+            <a href="{% url 'liste_websites' %}"
+               class="btn btn-secondary ms-2">
+                <i class="fas fa-arrow-left me-1"></i> Non, annuler
+            </a>
+        </form>
+    </div>
+</div>
+{% endblock %}

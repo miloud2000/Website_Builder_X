@@ -1,0 +1,69 @@
+{% extends "Administrateur/dashbordAdministrateur.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center py-5">
+    <div class="card shadow-lg border-0 rounded-4" style="max-width: 600px; width: 100%;">
+        <div class="card-body p-4">
+
+            <!-- Header -->
+            <h2 class="fw-bold text-primary text-center mb-3">
+                ➕ Ajouter un gestionnaire
+            </h2>
+            <p class="text-muted text-center mb-4">
+                Remplissez les informations ci-dessous pour créer un nouveau gestionnaire de comptes
+            </p>
+
+            <!-- Form -->
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="form-group mb-3">
+                    <label for="username" class="fw-semibold">👤 Nom d'utilisateur</label>
+                    <input type="text" name="username" id="username" class="form-control rounded-pill" placeholder="Ex: admin123" required>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="password" class="fw-semibold">🔒 Mot de passe</label>
+                    <input type="password" name="password" id="password" class="form-control rounded-pill" placeholder="Mot de passe sécurisé" required>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="name" class="fw-semibold">📝 Nom complet</label>
+                    <input type="text" name="name" id="name" class="form-control rounded-pill" placeholder="Ex: Jean Dupont" required>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="email" class="fw-semibold">📧 Email</label>
+                    <input type="email" name="email" id="email" class="form-control rounded-pill" placeholder="exemple@email.com" required>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="phone" class="fw-semibold">📞 Téléphone</label>
+                    <input type="text" name="phone" id="phone" class="form-control rounded-pill" placeholder="+212 600 000 000" required>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary rounded-pill py-2 fw-semibold shadow-sm">
+                        ✅ Créer le gestionnaire
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Extra Styling -->
+<style>
+    h2 {
+        font-size: 1.5rem;
+    }
+    label {
+        font-size: 0.9rem;
+    }
+    .form-control {
+        padding: 0.6rem 1rem;
+    }
+</style>
+{% endblock %}

@@ -606,7 +606,7 @@ def create_demande_recharger(request):
             demande_recharger.cliente = request.user.cliente
             demande_recharger.save()
             messages.success(request, "Demande Recharger in progress, please wait ...")
-            return redirect('clients/list_demande_recharger')
+            return redirect('list_demande_recharger')
         else:
             messages.error(request, "There was an error with your form. Please check the details and try again.")
     else:

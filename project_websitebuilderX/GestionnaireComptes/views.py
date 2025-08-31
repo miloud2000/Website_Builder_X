@@ -116,26 +116,30 @@ def view_full_size_image(request, DemandeRecharger_id):
 
 
 from django.shortcuts import redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.timezone import now
 
-#GestionnaireComptes can confirm the DemandeRecharger and create LaTraceDemandeRecharger
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes']) 
 def confirm_demande_recharger(request, demande_recharger_id):
     demande_recharger = get_object_or_404(DemandeRecharger, pk=demande_recharger_id)
     demande_recharger.updated_by = request.user.gestionnairecomptes
-    
+
     if request.method == 'POST':
         solde = request.POST.get('solde')
         image = request.FILES.get('image')
-        
-        # Update solde of the client table
-        demande_recharger.cliente.solde += int(solde)
+
+        # ✅ Mise à jour du solde client
+        demande_recharger.cliente.solde += int(float(solde))
         demande_recharger.cliente.save()
-        
+
+        # ✅ Mise à jour de la demande
         demande_recharger.status = 'Done'
         demande_recharger.save()
-        
-        # Create an LaTraceDemandeRecharger and save it
+
+        # ✅ Création de la trace
         LaTraceDemandeRecharger.objects.create(
             image=image,
             solde=solde,
@@ -143,32 +147,46 @@ def confirm_demande_recharger(request, demande_recharger_id):
             cliente=demande_recharger.cliente,
             updated_by=request.user.gestionnairecomptes
         )
-        
-        messages.success(request, "Demande Recharger Confirm successfully")
+
+        # ✅ Enregistrement dans HistoriqueAction
+        HistoriqueAction.objects.create(
+            utilisateur=request.user,
+            action="Confirmation d'une demande de recharge",
+            objet="DemandeRecharger",
+            details=(
+                f"Recharge confirmée pour le client « {demande_recharger.cliente.user.username} » "
+                f"avec un montant de {solde} MAD. "
+                f"Demande ID #{demande_recharger.id}."
+            ),
+            date=now()
+        )
+
+        messages.success(request, "Demande Recharger confirmée avec succès.")
         return redirect('DemandeRechargerDone')
 
-    return render(request, 'GestionnaireComptes/details_DemandeRecharger.html', {'demande_recharger': demande_recharger})
+    return render(request, 'GestionnaireComptes/details_DemandeRecharger.html', {
+        'demande_recharger': demande_recharger
+    })
 
 
 
-
-#GestionnaireComptes can infirmer the DemandeRecharger and create LaTraceDemandeRecharger
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes']) 
 def infirmer_demande_recharger(request, demande_recharger_id):
     demande_recharger = get_object_or_404(DemandeRecharger, pk=demande_recharger_id)
     demande_recharger.updated_by = request.user.gestionnairecomptes
-    
+
     if request.method == 'POST':
         solde = request.POST.get('solde')
         image = request.FILES.get('image')
         motifNonAcceptation = request.POST.get('motifNonAcceptation')
-        
+
+        # ✅ Mise à jour de la demande
         demande_recharger.status = 'inacceptable'
         demande_recharger.motifNonAcceptation = motifNonAcceptation
         demande_recharger.save()
-        
-        # Create an LaTraceDemandeRecharger and save it
+
+        # ✅ Création de la trace
         LaTraceDemandeRecharger.objects.create(
             image=image,
             solde=solde,
@@ -176,11 +194,25 @@ def infirmer_demande_recharger(request, demande_recharger_id):
             cliente=demande_recharger.cliente,
             updated_by=request.user.gestionnairecomptes
         )
-        
-        messages.success(request, "Demande Recharger Confirm successfully")
+
+        # ✅ Enregistrement dans HistoriqueAction
+        HistoriqueAction.objects.create(
+            utilisateur=request.user,
+            action="Refus d'une demande de recharge",
+            objet="DemandeRecharger",
+            details=(
+                f"Demande ID #{demande_recharger.id} refusée pour le client « {demande_recharger.cliente.user.username} ». "
+                f"Motif : {motifNonAcceptation}."
+            ),
+            date=now()
+        )
+
+        messages.success(request, "Demande Recharger refusée avec succès.")
         return redirect('DemandeRechargerInacceptable')
 
-    return render(request, 'GestionnaireComptes/details_DemandeRecharger.html', {'demande_recharger': demande_recharger})
+    return render(request, 'GestionnaireComptes/details_DemandeRecharger.html', {
+        'demande_recharger': demande_recharger
+    })
 
 
 

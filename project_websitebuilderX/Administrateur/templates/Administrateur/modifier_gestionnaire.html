@@ -1,0 +1,68 @@
+{% extends "Administrateur/dashbordAdministrateur.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center py-5">
+    <div class="card shadow-lg border-0 rounded-4" style="max-width: 600px; width: 100%;">
+        <div class="card-body p-4">
+
+            <!-- Header -->
+            <h2 class="fw-bold text-warning text-center mb-3">
+                ✏️ Modifier le gestionnaire
+            </h2>
+            <p class="text-muted text-center mb-4">
+                Mettez à jour les informations du gestionnaire ci-dessous
+            </p>
+
+            <!-- Form -->
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="form-group mb-3">
+                    <label class="fw-semibold">👤 Nom</label>
+                    <input type="text" name="name" value="{{ gestionnaire.name }}" class="form-control rounded-pill" required>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="fw-semibold">📧 Email</label>
+                    <input type="email" name="email" value="{{ gestionnaire.email }}" class="form-control rounded-pill" required>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="fw-semibold">📞 Téléphone</label>
+                    <input type="text" name="phone" value="{{ gestionnaire.phone }}" class="form-control rounded-pill" required>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="fw-semibold">⚙️ Statut</label>
+                    <select name="Status" class="form-control rounded-pill">
+                        <option value="Active" {% if gestionnaire.Status == 'Active' %}selected{% endif %}>✅ Active</option>
+                        <option value="No Active" {% if gestionnaire.Status == 'No Active' %}selected{% endif %}>⛔ Inactive</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-warning rounded-pill py-2 fw-semibold shadow-sm">
+                        💾 Enregistrer les modifications
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- Extra Styling -->
+<style>
+    h2 {
+        font-size: 1.5rem;
+    }
+    label {
+        font-size: 0.9rem;
+    }
+    .form-control {
+        padding: 0.6rem 1rem;
+    }
+</style>
+{% endblock %}

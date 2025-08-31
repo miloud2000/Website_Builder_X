@@ -1,0 +1,54 @@
+{% extends "Administrateur/dashbordAdministrateur.html" %}
+
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Bouton PDF -->
+  <div class="mb-3">
+    <a href="{% url 'ticket_pdf' ticket.id %}" class="btn btn-outline-primary" target="_blank">
+      🖨️ Télécharger en PDF
+    </a>
+  </div>
+
+  <!-- Détails du ticket -->
+  <h3>🎫 Détails du ticket</h3>
+  <div class="card mb-4">
+    <div class="card-body">
+      <p><strong>Code:</strong> {{ ticket.code_Ticket }}</p>
+      <p><strong>Utilisateur:</strong> {{ ticket.cliente.user.username }}</p>
+      <p><strong>Type:</strong> {{ ticket.typeTicket }}</p>
+      <p><strong>Branche:</strong> {{ ticket.Branche }}</p>
+      <p><strong>Statut:</strong> {{ ticket.status }}</p>
+      <p><strong>Description:</strong> {{ ticket.description }}</p>
+      <p><strong>Date de création:</strong> {{ ticket.date_created|date:"d/m/Y H:i" }}</p>
+    </div>
+  </div>
+
+  <!-- Conversations -->
+  <h4>💬 Conversations</h4>
+  {% for conv in conversations %}
+    <div class="card mb-2">
+      <div class="card-body">
+        <p>
+          <strong>{{ conv.sender }}</strong>
+          <small class="text-muted">{{ conv.timestamp|date:"d/m/Y H:i" }}</small>
+        </p>
+        <p>{{ conv.message }}</p>
+        {% if conv.image %}
+          <img src="{{ conv.image.url }}" class="img-fluid rounded" style="max-width: 300px;">
+        {% endif %}
+      </div>
+    </div>
+  {% empty %}
+    <p class="text-muted">Aucune conversation pour ce ticket.</p>
+  {% endfor %}
+
+  <!-- Retour -->
+  <div class="mt-4">
+    <a href="{% url 'tickets_list' %}" class="btn btn-secondary">⬅ Retour à la liste</a>
+  </div>
+
+</div>
+{% endblock %}
