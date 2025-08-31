@@ -9,7 +9,18 @@
         <i class="bi bi-plus-circle"></i> Ajouter un support
       </a>
     </div>
-  
+    <div class="mb-4 d-flex gap-2">
+      <a href="{% url 'export_supports_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-outline-danger btn-sm" target="_blank">
+        <i class="bi bi-file-earmark-pdf"></i> PDF
+      </a>
+      {% comment %} <a href="{% url 'export_supports_csv' %}?{{ request.GET.urlencode }}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-file-earmark-spreadsheet"></i> CSV
+      </a> {% endcomment %}
+      <a href="{% url 'export_supports_excel' %}?{{ request.GET.urlencode }}" class="btn btn-outline-success btn-sm">
+        <i class="bi bi-file-earmark-excel"></i> Excel
+      </a>
+    </div>
+    
     <!-- 🔍 Filtres -->
     <form method="get" class="mb-4">
       <div class="row g-3 align-items-end">

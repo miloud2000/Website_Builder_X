@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; font-size: 12px; }
+    h2 { color: #2c3e50; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+    th { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h2>Liste des sites web</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Catégorie</th>
+        <th>CMS</th>
+        <th>Langue</th>
+        <th>Forfait</th>
+        <th>Prix</th>
+        <th>Statut</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for w in websites %}
+      <tr>
+        <td>{{ w.name }}</td>
+        <td>{{ w.catégorie }}</td>
+        <td>{{ w.CMS }}</td>
+        <td>{{ w.langues }}</td>
+        <td>{{ w.plan }}</td>
+        <td>{{ w.prix }} MAD</td>
+        <td>{{ w.status }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

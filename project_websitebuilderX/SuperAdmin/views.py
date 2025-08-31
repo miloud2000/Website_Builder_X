@@ -1440,6 +1440,93 @@ def WebsitesListSuperAdmin(request):
 
 
 
+def get_filtered_websites(request):
+    websites = Websites.objects.all()
+
+    status = request.GET.get('status')
+    catégorie = request.GET.get('catégorie')
+    CMS = request.GET.get('CMS')
+    langues = request.GET.get('langues')
+    plan = request.GET.get('plan')
+
+    if status and status != 'None':
+        websites = websites.filter(status=status)
+    if catégorie and catégorie != 'None':
+        websites = websites.filter(catégorie=catégorie)
+    if CMS and CMS != 'None':
+        websites = websites.filter(CMS=CMS)
+    if langues and langues != 'None':
+        websites = websites.filter(langues=langues)
+    if plan and plan != 'None':
+        websites = websites.filter(plan=plan)
+
+    return websites.order_by('-date_created')
+
+
+
+from django.template.loader import get_template
+from django.http import HttpResponse
+from xhtml2pdf import pisa
+import io
+
+def export_websites_pdf(request):
+    websites = get_filtered_websites(request)
+    template = get_template('SuperAdmin/websites_pdf.html')
+    html = template.render({'websites': websites})
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="websites.pdf"'
+    pisa.CreatePDF(io.BytesIO(html.encode('UTF-8')), dest=response)
+    return response
+
+
+
+
+# import csv
+
+# def export_websites_csv(request):
+#     websites = get_filtered_websites(request)
+#     response = HttpResponse(content_type='text/csv')
+#     response['Content-Disposition'] = 'attachment; filename="websites.csv"'
+#     writer = csv.writer(response)
+#     writer.writerow(['Nom', 'Catégorie', 'CMS', 'Langue', 'Forfait', 'Prix', 'Statut'])
+#     for w in websites:
+#         writer.writerow([
+#             w.name,
+#             w.catégorie,
+#             w.CMS,
+#             w.langues,
+#             w.plan,
+#             w.prix,
+#             w.status
+#         ])
+#     return response
+
+
+
+from openpyxl import Workbook
+
+def export_websites_excel(request):
+    websites = get_filtered_websites(request)
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sites Web"
+    ws.append(['Nom', 'Catégorie', 'CMS', 'Langue', 'Forfait', 'Prix', 'Statut'])
+    for w in websites:
+        ws.append([
+            w.name,
+            w.catégorie,
+            w.CMS,
+            w.langues,
+            w.plan,
+            float(w.prix),
+            w.status
+        ])
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="websites.xlsx"'
+    wb.save(response)
+    return response
+
+
 
 
 def add_website(request):
@@ -1498,6 +1585,66 @@ def supports_list_superadmin(request):
     }
     return render(request, 'SuperAdmin/supports_list.html', context)
 
+
+
+def get_filtered_supports(request):
+    supports = Supports.objects.all()
+    status = request.GET.get('status')
+    if status and status != 'None':
+        supports = supports.filter(status=status)
+    return supports.order_by('-date_created')
+
+
+
+
+
+def export_supports_pdf(request):
+    supports = get_filtered_supports(request)
+    template = get_template('SuperAdmin/supports_pdf.html')
+    html = template.render({'supports': supports})
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="supports.pdf"'
+    pisa.CreatePDF(io.BytesIO(html.encode('UTF-8')), dest=response)
+    return response
+
+
+
+def export_supports_csv(request):
+    supports = get_filtered_supports(request)
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="supports.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['Nom', 'Description', 'Prix', 'Date de création', 'Statut'])
+    for s in supports:
+        writer.writerow([
+            s.name,
+            s.description,
+            s.prix,
+            s.date_created.strftime('%d/%m/%Y'),
+            s.status
+        ])
+    return response
+
+
+
+def export_supports_excel(request):
+    supports = get_filtered_supports(request)
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Supports"
+    ws.append(['Nom', 'Description', 'Prix', 'Date de création', 'Statut'])
+    for s in supports:
+        ws.append([
+            s.name,
+            s.description,
+            float(s.prix),
+            s.date_created.strftime('%d/%m/%Y'),
+            s.status
+        ])
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="supports.xlsx"'
+    wb.save(response)
+    return response
 
 
 

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; font-size: 12px; }
+    h2 { color: #2c3e50; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+    th { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h2>Liste des supports</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Prix</th>
+        <th>Date</th>
+        <th>Statut</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in supports %}
+      <tr>
+        <td>{{ s.name }}</td>
+        <td>{{ s.description }}</td>
+        <td>{{ s.prix }} MAD</td>
+        <td>{{ s.date_created|date:"d/m/Y" }}</td>
+        <td>{{ s.status }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

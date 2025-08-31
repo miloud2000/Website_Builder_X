@@ -103,6 +103,10 @@ urlpatterns = [
     path('SuperAdmin/websites/<int:id>/', views.website_details, name='website_details'),
     path('SuperAdmin/websites/<int:id>/edit/', views.edit_website, name='edit_website'),
     path('SuperAdmin/websites/<int:id>/hide/', views.hide_website, name='hide_website'),
+    path('websites/export/pdf/', views.export_websites_pdf, name='export_websites_pdf'),
+    # path('websites/export/csv/', views.export_websites_csv, name='export_websites_csv'),
+    path('websites/export/excel/', views.export_websites_excel, name='export_websites_excel'),
+
 
 
     path('SuperAdmin/supports/', views.supports_list_superadmin, name='supports_list_superadmin'),
@@ -110,6 +114,13 @@ urlpatterns = [
     path('SuperAdmin/supports/<int:id>/', views.support_details, name='support_details'),
     path('SuperAdmin/supports/<int:id>/edit/', views.edit_support, name='edit_support'),
     path('SuperAdmin/supports/<int:id>/hide/', views.hide_support, name='hide_support'),
+    path('supports/export/pdf/', views.export_supports_pdf, name='export_supports_pdf'),
+    path('supports/export/csv/', views.export_supports_csv, name='export_supports_csv'),
+    path('supports/export/excel/', views.export_supports_excel, name='export_supports_excel'),
+
+    
+    
+    
     path('SuperAdmin/tickets/', views.tickets_list, name='tickets_list'),
     path('SuperAdmin/tickets/<int:ticket_id>/', views.ticket_detail, name='ticket_detail'),
     path('tickets/<int:ticket_id>/pdf/', views.ticket_pdf, name='ticket_pdf'),
