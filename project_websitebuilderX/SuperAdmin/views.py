@@ -1116,6 +1116,126 @@ def CommercialSuperAdmin(request):
 
 
 
+import csv
+from django.http import HttpResponse
+from openpyxl import Workbook
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from io import BytesIO
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin'])
+def historique_commercial(request, commercial_id):
+    commercial = get_object_or_404(Commercial, id=commercial_id)
+
+    # Récupération des filtres GET
+    action_filter = request.GET.get('action')
+    objet_filter = request.GET.get('objet')
+
+    # Base queryset : actions du commercial
+    actions = HistoriqueAction.objects.filter(
+        utilisateur=commercial.user
+    ).order_by('-date')
+
+    # Application des filtres si présents
+    if action_filter not in [None, ""]:
+        actions = actions.filter(action=action_filter)
+
+    if objet_filter not in [None, ""]:
+        actions = actions.filter(objet=objet_filter)
+        
+    if request.GET.get('export') == 'excel':
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Historique"
+        ws.append(['Action', 'Objet', 'Détails', 'Date'])
+
+        for a in actions:
+            ws.append([a.action, a.objet, a.details, a.date.strftime('%d/%m/%Y %H:%M')])
+
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename=historique_{commercial.user.username}.xlsx'
+        wb.save(response)
+        return response
+
+    if request.GET.get('export') == 'pdf':
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=A4)
+        elements = []
+        styles = getSampleStyleSheet()
+
+        # ✅ Titre
+        title = Paragraph(f"<b>Historique du commercial : {commercial.user.username}</b>", styles['Title'])
+        elements.append(title)
+        elements.append(Spacer(1, 12))
+
+        # ✅ Données du tableau
+        data = [['Date', 'Action', 'Objet', 'Détails']]
+        for a in actions:
+            data.append([
+                a.date.strftime('%d/%m/%Y %H:%M'),
+                a.action,
+                a.objet,
+                a.details
+            ])
+
+        # ✅ Création du tableau
+        table = Table(data, colWidths=[100, 150, 100, 180])
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 11),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+        ]))
+
+        elements.append(table)
+        doc.build(elements)
+
+        buffer.seek(0)
+        response = HttpResponse(buffer, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename=historique_{commercial.user.username}.pdf'
+        return response
+    
+    context = {
+        'commercial': commercial,
+        'actions': actions,
+        'selected_action': action_filter,
+        'selected_objet': objet_filter,
+    }
+    return render(request, 'SuperAdmin/historique_commercial.html', context)
+
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin'])
+def statistiques_commercial(request, commercial_id):
+    commercial = get_object_or_404(Commercial, id=commercial_id)
+
+    actions = HistoriqueAction.objects.filter(
+        utilisateur=commercial.user
+    )
+
+    # ✅ Résumé par type d’action
+    resume = {
+        "Ajout": actions.filter(action__icontains="Ajout").count(),
+        "Modification": actions.filter(action__icontains="Modification").count(),
+        "Suppression": actions.filter(action__icontains="Suppression").count(),
+    }
+
+    context = {
+        'commercial': commercial,
+        'resume': resume,
+        'total': actions.count(),
+    }
+    return render(request, 'SuperAdmin/statistiques_commercial.html', context)
+
+
+
+
 
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SuperAdmin']) 

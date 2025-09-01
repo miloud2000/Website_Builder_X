@@ -18,10 +18,20 @@ class ClienteForm(forms.ModelForm):
         model = Cliente
         fields = ['prenom', 'nom', 'email', 'phone']
 
-        
-        
-        
-        
+
+
+
+
+class ClienteUpdateForm(forms.ModelForm):
+    email = forms.EmailField(label="Email", required=True)
+
+    class Meta:
+        model = Cliente
+        fields = ['email', 'prenom', 'nom', 'phone', 'code_client']
+
+
+
+
 
 class AdministrateurForm(UserCreationForm):
     name = forms.CharField(max_length=100)

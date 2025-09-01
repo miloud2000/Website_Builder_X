@@ -1,0 +1,44 @@
+{% extends "Commercial/dashbordCommercial.html" %}
+
+{% load static %}
+{% load form_tags %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+ <!-- partial -->
+ <div class="main-panel">
+  <div class="content-wrapper">
+  {% if messages %}
+  {% for message in messages %}
+      {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">
+          {{ message }}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+    <div class="row">
+<div class="container mt-5">
+  <div class="card border-danger">
+    <div class="card-header bg-danger text-white">
+      <h4>Confirmation de suppression</h4>
+    </div>
+    <div class="card-body">
+      <p>Êtes-vous sûr de vouloir supprimer le client suivant ?</p>
+      <ul>
+        <li><strong>Nom :</strong> {{ cliente.prenom }} {{ cliente.nom }}</li>
+        <li><strong>Username :</strong> {{ cliente.user.username }}</li>
+        <li><strong>Email :</strong> {{ cliente.email }}</li>
+        <li><strong>Téléphone :</strong> {{ cliente.phone }}</li>
+      </ul>
+
+      <form method="post">
+        {% csrf_token %}
+        <a href="{% url 'ClienteCommercial' %}" class="btn btn-secondary">Annuler</a>
+        <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "Commercial/dashbordCommercial.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="main-panel">
+  <div class="content-wrapper">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" role="alert">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="row">
+      <div class="container mt-5">
+        <div class="card">
+          <div class="card-header bg-warning text-dark">
+            <h4>Modifier les informations du client</h4>
+          </div>
+          <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+              
+                <div class="form-group">
+                  <label for="id_email">Email</label>
+                  {% render_field form.email class="form-control" %}
+                </div>
+                <div class="form-group">
+                  <label for="id_prenom">Prénom</label>
+                  {% render_field form.prenom class="form-control" %}
+                </div>
+                <div class="form-group">
+                  <label for="id_nom">Nom</label>
+                  {% render_field form.nom class="form-control" %}
+                </div>
+                <div class="form-group">
+                  <label for="id_phone">Téléphone</label>
+                  {% render_field form.phone class="form-control" %}
+                </div>
+                <div class="form-group">
+                  <label for="id_code_client">Code Client</label>
+                  {% render_field form.code_client class="form-control" %}
+                </div>
+              
+                <a href="{% url 'ClienteCommercial' %}" class="btn btn-secondary">Annuler</a>
+                <button type="submit" class="btn btn-warning">Enregistrer les modifications</button>
+              </form>              
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

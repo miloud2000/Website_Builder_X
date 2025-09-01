@@ -1,0 +1,53 @@
+{% extends "SuperAdmin/dashbordSuperAdmin.html" %}
+
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3 class="mb-4">Statistiques du commercial : {{ commercial.user.username }}</h3>
+
+  <!-- ✅ Résumé -->
+  <div class="mb-4">
+    <span class="badge bg-info me-2">Total : {{ total }}</span>
+    <span class="badge bg-success me-2">Ajouts : {{ resume.Ajout }}</span>
+    <span class="badge bg-warning text-dark me-2">Modifications : {{ resume.Modification }}</span>
+    <span class="badge bg-danger me-2">Suppressions : {{ resume.Suppression }}</span>
+  </div>
+
+  <!-- ✅ Graphique circulaire -->
+  <canvas id="actionChart" width="400" height="200"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById('actionChart').getContext('2d');
+    const actionChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Ajout', 'Modification', 'Suppression'],
+        datasets: [{
+          data: [{{ resume.Ajout }}, {{ resume.Modification }}, {{ resume.Suppression }}],
+          backgroundColor: ['#198754', '#ffc107', '#dc3545'],
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            position: 'bottom'
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const total = {{ total }};
+                const value = context.raw;
+                const percent = ((value / total) * 100).toFixed(1);
+                return `${context.label}: ${value} (${percent}%)`;
+              }
+            }
+          }
+        }
+      }
+    });
+  </script>
+
+  <a href="{% url 'historique_commercial' commercial.id %}" class="btn btn-outline-primary mt-4">← Retour à l’historique</a>
+</div>
+{% endblock %}

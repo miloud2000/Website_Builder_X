@@ -126,6 +126,80 @@ def addCliente_c(request):
 
 
 
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['Commercial']) 
+def updateCliente_c(request, cliente_id):
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+    user = cliente.user
+
+    if request.method == 'POST':
+        form = ClienteUpdateForm(request.POST, instance=cliente)
+        if form.is_valid():
+            # Mise à jour de l'email du User
+            user.email = form.cleaned_data['email']
+            user.save()
+
+            # Mise à jour du Cliente
+            cliente = form.save(commit=False)
+            cliente.email = form.cleaned_data['email']
+            cliente.save()
+
+            HistoriqueAction.objects.create(
+                utilisateur=request.user,
+                action="Modification d'un client",
+                objet="Cliente",
+                details=f"Client « {cliente.prenom} {cliente.nom} » modifié par {request.user.username}.",
+                date=now()
+            )
+
+            messages.success(request, "Client modifié avec succès.")
+            return redirect('ClienteCommercial')
+        else:
+            messages.error(request, "Formulaire invalide.")
+    else:
+        form = ClienteUpdateForm(instance=cliente)
+        form.fields['email'].initial = user.email  # ✅ injecté ici
+
+    return render(request, 'Commercial/updateCliente.html', {'form': form})
+
+
+
+
+
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['Commercial']) 
+def deleteCliente_c(request, cliente_id):
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+    username = cliente.user.username
+    nom_complet = f"{cliente.prenom} {cliente.nom}"
+
+    if request.method == 'POST':
+        cliente.user.delete()  # Supprime aussi le compte lié
+        cliente.delete()
+
+        # ✅ Historique de suppression
+        HistoriqueAction.objects.create(
+            utilisateur=request.user,
+            action="Suppression d'un client",
+            objet="Cliente",
+            details=(
+                f"Client « {nom_complet} » (username: {username}) supprimé par {request.user.username}."
+            ),
+            date=now()
+        )
+
+        messages.success(request, "Client supprimé avec succès.")
+        return redirect('ClienteCommercial')
+
+    return render(request, 'Commercial/confirm_delete_cliente.html', {'cliente': cliente})
+
+
+
+
 #List of websites that are displayed to the Commercial
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['Commercial']) 

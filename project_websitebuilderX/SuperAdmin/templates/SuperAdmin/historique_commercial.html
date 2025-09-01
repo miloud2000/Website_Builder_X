@@ -1,0 +1,103 @@
+{% extends "SuperAdmin/dashbordSuperAdmin.html" %}
+
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3 class="mb-4">Historique du commercial : {{ commercial.user.username }}</h3>
+
+  <!-- ✅ Résumé -->
+  <div class="mb-4">
+    <span class="badge bg-info me-2">Total actions : {{ actions|length }}</span>
+    {% if actions %}
+      <span class="badge bg-success me-2">Dernière : {{ actions.0.date|date:"d/m/Y H:i" }}</span>
+    {% endif %}
+    <span class="badge bg-secondary">Utilisateur : {{ commercial.user.username }}</span>
+  </div>
+
+  <!-- ✅ Filtres -->
+  <form method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+      <label for="action" class="form-label">Type d'action</label>
+      <select name="action" class="form-select">
+        <option value="">Tous</option>
+        <option value="Ajout d'un nouveau client" {% if selected_action == "Ajout d'un nouveau client" %}selected{% endif %}>Ajout</option>
+        <option value="Modification d'un client" {% if selected_action == "Modification d'un client" %}selected{% endif %}>Modification</option>
+        <option value="Suppression d'un client" {% if selected_action == "Suppression d'un client" %}selected{% endif %}>Suppression</option>
+      </select>
+    </div>
+
+    <div class="col-md-4">
+      <label for="objet" class="form-label">Objet</label>
+      <select name="objet" class="form-select">
+        <option value="">Tous</option>
+        <option value="Cliente" {% if selected_objet == "Cliente" %}selected{% endif %}>Cliente</option>
+        <option value="Support" {% if selected_objet == "Support" %}selected{% endif %}>Support</option>
+        <option value="SiteWeb" {% if selected_objet == "SiteWeb" %}selected{% endif %}>SiteWeb</option>
+        <!-- Ajoute d'autres objets ici -->
+      </select>
+    </div>
+
+    <div class="col-md-4 d-flex align-items-end">
+      <button type="submit" class="btn btn-primary me-2">Filtrer</button>
+      <a href="{% url 'historique_commercial' commercial.id %}" class="btn btn-outline-secondary">Réinitialiser</a>
+    </div>
+  </form>
+  <br>
+  <div class="mb-4">
+    <a href="?{% if selected_action %}action={{ selected_action }}&{% endif %}{% if selected_objet %}objet={{ selected_objet }}&{% endif %}export=excel" class="btn btn-outline-success me-2">
+      Télécharger Excel 📥
+    </a>
+    <a href="?{% if selected_action %}action={{ selected_action }}&{% endif %}{% if selected_objet %}objet={{ selected_objet }}&{% endif %}export=pdf" class="btn btn-outline-danger">
+      Télécharger PDF 📄
+    </a>
+  </div>
+<br>  
+  <a href="{% url 'statistiques_commercial' commercial.id %}" class="btn btn-outline-info">
+    Voir les statistiques 📊
+  </a>
+  
+
+  <!-- ✅ Tableau -->
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Action</th>
+          <th>Objet</th>
+          <th>Détails</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for action in actions %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>
+            {% if "Ajout" in action.action %}
+              <span class="badge bg-success">Ajout</span>
+            {% elif "Modification" in action.action %}
+              <span class="badge bg-warning text-dark">Modification</span>
+            {% elif "Suppression" in action.action %}
+              <span class="badge bg-danger">Suppression</span>
+            {% else %}
+              {{ action.action }}
+            {% endif %}
+          </td>
+          <td>{{ action.objet }}</td>
+          <td>{{ action.details }}</td>
+          <td>{{ action.date|date:"d/m/Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="text-center text-muted">Aucune action trouvée.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <a href="{% url 'CommercialSuperAdmin' %}" class="btn btn-secondary mt-3">Retour aux commerciaux</a>
+</div>
+{% endblock %}

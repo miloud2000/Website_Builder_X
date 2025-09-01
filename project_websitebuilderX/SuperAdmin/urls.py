@@ -73,6 +73,10 @@ urlpatterns = [
     path('commercial/export/csv/', views.export_commercials_csv, name='export_commercials_csv'),
     path('commercial/export/pdf/', views.export_commercials_pdf, name='export_commercials_pdf'),
     path('commercial/export/excel/', views.export_commercials_excel, name='export_commercials_excel'),
+    path('SuperAdmin/superadmin/commercial/<int:commercial_id>/historique/', views.historique_commercial, name='historique_commercial'),
+    path('SuperAdmin/superadmin/commercial/<int:commercial_id>/statistiques/', views.statistiques_commercial, name='statistiques_commercial'),
+
+
 
     path('demandes-recharger/', views.all_demandes_recharger, name='all_demandes_recharger'),
     path('demandes/export/pdf/', views.export_demandes_pdf, name='export_demandes_pdf'),
