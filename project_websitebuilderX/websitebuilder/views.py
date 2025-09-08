@@ -30,21 +30,72 @@ def home2(request):
 
 
 
+
+from websitebuilder.models import (
+    DemandeRecharger, Cliente,
+    AchatWebsites, LocationWebsites, GetFreeWebsites
+)
+from django.db.models import Q
+from itertools import chain
+
 def home(request):  
+    is_Cliente = is_SupportTechnique = is_Administrateur = is_Commercial = False
+    demandes = []
+    produits = []
+
     if request.user.is_authenticated:
         is_Cliente = request.user.groups.filter(name='Cliente').exists()
         is_SupportTechnique = request.user.groups.filter(name='SupportTechnique').exists()
         is_Administrateur = request.user.groups.filter(name='Administrateur').exists()
         is_Commercial = request.user.groups.filter(name='Commercial').exists()
 
-    else: 
-        is_Cliente= False  
-        is_SupportTechnique= False 
-        is_Administrateur= False  
-        is_Commercial= False 
-           
-    context = {"is_Cliente": is_Cliente,"is_SupportTechnique":is_SupportTechnique,"is_Administrateur":is_Administrateur,"is_Commercial":is_Commercial}
-    return render(request, "websitebuilder/home.html",context)
+        if is_Cliente:
+            try:
+                cliente = Cliente.objects.get(user=request.user)
+
+                # Dernières demandes validées
+                demandes = DemandeRecharger.objects.filter(
+                    cliente=cliente,
+                    status='Done'
+                ).order_by('-date_created')[:3]
+
+                # Derniers produits (achat, location, gratuit)
+                achats = AchatWebsites.objects.filter(cliente=cliente).order_by('-date_created')[:3]
+                locations = LocationWebsites.objects.filter(cliente=cliente).order_by('-date_created')[:3]
+                gratuits = GetFreeWebsites.objects.filter(cliente=cliente).order_by('-date_created')[:3]
+
+                # Fusionner et trier les 3 derniers produits
+                produits = sorted(
+                    chain(achats, locations, gratuits),
+                    key=lambda x: x.date_created,
+                    reverse=True
+                )[:3]
+                
+                # Services consommés
+                services = AchatSupport.objects.filter(
+                    cliente=cliente,
+                    StatusConsomé='Consomé'
+                ).order_by('-date_created')[:3]
+                
+                factures = Facturations.objects.filter(cliente=cliente).order_by('-date_created')[:3]
+
+            except Cliente.DoesNotExist:
+                demandes = []
+                produits = []
+                factures = []
+
+    context = {
+        "is_Cliente": is_Cliente,
+        "is_SupportTechnique": is_SupportTechnique,
+        "is_Administrateur": is_Administrateur,
+        "is_Commercial": is_Commercial,
+        "demandes": demandes,
+        "produits": produits,
+        "services": services,
+        "factures": factures,
+    }
+    return render(request, "websitebuilder/home.html", context)
+
 
 
 

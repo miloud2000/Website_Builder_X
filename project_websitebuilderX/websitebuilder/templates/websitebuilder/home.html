@@ -126,65 +126,34 @@
                         <h2>Derniers Paiement</h2>
                         <img src=" {% static 'img/minus.png' %}" alt="#">
                     </div>
-					<div class="row">
-						<div class="col-lg-4 col-md-6 col-12 ">
-							<!-- single-schedule -->
+					{% if is_Cliente and demandes %}
+						<div class="row">
+						{% for demande in demandes %}
+						<div class="col-lg-4 col-md-6 col-12">
 							<div class="single-schedule first">
-                                
-								<div class="inner">
-									<div class="icon">
-                                        <i class="fa-solid fa-money-check"></i>
-                                        <i class="icofont-prescription"></i>
-                                        <i class="fa-money-check-dollar"></i>
-									</div>
-									<div class="single-content">
-										<span>N° Paiement : 823689217</span>
-										<h4>Data: 12/04/2023</h4>
-                                        <h4>Le montant d'argent: 100 MAD</h4>
-										<p> suject :Lorem ipsum sit amet consectetur adipiscing elit. Vivamus et erat in lacus convallis sodales.</p>
-										<a href="#">LEARN MORE<i class="fa fa-long-arrow-right"></i></a>
-									</div>
+							<div class="inner">
+								<div class="icon">
+								<i class="fa-solid fa-money-check"></i>
+								<i class="icofont-prescription"></i>
+								<i class="fa-money-check-dollar"></i>
+								</div>
+								<div class="single-content">
+								<span>N° Paiement : {{ demande.code_DemandeRecharger }}</span>
+								<h4>Date : {{ demande.date_created|date:"d/m/Y" }}</h4>
+								<h4>Montant : {{ demande.solde }} MAD</h4>
+								<p>Status : {{ demande.status }}</p>
+								{% if demande.motifNonAcceptation %}
+									<p>Motif : {{ demande.motifNonAcceptation }}</p>
+								{% endif %}
+								<a href="#">Voir détails <i class="fa fa-long-arrow-right"></i></a>
 								</div>
 							</div>
-						</div>
-                        <br>
-						<div class="col-lg-4 col-md-6 col-12 ">
-							<div class="single-schedule first">
-								<div class="inner">
-									<div class="icon">
-                                        <i class="fa-solid fa-money-check"></i>
-                                        <i class="icofont-prescription"></i>
-                                        <i class="fa-money-check-dollar"></i>
-									</div>
-									<div class="single-content">
-										<span>N° Paiement : 823689217</span>
-										<h4>Data: 12/04/2023</h4>
-                                        <h4>Le montant d'argent: 100 MAD</h4>
-										<p> suject :Lorem ipsum sit amet consectetur adipiscing elit. Vivamus et erat in lacus convallis sodales.</p>
-										<a href="#">LEARN MORE<i class="fa fa-long-arrow-right"></i></a>
-									</div>
-								</div>
 							</div>
 						</div>
-                        <br>
-						<div class="col-lg-4 col-md-6 col-12 ">
-							<div class="single-schedule first">
-								<div class="inner">
-									<div class="icon">
-                                        <i class="fa-solid fa-money-check"></i>
-                                        <i class="icofont-prescription"></i>
-                                        <i class="fa-money-check-dollar"></i>
-									</div>
-									<div class="single-content">
-										<span>N° Paiement : 823689217</span>
-										<h4>Data: 12/04/2023</h4>
-                                        <h4>Le montant d'argent: 100 MAD</h4>
-										<p> suject :Lorem ipsum sit amet consectetur adipiscing elit. Vivamus et erat in lacus convallis sodales.</p>
-										<a href="#">LEARN MORE<i class="fa fa-long-arrow-right"></i></a>
-									</div>
-								</div>
-							</div>
+						{% endfor %}
 						</div>
+						{% endif %}
+
 					</div>
 				</div>
 			</div>
@@ -204,91 +173,49 @@
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<!-- Single Table -->
+					{% if is_Cliente and produits %}
+					<div class="row">
+					{% for produit in produits %}
 					<div class="col-lg-4 col-md-12 col-12">
 						<div class="single-table">
-							<!-- Table Head -->
-							<div class="table-head">
-								<div class="icon">
-									<i class="icofont-check-circled"></i>
-								</div>
-								<h4 class="title">Produits 1</h4>
+						<div class="table-head">
+							<div class="icon">
+							{% comment %} <i class="icofont-check-circled"></i> {% endcomment %}
 							</div>
-							<!-- Table List -->
-							<ul class="table-list">
-								<li><i class="icofont icofont-ui-check"></i>N° Produit : 823689217</li>
-								<li><i class="icofont icofont-ui-check"></i>Data Transactions: 12/04/2023</li>
-                                <li><i class="icofont icofont-ui-check"></i>e montant d'Produit: 100 MAD</li>
-                                <li><i class="icofont icofont-ui-check"></i>Type Produit : WebSite</li>
-								<li><i class="icofont icofont-ui-check"></i>Type: achète</li>
-                                <li>Image</li>
-							</ul>
-                            <a href=""><img src="{% static 'img/css-image-gallery.jpg' %} " alt="#"></a>
-
-                            
-							<div class="table-bottom">
-								<a class="btn" href="#">More Details</a>
-							</div>
-							<!-- Table Bottom -->
+							<h4 class="title">{{ produit.websites.name }}</h4>
+						</div>
+						<ul class="table-list">
+							<li>{% comment %} <i class="icofont icofont-ui-check"></i>{% endcomment %}N° Produit : {{ forloop.counter }}</li> 
+							 <li>{% comment %}<i class="icofont icofont-ui-check"></i>{% endcomment %}Date Transaction : {{ produit.date_created|date:"d/m/Y" }}</li> 
+							 <li>{% comment %}<i class="icofont icofont-ui-check"></i> {% endcomment %}
+							Montant : 
+							{% if produit.transaction_type == 'AchatWebsites' %}
+								{{ produit.prix_achat }} MAD
+							{% elif produit.transaction_type == 'LocationWebsites' %}
+								{{ produit.prix_loyer }} MAD
+							{% elif produit.transaction_type == 'GetFreeWebsite' %}
+								{{ produit.prix_free }} MAD
+							{% endif %}
+							</li>
+							<li>{% comment %}<i class="icofont icofont-ui-check"></i>{% endcomment %}Type Produit : {{ produit.websites.type }}</li>
+							<li>{% comment %}<i class="icofont icofont-ui-check"></i>{% endcomment %}Type : 
+							{% if produit.transaction_type == 'AchatWebsites' %}Acheté
+							{% elif produit.transaction_type == 'LocationWebsites' %}Loué
+							{% elif produit.transaction_type == 'GetFreeWebsite' %}Gratuit
+							{% endif %}
+							</li>
+							<li>Image</li>
+						</ul>
+						<a href="#"><img src="{{ produit.websites.image.url }}" alt="#"></a>
+						<div class="table-bottom">
+							<a class="btn" href="#">More Details</a>
+						</div>
 						</div>
 					</div>
-					<!-- End Single Table-->
-					<!-- Single Table -->
-					<div class="col-lg-4 col-md-12 col-12">
-						<div class="single-table">
-							<!-- Table Head -->
-							<div class="table-head">
-								<div class="icon">
-									<i class="icofont-check-circled"></i>
-								</div>
-								<h4 class="title">Produits 2</h4>
-							</div>
-							<!-- Table List -->
-							<ul class="table-list">
-								<li><i class="icofont icofont-ui-check"></i>N° Produit : 823689217</li>
-								<li><i class="icofont icofont-ui-check"></i>Data Transactions: 12/04/2023</li>
-                                <li><i class="icofont icofont-ui-check"></i>e montant d'Produit: 100 MAD</li>
-                                <li><i class="icofont icofont-ui-check"></i>Type Produit : WebSite</li>
-								<li><i class="icofont icofont-ui-check"></i>Type: Louer</li>
-                                <li>Image</li>
-							</ul>
-                            <a href=""><img src="{% static 'img/htmlimagegallery.jpg' %} " alt="#"></a>
-
-                            
-							<div class="table-bottom">
-								<a class="btn" href="#">More Details</a>
-							</div>
-							<!-- Table Bottom -->
-						</div>
+					{% endfor %}
 					</div>
-					<!-- Single Table -->
-					<div class="col-lg-4 col-md-12 col-12">
-						<div class="single-table">
-							<!-- Table Head -->
-							<div class="table-head">
-								<div class="icon">
-									<i class="icofont-check-circled"></i>
-								</div>
-								<h4 class="title">Produits 3</h4>
-							</div>
-							<!-- Table List -->
-							<ul class="table-list">
-								<li><i class="icofont icofont-ui-check"></i>N° Produit : 823689217</li>
-								<li><i class="icofont icofont-ui-check"></i>Data Transactions: 12/04/2023</li>
-                                <li><i class="icofont icofont-ui-check"></i>e montant d'Produit: 100 MAD</li>
-                                <li><i class="icofont icofont-ui-check"></i>Type Produit : WebSite</li>
-								<li><i class="icofont icofont-ui-check"></i>Type: achète</li>
-                                <li>Image</li>
-							</ul>
-                            <a href=""><img src="{% static 'img/jquerylightbox.jpg' %} " alt="#"></a>
-
-                            
-							<div class="table-bottom">
-								<a class="btn" href="#">More Details</a>
-							</div>
-							<!-- Table Bottom -->
-						</div>
+					{% endif %}
+					
 					</div>
 				</div>	
 			</div>	
@@ -305,60 +232,29 @@
 						</div>
 					</div>
 				</div>
-				<div class="row">
+					{% if is_Cliente and services %}
+					<div class="row">
+					{% for service in services %}
 					<div class="col-lg-4 col-md-6 col-12">
-						<!-- Single Blog -->
 						<div class="single-news">
-							<div class="news-head">
-								<img style="width: 150px; height: 150px;" src="{% static 'img/dns-png-16.png' %}" alt="#">
-							</div>
-							<div class="news-body">
-								<div class="news-content">
-									<div class="date">Data : 22 April, 2023</div><br>
-										<span>N° Service : 823689217</span>
-                                        <p>Le montant de service: 100 MAD</p>
-										<p>Type de service: Maintenance de DNS </p>
-										<a href="#">LEARN MORE<i class="fa fa-long-arrow-right"></i></a>
-								</div>
+						<div class="news-head">
+							{% comment %} <img style="width: 150px; height: 150px;" src="{{ service.support.image.url }}" alt="#"> {% endcomment %}
+							<img style="width: 150px; height: 150px;" src="{% static 'img/MAINTENANCE-862x762-1.png' %}" alt="#">
+						</div>
+						<div class="news-body">
+							<div class="news-content">
+							<div class="date">Date : {{ service.date_created|date:"d F, Y" }}</div><br>
+							<span>N° Service : {{ service.support.id }}</span>
+							<p>Le montant de service : {{ service.prix }} MAD</p>
+							<p>Type de service : {{ service.support.name }}</p>
+							<a href="#">LEARN MORE<i class="fa fa-long-arrow-right"></i></a>
 							</div>
 						</div>
-						<!-- End Single Blog -->
+						</div>
 					</div>
-					<div class="col-lg-4 col-md-6 col-12">
-						<!-- Single Blog -->
-						<div class="single-news">
-							<div class="news-head">
-								<img style="width: 150px; height: 150px;" src="{% static 'img/MAINTENANCE-862x762-1.png' %}" alt="#">
-							</div>
-							<div class="news-body">
-								<div class="news-content">
-									<div class="date">Data : 13 April, 2023</div><br>
-										<span>N° Service : 823689217</span>
-                                        <p>Le montant de service: 400 MAD</p>
-										<p>Type de service: Maintenance  hébergement </p>
-										<a href="#">LEARN MORE<i class="fa fa-long-arrow-right"></i></a>
-								</div>
-							</div>
-						</div>
-						<!-- End Single Blog -->
+					{% endfor %}
 					</div>
-					<div class="col-lg-4 col-md-6 col-12">
-						<!-- Single Blog -->
-						<div class="single-news">
-							<div class="news-head">
-								<img style="width: 150px; height: 150px;" src="{% static 'img/1672443.png' %}" alt="#">
-							</div>
-							<div class="news-body">
-								<div class="news-content">
-									<div class="date">Data : 21 April, 2023</div><br>
-										<span>N° Service : 823689217</span>
-                                        <p>Le montant de service: 100 MAD</p>
-										<p>Type de service: Maintenance de SSL </p>
-										<a href="#">LEARN MORE<i class="fa fa-long-arrow-right"></i></a>
-								</div>
-							</div>
-						</div>
-						<!-- End Single Blog -->
+					{% endif %}
 					</div>
 				</div>
 			</div>
@@ -376,54 +272,49 @@
 					</div>
 				</div>
 			</div>	
-		<div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
-			<div class="col">
-			<div class="card mb-4 rounded-3 shadow-sm">
-				<div class="card-header py-3">
-				<h4 class="my-0 fw-normal">N° Facturation: 2873237162</h4>
-				</div>
-				<div class="card-body">
-				<h1 class="card-title pricing-card-title">400 MAD</h1>{% comment %} <small class="text-muted fw-light">/mo</small> {% endcomment %}
-				<ul class="list-unstyled mt-3 mb-4">
-					<li>Date: 12/04/2023</li>
-					<li>Subject: Service</li>
-					<li>Méthode de paiement :Virement  </li>
-				</ul>
-				<button type="button" class="w-100 btn btn-lg btn-outline-primary">Télécharger PDF</button>
-				</div>
-			</div>
-			</div>
-			<div class="col">
+			{% if is_Cliente and factures %}
+			<div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+			  {% for facture in factures %}
+			  <div class="col">
 				<div class="card mb-4 rounded-3 shadow-sm">
-				<div class="card-header py-3">
-					<h4 class="my-0 fw-normal">N° Facturation: 287323827Z6</h4>
-				</div>
-				<div class="card-body">
-					<h1 class="card-title pricing-card-title">600 MAD</h1>{% comment %} <small class="text-muted fw-light">/mo</small> {% endcomment %}
+				  <div class="card-header py-3">
+					<h4 class="my-0 fw-normal">N° Facturation : {{ facture.code_facturation }}</h4>
+				  </div>
+				  <div class="card-body">
+					<h1 class="card-title pricing-card-title">
+					  {% if facture.achat_website %}
+						{{ facture.achat_website.prix_achat }} MAD
+					  {% elif facture.location_website %}
+						{{ facture.location_website.prix_loyer }} MAD
+					  {% elif facture.achat_support %}
+						{{ facture.achat_support.prix }} MAD
+					  {% elif facture.getfree_website %}
+						{{ facture.getfree_website.prix_free }} MAD
+					  {% else %}
+						0 MAD
+					  {% endif %}
+					</h1>
 					<ul class="list-unstyled mt-3 mb-4">
-					<li>Date: 12/04/2023</li>
-					<li>Subject: produit</li>
-					<li>Méthode de paiement :Paypal</li>
+					  <li>Date : {{ facture.date_created|date:"d/m/Y" }}</li>
+					  <li>Subject : 
+						{% if facture.achat_website or facture.location_website or facture.getfree_website %}
+						  Produit
+						{% elif facture.achat_support %}
+						  Service
+						{% else %}
+						  Autre
+						{% endif %}
+					  </li>
+					  <li>Méthode de paiement : Virement</li>
 					</ul>
 					<button type="button" class="w-100 btn btn-lg btn-outline-primary">Télécharger PDF</button>
+				  </div>
 				</div>
-				</div>
+			  </div>
+			  {% endfor %}
 			</div>
-			<div class="col">
-				<div class="card mb-4 rounded-3 shadow-sm">
-				<div class="card-header py-3">
-					<h4 class="my-0 fw-normal">N° Facturation: 28732387665</h4>
-				</div>
-				<div class="card-body">
-					<h1 class="card-title pricing-card-title">800 MAD</h1>{% comment %} <small class="text-muted fw-light">/mo</small> {% endcomment %}
-					<ul class="list-unstyled mt-3 mb-4">
-					<li>Date: 12/04/2023</li>
-					<li>Subject: Service</li>
-					<li>Méthode de paiement :Virement  </li>
-					</ul>
-					<button type="button" class="w-100 btn btn-lg btn-outline-primary">Télécharger PDF</button>
-				</div>
-				</div>
+			{% endif %}
+			
 			</div>
 		</div>
 		</div>
