@@ -107,7 +107,7 @@
           </td>
           <td>{{ ticket.date_created|date:"d/m/Y" }}</td>
           <td>
-            <a href="{% url 'ticket_detail' ticket.id %}" class="btn btn-sm btn-outline-primary">Voir</a>
+            <a href="{% url 'ticket_detail_superadmin' ticket.id %}" class="btn btn-sm btn-outline-primary">Voir</a>
           </td>
         </tr>
       {% empty %}

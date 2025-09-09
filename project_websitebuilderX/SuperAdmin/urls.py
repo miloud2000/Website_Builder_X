@@ -130,9 +130,9 @@ urlpatterns = [
     
     
     
-    path('SuperAdmin/tickets/', views.tickets_list, name='tickets_list'),
-    path('SuperAdmin/tickets/<int:ticket_id>/', views.ticket_detail, name='ticket_detail'),
-    path('tickets/<int:ticket_id>/pdf/', views.ticket_pdf, name='ticket_pdf'),
+    path('SuperAdmin/tickets/', views.tickets_list, name='tickets_list_superadmin'),
+    path('SuperAdmin/tickets/<int:ticket_id>/', views.ticket_detail, name='ticket_detail_superadmin'),
+    path('tickets/<int:ticket_id>/pdf/', views.ticket_pdf, name='ticket_pdf_superadmin'),
 
 
 

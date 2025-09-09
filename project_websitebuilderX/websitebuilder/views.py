@@ -37,11 +37,12 @@ from websitebuilder.models import (
 )
 from django.db.models import Q
 from itertools import chain
-
-def home(request):  
+def home(request):
     is_Cliente = is_SupportTechnique = is_Administrateur = is_Commercial = False
     demandes = []
     produits = []
+    services = []  # ✅ Initialisation ici
+    factures = []
 
     if request.user.is_authenticated:
         is_Cliente = request.user.groups.filter(name='Cliente').exists()
@@ -53,36 +54,30 @@ def home(request):
             try:
                 cliente = Cliente.objects.get(user=request.user)
 
-                # Dernières demandes validées
                 demandes = DemandeRecharger.objects.filter(
                     cliente=cliente,
                     status='Done'
                 ).order_by('-date_created')[:3]
 
-                # Derniers produits (achat, location, gratuit)
                 achats = AchatWebsites.objects.filter(cliente=cliente).order_by('-date_created')[:3]
                 locations = LocationWebsites.objects.filter(cliente=cliente).order_by('-date_created')[:3]
                 gratuits = GetFreeWebsites.objects.filter(cliente=cliente).order_by('-date_created')[:3]
 
-                # Fusionner et trier les 3 derniers produits
                 produits = sorted(
                     chain(achats, locations, gratuits),
                     key=lambda x: x.date_created,
                     reverse=True
                 )[:3]
-                
-                # Services consommés
+
                 services = AchatSupport.objects.filter(
                     cliente=cliente,
                     StatusConsomé='Consomé'
                 ).order_by('-date_created')[:3]
-                
+
                 factures = Facturations.objects.filter(cliente=cliente).order_by('-date_created')[:3]
 
             except Cliente.DoesNotExist:
-                demandes = []
-                produits = []
-                factures = []
+                pass  # Les listes sont déjà initialisées à vide
 
     context = {
         "is_Cliente": is_Cliente,
@@ -94,8 +89,8 @@ def home(request):
         "services": services,
         "factures": factures,
     }
-    return render(request, "websitebuilder/home.html", context)
 
+    return render(request, "websitebuilder/home.html", context)
 
 
 
