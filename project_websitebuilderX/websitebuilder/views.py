@@ -178,30 +178,78 @@ def register(request):
     return render(request, "websitebuilder/register.html", context)
 
 
-
-#Login For Everyone
 @notLoggedUsers
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
+
         if user is not None:
+            # Vérification des statuts pour les groupes restreints
+            if user.groups.filter(name='SupportTechnique').exists():
+                from websitebuilder.models import SupportTechnique
+                try:
+                    support = SupportTechnique.objects.get(user=user)
+                    if support.Status != 'Active':
+                        messages.error(request, "Votre compte SupportTechnique n'est pas actif.")
+                        return redirect('user_login')
+                except SupportTechnique.DoesNotExist:
+                    messages.error(request, "Compte SupportTechnique introuvable.")
+                    return redirect('user_login')
+
+            elif user.groups.filter(name='GestionnaireComptes').exists():
+                from websitebuilder.models import GestionnaireComptes
+                try:
+                    gestionnaire = GestionnaireComptes.objects.get(user=user)
+                    if gestionnaire.Status != 'Active':
+                        messages.error(request, "Votre compte GestionnaireComptes n'est pas actif.")
+                        return redirect('user_login')
+                except GestionnaireComptes.DoesNotExist:
+                    messages.error(request, "Compte GestionnaireComptes introuvable.")
+                    return redirect('user_login')
+
+            elif user.groups.filter(name='Administrateur').exists():
+                from websitebuilder.models import Administrateur
+                try:
+                    admin = Administrateur.objects.get(user=user)
+                    if admin.Status != 'Active':
+                        messages.error(request, "Votre compte Administrateur n'est pas actif.")
+                        return redirect('user_login')
+                except Administrateur.DoesNotExist:
+                    messages.error(request, "Compte Administrateur introuvable.")
+                    return redirect('user_login')
+
+            elif user.groups.filter(name='Commercial').exists():
+                from websitebuilder.models import Commercial
+                try:
+                    commercial = Commercial.objects.get(user=user)
+                    if commercial.Status != 'Active':
+                        messages.error(request, "Votre compte Commercial n'est pas actif.")
+                        return redirect('user_login')
+                except Commercial.DoesNotExist:
+                    messages.error(request, "Compte Commercial introuvable.")
+                    return redirect('user_login')
+
+            # ✅ Si tout est bon, on connecte
             login(request, user)
-            if request.user.groups.filter(name='Cliente').exists():
+
+            if user.groups.filter(name='Cliente').exists():
                 return redirect('/home')
-            if request.user.groups.filter(name='SupportTechnique').exists():
+            if user.groups.filter(name='SupportTechnique').exists():
                 return redirect('/homeSupportTechnique')
-            if request.user.groups.filter(name='GestionnaireComptes').exists():
+            if user.groups.filter(name='GestionnaireComptes').exists():
                 return redirect('/homeGestionnairesComptes')
-            if request.user.groups.filter(name='Administrateur').exists():
+            if user.groups.filter(name='Administrateur').exists():
                 return redirect('/homeAdministrateur')
-            if request.user.groups.filter(name='Commercial').exists():
+            if user.groups.filter(name='Commercial').exists():
                 return redirect('/homeCommercial')
-            elif request.user.groups.filter(name='SuperAdmin').exists():
+            if user.groups.filter(name='SuperAdmin').exists():
                 return redirect('homeSuperAdmin')
+
         else:
-            messages.error(request, 'Invalid email or password.')  
+            messages.error(request, 'Email ou mot de passe invalide.')
+
     return render(request, "websitebuilder/login.html")
 
 

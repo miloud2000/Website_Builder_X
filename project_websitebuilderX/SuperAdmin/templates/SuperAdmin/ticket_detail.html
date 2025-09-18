@@ -6,7 +6,7 @@
 
   <!-- Bouton PDF -->
   <div class="mb-3">
-    <a href="{% url 'ticket_pdf' ticket.id %}" class="btn btn-outline-primary" target="_blank">
+    <a href="{% url 'ticket_pdf_superadmin' ticket.id %}" class="btn btn-outline-primary" target="_blank">
       🖨️ Télécharger en PDF
     </a>
   </div>
@@ -46,7 +46,7 @@
 
   <!-- Retour -->
   <div class="mt-4">
-    <a href="{% url 'tickets_list' %}" class="btn btn-secondary">⬅ Retour à la liste</a>
+    <a href="{% url 'tickets_list_superadmin' %}" class="btn btn-secondary">⬅ Retour à la liste</a>
   </div>
 
 </div>

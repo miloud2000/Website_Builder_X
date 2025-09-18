@@ -3,21 +3,33 @@
 {% block content %}
 <div class="container mt-4">
   <h3 class="text-primary mb-4">📊 Activités du client – {{ cliente.user.username }}</h3>
-  {% comment %} <div class="export-buttons" style="margin-top: 20px;">
-    <h4>📤 Exporter les activités du client</h4>
-    <a href="{% url 'export_activites_pdf' cliente.id %}" class="btn btn-danger" target="_blank">
-      🧾 Télécharger PDF
-    </a>
+
     
-    
-    <a href="{% url 'export_activites_excel' cliente.id %}" class="btn btn-outline-success">
-      📊 Exporter en Excel
-    </a>
-  </div> {% endcomment %}
-  
-  
   
   <!-- ✅ Demandes de recharge -->
+  <form method="get" class="row g-2 mb-3">
+    <div class="col-md-3">
+      <select name="demande_status" class="form-select">
+        <option value="">Tous les statuts</option>
+        <option value="Done" {% if demande_status == "Done" %}selected{% endif %}>Accepté</option>
+        <option value="Not Done yet" {% if demande_status == "Not Done yet" %}selected{% endif %}>Non traité</option>
+        <option value="inacceptable" {% if demande_status == "inacceptable" %}selected{% endif %}>Inacceptable</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <input type="date" name="demande_date_min" class="form-control" value="{{ demande_date_min }}">
+    </div>
+    <div class="col-md-3">
+      <input type="date" name="demande_date_max" class="form-control" value="{{ demande_date_max }}">
+    </div>
+    <div class="col-md-3 d-flex gap-2">
+      <button type="submit" class="btn btn-primary">Filtrer</button>
+      <a href="{% url 'cliente_activity_dashboard' cliente.id %}" class="btn btn-outline-secondary">Réinitialiser</a>
+      <a href="?demande_status={{ demande_status }}&demande_date_min={{ demande_date_min }}&demande_date_max={{ demande_date_max }}&demande_export=excel" class="btn btn-success">📥 Excel</a>
+      <a href="?demande_status={{ demande_status }}&demande_date_min={{ demande_date_min }}&demande_date_max={{ demande_date_max }}&demande_export=pdf" class="btn btn-danger">📄 PDF</a>
+    </div>
+  </form>
+  
   <div class="card mb-4 shadow-sm">
     <div class="card-header bg-info text-white">💰 Demandes de recharge</div>
     <div class="card-body">
@@ -42,6 +54,29 @@
   </div>
 
   <!-- 🌐 Sites achetés -->
+  <form method="get" class="row g-2 mb-3">
+    <div class="col-md-3">
+      <select name="achat_status" class="form-select">
+        <option value="">Tous les statuts</option>
+        <option value="Builder" {% if achat_status == "Builder" %}selected{% endif %}>Builder</option>
+        <option value="in progress" {% if achat_status == "in progress" %}selected{% endif %}>In progress</option>
+        <option value="Not yet" {% if achat_status == "Not yet" %}selected{% endif %}>Not yet</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <input type="date" name="achat_date_min" class="form-control" value="{{ achat_date_min }}">
+    </div>
+    <div class="col-md-3">
+      <input type="date" name="achat_date_max" class="form-control" value="{{ achat_date_max }}">
+    </div>
+    <div class="col-md-3 d-flex gap-2">
+      <button type="submit" class="btn btn-primary">Filtrer</button>
+      <a href="{% url 'cliente_activity_dashboard' cliente.id %}" class="btn btn-outline-secondary">Réinitialiser</a>
+      <a href="?achat_status={{ achat_status }}&achat_date_min={{ achat_date_min }}&achat_date_max={{ achat_date_max }}&achat_export=excel" class="btn btn-success">📥 Excel</a>
+      <a href="?achat_status={{ achat_status }}&achat_date_min={{ achat_date_min }}&achat_date_max={{ achat_date_max }}&achat_export=pdf" class="btn btn-danger">📄 PDF</a>
+    </div>
+  </form>
+  
   <div class="card mb-4 shadow-sm">
     <div class="card-header bg-success text-white">🌐 Sites achetés</div>
     <div class="card-body">
@@ -66,6 +101,29 @@
   </div>
 
   <!-- 🎫 Tickets -->
+  <form method="get" class="row g-2 mb-3">
+    <div class="col-md-3">
+      <select name="ticket_status" class="form-select">
+        <option value="">Tous les statuts</option>
+        <option value="Ouvert" {% if ticket_status == "Ouvert" %}selected{% endif %}>Ouvert</option>
+        <option value="En Cours de traitement" {% if ticket_status == "En Cours de traitement" %}selected{% endif %}>En Cours de traitement</option>
+        <option value="Fermée" {% if ticket_status == "Fermée" %}selected{% endif %}>Fermée</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <input type="date" name="ticket_date_min" class="form-control" value="{{ ticket_date_min }}">
+    </div>
+    <div class="col-md-3">
+      <input type="date" name="ticket_date_max" class="form-control" value="{{ ticket_date_max }}">
+    </div>
+    <div class="col-md-3 d-flex gap-2">
+      <button type="submit" class="btn btn-primary">Filtrer</button>
+      <a href="{% url 'cliente_activity_dashboard' cliente.id %}" class="btn btn-outline-secondary">Réinitialiser</a>
+      <a href="?ticket_status={{ ticket_status }}&ticket_date_min={{ ticket_date_min }}&ticket_date_max={{ ticket_date_max }}&ticket_export=excel" class="btn btn-success">📥 Excel</a>
+      <a href="?ticket_status={{ ticket_status }}&ticket_date_min={{ ticket_date_min }}&ticket_date_max={{ ticket_date_max }}&ticket_export=pdf" class="btn btn-danger">📄 PDF</a>
+    </div>
+  </form>
+  
   <div class="card mb-4 shadow-sm">
     <div class="card-header bg-primary text-white">🎫 Tickets</div>
     <div class="card-body">
@@ -89,6 +147,31 @@
   </div>
 
   <!-- 🧾 Supports achetés -->
+  <form method="get" class="row g-2 mb-3">
+    <div class="col-md-3">
+      <label class="form-label">Statut du support</label>
+      <select name="support_status" class="form-select">
+        <option value="">Tous les statuts</option>
+        <option value="Active" {% if support_status == "Active" %}selected{% endif %}>Active</option>
+        <option value="No Active" {% if support_status == "No Active" %}selected{% endif %}>No Active</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Consommation</label>
+      <select name="support_conso" class="form-select">
+        <option value="">Toutes consommations</option>
+        <option value="Consomé" {% if support_conso == "Consomé" %}selected{% endif %}>Consomé</option>
+        <option value="Not Consomé" {% if support_conso == "Not Consomé" %}selected{% endif %}>Not Consomé</option>
+      </select>
+    </div>
+    <div class="col-md-6 d-flex align-items-end gap-2">
+      <button type="submit" class="btn btn-primary">Filtrer</button>
+      <a href="{% url 'cliente_activity_dashboard' cliente.id %}" class="btn btn-outline-secondary">Réinitialiser</a>
+      <a href="?support_status={{ support_status }}&support_conso={{ support_conso }}&support_export=excel" class="btn btn-success">📥 Excel</a>
+      <a href="?support_status={{ support_status }}&support_conso={{ support_conso }}&support_export=pdf" class="btn btn-danger">📄 PDF</a>
+    </div>
+  </form>
+  
 <div class="card mb-4 shadow-sm">
   <div class="card-header bg-secondary text-white">🧾 Supports achetés</div>
   <div class="card-body">

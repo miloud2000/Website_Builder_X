@@ -90,24 +90,151 @@ def homeSuperAdmin(request):
     return render(request, "SuperAdmin/homeSuperAdmin.html")
 
 
-from django.db.models import Sum
+from django.db.models import Sum, Count
+from django.db.models.functions import TruncMonth
+from websitebuilder.models import AchatWebsites
+from collections import OrderedDict
+import calendar
 
 
 #DashbordHome SuperAdmin
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.db.models import Sum, Count
+from django.db.models.functions import TruncMonth
+from django.utils import timezone
+from datetime import timedelta
+from collections import OrderedDict
+import calendar
+
+from websitebuilder.models import Websites, Supports, Cliente, AchatWebsites
+from django.contrib.auth.models import User
+import json
+from django.core.paginator import Paginator
+
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SuperAdmin']) 
 def dashbordHomeSuperAdmin(request):
-    total_client = User.objects.filter(groups__name='Cliente').count()
-    total_website = Websites.objects.all().count()
-    total_service = Supports.objects.all().count()
-    total_solde = Cliente.objects.aggregate(Sum('solde'))['solde__sum'] or 0 
+    today = timezone.now()
+    start_week = today - timedelta(days=today.weekday())
+    start_last_week = start_week - timedelta(days=7)
+    end_last_week = start_week - timedelta(seconds=1)
+
+    clients_this_week = User.objects.filter(groups__name='Cliente', date_joined__gte=start_week).count()
+    clients_last_week = User.objects.filter(groups__name='Cliente', date_joined__range=(start_last_week, end_last_week)).count()
+    client_growth = ((clients_this_week - clients_last_week) / clients_last_week * 100) if clients_last_week > 0 else (-100.0 if clients_this_week == 0 else 100.0)
+
+    start_6_days_ago = today - timedelta(days=6)
+    start_12_days_ago = today - timedelta(days=12)
+    websites_now = Websites.objects.filter(date_created__gte=start_6_days_ago).count()
+    websites_before = Websites.objects.filter(date_created__range=(start_12_days_ago, start_6_days_ago)).count()
+    websites_growth = ((websites_now - websites_before) / websites_before * 100) if websites_before > 0 else (-100.0 if websites_now == 0 else 100.0)
+
+    start_9_days_ago = today - timedelta(days=9)
+    start_18_days_ago = today - timedelta(days=18)
+    supports_now = Supports.objects.filter(date_created__gte=start_9_days_ago).count()
+    supports_before = Supports.objects.filter(date_created__range=(start_18_days_ago, start_9_days_ago)).count()
+    supports_growth = ((supports_now - supports_before) / supports_before * 100) if supports_before > 0 else (-100.0 if supports_now == 0 else 100.0)
+
+    start_year = today.replace(month=1, day=1)
+    solde_this_year = Cliente.objects.filter(date_created__gte=start_year).aggregate(Sum('solde'))['solde__sum'] or 0
+    solde_before = Cliente.objects.filter(date_created__lt=start_year).aggregate(Sum('solde'))['solde__sum'] or 0
+    solde_growth = ((solde_this_year - solde_before) / solde_before * 100) if solde_before > 0 else (-100.0 if solde_this_year == 0 else 100.0)
+
+    total_sales = AchatWebsites.objects.aggregate(Sum('prix_achat'))['prix_achat__sum'] or 0
+    total_orders = AchatWebsites.objects.count()
+    delivered_orders = AchatWebsites.objects.filter(BuilderStatus='Builder').count()
+    cancelled_orders = AchatWebsites.objects.filter(BuilderStatus='Not yet').count()
+
+   
+    
+    latest_recharges = DemandeRecharger.objects.select_related('cliente__user').order_by('-date_created')[:6]
+    
+    total_achats = AchatWebsites.objects.count()
+    
+    website_achat_counts = (
+    AchatWebsites.objects
+    .values('websites__name')
+    .annotate(count=Count('id'))
+    )
+    
+    website_achat_percentages = []
+    for entry in website_achat_counts:
+        name = entry['websites__name']
+        count = entry['count']
+        percentage = round((count / total_achats) * 100, 2) if total_achats > 0 else 0
+        website_achat_percentages.append({
+            'name': name,
+            'percentage': percentage
+        })
+        
+        
+    total_achat_supports = AchatSupport.objects.count()
+    
+    support_achat_counts = (
+    AchatSupport.objects
+    .values('support__name')
+    .annotate(count=Count('id'))
+    )
+    
+    support_achat_percentages = []
+    for entry in support_achat_counts:
+        name = entry['support__name']
+        count = entry['count']
+        percentage = round((count / total_achat_supports) * 100, 2) if total_achat_supports > 0 else 0
+        support_achat_percentages.append({
+            'name': name,
+            'count': count,
+            'percentage': percentage
+        })
+    
+    
+    clients = Cliente.objects.select_related('user').all()
+    
+    search_query = request.GET.get('search', '')
+    per_page = request.GET.get('per_page', 10)
+
+    clients = Cliente.objects.select_related('user')
+
+    if search_query:
+        clients = clients.filter(
+            Q(nom__icontains=search_query) |
+            Q(prenom__icontains=search_query) |
+            Q(user__username__icontains=search_query) |
+            Q(email__icontains=search_query)
+        )
+
+    paginator = Paginator(clients, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    
     context = {
-        'total_client': total_client,
-        'total_website': total_website,
-        'total_service': total_service,
-        'total_solde': total_solde,
-        }
-    return render(request, "SuperAdmin/dashbordHomeSuperAdmin.html",context)
+    'clients_this_week': clients_this_week,
+    'client_growth': round(client_growth, 2),
+    'websites_growth': round(websites_growth, 2),
+    'supports_growth': round(supports_growth, 2),
+    'solde_growth': round(solde_growth, 2),
+    'total_website': Websites.objects.count(),
+    'total_service': Supports.objects.count(),
+    'total_solde': round(Cliente.objects.aggregate(Sum('solde'))['solde__sum'] or 0, 2),
+
+    # Graph data for each chart
+
+    'latest_recharges': latest_recharges,
+    'website_achat_percentages': website_achat_percentages,
+    'support_achat_percentages': support_achat_percentages,
+    
+    'clients': clients,
+    
+    'page_obj': page_obj,
+    'search_query': search_query,
+    'per_page': int(per_page),
+}
+
+    return render(request, "SuperAdmin/dashbordHomeSuperAdmin.html", context)
+
+
 
 
 
@@ -154,6 +281,7 @@ from django.db.models import Q
 def AdministrateurSuperAdmin(request): 
     query = request.GET.get('q')
     status_filter = request.GET.get('status')
+    per_page = request.GET.get('per_page', 10)
 
     Administrateurs = Administrateur.objects.all()
 
@@ -168,7 +296,18 @@ def AdministrateurSuperAdmin(request):
     if status_filter:
         Administrateurs = Administrateurs.filter(Status__icontains=status_filter)
 
-    context = {'Administrateurs': Administrateurs}
+    paginator = Paginator(Administrateurs, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    
+    context = {
+        'Administrateurs': Administrateurs,
+         'page_obj': page_obj,
+        'query': query,
+        'status_filter': status_filter,
+        'per_page': int(per_page),
+        }
     return render(request, "SuperAdmin/AdministrateurSuperAdmin.html", context)
 
 
@@ -1054,35 +1193,69 @@ def export_clientes_pdf(request):
 
 
 
-
-
+from websitebuilder.models import (
+    Cliente, DemandeSupport, AchatSupport,
+    LocationWebsites, GetFreeWebsites
+)
+from .utils.dashboard_filters import filter_demandes, filter_achats, filter_tickets, filter_achat_supports
+from .utils.exports import (
+    export_achats_excel, export_achats_pdf,
+    export_tickets_excel, export_tickets_pdf,export_achat_supports_excel, export_achat_supports_pdf
+)
 
 @login_required
 def cliente_activity_dashboard(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
 
-    demandes = DemandeRecharger.objects.filter(cliente=cliente).order_by('-date_created')
-    achats = AchatWebsites.objects.filter(cliente=cliente).order_by('-date_created')
-    tickets = Ticket.objects.filter(cliente=cliente).order_by('-date_created')
-    supports = DemandeSupport.objects.filter(cliente=cliente).order_by('-date_created')
-    achat_supports = AchatSupport.objects.filter(cliente=cliente).order_by('-date_created')
-    locations = LocationWebsites.objects.filter(cliente=cliente).order_by('-date_created')
-    free_websites = GetFreeWebsites.objects.filter(cliente=cliente).order_by('-date_created') 
+    demandes, demande_export = filter_demandes(request, cliente)
+    achats, achat_export = filter_achats(request, cliente)
+    tickets, ticket_export = filter_tickets(request, cliente)
+    achat_supports, support_export = filter_achat_supports(request, cliente)
+
+    if demande_export == 'excel':
+        return export_demandes_excel(demandes, cliente)
+    if demande_export == 'pdf':
+        return export_demandes_pdf(demandes, cliente)
+
+    if achat_export == 'excel':
+        return export_achats_excel(achats, cliente)
+    if achat_export == 'pdf':
+        return export_achats_pdf(achats, cliente)
+
+    if ticket_export == 'excel':
+        return export_tickets_excel(tickets, cliente)
+    if ticket_export == 'pdf':
+        return export_tickets_pdf(tickets, cliente)
+
+    if support_export == 'excel':
+        return export_achat_supports_excel(achat_supports, cliente)
+    if support_export == 'pdf':
+        return export_achat_supports_pdf(achat_supports, cliente)
 
     context = {
         'cliente': cliente,
         'demandes': demandes,
         'achats': achats,
         'tickets': tickets,
-        'supports': supports,
         'achat_supports': achat_supports,
-        'locations': locations,
-        'free_websites': free_websites,  
+        'locations': LocationWebsites.objects.filter(cliente=cliente),
+        'free_websites': GetFreeWebsites.objects.filter(cliente=cliente),
+        'supports': DemandeSupport.objects.filter(cliente=cliente),
+
+        # Filtres actifs
+        'demande_status': request.GET.get('demande_status'),
+        'demande_date_min': request.GET.get('demande_date_min'),
+        'demande_date_max': request.GET.get('demande_date_max'),
+        'achat_status': request.GET.get('achat_status'),
+        'achat_date_min': request.GET.get('achat_date_min'),
+        'achat_date_max': request.GET.get('achat_date_max'),
+        'ticket_status': request.GET.get('ticket_status'),
+        'ticket_date_min': request.GET.get('ticket_date_min'),
+        'ticket_date_max': request.GET.get('ticket_date_max'),
+        'support_status': request.GET.get('support_status'),
+        'support_conso': request.GET.get('support_conso'),
     }
     return render(request, 'SuperAdmin/cliente_activity_dashboard.html', context)
-
-
-
 
 
 
