@@ -237,38 +237,34 @@ def dashbordHomeSuperAdmin(request):
 
 
 
-
-
-#The SuperAdmin can add a Administrateur
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SuperAdmin']) 
 def addAdministrateur(request):
-    form = AdministrateurForm()
     if request.method == 'POST':
         form = AdministrateurForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)  
+            user = form.save(commit=False)
             user.save()
 
             Administrateur.objects.create(
                 user=user,
-                name=form.cleaned_data.get('name'),
-                email=form.cleaned_data.get('email'),
-                phone=form.cleaned_data.get('phone'),
+                name=form.cleaned_data['name'],
+                email=form.cleaned_data['email'],
+                phone=form.cleaned_data['phone'],
             )
 
-            # Add user to the 'Administrateur' group
             group = Group.objects.get(name="Administrateur")
             user.groups.add(group)
 
-            messages.success(request, f"{user.username} created successfully!")
+            messages.success(request, f"{user.username} a été créé avec succès !")
             return redirect('AdministrateurSuperAdmin')
         else:
-            messages.error(request, "Invalid form submission. Please correct the errors below.")  
-        
+            messages.error(request, "Formulaire invalide. Veuillez corriger les erreurs.")
+    else:
+        form = AdministrateurForm()
+
     context = {'form': form}
     return render(request, 'SuperAdmin/addAdministrateur.html', context)
-
 
 
 
@@ -313,6 +309,8 @@ def AdministrateurSuperAdmin(request):
 
 
 
+from django.core.paginator import Paginator
+
 @login_required
 @allowedUsers(allowedGroups=['SuperAdmin'])
 def historique_administrateur(request, admin_id):
@@ -325,6 +323,7 @@ def historique_administrateur(request, admin_id):
     objet_filter = request.GET.get('objet')
     date_min = request.GET.get('date_min')
     date_max = request.GET.get('date_max')
+    per_page = int(request.GET.get('per_page', 10))  # valeur par défaut = 10
 
     if query:
         actions = actions.filter(
@@ -341,17 +340,30 @@ def historique_administrateur(request, admin_id):
     if date_max:
         actions = actions.filter(date__date__lte=date_max)
 
+    # Pagination
+    paginator = Paginator(actions, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     # Valeurs uniques pour les dropdowns
     action_choices = HistoriqueAction.objects.values_list('action', flat=True).distinct()
     objet_choices = HistoriqueAction.objects.values_list('objet', flat=True).distinct()
 
     context = {
         'administrateur': administrateur,
-        'actions': actions,
+        'page_obj': page_obj,
+        'actions': page_obj.object_list,
         'action_choices': action_choices,
         'objet_choices': objet_choices,
+        'per_page': per_page,
+        'query': query,
+        'action_filter': action_filter,
+        'objet_filter': objet_filter,
+        'date_min': date_min,
+        'date_max': date_max,
     }
     return render(request, 'SuperAdmin/historique_administrateur.html', context)
+
 
 
 
@@ -544,7 +556,6 @@ def export_admins_pdf(request):
 
 
 
-
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SuperAdmin']) 
 def updateAdministrateur(request, pk):
@@ -557,6 +568,8 @@ def updateAdministrateur(request, pk):
             form.save()
             messages.success(request, "Administrateur mis à jour avec succès.")
             return redirect('AdministrateurSuperAdmin')
+        else:
+            messages.error(request, "Formulaire invalide. Veuillez corriger les erreurs.")
 
     context = {'form': form}
     return render(request, 'SuperAdmin/updateAdministrateur.html', context)

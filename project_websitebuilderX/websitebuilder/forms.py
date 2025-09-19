@@ -43,11 +43,17 @@ class AdministrateurForm(UserCreationForm):
       
 
 
+
 class UpdateAdministrateurForm(forms.ModelForm):
     class Meta:
         model = Administrateur
         fields = ['name', 'email', 'phone', 'Status']
-
+        labels = {
+            'name': 'Nom complet',
+            'email': 'Adresse e-mail',
+            'phone': 'Téléphone',
+            'Status': 'Statut',
+        }
 
 
 
