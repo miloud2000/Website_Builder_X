@@ -72,11 +72,22 @@ def home2(request):
 
 
 
-
 def AllWebsites_client_status(request):
-    AllWebsites_client_status = Websites_client_statu.objects.all().order_by('-date_created')
-    context = {"AllWebsites_client_status":AllWebsites_client_status}
-    return render(request,"SuperAdmin/AllMergedWebsiteBuilder.html",context)
+    per_page = int(request.GET.get('per_page', 10))
+    page_number = request.GET.get('page')
+
+    all_status = Websites_client_statu.objects.all().order_by('-date_created')
+
+    paginator = Paginator(all_status, per_page)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "page_obj": page_obj,
+        "AllWebsites_client_status": page_obj.object_list,
+        "per_page": per_page,
+    }
+    return render(request, "SuperAdmin/AllMergedWebsiteBuilder.html", context)
+
 
 
 
@@ -686,18 +697,19 @@ def export_support_history_pdf(request, support_id):
 
 
 #Superadmin can show all SupportTechnique
-from django.db.models import Q
+from django.core.paginator import Paginator
 
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SuperAdmin']) 
 def SupportTechniqueSuperAdmin(request): 
     query = request.GET.get('q')
     status_filter = request.GET.get('status')
-    history_id = request.GET.get('history')  # ID of selected SupportTechnique
+    history_id = request.GET.get('history')
+    per_page = int(request.GET.get('per_page', 10))  # valeur par défaut = 10
 
     supportTechniques = SupportTechnique.objects.all()
 
-    if query:
+    if query and query != 'None':
         supportTechniques = supportTechniques.filter(
             Q(user__username__icontains=query) |
             Q(name__icontains=query) |
@@ -705,24 +717,31 @@ def SupportTechniqueSuperAdmin(request):
             Q(phone__icontains=query)
         )
 
-    if status_filter:
-        supportTechniques = supportTechniques.filter(Status__icontains=status_filter)
+    if status_filter and status_filter != 'None':
+        supportTechniques = supportTechniques.filter(Status__iexact=status_filter)
+    
+    # Pagination
+    paginator = Paginator(supportTechniques, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
+    # Historique
     history_actions = []
     if history_id:
         history_actions = HistoriqueAction.objects.filter(utilisateur__supporttechnique__id=history_id).order_by('-date')
-    
+
     context = {
-        'supportTechniques': supportTechniques,
+        'page_obj': page_obj,
+        'supportTechniques': page_obj.object_list,
         'history_actions': history_actions,
         'selected_id': history_id,
+        'per_page': per_page,
+        'query': query,
+        'status_filter': status_filter,
     }
     return render(request, "SuperAdmin/SupportTechniqueSuperAdmin.html", context)
 
 
-
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
 
 
 
@@ -730,40 +749,54 @@ from django.contrib.auth.decorators import login_required
 @allowedUsers(allowedGroups=['SuperAdmin'])
 def support_technique_history(request, pk):
     support = get_object_or_404(SupportTechnique, pk=pk)
-    actions = HistoriqueAction.objects.filter(utilisateur=support.user)
+    actions = HistoriqueAction.objects.filter(utilisateur=support.user).order_by('-date')
 
     # Filtres
-    model_name = request.GET.get('model_name')
-    date_start = request.GET.get('date_start')
-    date_end = request.GET.get('date_end')
+    query = request.GET.get('q')
+    action_filter = request.GET.get('action')
+    objet_filter = request.GET.get('objet')
+    date_min = request.GET.get('date_min')
+    date_max = request.GET.get('date_max')
+    per_page = int(request.GET.get('per_page', 10))  # valeur par défaut = 10
 
-    if model_name:
-        actions = actions.filter(objet=model_name)
+    if query:
+        actions = actions.filter(
+            Q(action__icontains=query) |
+            Q(objet__icontains=query) |
+            Q(details__icontains=query)
+        )
+    if action_filter:
+        actions = actions.filter(action=action_filter)
+    if objet_filter:
+        actions = actions.filter(objet=objet_filter)
+    if date_min:
+        actions = actions.filter(date__date__gte=date_min)
+    if date_max:
+        actions = actions.filter(date__date__lte=date_max)
 
-    if date_start and date_end:
-        actions = actions.filter(date__date__range=[date_start, date_end])
+    # Pagination
+    paginator = Paginator(actions, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-    # Valeurs uniques pour les dropdowns
+    # Valeurs dynamiques pour les dropdowns
     action_choices = HistoriqueAction.objects.values_list('action', flat=True).distinct()
     objet_choices = HistoriqueAction.objects.values_list('objet', flat=True).distinct()
 
     context = {
+        'support': support,
+        'page_obj': page_obj,
+        'actions': page_obj.object_list,
         'action_choices': action_choices,
         'objet_choices': objet_choices,
-        'support': support,
-        'actions': actions.order_by('-date'),
-        'selected_model': model_name,
-        'date_start': date_start,
-        'date_end': date_end,
-        'model_choices': [
-            ('DemandeSupport', 'DemandeSupport'),
-            ('AchatSupport', 'AchatSupport'),
-            ('Supports', 'Supports'),
-            ('Ticket', 'Ticket'),
-        ],
+        'per_page': per_page,
+        'query': query,
+        'action_filter': action_filter,
+        'objet_filter': objet_filter,
+        'date_min': date_min,
+        'date_max': date_max,
     }
-    return render(request, "SuperAdmin/support_technique_history.html", context)
-
+    return render(request, 'SuperAdmin/support_technique_history.html', context)
 
 
 
@@ -902,12 +935,15 @@ def deleteGestionnaireComptes(request, pk):
 
 
 
-#Superadmin can show all GestionnaireComptes
+
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SuperAdmin'])
 def GestionnaireComptesSuperAdmin(request):
     query = request.GET.get('q', '')
     status = request.GET.get('status', '')
+    per_page = int(request.GET.get('per_page', 10))
+    page_number = request.GET.get('page')
+
     gestionnaires = GestionnaireComptes.objects.all()
 
     if query:
@@ -920,7 +956,16 @@ def GestionnaireComptesSuperAdmin(request):
     if status:
         gestionnaires = gestionnaires.filter(Status=status)
 
-    context = {'GestionnairesComptes': gestionnaires}
+    paginator = Paginator(gestionnaires.order_by('-id'), per_page)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'GestionnairesComptes': page_obj.object_list,
+        'page_obj': page_obj,
+        'query': query,
+        'status_filter': status,
+        'per_page': per_page,
+    }
     return render(request, "SuperAdmin/GestionnaireComptesSuperAdmin.html", context)
 
 
@@ -929,18 +974,31 @@ def GestionnaireComptesSuperAdmin(request):
 @allowedUsers(allowedGroups=['SuperAdmin'])
 def gestionnaire_comptes_history(request, pk):
     gestionnaire = get_object_or_404(GestionnaireComptes, pk=pk)
-    actions = HistoriqueAction.objects.filter(utilisateur=gestionnaire.user)
+    actions = HistoriqueAction.objects.filter(utilisateur=gestionnaire.user).order_by('-date')
 
     # Filtres
-    model_name = request.GET.get('model_name')
-    date_start = request.GET.get('date_start')
-    date_end = request.GET.get('date_end')
+    action_filter = request.GET.get('action')
+    objet_filter = request.GET.get('objet')
+    date_min = request.GET.get('date_min')
+    date_max = request.GET.get('date_max')
+    per_page = int(request.GET.get('per_page', 10))
+    page_number = request.GET.get('page')
 
-    if model_name:
-        actions = actions.filter(objet=model_name)
+    if action_filter:
+        actions = actions.filter(action=action_filter)
 
-    if date_start and date_end:
-        actions = actions.filter(date__date__range=[date_start, date_end])
+    if objet_filter:
+        actions = actions.filter(objet=objet_filter)
+
+    if date_min:
+        actions = actions.filter(date__date__gte=date_min)
+
+    if date_max:
+        actions = actions.filter(date__date__lte=date_max)
+
+    # Pagination
+    paginator = Paginator(actions, per_page)
+    page_obj = paginator.get_page(page_number)
 
     # Dropdowns dynamiques
     action_choices = HistoriqueAction.objects.values_list('action', flat=True).distinct()
@@ -948,20 +1006,18 @@ def gestionnaire_comptes_history(request, pk):
 
     context = {
         'gestionnaire': gestionnaire,
-        'actions': actions.order_by('-date'),
+        'actions': page_obj.object_list,
+        'page_obj': page_obj,
+        'per_page': per_page,
         'action_choices': action_choices,
         'objet_choices': objet_choices,
-        'selected_model': model_name,
-        'date_start': date_start,
-        'date_end': date_end,
-        'model_choices': [
-            ('DemandeRecharger', 'DemandeRecharger'),
-            ('Ticket', 'Ticket'),
-            ('Supports', 'Supports'),
-            ('Recharge', 'Recharge'),
-        ],
+        'action_filter': action_filter,
+        'objet_filter': objet_filter,
+        'date_min': date_min,
+        'date_max': date_max,
     }
     return render(request, "SuperAdmin/gestionnaire_comptes_history.html", context)
+
 
 
 from django.shortcuts import get_object_or_404
@@ -1050,13 +1106,13 @@ def export_gestionnaire_pdf(request):
 
 
 
-
-
-#Superadmin can show all clientes
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SuperAdmin'])
 def ClienteSuperAdmin(request):
     query = request.GET.get('q', '')
+    per_page = int(request.GET.get('per_page', 10))
+    page_number = request.GET.get('page')
+
     clientes = Cliente.objects.all()
 
     if query:
@@ -1066,12 +1122,19 @@ def ClienteSuperAdmin(request):
             models.Q(email__icontains=query) |
             models.Q(phone__icontains=query) |
             models.Q(user__username__icontains=query) |
-            models.Q(code_client__icontains=query) 
+            models.Q(code_client__icontains=query)
         )
 
-    context = {'clientes': clientes}
-    return render(request, "SuperAdmin/ClienteSuperAdmin.html", context)
+    paginator = Paginator(clientes.order_by('-id'), per_page)
+    page_obj = paginator.get_page(page_number)
 
+    context = {
+        'clientes': page_obj.object_list,
+        'page_obj': page_obj,
+        'query': query,
+        'per_page': per_page,
+    }
+    return render(request, "SuperAdmin/ClienteSuperAdmin.html", context)
 
 
 
@@ -1274,14 +1337,14 @@ def cliente_activity_dashboard(request, cliente_id):
 
 
 
-from django.db.models import Q
 
-#Superadmin can show all Commercials
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SuperAdmin']) 
 def CommercialSuperAdmin(request): 
     query = request.GET.get('q', '')
     status_filter = request.GET.get('status', '')
+    per_page = int(request.GET.get('per_page', 10))
+    page_number = request.GET.get('page')
 
     commercials = Commercial.objects.all()
 
@@ -1296,7 +1359,16 @@ def CommercialSuperAdmin(request):
     if status_filter:
         commercials = commercials.filter(status=status_filter)
 
-    context = {'commercials': commercials}
+    paginator = Paginator(commercials.order_by('-id'), per_page)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'commercials': page_obj.object_list,
+        'page_obj': page_obj,
+        'query': query,
+        'status_filter': status_filter,
+        'per_page': per_page,
+    }
     return render(request, "SuperAdmin/CommercialSuperAdmin.html", context)
 
 
@@ -1310,53 +1382,46 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from io import BytesIO
 
+
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SuperAdmin'])
 def historique_commercial(request, commercial_id):
     commercial = get_object_or_404(Commercial, id=commercial_id)
 
-    # Récupération des filtres GET
+    # Filtres
     action_filter = request.GET.get('action')
     objet_filter = request.GET.get('objet')
+    per_page = int(request.GET.get('per_page', 10))
+    page_number = request.GET.get('page')
 
-    # Base queryset : actions du commercial
-    actions = HistoriqueAction.objects.filter(
-        utilisateur=commercial.user
-    ).order_by('-date')
+    actions = HistoriqueAction.objects.filter(utilisateur=commercial.user).order_by('-date')
 
-    # Application des filtres si présents
-    if action_filter not in [None, ""]:
+    if action_filter:
         actions = actions.filter(action=action_filter)
-
-    if objet_filter not in [None, ""]:
+    if objet_filter:
         actions = actions.filter(objet=objet_filter)
-        
+
+    # Export Excel
     if request.GET.get('export') == 'excel':
         wb = Workbook()
         ws = wb.active
         ws.title = "Historique"
         ws.append(['Action', 'Objet', 'Détails', 'Date'])
-
         for a in actions:
             ws.append([a.action, a.objet, a.details, a.date.strftime('%d/%m/%Y %H:%M')])
-
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         response['Content-Disposition'] = f'attachment; filename=historique_{commercial.user.username}.xlsx'
         wb.save(response)
         return response
 
+    # Export PDF
     if request.GET.get('export') == 'pdf':
         buffer = BytesIO()
         doc = SimpleDocTemplate(buffer, pagesize=A4)
         elements = []
         styles = getSampleStyleSheet()
-
-        # ✅ Titre
-        title = Paragraph(f"<b>Historique du commercial : {commercial.user.username}</b>", styles['Title'])
-        elements.append(title)
+        elements.append(Paragraph(f"<b>Historique du commercial : {commercial.user.username}</b>", styles['Title']))
         elements.append(Spacer(1, 12))
-
-        # ✅ Données du tableau
         data = [['Date', 'Action', 'Objet', 'Détails']]
         for a in actions:
             data.append([
@@ -1365,8 +1430,6 @@ def historique_commercial(request, commercial_id):
                 a.objet,
                 a.details
             ])
-
-        # ✅ Création du tableau
         table = Table(data, colWidths=[100, 150, 100, 180])
         table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
@@ -1377,22 +1440,41 @@ def historique_commercial(request, commercial_id):
             ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
             ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
         ]))
-
         elements.append(table)
         doc.build(elements)
-
         buffer.seek(0)
         response = HttpResponse(buffer, content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename=historique_{commercial.user.username}.pdf'
         return response
-    
+
+    # Pagination
+    paginator = Paginator(actions, per_page)
+    page_obj = paginator.get_page(page_number)
+
+    # Choix fixes
+    action_choices = [
+        "Ajout d'un nouveau client",
+        "Modification d'un client",
+        "Suppression d'un client"
+    ]
+    objet_choices = [
+        "Cliente",
+        "Support",
+        "SiteWeb"
+    ]
+
     context = {
         'commercial': commercial,
-        'actions': actions,
+        'actions': page_obj.object_list,
+        'page_obj': page_obj,
+        'per_page': per_page,
         'selected_action': action_filter,
         'selected_objet': objet_filter,
+        'action_choices': action_choices,
+        'objet_choices': objet_choices,
     }
     return render(request, 'SuperAdmin/historique_commercial.html', context)
+
 
 
 
@@ -1572,16 +1654,17 @@ def full_size_image_Super_Admin(request, traceDemandeRecharger_id):
 
 
 
-
-#List of LaTraceDemandeRecharger Demandes Recharge  [SuperAdmin]
 def all_demandes_recharger(request):
-    demandes = DemandeRecharger.objects.all().order_by('-date_created')
-
+    # Filtres
     status = request.GET.get('status')
     type_demande = request.GET.get('type_demande')
     date = request.GET.get('date')
     code = request.GET.get('code')
     updated_by = request.GET.get('updated_by')
+    per_page = int(request.GET.get('per_page', 10))
+    page_number = request.GET.get('page')
+
+    demandes = DemandeRecharger.objects.all().order_by('-date_created')
 
     if status:
         demandes = demandes.filter(status=status)
@@ -1593,13 +1676,25 @@ def all_demandes_recharger(request):
         demandes = demandes.filter(code_DemandeRecharger=code)
     if updated_by:
         demandes = demandes.filter(updated_by__id=updated_by)
-        
+
+    paginator = Paginator(demandes, per_page)
+    page_obj = paginator.get_page(page_number)
+
     gestionnaires = GestionnaireComptes.objects.all()
+
     context = {
-        'demandes': demandes,
+        'demandes': page_obj.object_list,
+        'page_obj': page_obj,
+        'per_page': per_page,
+        'status_filter': status,
+        'type_demande': type_demande,
+        'date': date,
+        'code': code,
+        'updated_by': updated_by,
         'gestionnaires': gestionnaires,
     }
     return render(request, 'SuperAdmin/all_demandes_recharger.html', context)
+
 
 
 

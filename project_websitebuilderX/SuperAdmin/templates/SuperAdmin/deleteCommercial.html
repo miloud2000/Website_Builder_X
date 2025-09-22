@@ -1,28 +1,47 @@
 {% extends "SuperAdmin/dashbordSuperAdmin.html" %}
 {% load static %}
 {% block content %}
-<div class="main-panel">
-  <div class="content-wrapper">
 
-    <div class="page-header mb-4">
-      <h3 class="page-title text-danger"><i class="mdi mdi-delete"></i> Supprimer Commercial</h3>
+<div class="main-content app-content">
+  <div class="container-fluid">
+
+    <!-- PAGE-HEADER -->
+    <div class="page-header">
+      <h1 class="page-title my-auto text-danger">
+        <i class="mdi mdi-delete-forever"></i> Supprimer un Commercial
+      </h1>
+      <div>
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="{% url 'CommercialSuperAdmin' %}">Commercial</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Confirmation</li>
+        </ol>
+      </div>
     </div>
 
-    <div class="row justify-content-center">
-      <div class="col-md-6 grid-margin stretch-card">
-        <div class="card border-danger">
+    <!-- CARD DE SUPPRESSION -->
+    <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+      <div class="col-md-8 col-lg-6 col-xl-6">
+        <div class="card custom-card">
+          <div class="card-header">
+            <div class="card-title text-danger fw-bold">Confirmation de suppression</div>
+          </div>
           <div class="card-body text-center">
-            <h4 class="card-title text-danger">⚠️ Confirmation de suppression</h4>
-            <p>Êtes-vous sûr de vouloir supprimer <strong>{{ commercial.name }}</strong> ?</p>
+            <h6 class="card-title fw-semibold mb-3">Êtes-vous sûr de vouloir supprimer cet Commercial ?</h6>
+            <p class="card-text">
+              <strong>{{ commercial.name }}</strong><br>
+              <em>{{ commercial.user.username }}</em>
+            </p>
 
             <form method="POST">
               {% csrf_token %}
-              <button type="submit" class="btn btn-danger mr-2">
-                <i class="mdi mdi-delete"></i> Supprimer
-              </button>
-              <a href="{% url 'CommercialSuperAdmin' %}" class="btn btn-secondary">
-                <i class="mdi mdi-arrow-left"></i> Annuler
-              </a>
+              <div class="d-flex justify-content-center gap-3 mt-4">
+                <button type="submit" class="btn btn-danger">
+                  <i class="mdi mdi-trash-can-outline"></i> Supprimer
+                </button>
+                <a href="{% url 'CommercialSuperAdmin' %}" class="btn btn-secondary">
+                  <i class="mdi mdi-close-circle-outline"></i> Annuler
+                </a>
+              </div>
             </form>
           </div>
         </div>
@@ -31,4 +50,5 @@
 
   </div>
 </div>
+
 {% endblock %}

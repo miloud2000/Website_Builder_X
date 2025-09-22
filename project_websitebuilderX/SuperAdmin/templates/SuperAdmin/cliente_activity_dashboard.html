@@ -1,320 +1,269 @@
 {% extends "SuperAdmin/dashbordSuperAdmin.html" %}
 {% load static %}
+
 {% block content %}
-<div class="container mt-4">
-  <h3 class="text-primary mb-4">📊 Activités du client – {{ cliente.user.username }}</h3>
 
-    
-  
-  <!-- ✅ Demandes de recharge -->
-  <form method="get" class="row g-2 mb-3">
-    <div class="col-md-3">
-      <select name="demande_status" class="form-select">
-        <option value="">Tous les statuts</option>
-        <option value="Done" {% if demande_status == "Done" %}selected{% endif %}>Accepté</option>
-        <option value="Not Done yet" {% if demande_status == "Not Done yet" %}selected{% endif %}>Non traité</option>
-        <option value="inacceptable" {% if demande_status == "inacceptable" %}selected{% endif %}>Inacceptable</option>
-      </select>
-    </div>
-    <div class="col-md-3">
-      <input type="date" name="demande_date_min" class="form-control" value="{{ demande_date_min }}">
-    </div>
-    <div class="col-md-3">
-      <input type="date" name="demande_date_max" class="form-control" value="{{ demande_date_max }}">
-    </div>
-    <div class="col-md-3 d-flex gap-2">
-      <button type="submit" class="btn btn-primary">Filtrer</button>
-      <a href="{% url 'cliente_activity_dashboard' cliente.id %}" class="btn btn-outline-secondary">Réinitialiser</a>
-      <a href="?demande_status={{ demande_status }}&demande_date_min={{ demande_date_min }}&demande_date_max={{ demande_date_max }}&demande_export=excel" class="btn btn-success">📥 Excel</a>
-      <a href="?demande_status={{ demande_status }}&demande_date_min={{ demande_date_min }}&demande_date_max={{ demande_date_max }}&demande_export=pdf" class="btn btn-danger">📄 PDF</a>
-    </div>
-  </form>
-  
-  <div class="card mb-4 shadow-sm">
-    <div class="card-header bg-info text-white">💰 Demandes de recharge</div>
-    <div class="card-body">
-      <table class="table table-bordered table-sm mb-0">
-        <thead>
-          <tr><th>Code</th><th>Montant</th><th>Statut</th><th>Date</th></tr>
-        </thead>
-        <tbody>
-          {% for d in demandes %}
-          <tr>
-            <td>{{ d.code_DemandeRecharger }}</td>
-            <td>{{ d.solde }} MAD</td>
-            <td>{{ d.status }}</td>
-            <td>{{ d.date_created|date:"d/m/Y H:i" }}</td>
-          </tr>
-          {% empty %}
-          <tr><td colspan="4" class="text-center text-muted">Aucune demande.</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
+<div class="main-content app-content">
+  <div class="container-fluid">
 
-  <!-- 🌐 Sites achetés -->
-  <form method="get" class="row g-2 mb-3">
-    <div class="col-md-3">
-      <select name="achat_status" class="form-select">
-        <option value="">Tous les statuts</option>
-        <option value="Builder" {% if achat_status == "Builder" %}selected{% endif %}>Builder</option>
-        <option value="in progress" {% if achat_status == "in progress" %}selected{% endif %}>In progress</option>
-        <option value="Not yet" {% if achat_status == "Not yet" %}selected{% endif %}>Not yet</option>
-      </select>
+    <!-- PAGE-HEADER -->
+    <div class="page-header">
+      <h1 class="page-title my-auto">📊 Activités du client – {{ cliente.user.username }}</h1>
+      <div>
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item">
+            <a href="{% url 'ClienteSuperAdmin' %}">Clients</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">Activités</li>
+        </ol>
+      </div>
     </div>
-    <div class="col-md-3">
-      <input type="date" name="achat_date_min" class="form-control" value="{{ achat_date_min }}">
-    </div>
-    <div class="col-md-3">
-      <input type="date" name="achat_date_max" class="form-control" value="{{ achat_date_max }}">
-    </div>
-    <div class="col-md-3 d-flex gap-2">
-      <button type="submit" class="btn btn-primary">Filtrer</button>
-      <a href="{% url 'cliente_activity_dashboard' cliente.id %}" class="btn btn-outline-secondary">Réinitialiser</a>
-      <a href="?achat_status={{ achat_status }}&achat_date_min={{ achat_date_min }}&achat_date_max={{ achat_date_max }}&achat_export=excel" class="btn btn-success">📥 Excel</a>
-      <a href="?achat_status={{ achat_status }}&achat_date_min={{ achat_date_min }}&achat_date_max={{ achat_date_max }}&achat_export=pdf" class="btn btn-danger">📄 PDF</a>
-    </div>
-  </form>
-  
-  <div class="card mb-4 shadow-sm">
-    <div class="card-header bg-success text-white">🌐 Sites achetés</div>
-    <div class="card-body">
-      <table class="table table-bordered table-sm mb-0">
-        <thead>
-          <tr><th>Nom</th><th>Prix</th><th>Statut</th><th>Date</th></tr>
-        </thead>
-        <tbody>
-          {% for a in achats %}
-          <tr>
-            <td>{{ a.websites.name }}</td>
-            <td>{{ a.prix_achat }} MAD</td>
-            <td>{{ a.BuilderStatus }}</td>
-            <td>{{ a.date_created|date:"d/m/Y H:i" }}</td>
-          </tr>
-          {% empty %}
-          <tr><td colspan="4" class="text-center text-muted">Aucun site acheté.</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
 
-  <!-- 🎫 Tickets -->
-  <form method="get" class="row g-2 mb-3">
-    <div class="col-md-3">
-      <select name="ticket_status" class="form-select">
-        <option value="">Tous les statuts</option>
-        <option value="Ouvert" {% if ticket_status == "Ouvert" %}selected{% endif %}>Ouvert</option>
-        <option value="En Cours de traitement" {% if ticket_status == "En Cours de traitement" %}selected{% endif %}>En Cours de traitement</option>
-        <option value="Fermée" {% if ticket_status == "Fermée" %}selected{% endif %}>Fermée</option>
-      </select>
+    <!-- Résumé badges -->
+    <div class="mb-4">
+      <span class="badge bg-info me-2">Recharges : {{ demandes|length }}</span>
+      <span class="badge bg-success me-2">Achats : {{ achats|length }}</span>
+      <span class="badge bg-primary me-2">Tickets : {{ tickets|length }}</span>
+      <span class="badge bg-secondary me-2">Supports : {{ achat_supports|length }}</span>
+      <span class="badge bg-dark me-2">Locations : {{ locations|length }}</span>
+      <span class="badge bg-warning me-2">Demandes support : {{ supports|length }}</span>
+      <span class="badge bg-info">Sites gratuits : {{ free_websites|length }}</span>
     </div>
-    <div class="col-md-3">
-      <input type="date" name="ticket_date_min" class="form-control" value="{{ ticket_date_min }}">
-    </div>
-    <div class="col-md-3">
-      <input type="date" name="ticket_date_max" class="form-control" value="{{ ticket_date_max }}">
-    </div>
-    <div class="col-md-3 d-flex gap-2">
-      <button type="submit" class="btn btn-primary">Filtrer</button>
-      <a href="{% url 'cliente_activity_dashboard' cliente.id %}" class="btn btn-outline-secondary">Réinitialiser</a>
-      <a href="?ticket_status={{ ticket_status }}&ticket_date_min={{ ticket_date_min }}&ticket_date_max={{ ticket_date_max }}&ticket_export=excel" class="btn btn-success">📥 Excel</a>
-      <a href="?ticket_status={{ ticket_status }}&ticket_date_min={{ ticket_date_min }}&ticket_date_max={{ ticket_date_max }}&ticket_export=pdf" class="btn btn-danger">📄 PDF</a>
-    </div>
-  </form>
-  
-  <div class="card mb-4 shadow-sm">
-    <div class="card-header bg-primary text-white">🎫 Tickets</div>
-    <div class="card-body">
-      <table class="table table-bordered table-sm mb-0">
-        <thead>
-          <tr><th>Sujet</th><th>Statut</th><th>Date</th></tr>
-        </thead>
-        <tbody>
-          {% for t in tickets %}
-          <tr>
-            <td>{{ t.description }}</td>
-            <td>{{ t.status }}</td>
-            <td>{{ t.date_created|date:"d/m/Y H:i" }}</td>
-          </tr>
-          {% empty %}
-          <tr><td colspan="3" class="text-center text-muted">Aucun ticket.</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
 
-  <!-- 🧾 Supports achetés -->
-  <form method="get" class="row g-2 mb-3">
-    <div class="col-md-3">
-      <label class="form-label">Statut du support</label>
-      <select name="support_status" class="form-select">
-        <option value="">Tous les statuts</option>
-        <option value="Active" {% if support_status == "Active" %}selected{% endif %}>Active</option>
-        <option value="No Active" {% if support_status == "No Active" %}selected{% endif %}>No Active</option>
-      </select>
-    </div>
-    <div class="col-md-3">
-      <label class="form-label">Consommation</label>
-      <select name="support_conso" class="form-select">
-        <option value="">Toutes consommations</option>
-        <option value="Consomé" {% if support_conso == "Consomé" %}selected{% endif %}>Consomé</option>
-        <option value="Not Consomé" {% if support_conso == "Not Consomé" %}selected{% endif %}>Not Consomé</option>
-      </select>
-    </div>
-    <div class="col-md-6 d-flex align-items-end gap-2">
-      <button type="submit" class="btn btn-primary">Filtrer</button>
-      <a href="{% url 'cliente_activity_dashboard' cliente.id %}" class="btn btn-outline-secondary">Réinitialiser</a>
-      <a href="?support_status={{ support_status }}&support_conso={{ support_conso }}&support_export=excel" class="btn btn-success">📥 Excel</a>
-      <a href="?support_status={{ support_status }}&support_conso={{ support_conso }}&support_export=pdf" class="btn btn-danger">📄 PDF</a>
-    </div>
-  </form>
-  
-<div class="card mb-4 shadow-sm">
-  <div class="card-header bg-secondary text-white">🧾 Supports achetés</div>
-  <div class="card-body">
-    <table class="table table-bordered table-sm mb-0">
-      <thead>
-        <tr>
-          <th>Support</th>
-          <th>Prix</th>
-          <th>Statut</th>
-          <th>Consommation</th>
-          <th>Technicien</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for s in achat_supports %}
-        <tr>
-          <td>{{ s.support.name }}</td>
-          <td>{{ s.prix }} MAD</td>
-          <td>{{ s.Status }}</td>
-          <td>{{ s.StatusConsomé }}</td>
-          <td>
-            {% if s.updated_by %}
-              {{ s.updated_by.user.username }}
-            {% else %}
-              <span class="text-muted">Non assigné</span>
-            {% endif %}
-          </td>
-          <td>{{ s.date_created|date:"d/m/Y H:i" }}</td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="6" class="text-center text-muted">Aucun support acheté.</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
+    <!-- ROW -->
+    <div class="row">
+      <div class="col-12 col-sm-12">
 
-<!-- 🏠 Locations de sites web -->
-<div class="card mb-4 shadow-sm">
-  <div class="card-header bg-dark text-white">🏠 Locations de sites web</div>
-  <div class="card-body">
-    <table class="table table-bordered table-sm mb-0">
-      <thead>
-        <tr>
-          <th>Site Web</th>
-          <th>Prix du loyer</th>
-          <th>Statut du builder</th>
-          <th>Date début</th>
-          <th>Date fin</th>
-          <th>Date de création</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for l in locations %}
-        <tr>
-          <td>{{ l.websites.name }}</td>
-          <td>{{ l.prix_loyer }} MAD</td>
-          <td>{{ l.BuilderStatus }}</td>
-          <td>{{ l.date_debut|date:"d/m/Y H:i" }}</td>
-          <td>
-            {% if l.date_fin %}
-              {{ l.date_fin|date:"d/m/Y H:i" }}
-            {% else %}
-              <span class="text-muted">Non définie</span>
-            {% endif %}
-          </td>
-          <td>{{ l.date_created|date:"d/m/Y H:i" }}</td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="6" class="text-center text-muted">Aucune location enregistrée.</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
+        <!-- 💰 Demandes de recharge -->
+        <div class="card mb-4">
+          <div class="card-header bg-info text-black">💰 Demandes de recharge</div>
+          <div class="card-body product-table">
+            <div class="table-responsive">
+              <table class="table table-bordered text-nowrap mb-0">
+                <thead class="border-top">
+                  <tr><th>Code</th><th>Montant</th><th>Statut</th><th>Date</th></tr>
+                </thead>
+                <tbody>
+                  {% for d in demandes %}
+                  <tr>
+                    <td>{{ d.code_DemandeRecharger }}</td>
+                    <td>{{ d.solde }} MAD</td>
+                    <td>{{ d.status }}</td>
+                    <td>{{ d.date_created|date:"d/m/Y H:i" }}</td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="4">
+                      <div class="empty-state text-center">
+                        <i class="fas fa-box-open fa-2x text-muted"></i>
+                        <p class="mt-2">Aucune demande enregistrée.</p>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 🌐 Sites achetés -->
+        <div class="card mb-4">
+          <div class="card-header bg-success text-black">🌐 Sites achetés</div>
+          <div class="card-body product-table">
+            <div class="table-responsive">
+              <table class="table table-bordered text-nowrap mb-0">
+                <thead>
+                  <tr><th>Nom</th><th>Prix</th><th>Statut</th><th>Date</th></tr>
+                </thead>
+                <tbody>
+                  {% for a in achats %}
+                  <tr>
+                    <td>{{ a.websites.name }}</td>
+                    <td>{{ a.prix_achat }} MAD</td>
+                    <td>{{ a.BuilderStatus }}</td>
+                    <td>{{ a.date_created|date:"d/m/Y H:i" }}</td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="4" class="text-center text-muted">Aucun site acheté.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 🎫 Tickets -->
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-black">🎫 Tickets</div>
+          <div class="card-body product-table">
+            <div class="table-responsive">
+              <table class="table table-bordered text-nowrap mb-0">
+                <thead>
+                  <tr><th>Sujet</th><th>Statut</th><th>Date</th></tr>
+                </thead>
+                <tbody>
+                  {% for t in tickets %}
+                  <tr>
+                    <td>{{ t.description }}</td>
+                    <td>{{ t.status }}</td>
+                    <td>{{ t.date_created|date:"d/m/Y H:i" }}</td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="3" class="text-center text-muted">Aucun ticket.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+         <!-- 🎫 Supports achetés -->
+         <div class="card mb-4">
+          <div class="card-header bg-primary text-black">🧾 Supports achetés</div>
+          <div class="card-body product-table">
+            <div class="table-responsive">
+              <table class="table table-bordered text-nowrap mb-0">
+                <thead>
+                  <tr><th>Support</th><th>Prix</th><th>Consommation</th><th>Technicien</th><th>Date</th></tr>
+                </thead>
+                <tbody>
+                  {% for s in achat_supports %}
+                  <tr>
+                    <td>{{ s.support.name }}</td>
+                    <td>{{ s.prix }}</td>
+                    <td>{{ s.Status }}</td>
+                    <td>{{ s.StatusConsomé }}</td>
+                    <td>
+                      {% if s.updated_by %}
+                        {{ s.updated_by.user.username }}
+                      {% else %}
+                        <span class="text-muted">Non assigné</span>
+                      {% endif %}
+                    </td>
+                    <td>{{ s.date_created|date:"d/m/Y H:i" }}</td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="3" class="text-center text-muted">Aucun support acheté.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
 
 
-<!-- 🆓 Sites web gratuits -->
-<div class="card mb-4 shadow-sm">
-  <div class="card-header bg-info text-white">🆓 Sites web gratuits</div>
-  <div class="card-body">
-    <table class="table table-bordered table-sm mb-0">
-      <thead>
-        <tr>
-          <th>Site Web</th>
-          <th>Prix (gratuit)</th>
-          <th>Statut du builder</th>
-          <th>Date de création</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for f in free_websites %}
-        <tr>
-          <td>{{ f.websites.name }}</td>
-          <td>{{ f.prix_free }} MAD</td>
-          <td>{{ f.BuilderStatus }}</td>
-          <td>{{ f.date_created|date:"d/m/Y H:i" }}</td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="4" class="text-center text-muted">Aucun site gratuit attribué.</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
+         <!-- 🏠 Locations de sites web  -->
+         <div class="card mb-4">
+          <div class="card-header bg-primary text-black">🏠 Locations de sites web </div>
+          <div class="card-body product-table">
+            <div class="table-responsive">
+              <table class="table table-bordered text-nowrap mb-0">
+                <thead>
+                  <tr><th>Site Web</th><th>Prix du loyer</th><th>Statut du builder</th><th>Date débu</th><th>Date fin</th><th>Date de création</th></tr>
+                </thead>
+                <tbody>
+                  {% for l in locations %}
+                  <tr>
+                    <td>{{ l.websites.name }}</td>
+                    <td>{{ l.prix_loyer }} MAD</td>
+                    <td>{{ l.BuilderStatus }}</td>
+                    <td>{{ l.date_debut|date:"d/m/Y H:i" }}</td>
+                    <td>
+                      {% if l.date_fin %}
+                        {{ l.date_fin|date:"d/m/Y H:i" }}
+                      {% else %}
+                        <span class="text-muted">Non définie</span>
+                      {% endif %}
+                    </td>
+                    <td>{{ l.date_created|date:"d/m/Y H:i" }}</td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="3" class="text-center text-muted">Aucun location enregistrée.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        
+         <!-- 🆓 Sites web gratuits  -->
+         <div class="card mb-4">
+          <div class="card-header bg-primary text-black">🆓 Sites web gratuits </div>
+          <div class="card-body product-table">
+            <div class="table-responsive">
+              <table class="table table-bordered text-nowrap mb-0">
+                <thead>
+                  <tr><th>Site Web</th><th>Prix (gratuit)</th><th>Statut du builder</th><th>Date de création</th></tr>
+                </thead>
+                <tbody>
+                  {% for f in free_websites %}
+                  <tr>
+                    <td>{{ f.websites.name }}</td>
+                    <td>{{ f.prix_free }} MAD</td>
+                    <td>{{ f.BuilderStatus }}</td>
+                    <td>{{ f.date_created|date:"d/m/Y H:i" }}</td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="3" class="text-center text-muted">Aucun site gratuit attribué.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+
+          <!-- 🛠 Demandes de support technique  -->
+          <div class="card mb-4">
+            <div class="card-header bg-primary text-black">🛠 Demandes de support technique </div>
+            <div class="card-body product-table">
+              <div class="table-responsive">
+                <table class="table table-bordered text-nowrap mb-0">
+                  <thead>
+                    <tr><th>Code</th><th>Support demandé</th><th>Statut</th><th>Technicien</th><th>Date</th></tr>
+                  </thead>
+                  <tbody>
+                    {% for s in supports %}
+                    <tr>
+                      <td>{{ s.code_DemandeSupport }}</td>
+                      <td>{{ s.achat_support.support.name }}</td>
+                      <td>{{ s.status }}</td>
+                      <td>
+                        {% if s.updated_by %}
+                          {{ s.updated_by.user.username }}
+                        {% else %}
+                          <span class="text-muted">Non assigné</span>
+                        {% endif %}
+                      </td>
+                      <td>{{ s.date_created|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                      <td colspan="3" class="text-center text-muted">Aucun demande de support enregistrée.</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+
+      </div>
+    </div>
   </div>
 </div>
 
-
-  <!-- 🛠 Demandes de support technique -->
-  <div class="card mb-4 shadow-sm">
-    <div class="card-header bg-warning text-dark">🛠 Demandes de support technique</div>
-    <div class="card-body">
-      <table class="table table-bordered table-sm mb-0">
-        <thead>
-          <tr>
-            <th>Code</th>
-            <th>Support demandé</th>
-            <th>Statut</th>
-            <th>Technicien</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for s in supports %}
-          <tr>
-            <td>{{ s.code_DemandeSupport }}</td>
-            <td>{{ s.achat_support.support.name }}</td>
-            <td>{{ s.status }}</td>
-            <td>
-              {% if s.updated_by %}
-                {{ s.updated_by.user.username }}
-              {% else %}
-                <span class="text-muted">Non assigné</span>
-              {% endif %}
-            </td>
-            <td>{{ s.date_created|date:"d/m/Y H:i" }}</td>
-          </tr>
-          {% empty %}
-          <tr><td colspan="5" class="text-center text-muted">Aucune demande de support enregistrée.</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
 {% endblock %}

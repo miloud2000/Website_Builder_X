@@ -1,65 +1,71 @@
 {% extends "SuperAdmin/dashbordSuperAdmin.html" %}
 {% load static %}
+
 {% block content %}
+<div class="main-content app-content">
+  <div class="container-fluid">
 
-<div class="main-panel">
-  <div class="content-wrapper">
-
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-      {% endfor %}
-    {% endif %}
-
-    <div class="page-header mb-4">
-      <h3 class="page-title"><i class="mdi mdi-account-edit"></i> Modifier un Support Technique</h3>
+    <!-- PAGE-HEADER -->
+    <div class="page-header">
+      <h1 class="page-title my-auto">Modifier un Support Technique</h1>
+      <div>
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="{% url "SupportTechniqueSuperAdmin" %}">Support Technique</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Modifier un Support Technique</li>
+        </ol>
+      </div>
     </div>
 
-    <div class="row">
-      <div class="col-md-8 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title mb-4">🛠️ Informations du Support Technique</h4>
-            <form method="POST">
+    <!-- FORM -->
+    <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+      <div class="col-md-8 col-lg-6 col-xl-6">
+        <div class="card custom-card shadow-sm">
+          <div class="card-header border-bottom">
+            <h4 class="card-title mb-0">Formulaire de modification</h4>
+          </div>
+          <div class="card-body p-4">
+
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}
+            {% endif %}
+
+            <form method="post">
               {% csrf_token %}
 
-              <div class="form-group">
+              <div class="form-group mb-3">
                 <label for="name">Nom complet</label>
                 <input type="text" name="name" class="form-control" value="{{ form.initial.name }}" required>
               </div>
 
-              <div class="form-group">
+              <div class="form-group mb-3">
                 <label for="email">Adresse Email</label>
                 <input type="email" name="email" class="form-control" value="{{ form.initial.email }}" required>
               </div>
 
-              <div class="form-group">
+              <div class="form-group mb-3">
                 <label for="phone">Numéro de téléphone</label>
                 <input type="text" name="phone" class="form-control" value="{{ form.initial.phone }}">
               </div>
 
-              <div class="form-group">
+              <div class="form-group mb-3">
                 <label for="Status">Statut</label>
                 <select name="Status" class="form-control">
-                  <option value="Active" {% if form.initial.Status == "Active" %}selected{% endif %}>✅ Active</option>
-                  <option value="No Active" {% if form.initial.Status == "No Active" %}selected{% endif %}>⛔ No Active</option>
+                  <option value="Active" {% if form.initial.Status == "Active" %}selected{% endif %}>Active</option>
+                  <option value="No Active" {% if form.initial.Status == "No Active" %}selected{% endif %}>Non Active</option>
                 </select>
               </div>
 
-              <div class="form-group mt-4">
-                <button type="submit" class="btn btn-success mr-2">
-                  <i class="mdi mdi-content-save"></i> Enregistrer
-                </button>
-                <a href="{% url 'SupportTechniqueSuperAdmin' %}" class="btn btn-secondary">
-                  <i class="mdi mdi-arrow-left"></i> Retour
-                </a>
+              <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                <a href="{% url "SupportTechniqueSuperAdmin" %}" class="btn btn-outline-secondary">Annuler</a>
+                <button type="submit" class="btn btn-success">Mettre à jour <i class="bi bi-arrow-repeat ms-1"></i></button>
               </div>
             </form>
+
           </div>
         </div>
       </div>
@@ -67,5 +73,4 @@
 
   </div>
 </div>
-
 {% endblock %}
