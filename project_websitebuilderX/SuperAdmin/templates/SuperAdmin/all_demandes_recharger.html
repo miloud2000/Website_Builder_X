@@ -159,23 +159,23 @@
                                                 </td>
                                                 <td>
                                                     {% if demande.status == 'Done' %}
-                                                        <span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">Validée</span>
+                                                      <span class="badge bg-success-transparent rounded-pill text-success p-2 mb-0 fs-12 fw-semibold">Validée</span>
                                                     {% elif demande.status == 'Not Done yet' %}
-                                                        <span class="badge bg-dark-transparent rounded-pill text-dark p-2 px-3">En attente</span>
+                                                      <span class="badge bg-dark-transparent rounded-pill text-dark p-2 mb-0 fs-12 fw-semibold">En attente</span>
                                                     {% elif demande.status == 'inacceptable' %}
-                                                        <span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">Refusée</span>
+                                                      <span class="badge bg-danger-transparent rounded-pill text-danger p-2 mb-0 fs-12 fw-semibold">Refusée</span>
                                                     {% endif %}
                                                 </td>
-                                                <td>{{ demande.motifNonAcceptation|default:"—" }}</td>
-                                                <td>{{ demande.date_created|date:"d/m/Y H:i" }}</td>
-                                                <td>{{ demande.code_DemandeRecharger }}</td>
+                                                <td class="mb-0 fs-14 fw-semibold">{{ demande.motifNonAcceptation|default:"—" }}</td>
+                                                <td class="mb-0 fs-14 fw-semibold">{{ demande.date_created|date:"d/m/Y H:i" }}</td>
+                                                <td class="mb-0 fs-14 fw-semibold">{{ demande.code_DemandeRecharger }}</td>
                                                 <td>
                                                     {% if demande.updated_by and demande.updated_by.user %}
-                                                    <a href="{% url 'gestionnaire_detail' demande.updated_by.id %}" class="text-decoration-none">
+                                                    <a class="mb-0 fs-14 fw-semibold" href="{% url 'gestionnaire_detail' demande.updated_by.id %}" class="text-decoration-none">
                                                         <span class="badge bg-dark-transparent rounded-pill text-dark p-2 px-3">{{ demande.updated_by.user.username }}</span>
                                                     </a>
                                                     {% else %}
-                                                    <span class="text-muted small">Non attribué</span>
+                                                    <span class="mb-0 fs-12 fw-semibold" >Non attribué</span>
                                                     {% endif %}
                                                 </td>
                                                 <td>

@@ -1,36 +1,161 @@
 {% extends "SuperAdmin/dashbordSuperAdmin.html" %}
 {% load static %}
+{% load widget_tweaks %}
 
 {% block content %}
-<div class="container py-5">
-  <h2 class="mb-4">Modifier le support : {{ support.name }}</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-warning">
-      <i class="bi bi-pencil-square"></i> Enregistrer les modifications
-    </button>
-    <a href="{% url 'supports_list_superadmin' %}" class="btn btn-secondary">Annuler</a>
-  </form>
-</div>
+ <!-- Start::app-content -->
+ <div class="main-content app-content">
+    <div class="container-fluid">
 
-<style>
-    .btn-edit {
-        background-color: #fff3cd;
-        color: #ffc107;
-        border-radius: 50%;
-        width: 38px;
-        height: 38px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition: background-color 0.2s ease;
-      }
-      
-      .btn-edit:hover {
-        background-color: #ffc107;
-        color: #212529;
-      }
-      
-</style>
+        <!-- PAGE-HEADER -->
+        <div class="page-header">
+          <h1 class="page-title my-auto">Mettre à jour le supportb</h1>
+          <div>
+            <ol class="breadcrumb mb-0">
+              <li class="breadcrumb-item">
+                <a href="{% url "supports_list_superadmin" %}">Liste de support</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">Mettre à jour le support</li>
+            </ol>
+          </div>
+        </div>
+        <!-- PAGE-HEADER END -->
+
+
+        <!-- Start::row-1 -->
+        
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card custom-card">
+                    <div class="card-body add-products p-0">
+                        <div class="p-4">
+                            <form method="post" enctype="multipart/form-data" novalidate>
+                                {% csrf_token %}
+                            <div class="row gx-5">
+                                <div class="col-xxl-6 col-xl-12 col-lg-12 col-md-6">
+                                    <div class="card custom-card shadow-none mb-0">
+                                        <div class="card-body p-0">
+                                            <div class="row gy-3">
+                                                <div class="col-xl-12">
+                                                    <label for="id_name" class="form-label">Nom du site web</label>
+                                                  
+                                                    {{ form.name|add_class:"form-control"|attr:"id:id_name"|attr:"placeholder:Nom du site web" }}
+                                                  
+                                                    {% if form.name.errors %}
+                                                      <div class="invalid-feedback d-block">
+                                                        {% for error in form.name.errors %}
+                                                          {{ error }}
+                                                        {% endfor %}
+                                                      </div>
+                                                    {% endif %}
+                                                  
+                                                    <label for="id_name" class="form-label mt-1 fs-12 op-5 text-muted mb-0">
+                                                      *Product Name should not exceed 30 characters
+                                                    </label>
+                                                  </div>
+                                                <div class="col-xl-6">
+                                                    <label for="id_status" class="form-label">{{ form.status.label }}</label>
+                                                  
+                                                    {{ form.status|add_class:"form-select"|attr:"id:id_status"|attr:"data-trigger:true"|attr:"name:status" }}
+                                                  
+                                                    {% if form.status.errors %}
+                                                      <div class="invalid-feedback d-block">
+                                                        {% for error in form.status.errors %}
+                                                          {{ error }}
+                                                        {% endfor %}
+                                                      </div>
+                                                    {% endif %}
+                                                  
+                                                    <label for="id_status" class="form-label mt-1 fs-12 op-5 text-muted mb-0">
+                                                      *Product Name should not exceed 30 characters
+                                                    </label>
+                                                  </div>
+                                                  <div class="col-xl-6">
+                                                    <label for="id_prix" class="form-label">{{ form.prix.label }}</label>
+    
+                                                    {{ form.prix|add_class:"form-control"|attr:"id:id_prix"|attr:"data-trigger:true"|attr:"name:CMS" }}
+    
+                                                    {% if form.prix.errors %}
+                                                        <div class="invalid-feedback d-block">
+                                                        {% for error in form.prix.errors %}
+                                                            {{ error }}
+                                                        {% endfor %}
+                                                        </div>
+                                                    {% endif %}
+    
+                                                    <label for="id_cms" class="form-label mt-1 fs-12 op-5 text-muted mb-0">
+                                                        *Product Name should not exceed 30 characters
+                                                    </label>
+                                                    </div>
+                                                <div class="col-xl-12">
+                                                    <label for="id_description" class="form-label">{{ form.description.label }}</label>
+                                                  
+                                                    {{ form.description|add_class:"form-control"|attr:"id:id_description"|attr:"data-trigger:true"|attr:"name:catégorie" }}
+                                                  
+                                                    {% if form.description.errors %}
+                                                      <div class="invalid-feedback d-block">
+                                                        {% for error in form.catégorie.errors %}
+                                                          {{ error }}
+                                                        {% endfor %}
+                                                      </div>
+                                                    {% endif %}
+                                                  
+                                                    <label for="id_description" class="form-label mt-1 fs-12 op-5 text-muted mb-0">
+                                                      *Product Name should not exceed 30 characters
+                                                    </label>
+                                                  </div>
+                                                <div class="col-xl-12">
+                                                    <div class="px-4 py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">
+                                                        <button class="btn btn-primary-light m-1">Enregistrer<i class="bi bi-save ms-2"></i></button>
+                                                        <a href="{% url 'supports_list_superadmin' %}" class="btn btn-success-light m-1">Annuler <i class="bi bi-x-circle ms-2"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                                <div class="col-xxl-6 col-xl-12 col-lg-12 col-md-6">
+                                    <div class="card custom-card shadow-none mb-0">
+                                        <div class="card-body p-0">
+                                            <div class="row gy-4">
+                                                <div class="col-xl-4">
+                                                    <label for="product-actual-price" class="form-label">Nom</label>
+                                                    <input type="text" class="form-control" id="product-actual-price" value="{{ support.name }}" readonly>
+                                                </div>                                                                                                    
+                                                <div class="col-xl-4">
+                                                    <label for="product-dealer-price" class="form-label">status</label>
+                                                    <input type="text" class="form-control" id="product-dealer-price" 
+                                                           value="{{ support.status}}" readonly>
+                                                </div>
+                                                  
+                                                <div class="col-xl-4">
+                                                    <label for="product-discount" class="form-label">Prix</label>
+                                                    <input type="text" class="form-control" id="product-discount" 
+                                                           value="{{ support.prix}}" readonly>
+                                                </div>
+                                                <div class="col-xl-6">
+                                                    <label for="product-weight" class="form-label">Date de création</label>
+                                                    <input type="text" class="form-control" id="product-weight" 
+                                                           value="{{ support.date_created|date:'d M Y' }}" readonly>
+                                                </div>
+                                                <div class="col-xl-12">
+                                                  <label for="product-weight" class="form-label">Description</label>
+                                                  <textarea name="mytext" rows="5" cols="40" class="form-control"  id="product-weight" 
+                                                         value="{{ support.description }}" readonly>{{ support.description }}</textarea>
+                                              </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--End::row-1 -->
+    </form>
+    </div>
+</div>
 {% endblock %}

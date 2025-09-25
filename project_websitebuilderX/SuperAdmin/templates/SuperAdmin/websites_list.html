@@ -2,267 +2,235 @@
 {% load static %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-dark mb-0">
-            <i class="bi bi-gear-fill me-2 text-primary"></i> Gestion des Sites Web
-        </h2>
-        <a href="{% url 'add_website' %}" class="btn btn-primary d-flex align-items-center gap-2 px-4 py-2 rounded-pill">
-            <i class="bi bi-plus-lg"></i> Ajouter un Nouveau Site
-        </a>
-    </div>
 
-    <div class="d-flex justify-content-end mb-4 gap-2">
-        <a href="{% url 'export_websites_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-outline-danger btn-sm" target="_blank">
-          <i class="bi bi-file-earmark-pdf"></i> PDF
-        </a>
-        {% comment %} <a href="{% url 'export_websites_csv' %}?{{ request.GET.urlencode }}" class="btn btn-outline-secondary btn-sm">
-          <i class="bi bi-file-earmark-spreadsheet"></i> CSV
-        </a> {% endcomment %}
-        <a href="{% url 'export_websites_excel' %}?{{ request.GET.urlencode }}" class="btn btn-outline-success btn-sm">
-          <i class="bi bi-file-earmark-excel"></i> Excel
-        </a>
-      </div>
-      
 
-    <div class="card p-4 shadow-lg border-0 rounded-4">
-        <form method="get" class="mb-4">
-            <div class="d-flex flex-wrap align-items-end gap-3">
-                <div class="flex-fill">
-                    <label for="status-select" class="form-label text-muted small">Statut</label>
-                    <select name="status" class="form-select form-select-sm" id="status-select">
-                        <option value="">Tous</option>
-                        <option value="Active" {% if status == 'Active' %}selected{% endif %}>Actif</option>
-                        <option value="No Active" {% if status == 'No Active' %}selected{% endif %}>Inactif</option>
-                    </select>
-                </div>
-                <div class="flex-fill">
-                    <label for="category-select" class="form-label text-muted small">Catégorie</label>
-                    <select name="catégorie" class="form-select form-select-sm" id="category-select">
-                        <option value="">Toutes</option>
-                        {% for cat in catégories_list %}
-                            <option value="{{ cat }}" {% if catégorie == cat %}selected{% endif %}>{{ cat }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="flex-fill">
-                    <label for="cms-select" class="form-label text-muted small">CMS</label>
-                    <select name="CMS" class="form-select form-select-sm" id="cms-select">
-                        <option value="">Tous</option>
-                        {% for c in cms_list %}
-                            <option value="{{ c }}" {% if CMS == c %}selected{% endif %}>{{ c }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="flex-fill">
-                    <label for="language-select" class="form-label text-muted small">Langue</label>
-                    <select name="langues" class="form-select form-select-sm" id="language-select">
-                        <option value="">Toutes</option>
-                        {% for l in langues_list %}
-                            <option value="{{ l }}" {% if langues == l %}selected{% endif %}>{{ l }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="flex-fill">
-                    <label for="plan-select" class="form-label text-muted small">Forfait</label>
-                    <select name="plan" class="form-select form-select-sm" id="plan-select">
-                        <option value="">Tous</option>
-                        {% for p in plans_list %}
-                            <option value="{{ p }}" {% if plan == p %}selected{% endif %}>{{ p }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="d-flex gap-2 align-self-end">
-                    <button type="submit" class="btn btn-dark btn-sm px-4 rounded-pill">
-                        <i class="bi bi-search"></i> Filtrer
-                    </button>&nbsp;
-                    <a href="{% url 'websites_list_superadmin' %}" class="btn btn-outline-secondary btn-sm px-4 rounded-pill">
-                        <i class="bi bi-arrow-clockwise"></i> Réinitialiser
-                    </a>
-                </div>
-            </div>
-        </form>
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
 
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
-            {% for website in websites %}
-            <div class="col">
-                <div class="card h-100 shadow-sm border-0 rounded-4 website-card-hover">
-                    <div class="position-relative">
-                        {% if website.image %}
-                            <img src="{{ website.image.url }}" class="card-img-top rounded-top-4" alt="Image de {{ website.name }}" style="height: 180px; object-fit: cover;">
-                        {% else %}
-                            <img src="{% static 'img/css-image-gallery.jpg' %}" class="card-img-top rounded-top-4" alt="Image par défaut" style="height: 180px; object-fit: cover;">
-                        {% endif %}
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title text-truncate fw-bold mb-1 text-dark">{{ website.name }}</h5>
-                        <p class="card-text text-muted small mb-3">
-                            <i class="bi bi-tag me-1"></i> {{ website.catégorie }}
-                        </p>
-                        <ul class="list-unstyled small text-muted mb-3 flex-grow-1">
-                            <li class="d-flex align-items-center gap-2 mb-1">
-                                <i class="bi bi-cash-coin text-primary"></i> <strong>Prix:</strong> {{ website.prix }} MAD
-                            </li>
-                            <li class="d-flex align-items-center gap-2 mb-1">
-                                <i class="bi bi-puzzle-fill text-primary"></i> <strong>CMS:</strong> {{ website.CMS }}
-                            </li>
-                            <li class="d-flex align-items-center gap-2 mb-1">
-                                <i class="bi bi-translate text-primary"></i> <strong>Langue:</strong> {{ website.langues }}
-                            </li>
-                            <li class="d-flex align-items-center gap-2">
-                                <i class="bi bi-journal-check text-primary"></i> <strong>Forfait:</strong> {{ website.plan }}
-                            </li><br>
-                            <li class="d-flex align-items-center gap-2">
-                                <i class="bi bi-translate text-primary"></i>  <span style="color: white;font-size: smaller;" class="badge position-absolute top-0 end-0 m-3 {% if website.status == 'Active' %}bg-success{% else %}bg-danger{% endif %} py-2 px-3 rounded-pill">
-                                    {% if website.status == 'Active' %}Active{% else %}Inactive{% endif %}
-                                </span>
-                            </li>
-                            <br>
-                        </ul>
-                        <div class="d-grid gap-2 d-md-flex mt-auto">
-                            <a href="{% url 'website_details' website.id %}" class="btn btn-outline-primary btn-sm flex-fill">
-                                <i class="bi bi-eye"></i> Voir
-                            </a>&nbsp;
-                            <a href="{% url 'edit_website' website.id %}" class="btn btn-outline-warning btn-sm flex-fill">
-                                <i class="bi bi-pencil"></i> Modifier
-                            </a>&nbsp;
-                            <a href="{% url 'hide_website' website.id %}" class="btn btn-outline-danger btn-sm flex-fill"
-                            onclick="return confirm('Êtes-vous sûr de vouloir masquer {{ website.name }} ?')">
-                            <i class="bi bi-trash"></i> Masquer
-                            </a>
+                <!-- PAGE-HEADER -->
+                <div class="page-header">
+                  <h1 class="page-title my-auto">Liste de sites Web</h1>
+                  <div>
+                    <ol class="breadcrumb mb-0">
+                      <li class="breadcrumb-item">
+                        <a href="{% url 'websites_list_superadmin' %}">Accueil</a>
+                      </li>
+                      <li class="breadcrumb-item active" aria-current="page">liste de sites Web</li>
+                    </ol>
+                  </div>
+                </div>
+                <!-- PAGE-HEADER END -->
+                <div class="page-header">
+                  <h1 class="page-title my-auto"></h1>
+                  <div>
+                    <ol class="breadcrumb mb-0">
+                      <li class="breadcrumb-item">
+                      </li>
+                      <a href="{% url 'add_website' %}" class="btn btn-outline-primary btn-lg px-4">
+                        <i class="bi bi-plus-circle me-2"></i> Ajouter
+                      </a>
+                    </ol>
+                  </div>
+                </div>
 
+
+                <!-- Start::row-1 -->
+                <form method="get">
+                <div class="row">
+                    <div class="col-xxl-3 col-xl-4 col-lg-4 col-md-12">
+                        <div class="card custom-card">
+                            <div class="card-header"><div class="card-title">Statut</div></div>
+                            <div class="card-body">
+                              <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="status" value="" id="status-all" {% if not status %}checked{% endif %}>
+                                <label class="form-check-label" for="status-all">Tous</label>
+                              </div>
+                              <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="status" value="Active" id="status-active" {% if status == 'Active' %}checked{% endif %}>
+                                <label class="form-check-label" for="status-active">Actif</label>
+                              </div>
+                              <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="status" value="No Active" id="status-inactive" {% if status == 'No Active' %}checked{% endif %}>
+                                <label class="form-check-label" for="status-inactive">Inactif</label>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="card custom-card">
+                            <div class="card-header"><div class="card-title">Catégorie</div></div>
+                            <div class="card-body">
+                              <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="catégorie" value="" id="cat-all" {% if not catégorie %}checked{% endif %}>
+                                <label class="form-check-label" for="cat-all">Toutes</label>
+                              </div>
+                              {% for cat in catégories_list %}
+                                <div class="form-check mb-2">
+                                  <input class="form-check-input" type="radio" name="catégorie" value="{{ cat }}" id="cat-{{ forloop.counter }}" {% if catégorie == cat %}checked{% endif %}>
+                                  <label class="form-check-label" for="cat-{{ forloop.counter }}">{{ cat }}</label>
+                                </div>
+                              {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card custom-card">
+                            <div class="card-header"><div class="card-title">CMS</div></div>
+                            <div class="card-body">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="CMS" value="" id="cms-all" {% if not CMS %}checked{% endif %}>
+                                    <label class="form-check-label" for="cms-all">Toutes</label>
+                                </div>
+                                {% for c in cms_list %}
+                                <div class="form-check mb-2">
+                                  <input class="form-check-input" type="radio" name="CMS" value="{{ c }}" id="cms-{{ forloop.counter }}" {% if CMS == c %}checked{% endif %}>
+                                  <label class="form-check-label" for="cms-{{ forloop.counter }}">{{ c }}</label>
+                                </div>
+                              {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card custom-card">
+                            <div class="card-header"><div class="card-title">Langue</div></div>
+                            <div class="card-body">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="langues" value="" id="langue-all" {% if not langues %}checked{% endif %}>
+                                    <label class="form-check-label" for="langue-all">Toutes</label>
+                                </div>
+                                {% for l in langues_list %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="langues" value="{{ l }}" id="langue-{{ forloop.counter }}" {% if langues == l %}checked{% endif %}>
+                                        <label class="form-check-label" for="langue-{{ forloop.counter }}">{{ l }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card custom-card">
+                            <div class="card-header"><div class="card-title">Forfait</div></div>
+                            <div class="card-body">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="plan" value="" id="plan-all" {% if not plan %}checked{% endif %}>
+                                    <label class="form-check-label" for="plan-all">Tous</label>
+                                </div>
+                                {% for p in plans_list %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="plan" value="{{ p }}" id="plan-{{ forloop.counter }}" {% if plan == p %}checked{% endif %}>
+                                        <label class="form-check-label" for="plan-{{ forloop.counter }}">{{ p }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                            {% comment %} <div class="justify-content-end gap-2 mt-2">
+                                <button type="submit" class="btn btn-dark btn-sm px-4 rounded-pill">
+                                    <i class="bi bi-search"></i> Filtrer
+                                </button>
+                                <a href="{% url 'websites_list_superadmin' %}" class="btn btn-outline-secondary btn-sm px-4 rounded-pill">
+                                    <i class="bi bi-arrow-clockwise"></i> Réinitialiser
+                                </a>
+                            </div> {% endcomment %}
+                        </div>
+                    </form>
+                    <script>
+                        document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
+                          radio.addEventListener('change', function() {
+                            this.form.submit();
+                          });
+                        });
+                      </script>
+                      
+                    <div class="col-xxl-9 col-xl-8 col-lg-8 col-md-12">
+                        <div class="row">
+                            {% for website in page_obj %}
+                            <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="card custom-card product-card">
+                                    <div class="card-body">
+                                        <a href="{% url 'website_details' website.id %}" class="product-image">
+                                            {% if website.image %}
+                                                <img src="{{ website.image.url }}" class="card-img mb-3" alt="{{ website.name }}">
+                                            {% else %}
+                                                <img src="{% static 'assets/images/ecommerce/products/default.jpg' %}" class="card-img mb-3" alt="No image">
+                                            {% endif %}
+                                        </a>
+                    
+                                        <div class="product-icons">
+                                            <a href="{% url 'hide_website' website.id %}" onclick="return confirm('Êtes-vous sûr de vouloir masquer {{ website.name }} ?')" class="wishlist"><i class="ri-delete-bin-fill"></i></a>
+                                            <a href="{% url 'edit_website' website.id %}" class="cart"><i class="ri-edit-2-fill"></i></a>
+                                            <a href="{% url 'website_details' website.id %}" class="view"><i class="ri-eye-line"></i></a>
+                                        </div>
+                    
+                                        <p class="product-name fw-semibold mb-0 d-flex align-items-center justify-content-between">
+                                            {{ website.name }}
+                                            <span class="float-end text-warning fs-12">
+                                                4.2<i class="ri-star-s-fill align-middle ms-1 d-inline-block"></i>
+                                            </span>
+                                        </p>
+                    
+                                        <p class="product-description fs-11 text-muted mb-2">
+                                            {{ website.catégorie }}
+                                        </p>
+                    
+                                        <p class="mb-1 fw-semibold fs-16 d-flex align-items-center justify-content-between">
+                                            <span>
+                                                {{ website.prix }} MAD
+                                                <span class="text-muted text-decoration-line-through ms-1 d-inline-block op-6">
+                                                    {{ website.prix|add:"100" }} MAD
+                                                </span>
+                                            </span>
+                                            <span class="badge bg-secondary-transparent float-end fs-10">50% off</span>
+                                        </p>
+                    
+                                        <p class="fs-11 text-success fw-semibold mb-0 d-flex align-items-center">
+                                            <i class="ti ti-discount-2 fs-16 me-1"></i>
+                                            Prix ​​de l'offre {{ website.prix }} MAD
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="col-12">
+                                <div class="alert alert-warning text-center">Aucun site Web disponible</div>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
+                    
                 </div>
+                <!--End::row-1 -->
+
+                <!-- Pagination -->
+                <ul class="pagination justify-content-end">
+                    {% if page_obj.has_previous %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if status %}&status={{ status }}{% endif %}{% if catégorie %}&catégorie={{ catégorie }}{% endif %}{% if CMS %}&CMS={{ CMS }}{% endif %}{% if langues %}&langues={{ langues }}{% endif %}{% if plan %}&plan={{ plan }}{% endif %}">Précédent</a>
+                      </li>
+                    {% else %}
+                      <li class="page-item disabled"><a class="page-link">Précédent</a></li>
+                    {% endif %}
+                  
+                    {% for num in page_obj.paginator.page_range %}
+                      <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}{% if status %}&status={{ status }}{% endif %}{% if catégorie %}&catégorie={{ catégorie }}{% endif %}{% if CMS %}&CMS={{ CMS }}{% endif %}{% if langues %}&langues={{ langues }}{% endif %}{% if plan %}&plan={{ plan }}{% endif %}">{{ num }}</a>
+                      </li>
+                    {% endfor %}
+                  
+                    {% if page_obj.has_next %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if status %}&status={{ status }}{% endif %}{% if catégorie %}&catégorie={{ catégorie }}{% endif %}{% if CMS %}&CMS={{ CMS }}{% endif %}{% if langues %}&langues={{ langues }}{% endif %}{% if plan %}&plan={{ plan }}{% endif %}">Suivant</a>
+                      </li>
+                    {% else %}
+                      <li class="page-item disabled"><a class="page-link">Suivant</a></li>
+                    {% endif %}
+                  </ul>
+                  
+                <!-- Pagination -->
+
             </div>
-            {% empty %}
-            <div class="col-12">
-                <div class="alert alert-info text-center py-4 rounded-3 shadow-sm">
-                    <i class="bi bi-info-circle-fill me-2"></i> Aucun site web trouvé selon vos critères.
-                </div>
-            </div>
-            {% endfor %}
         </div>
+        <!-- End::app-content -->
+
     </div>
-</div>
 
-
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-    :root {
-        --primary-color: #0d6efd;
-        --secondary-color: #6c757d;
-        --success-color: #198754;
-        --danger-color: #dc3545;
-        --warning-color: #ffc107;
-        --info-color: #0dcaf0;
-        --dark-color: #212529;
-        --muted-color: #6c757d;
-        --light-bg: #f5f7fb; /* A very subtle off-white background */
-        --card-bg: #ffffff;
-        --border-color: #e3e6ed;
-        --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.05);
-        --shadow-medium: 0 8px 15px rgba(0, 0, 0, 0.1);
-        --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.08);
-    }
-
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: var(--light-bg);
-        color: var(--dark-color);
-        line-height: 1.6;
-    }
-
-    /* General Styles & Typography */
-    h2 {
-        font-weight: 700;
-        letter-spacing: -0.5px;
-        color: var(--dark-color);
-    }
-    .text-primary {
-        color: var(--primary-color) !important;
-    }
-
-    /* Buttons */
-    .btn {
-        font-weight: 600;
-        transition: all 0.2s ease-in-out;
-    }
-    .btn-primary {
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
-    }
-    .btn-primary:hover {
-        background-color: #0b5ed7;
-        border-color: #0a58ca;
-        transform: translateY(-2px);
-    }
-    .btn-dark {
-        background-color: var(--dark-color);
-        border-color: var(--dark-color);
-        color: white;
-    }
-    .btn-dark:hover {
-        background-color: #343a40;
-        border-color: #343a40;
-    }
-
-    /* Main Card Wrapper */
-    .card.p-4 {
-        box-shadow: var(--shadow-medium);
-        border: 1px solid var(--border-color);
-        background-color: var(--card-bg);
-    }
-
-    /* Filter Section */
-    .form-label {
-        font-weight: 500;
-        margin-bottom: 0.25rem;
-        font-size: 0.8rem;
-    }
-    .form-select, .form-control {
-        border-radius: 0.5rem;
-        border: 1px solid var(--border-color);
-        padding: 0.5rem 0.75rem;
-        font-size: 0.9rem;
-    }
-    .form-select:focus, .form-control:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-    }
-
-    /* Website Cards */
-    .website-card-hover {
-        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
-    }
-    .website-card-hover:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        border-color: var(--primary-color);
-    }
-
-    .card-img-top {
-        border-top-left-radius: 1rem;
-        border-top-right-radius: 1rem;
-    }
-
-    .card-title {
-        font-weight: 700;
-        font-size: 1.25rem;
-    }
     
-    .card-body .list-unstyled li i {
-        color: var(--primary-color); /* Icons match brand color */
-        min-width: 1.5rem; /* Better alignment */
-    }
+    <!-- Scroll To Top -->
+    <div class="scrollToTop">
+        <span class="arrow"><i class="ri-arrow-up-s-fill fs-20"></i></span>
+    </div>
+    <div id="responsive-overlay"></div>
 
-    .badge {
-        font-weight: 700;
-        font-size: 0.7rem;
-        padding: 0.4rem 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-</style>
 {% endblock %}

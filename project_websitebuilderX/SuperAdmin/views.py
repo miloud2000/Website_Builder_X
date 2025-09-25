@@ -1847,16 +1847,19 @@ def DemandeRechargerNotDone(request):
 
 
 
-#List of Demands Support all [SuperAdmin]
 def DemandeSupportAll(request): 
     DemandeSupports = DemandeSupport.objects.select_related('achat_support', 'updated_by', 'cliente')
 
+    # Filtres
     status = request.GET.get('status')
     status_consome = request.GET.get('status_consome')
     updated_by = request.GET.get('updated_by')
     code = request.GET.get('code')
     cliente_username = request.GET.get('cliente_username')
+    per_page = int(request.GET.get('per_page', 10))
+    page_number = request.GET.get('page')
 
+    # Application des filtres
     if status:
         DemandeSupports = DemandeSupports.filter(status=status)
     if status_consome:
@@ -1868,11 +1871,17 @@ def DemandeSupportAll(request):
     if cliente_username:
         DemandeSupports = DemandeSupports.filter(cliente__username=cliente_username)
 
+    # Pagination
+    paginator = Paginator(DemandeSupports.order_by('-date_created'), per_page)
+    page_obj = paginator.get_page(page_number)
+
     techniciens = SupportTechnique.objects.filter(Status='Active')
     clients = User.objects.filter(groups__name='Client')  
 
     context = {
-        'DemandeSupports': DemandeSupports.order_by('-date_created'),
+        'DemandeSupports': page_obj.object_list,
+        'page_obj': page_obj,
+        'per_page': per_page,
         'status': status,
         'status_consome': status_consome,
         'updated_by': updated_by,
@@ -2011,8 +2020,6 @@ def DemandeSupportNotDoneyetSA(request):
 
 
 
-
-
 from django.utils.dateparse import parse_date
 
 def history(request):
@@ -2020,25 +2027,29 @@ def history(request):
     cliente_id = request.GET.get('cliente')
     date_start = request.GET.get('date_start')
     date_end = request.GET.get('date_end')
+    per_page = int(request.GET.get('per_page', 10))
+    page_number = request.GET.get('page')
 
     history_entries = History.objects.all().order_by('-date_created')
 
     if model_name:
         history_entries = history_entries.filter(model_name=model_name)
-
     if cliente_id:
         history_entries = history_entries.filter(cliente_id=cliente_id)
-
     if date_start:
         history_entries = history_entries.filter(date_created__date__gte=parse_date(date_start))
-
     if date_end:
         history_entries = history_entries.filter(date_created__date__lte=parse_date(date_end))
+
+    paginator = Paginator(history_entries, per_page)
+    page_obj = paginator.get_page(page_number)
 
     clientes = Cliente.objects.all()
 
     return render(request, 'SuperAdmin/history.html', {
-        'history_entries': history_entries,
+        'history_entries': page_obj.object_list,
+        'page_obj': page_obj,
+        'per_page': per_page,
         'model_choices': History.MODEL_CHOICES,
         'clientes': clientes,
         'selected_model': model_name,
@@ -2046,6 +2057,7 @@ def history(request):
         'date_start': date_start,
         'date_end': date_end,
     })
+
 
 
 from django.utils.dateparse import parse_date
@@ -2133,8 +2145,15 @@ def WebsitesListSuperAdmin(request):
     if plan and plan != 'None':
         websites = websites.filter(plan=plan)
 
+    websites = websites.order_by('-date_created')
+
+    # ✅ Pagination
+    paginator = Paginator(websites, 10)  # 10 items per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'websites': websites.order_by('-date_created'),
+        'page_obj': page_obj,
         'status': status,
         'catégorie': catégorie,
         'CMS': CMS,
@@ -2279,22 +2298,28 @@ def hide_website(request, id):
     return redirect('websites_list_superadmin')
 
 
-
+from django.core.paginator import Paginator
 
 def supports_list_superadmin(request):
-    supports = Supports.objects.all()
-
     status = request.GET.get('status')
-    if status and status != 'None':
+
+    supports = Supports.objects.all()
+    if status:
         supports = supports.filter(status=status)
 
+    supports = supports.order_by('-date_created')
+
+    # ✅ Pagination
+    paginator = Paginator(supports, 10)  # 10 éléments par page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'supports': supports.order_by('-date_created'),
+        'page_obj': page_obj,  # utilisé dans le template
         'status': status,
         'status_choices': ['Disponible', 'No Disponible'],
     }
     return render(request, 'SuperAdmin/supports_list.html', context)
-
 
 
 def get_filtered_supports(request):
@@ -2404,8 +2429,6 @@ def hide_support(request, id):
 
 
 
-
-
 def tickets_list(request):
     tickets = Ticket.objects.all()
 
@@ -2441,7 +2464,6 @@ def tickets_list(request):
 
     # 🔃 Tri
     sort_by = request.GET.get('sort_by')
-
     if sort_by == 'date_asc':
         tickets = tickets.order_by('date_created')
     elif sort_by == 'date_desc':
@@ -2453,9 +2475,22 @@ def tickets_list(request):
     else:
         tickets = tickets.order_by('-date_created')
 
+    # ✅ Pagination dynamique
+    per_page = request.GET.get('per_page')
+    try:
+        per_page = int(per_page)
+        if per_page not in [10, 25, 50, 100]:
+            per_page = 10
+    except (TypeError, ValueError):
+        per_page = 10
+
+    paginator = Paginator(tickets, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
-        'tickets': tickets,
+        'page_obj': page_obj,
+        'per_page': per_page,
         'status_choices': Ticket.STATUS_CHOICES,
         'type_choices': Ticket.objects.values_list('typeTicket', flat=True).distinct(),
         'branche_choices': Ticket.objects.values_list('Branche', flat=True).distinct(),
@@ -2477,14 +2512,36 @@ def tickets_list(request):
 
 
 
-
 def ticket_detail(request, ticket_id):
     ticket = get_object_or_404(Ticket, id=ticket_id)
     conversations = ticket.conversations.order_by('timestamp')
 
+    user_type = None
+    user_id = None
+
+    # تحديد نوع المستخدم الحالي من الجداول المرتبطة
+    try:
+        cliente = Cliente.objects.get(user=request.user)
+        user_type = 'Cliente'
+        user_id = cliente.id
+    except Cliente.DoesNotExist:
+        try:
+            support = SupportTechnique.objects.get(user=request.user)
+            user_type = 'SupportTechnique'
+            user_id = support.id
+        except SupportTechnique.DoesNotExist:
+            try:
+                gestionnaire = GestionnaireComptes.objects.get(user=request.user)
+                user_type = 'GestionnaireComptes'
+                user_id = gestionnaire.id
+            except GestionnaireComptes.DoesNotExist:
+                pass  # المستخدم غير معروف
+
     context = {
         'ticket': ticket,
         'conversations': conversations,
+        'user_type': user_type,
+        'user_id': user_id,
     }
     return render(request, 'SuperAdmin/ticket_detail.html', context)
 
