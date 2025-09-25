@@ -2,64 +2,68 @@
 {% load static %}
 
 {% block content %}
-<div class="container py-5 d-flex justify-content-center">
-    <div class="card shadow-lg border-0 rounded-4 p-4" style="width: 420px;">
+<!-- Start::app-content -->
+<div class="main-content app-content">
+  <div class="container-fluid">
 
-        <!-- Header -->
-        <div class="text-center mb-4">
-            <h4 class="fw-bold text-primary">➕ Ajouter un support</h4>
-            <p class="text-muted small mb-0">Remplissez les informations ci-dessous</p>
-        </div>
-
-        <!-- Form -->
-        <form method="POST">
-            {% csrf_token %}
-
-            <div class="mb-3">
-                <label class="form-label small fw-semibold">👤 Nom d'utilisateur</label>
-                <input type="text" name="username" class="form-control form-control-sm rounded-3" placeholder="Nom d'utilisateur" required>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label small fw-semibold">🔒 Mot de passe</label>
-                <input type="password" name="password" class="form-control form-control-sm rounded-3" placeholder="Mot de passe" required>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label small fw-semibold">🧑 Nom complet</label>
-                <input type="text" name="name" class="form-control form-control-sm rounded-3" placeholder="Ex: Jean Dupont" required>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label small fw-semibold">📧 Email</label>
-                <input type="email" name="email" class="form-control form-control-sm rounded-3" placeholder="exemple@email.com" required>
-            </div>
-
-            <div class="mb-4">
-                <label class="form-label small fw-semibold">📞 Téléphone</label>
-                <input type="text" name="phone" class="form-control form-control-sm rounded-3" placeholder="+212 600 000 000" required>
-            </div>
-
-            <!-- Buttons -->
-            <div class="d-flex justify-content-between">
-                <a href="{% url 'liste_support_technique' %}" class="btn btn-sm btn-outline-secondary rounded-3 px-3">⬅ Retour</a>
-                <button type="submit" class="btn btn-sm btn-success rounded-3 px-3">✅ Ajouter</button>
-            </div>
-        </form>
+    <!-- PAGE-HEADER -->
+    <div class="page-header">
+      <h1 class="page-title my-auto">Ajouter un Support Technique</h1>
+      <div>
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="{% url "liste_support_technique" %}">Support Technique</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Ajouter un Support Technique</li>
+        </ol>
+      </div>
     </div>
-</div>
+    <!-- PAGE-HEADER END -->
+      
+    <!-- Start::row-1 -->
+    <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+      <div class="col-md-8 col-lg-6 col-xl-6">
+        <div class="card custom-card shadow-sm">
+          <div class="card-header border-bottom">
+            <h4 class="card-title mb-0">Formulaire d’ajout</h4>
+          </div>
+          <div class="card-body p-4">
+            <form method="post">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="username" class="form-label">Nom d'utilisateur</label>
+                <input type="text" class="form-control" name="username" id="username" placeholder="Nom d'utilisateur">
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Adresse e-mail</label>
+                <input type="email" class="form-control" name="email" id="email" placeholder="exemple@domaine.com">
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Mot de passe</label>
+                <input type="password" class="form-control" name="password1" id="password1" placeholder="Mot de passe">
+              </div>
+              <div class="mb-3">
+                <label for="password2" class="form-label">Confirmer le mot de passe</label>
+                <input type="password" class="form-control" name="password2" id="password2" placeholder="Confirmer le mot de passe">
+              </div>
+              <div class="mb-3">
+                <label for="name" class="form-label">Nom complet</label>
+                <input type="text" class="form-control" name="name" id="name" placeholder="Nom complet">
+              </div>
+              <div class="mb-3">
+                <label for="phone" class="form-label">Téléphone</label>
+                <input type="tel" class="form-control" name="phone" id="phone" placeholder="+212 6 00 00 00 00">
+              </div>
+              <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                <button type="reset" class="btn btn-outline-secondary">Réinitialiser</button>
+                <button type="submit" class="btn btn-success">Enregistrer <i class="bi bi-download ms-1"></i></button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--End::row-1 -->
 
-<style>
-    .form-control:focus {
-        border-color: #0d6efd;
-        box-shadow: 0 0 4px rgba(13, 110, 253, 0.25);
-    }
-    .btn-success {
-        background: linear-gradient(90deg, #28a745, #20c997);
-        border: none;
-    }
-    .btn-success:hover {
-        background: linear-gradient(90deg, #20c997, #28a745);
-    }
-</style>
+  </div>
+</div>
+<!-- End::app-content -->
 {% endblock %}

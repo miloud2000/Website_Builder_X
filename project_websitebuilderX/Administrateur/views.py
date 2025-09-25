@@ -57,13 +57,131 @@ from websitebuilder.tokens import account_activation_token
 #     return render(request, "websitebuilder/Administrateur/homeAdministrateur.html",context)
 
 
-
+from django.db.models import Sum, Count
+from django.core.paginator import Paginator
 
 #DashbordHome of Administrateur
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['Administrateur']) 
 def dashbordHomeAdministrateur(request):  
-    return render(request, "Administrateur/dashbordHomeAdministrateur.html")
+    today = timezone.now()
+    start_week = today - timedelta(days=today.weekday())
+    start_last_week = start_week - timedelta(days=7)
+    end_last_week = start_week - timedelta(seconds=1)
+
+    clients_this_week = User.objects.filter(groups__name='Cliente', date_joined__gte=start_week).count()
+    clients_last_week = User.objects.filter(groups__name='Cliente', date_joined__range=(start_last_week, end_last_week)).count()
+    client_growth = ((clients_this_week - clients_last_week) / clients_last_week * 100) if clients_last_week > 0 else (-100.0 if clients_this_week == 0 else 100.0)
+
+    start_6_days_ago = today - timedelta(days=6)
+    start_12_days_ago = today - timedelta(days=12)
+    websites_now = Websites.objects.filter(date_created__gte=start_6_days_ago).count()
+    websites_before = Websites.objects.filter(date_created__range=(start_12_days_ago, start_6_days_ago)).count()
+    websites_growth = ((websites_now - websites_before) / websites_before * 100) if websites_before > 0 else (-100.0 if websites_now == 0 else 100.0)
+
+    start_9_days_ago = today - timedelta(days=9)
+    start_18_days_ago = today - timedelta(days=18)
+    supports_now = Supports.objects.filter(date_created__gte=start_9_days_ago).count()
+    supports_before = Supports.objects.filter(date_created__range=(start_18_days_ago, start_9_days_ago)).count()
+    supports_growth = ((supports_now - supports_before) / supports_before * 100) if supports_before > 0 else (-100.0 if supports_now == 0 else 100.0)
+
+    start_year = today.replace(month=1, day=1)
+    solde_this_year = Cliente.objects.filter(date_created__gte=start_year).aggregate(Sum('solde'))['solde__sum'] or 0
+    solde_before = Cliente.objects.filter(date_created__lt=start_year).aggregate(Sum('solde'))['solde__sum'] or 0
+    solde_growth = ((solde_this_year - solde_before) / solde_before * 100) if solde_before > 0 else (-100.0 if solde_this_year == 0 else 100.0)
+
+    total_sales = AchatWebsites.objects.aggregate(Sum('prix_achat'))['prix_achat__sum'] or 0
+    total_orders = AchatWebsites.objects.count()
+    delivered_orders = AchatWebsites.objects.filter(BuilderStatus='Builder').count()
+    cancelled_orders = AchatWebsites.objects.filter(BuilderStatus='Not yet').count()
+
+   
+    
+    latest_recharges = DemandeRecharger.objects.select_related('cliente__user').order_by('-date_created')[:6]
+    
+    total_achats = AchatWebsites.objects.count()
+    
+    website_achat_counts = (
+    AchatWebsites.objects
+    .values('websites__name')
+    .annotate(count=Count('id'))
+    )
+    
+    website_achat_percentages = []
+    for entry in website_achat_counts:
+        name = entry['websites__name']
+        count = entry['count']
+        percentage = round((count / total_achats) * 100, 2) if total_achats > 0 else 0
+        website_achat_percentages.append({
+            'name': name,
+            'percentage': percentage
+        })
+        
+        
+    total_achat_supports = AchatSupport.objects.count()
+    
+    support_achat_counts = (
+    AchatSupport.objects
+    .values('support__name')
+    .annotate(count=Count('id'))
+    )
+    
+    support_achat_percentages = []
+    for entry in support_achat_counts:
+        name = entry['support__name']
+        count = entry['count']
+        percentage = round((count / total_achat_supports) * 100, 2) if total_achat_supports > 0 else 0
+        support_achat_percentages.append({
+            'name': name,
+            'count': count,
+            'percentage': percentage
+        })
+    
+    
+    clients = Cliente.objects.select_related('user').all()
+    
+    search_query = request.GET.get('search', '')
+    per_page = request.GET.get('per_page', 10)
+
+    clients = Cliente.objects.select_related('user')
+
+    if search_query:
+        clients = clients.filter(
+            Q(nom__icontains=search_query) |
+            Q(prenom__icontains=search_query) |
+            Q(user__username__icontains=search_query) |
+            Q(email__icontains=search_query)
+        )
+
+    paginator = Paginator(clients, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    
+    context = {
+    'clients_this_week': clients_this_week,
+    'client_growth': round(client_growth, 2),
+    'websites_growth': round(websites_growth, 2),
+    'supports_growth': round(supports_growth, 2),
+    'solde_growth': round(solde_growth, 2),
+    'total_website': Websites.objects.count(),
+    'total_service': Supports.objects.count(),
+    'total_solde': round(Cliente.objects.aggregate(Sum('solde'))['solde__sum'] or 0, 2),
+
+    # Graph data for each chart
+
+    'latest_recharges': latest_recharges,
+    'website_achat_percentages': website_achat_percentages,
+    'support_achat_percentages': support_achat_percentages,
+    
+    'clients': clients,
+    
+    'page_obj': page_obj,
+    'search_query': search_query,
+    'per_page': int(per_page),
+    }
+    return render(request, "Administrateur/dashbordHomeAdministrateur.html", context)
+
 
 
 from django.contrib.auth.decorators import login_required
@@ -186,8 +304,37 @@ from django.utils.text import slugify
 
 @login_required
 def liste_support_technique(request):
+    query = request.GET.get('q', '')
+    status_filter = request.GET.get('status', '')
+    per_page = int(request.GET.get('per_page', 10))
+
     supports = SupportTechnique.objects.all().order_by('-date_created')
-    return render(request, 'Administrateur/liste_support_technique.html', {'supports': supports})
+
+    if query:
+        supports = supports.filter(
+            Q(name__icontains=query) |
+            Q(email__icontains=query) |
+            Q(phone__icontains=query) |
+            Q(user__username__icontains=query)
+        )
+
+    if status_filter:
+        supports = supports.filter(Status=status_filter)
+
+    paginator = Paginator(supports, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'supports': page_obj.object_list,
+        'page_obj': page_obj,
+        'query': query,
+        'status_filter': status_filter,
+        'per_page': per_page,
+    }
+
+    return render(request, 'Administrateur/liste_support_technique.html', context)
+
 
 
 
@@ -200,43 +347,50 @@ from django.utils.text import slugify
 def ajouter_support_technique(request):
     if request.method == 'POST':
         username = request.POST.get('username')
-        password = request.POST.get('password')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
         name = request.POST.get('name')
         email = request.POST.get('email')
         phone = request.POST.get('phone')
 
+        if password1 != password2:
+            messages.error(request, "❌ Les mots de passe ne sont pas identiques.")
+            return redirect('ajouter_support_technique')
+
         if User.objects.filter(username=username).exists():
             messages.error(request, "❌ Ce nom d'utilisateur existe déjà.")
-        else:
-            # Création du compte utilisateur
-            user = User.objects.create_user(username=username, password=password, email=email)
+            return redirect('ajouter_support_technique')
 
-            # Ajout au groupe "SupportTechnique"
+        user = User.objects.create_user(username=username, password=password1, email=email)
+
+        try:
             group = Group.objects.get(name="SupportTechnique")
             user.groups.add(group)
+        except Group.DoesNotExist:
+            messages.error(request, "❌ Le groupe 'SupportTechnique' n'existe pas.")
+            return redirect('ajouter_support_technique')
 
-            # Création du modèle SupportTechnique
-            support = SupportTechnique.objects.create(
-                user=user,
-                name=name,
-                email=email,
-                phone=phone,
-                Status='Active',
-                slugSupportTechnique=slugify(username)
-            )
+        support = SupportTechnique.objects.create(
+            user=user,
+            name=name,
+            email=email,
+            phone=phone,
+            Status='Active',
+            slugSupportTechnique=slugify(username)
+        )
 
-            # Historique
-            HistoriqueAction.objects.create(
-                utilisateur=request.user,
-                action="Ajout d'un support technique",
-                objet="SupportTechnique",
-                details=f"Support technique '{support.name}' créé avec le compte '{user.username}'"
-            )
+        HistoriqueAction.objects.create(
+            utilisateur=request.user,
+            action="Ajout d'un support technique",
+            objet="SupportTechnique",
+            details=f"Support technique '{support.name}' créé avec le compte '{user.username}'"
+        )
 
-            messages.success(request, "✅ Support technique ajouté avec succès.")
-            return redirect('liste_support_technique')
+        messages.success(request, "✅ Support technique ajouté avec succès.")
+        return redirect('liste_support_technique')
 
     return render(request, 'Administrateur/ajouter_support_technique.html')
+
 
 
 

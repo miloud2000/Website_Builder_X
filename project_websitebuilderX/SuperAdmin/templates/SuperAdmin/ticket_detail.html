@@ -12,7 +12,7 @@
         <div>
           <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item">
-              <a href="j{% url 'tickets_list_superadmin' %}">Accueil</a>
+              <a href="{% url 'tickets_list_superadmin' %}">Accueil</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">Détails du ticket</li>
           </ol>
@@ -913,13 +913,18 @@
       </div>
       <div class="chat-content" id="main-chat-content">
         <ul class="list-unstyled">
-          <li class="chat-day-label">
-            <span>{{ ticket.typeTicket }}</span>
-            <span>{{ ticket.Branche }}</span>
-            <span>{{ ticket.status }}</span>
-            <span>{{ ticket.date_created|date:"d/m/Y H:i" }}</span>
-          </li>
-        
+            <li class="chat-day-label d-flex flex-wrap justify-content-center gap-2 py-2">
+                <span class="badge bg-primary text-white fw-bold">{{ ticket.typeTicket }}</span>
+                <span class="badge bg-info text-white fw-bold">{{ ticket.Branche }}</span>
+                <span class="badge bg-warning text-white fw-bold">{{ ticket.status }}</span>
+                <span class="badge bg-secondary text-white fw-bold">{{ ticket.date_created|date:"d/m/Y H:i" }}</span>
+            </li>
+            <div class="text-center bg-light p-3 rounded shadow-sm mx-auto" style="max-width: 600px;">
+                <strong>Description:</strong> {{ ticket.description }} <br>
+                <div class="text-center my-3">
+                    <img src="{{ ticket.pièce_joint.url }}" alt="Pièce jointe" class="img-fluid rounded shadow" style="max-width: 400px;">
+                </div>
+            </div>
           {% for conv in conversations %}
             {% if conv.sender_type == 'Cliente' %}
               <li class="chat-item-end">

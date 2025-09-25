@@ -1,65 +1,208 @@
-{% extends "Administrateur/dashbordAdministrateur.html" %}
+{% extends "SuperAdmin/dashbordSuperAdmin.html" %}
 {% load static %}
 
 {% block content %}
-<div class="container py-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-dark">🛠️ Liste des supports techniques</h2>
-        <a href="{% url 'ajouter_support_technique' %}" class="btn btn-success shadow-sm rounded-pill px-4">
-            ➕ Ajouter un support
-        </a>
+
+<div class="main-content app-content">
+  <br>
+  <div class="container-fluid">
+          {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}
+          {% endif %}
+            <!-- PAGE-HEADER -->
+            <div class="page-header">
+              <h1 class="page-title my-auto">Gestion des supports techniques</h1>
+              <div>
+                <ol class="breadcrumb mb-0">
+                  <li class="breadcrumb-item">
+                    <a href="javascript:void(0)">Home</a>
+                  </li>
+                  <li class="breadcrumb-item active" aria-current="page">Gestion des supports techniques</li>
+                </ol>
+              </div>
+            </div>
+            <!-- ROW-4 -->
+            <div class="row">
+              <div class="col-12 col-sm-12">
+                  <div class="card">  
+                      <div class="card-header d-lg-flex">
+                          <h3 class="card-title mb-lg-0 mb-3">Gestion des supports techniques</h3>
+                          <div class="tabs-menu1 ms-auto border-0 p-0">
+                              <!-- Tabs -->
+                              {% comment %} <ul class="nav panel-tabs product-sale">
+                                  <li><a href="#tab5" class="active" data-bs-toggle="tab">All products</a></li>
+                                    <li><a href="#tab6" data-bs-toggle="tab">Shipped</a></li>
+                                    <li><a href="#tab7" data-bs-toggle="tab">Pending</a></li>
+                                    <li><a href="#tab8" data-bs-toggle="tab">Cancelled</a></li>
+                                </ul> {% endcomment %}
+                              
+                                <div class="d-flex justify-content-end mb-3 gap-2">
+                                  <a href="{% url 'ajouter_support_technique' %}" class="btn btn-success">
+                                    <i class="mdi mdi-account-plus"></i> Ajouter Support Technique
+                                  </a>&nbsp;
+                                  <a href="{% url 'export_support_csv' %}" class="btn btn-outline-secondary">
+                                    <i class="mdi mdi-file-delimited-outline"></i> Export CSV
+                                  </a>
+                                  <a href="{% url 'export_support_excel' %}" class="btn btn-outline-success">
+                                    <i class="mdi mdi-file-excel"></i> Export Excel
+                                  </a>
+                                  <a href="{% url 'export_support_pdf' %}" class="btn btn-outline-danger">
+                                    <i class="mdi mdi-file-pdf-box"></i> Export PDF
+                                  </a>
+                                </div>
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center mb-3">
+                            
+                          </div>
+                        </div>
+                        <div class="card-body product-table">
+                          <div class="row">
+                              <div class="col-sm-12 col-md-6">
+                                <form method="get" class="row g-3 mb-4">
+                                  <div class="col-md-6">
+                                    <input type="search" name="q" class="form-control" id="input-search" placeholder="🔍 Rechercher par nom, username, email ou téléphone" value="{{ request.GET.q }}">
+                                  </div>
+                                  <div class="col-md-4">
+                                    <select name="status" class="form-control" data-trigger name="choices-single-default" id="choices-single-default" >
+                                      <option value="">Tous les statuts</option>
+                                      <option value="Active" {% if request.GET.status == "Active" %}selected{% endif %}>Active</option>
+                                      <option value="No Active" {% if request.GET.status == "No Active" %}selected{% endif %}>Inactif</option>
+                                    </select>
+                                  </div>
+                                
+                                  <!-- 🔘 Boutons Filtrer + Annuler -->
+                                  <div class="col-md-2 d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                      <i class="mdi mdi-filter-variant"></i> Filtrer
+                                    </button> 
+                                    <a href="{% url 'liste_support_technique' %}" class="btn btn-outline-secondary w-100">
+                                      <i class="mdi mdi-filter-remove"></i> Annuler
+                                    </a>
+                                  </div>
+                                </form>
+                              </div>
+                          </div>
+                        <div class="card-body product-table">
+                            <div class="row">
+                              <div class="col-sm-12 col-md-6">
+                                <form method="get">
+                                  <label class="mb-3">
+                                    Affichage 
+                                    <select name="per_page" class="form-control" data-trigger onchange="this.form.submit()">
+                                      <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                                      <option value="25" {% if per_page == 25 %}selected{% endif %}>25</option>
+                                      <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+                                      <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
+                                    </select>
+                                    Entrées
+                                  </label>
+                                </form>
+                              </div>
+                            </div>
+                                {% comment %} <div class="col-sm-12 col-md-6">
+                                    <label class="mb-3 justify-content-end">
+                                        <input type="search" class="form-control" placeholder="Search...">
+                                    </label>
+                                </div> {% endcomment %}
+                            </div>
+                            <div class="tab-content">
+                                <div class="tab-pane border-0 p-0 active" id="tab5">
+                                    <div class="table-responsive">
+                                      <table class="table table-bordered text-nowrap mb-0">
+                                        <thead class="border-top">
+                                            <tr>
+                                                <th scope="col" class="">Username</th>
+                                                <th scope="col" class="">Email</th>
+                                                <th scope="col" class="">Téléphone</th>
+                                                <th scope="col" class="">Statut</th>
+                                                <th scope="col" class="">Date d'ajout</th>
+                                                <th scope="col" class="">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                          {% for s in supports %}
+                                            <tr>
+                                                <td><h6 class="mb-0 fs-14 fw-semibold"> {{ s.user.username }}</h6></td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/9.jpg"></span>
+                                                        <h6 class="ms-3 my-auto fs-14 fw-semibold">{{ s.email }}</h6>
+                                                    </div>
+                                                </td>
+                                                <td><h6 class="mb-0 fs-14 fw-semibold">{{ s.phone }}</h6></td>
+                                                <td>
+                                                  {% if s.Status == 'Active' %}
+                                                  <span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">Active</span>
+                                                  {% else %}
+                                                  <span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">Inactif</span>
+                                                  {% endif %}
+                                                </td>
+                                                <td>{{ s.date_created|date:"d/m/Y H:i" }}</td>
+                                                <td>
+                                                    <div class="g-2">
+                                                        <a href="{% url 'modifier_support_technique' s.id %}" class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                        <a href="{% url 'supprimer_support_technique' s.id %}" class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                    </div>
+                                                </td>
+                                            </tr>   
+                                            {% empty %}
+                                            <tr>
+                                              <td colspan="7" class="text-center text-muted">Aucun support technique trouvé.</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                              <div class="row mt-3">
+                                <div class="col-sm-12 col-md-6 my-auto">
+                                  <span>
+                                    Affichage de {{ page_obj.start_index }} à {{ page_obj.end_index }} sur {{ page_obj.paginator.count }} entrées
+                                  </span>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                  <nav aria-label="Navigation des pages">
+                                    <ul class="pagination justify-content-end mb-0">
+                                      {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                          <a class="page-link" href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}&q={{ query }}&status={{ status_filter }}">Précédent</a>
+                                        </li>
+                                      {% else %}
+                                        <li class="page-item disabled"><a class="page-link">Précédent</a></li>
+                                      {% endif %}
+                              
+                                      {% for num in page_obj.paginator.page_range %}
+                                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                          <a class="page-link" href="?page={{ num }}&per_page={{ per_page }}&q={{ query }}&status={{ status_filter }}">{{ num }}</a>
+                                        </li>
+                                      {% endfor %}
+                              
+                                      {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                          <a class="page-link" href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}&q={{ query }}&status={{ status_filter }}">Suivant</a>
+                                        </li>
+                                      {% else %}
+                                        <li class="page-item disabled"><a class="page-link">Suivant</a></li>
+                                      {% endif %}
+                                    </ul>
+                                  </nav>
+                                </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+        <!-- ROW-4 END -->
+      </div>
     </div>
 
-    <div class="card shadow-lg border-0 rounded-3">
-        <div class="card-body p-4">
-            <table class="table table-hover align-middle">
-                <thead class="table-success text-center">
-                    <tr>
-                        <th>👤 Nom</th>
-                        <th>📧 Email</th>
-                        <th>📞 Téléphone</th>
-                        <th>📅 Date de création</th>
-                        <th>⚙️ Statut</th>
-                         <th>🛠️ Actions</th> 
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for s in supports %}
-                    <tr class="text-center">
-                        <td class="fw-semibold">{{ s.name }}</td>
-                        <td>{{ s.email }}</td>
-                        <td>{{ s.phone }}</td>
-                        <td>{{ s.date_created|date:"d/m/Y H:i" }}</td>
-                        <td>
-                            {% if s.Status == "Active" %}
-                                <span class="badge bg-success px-3 py-2">✅ Actif</span>
-                            {% elif s.Status == "No Active" %}
-                                <span class="badge bg-danger px-3 py-2">⛔ Inactif</span>
-                            {% else %}
-                                <span class="badge bg-secondary px-3 py-2">⚪ Inconnu</span>
-                            {% endif %}
-                        </td>
-                <td>
-                    <a href="{% url 'modifier_support_technique' s.id %}" class="btn btn-sm btn-outline-primary me-2">
-                        ✏️ Modifier
-                    </a>
-                    <a href="{% url 'supprimer_support_technique' s.id %}" class="btn btn-sm btn-outline-danger"
-                    onclick="return confirm('⚠️ Êtes-vous sûr de vouloir supprimer ce support technique ?');">
-                        🗑️ Supprimer
-                    </a>
-                </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5" class="text-center text-muted py-4">
-                            Aucun support technique trouvé.
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+
+
+
 {% endblock %}
