@@ -1,124 +1,54 @@
-{% extends "Administrateur/dashbordAdministrateur.html" %}
+{% extends "SuperAdmin/dashbordSuperAdmin.html" %}
 {% load static %}
-
 {% block content %}
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-<style>
-    /* Global styles for consistency */
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: #f0f2f5;
-        color: #333;
-    }
+<div class="main-content app-content">
+  <div class="container-fluid">
 
-    /* Main content container for centering */
-    .dashboard-content {
-        padding: 30px;
-        display: flex;
-        justify-content: center;
-    }
-
-    /* Main card container for the deletion prompt */
-    .delete-card {
-        background-color: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-        padding: 40px;
-        max-width: 600px; /* Smaller width for a focused prompt */
-        width: 100%;
-        text-align: center; /* Center content within the card */
-    }
-
-    /* Heading style */
-    .delete-card h2 {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #dc3545; /* Using danger red for the heading */
-        margin-bottom: 25px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid #f8d7da; /* Light red separator */
-    }
-
-    /* Alert box for the warning message */
-    .alert-custom-warning {
-        background-color: #fff3cd;
-        color: #856404;
-        border: 1px solid #ffeeba;
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 30px;
-        font-size: 1.1rem;
-        font-weight: 500;
-        text-align: left;
-    }
-
-    /* Confirmation Button (Danger) */
-    .btn-confirm-delete {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-        font-weight: 600;
-        padding: 12px 25px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(220, 53, 69, 0.25);
-    }
-
-    .btn-confirm-delete:hover {
-        background-color: #c82333;
-        border-color: #bd2130;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(220, 53, 69, 0.35);
-    }
-    
-    /* Cancel Button (Secondary) */
-    .btn-cancel {
-        background-color: #6c757d;
-        border-color: #6c757d;
-        color: white;
-        font-weight: 600;
-        padding: 12px 25px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .btn-cancel:hover {
-        background-color: #5a6268;
-        border-color: #545b62;
-        transform: translateY(-2px);
-    }
-
-    /* Button group spacing */
-    .button-group {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-top: 20px;
-    }
-</style>
-
-<div class="dashboard-content">
-    <div class="delete-card">
-        <h2 class="fw-bold"><i class="fas fa-trash-alt me-3"></i>Supprimer le client</h2>
-
-        <div class="alert-custom-warning">
-            <i class="fas fa-exclamation-triangle me-2"></i>
-            Êtes-vous sûr de vouloir **définitivement** supprimer le client **{{ cliente.nom }} {{ cliente.prenom }}** ? Cette action est irréversible.
-        </div>
-
-        <form method="POST">
-            {% csrf_token %}
-            <div class="button-group">
-                <button type="submit" class="btn btn-danger btn-confirm-delete">
-                    <i class="fas fa-check-circle me-2"></i>Confirmer la suppression
-                </button>
-                <a href="{% url 'liste_cliente' %}" class="btn btn-secondary btn-cancel">
-                    <i class="fas fa-undo me-2"></i>Annuler
-                </a>
-            </div>
-        </form>
+    <!-- PAGE-HEADER -->
+    <div class="page-header">
+      <h1 class="page-title my-auto text-danger">
+        <i class="mdi mdi-delete-forever"></i> Supprimer un Client
+      </h1>
+      <div>
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="{% url 'liste_cliente' %}">Client</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Confirmation</li>
+        </ol>
+      </div>
     </div>
+
+    <!-- CARD DE SUPPRESSION -->
+    <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+      <div class="col-md-8 col-lg-6 col-xl-6">
+        <div class="card custom-card">
+          <div class="card-header">
+            <div class="card-title text-danger fw-bold">Confirmation de suppression</div>
+          </div>
+          <div class="card-body text-center">
+            <h6 class="card-title fw-semibold mb-3">Êtes-vous sûr de vouloir supprimer cet cliente ?</h6>
+            <p class="card-text">
+              <strong>{{ cliente.nom }}  {{ cliente.prenom }}</strong><br>
+              <em>{{ cliente.user.username }}</em>
+            </p>
+
+            <form method="POST">
+              {% csrf_token %}
+              <div class="d-flex justify-content-center gap-3 mt-4">
+                <button type="submit" class="btn btn-danger">
+                  <i class="mdi mdi-trash-can-outline"></i> Supprimer
+                </button>
+                <a href="{% url 'liste_cliente' %}" class="btn btn-secondary">
+                  <i class="mdi mdi-close-circle-outline"></i> Annuler
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
+
 {% endblock %}

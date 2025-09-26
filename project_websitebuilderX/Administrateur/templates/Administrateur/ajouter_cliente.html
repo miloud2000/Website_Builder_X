@@ -2,172 +2,93 @@
 {% load static %}
 
 {% block content %}
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- Start::app-content -->
+<div class="main-content app-content">
+  <div class="container-fluid">
 
-<style>
-    /* Global styles for a polished, clean look */
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: #f0f2f5;
-        color: #333;
-    }
-
-    /* Main content container for centering */
-    .dashboard-content {
-        padding: 30px;
-        display: flex;
-        justify-content: center;
-    }
-
-    /* Main card container for the form */
-    .form-card {
-        background-color: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08); /* Stronger, more professional shadow */
-        padding: 40px;
-        max-width: 900px;
-        width: 100%;
-    }
-
-    /* Heading and separator */
-    .form-card h2 {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-bottom: 25px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid #e9ecef; /* Thicker, more intentional separator */
-    }
-
-    /* Sub-headings for form sections */
-    .form-section-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #6c757d;
-        margin-bottom: 20px;
-        padding-bottom: 5px;
-        border-bottom: 1px solid #f2f2f2; /* Subtle sub-section separator */
-    }
-
-    /* Style for form fields */
-    .form-group {
-        margin-bottom: 25px; /* Increased spacing between fields */
-    }
-
-    .form-label {
-        font-weight: 500;
-        color: #555;
-    }
-
-    .form-control {
-        border-radius: 8px;
-        padding: 12px 15px;
-        font-size: 1rem;
-        border: 1px solid #dcdfe6; /* More defined border */
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    
-    .form-control:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
-    }
-    
-    /* Buttons */
-    .btn-save {
-        background-color: #28a745;
-        border-color: #28a745;
-        color: white;
-        font-weight: 600; /* Bolder font for buttons */
-        padding: 12px 25px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(40, 167, 69, 0.25);
-    }
-
-    .btn-save:hover {
-        background-color: #218838;
-        border-color: #1e7e34;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(40, 167, 69, 0.35);
-    }
-    
-    .btn-cancel {
-        background-color: #6c757d;
-        border-color: #6c757d;
-        color: white;
-        font-weight: 600;
-        padding: 12px 25px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .btn-cancel:hover {
-        background-color: #5a6268;
-        border-color: #545b62;
-        transform: translateY(-2px);
-    }
-</style>
-
-<div class="dashboard-content">
-    <div class="form-card">
-        <h2 class="fw-bold"><i class="fas fa-user-plus me-3 text-primary"></i>Ajouter un client</h2>
-
-        <form method="POST">
-            {% csrf_token %}
-            <div class="row">
-                <div class="col-md-6">
-                    <h5 class="form-section-title">Détails personnels</h5>
-                    <div class="form-group">
-                        <label class="form-label">Nom d'utilisateur</label>
-                        <input type="text" name="username" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Mot de passe</label>
-                        <input type="password" name="password" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Prénom</label>
-                        <input type="text" name="prenom" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Nom</label>
-                        <input type="text" name="nom" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" required>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <h5 class="form-section-title">Détails de l'entreprise</h5>
-                    <div class="form-group">
-                        <label class="form-label">Nom de l'entreprise</label>
-                        <input type="text" name="nom_entreprise" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Numéro ICE</label>
-                        <input type="text" name="numero_ice" class="form-control">
-                    </div>
-                    
-                    <h5 class="form-section-title mt-4">Informations de contact</h5>
-                    <div class="form-group">
-                        <label class="form-label">Téléphone</label>
-                        <input type="text" name="phone" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Adresse</label>
-                        <input type="text" name="address" class="form-control">
-                    </div>
-                </div>
-            </div>
-
-            <div class="d-flex justify-content-end mt-4">
-                <a href="{% url 'liste_cliente' %}" class="btn btn-cancel me-2"><i class="fas fa-times me-2"></i>Annuler</a>
-                <button type="submit" class="btn btn-success btn-save"><i class="fas fa-save me-2"></i>Enregistrer</button>
-            </div>
-        </form>
+    <!-- PAGE-HEADER -->
+    <div class="page-header">
+      <h1 class="page-title my-auto">Ajouter un Cliente</h1>
+      <div>
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="{% url 'liste_cliente' %}">Client</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Ajouter un Client</li>
+        </ol>
+      </div>
     </div>
+    <!-- PAGE-HEADER END -->
+      
+    <!-- Start::row-1 -->
+    <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+      <div class="col-md-8 col-lg-6 col-xl-6">
+        <div class="card custom-card shadow-sm">
+          <div class="card-header border-bottom">
+            <h4 class="card-title mb-0">Formulaire d’ajout</h4>
+          </div>
+          <div class="card-body p-4">
+            <form method="post">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="username" class="form-label">Nom d'utilisateur</label>
+                <input type="text" class="form-control" name="username" id="username" placeholder="Nom d'utilisateur">
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Adresse e-mail</label>
+                <input type="email" class="form-control" name="email" id="email" placeholder="exemple@domaine.com">
+              </div>
+              {% comment %} <div class="mb-3">
+                <label for="name" class="form-label">Nom complet</label>
+                <input type="text" class="form-control" name="name" id="name" placeholder="Nom complet">
+              </div> {% endcomment %}
+              <div class="mb-3">
+                <label for="prenom" class="form-label">Prenom</label>
+                <input type="text" class="form-control" name="prenom" id="prenom" placeholder="Prenom">
+              </div>
+              <div class="mb-3">
+                <label for="nom" class="form-label">Nom</label>
+                <input type="text" class="form-control" name="nom" id="nom" placeholder="Nom">
+              </div>
+              <div class="mb-3">
+                <label for="phone" class="form-label">Téléphone</label>
+                <input type="tel" class="form-control" name="phone" id="phone" placeholder="+212 6 00 00 00 00">
+              </div>
+              <div class="mb-3">
+                <label for="nom_entreprise" class="form-label">Nom de l'entreprise</label>
+                <input type="text" class="form-control" name="nom_entreprise" id="nom_entreprise" placeholder="Ex: AgadirTech Solutions">
+              </div>
+              
+              <div class="mb-3">
+                <label for="numero_ice" class="form-label">Numéro ICE</label>
+                <input type="text" class="form-control" name="numero_ice" id="numero_ice" placeholder="Ex: 001234567890">
+              </div>
+              
+              <div class="mb-3">
+                <label for="address" class="form-label">Adresse</label>
+                <input type="text" class="form-control" name="address" id="address" placeholder="Ex: Lot 45, Quartier Industriel, Agadir">
+              </div>
+              
+              
+              <div class="mb-3">
+                <label for="password" class="form-label">Mot de passe</label>
+                <input type="password" class="form-control" name="password1" id="password1" placeholder="Mot de passe">
+              </div>
+              <div class="mb-3">
+                <label for="password2" class="form-label">Confirmer le mot de passe</label>
+                <input type="password" class="form-control" name="password2" id="password2" placeholder="Confirmer le mot de passe">
+              </div>
+              <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                <button type="reset" class="btn btn-outline-secondary">Réinitialiser</button>
+                <button type="submit" class="btn btn-success">Enregistrer <i class="bi bi-download ms-1"></i></button>
+              </div>
+              
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--End::row-1 -->
+
+  </div>
 </div>
+<!-- End::app-content -->
 {% endblock %}

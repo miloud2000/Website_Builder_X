@@ -2,66 +2,76 @@
 {% load static %}
 
 {% block content %}
-<div class="container py-5 d-flex justify-content-center">
-    <div class="card shadow-lg border-0 rounded-4 p-4" style="width: 420px;">
+<div class="main-content app-content">
+  <div class="container-fluid">
 
-        <!-- Header -->
-        <div class="text-center mb-4">
-            <h4 class="fw-bold text-primary">✏️ Modifier le support</h4>
-            <p class="text-muted small mb-0">Mettez à jour les informations du support technique</p>
-        </div>
-
-        <!-- Form -->
-        <form method="POST">
-            {% csrf_token %}
-
-            <!-- Name -->
-            <div class="mb-3">
-                <label class="form-label small fw-semibold">🧑 Nom complet</label>
-                <input type="text" name="name" value="{{ support.name }}" class="form-control form-control-sm rounded-3" required>
-            </div>
-
-            <!-- Email -->
-            <div class="mb-3">
-                <label class="form-label small fw-semibold">📧 Email</label>
-                <input type="email" name="email" value="{{ support.email }}" class="form-control form-control-sm rounded-3" required>
-            </div>
-
-            <!-- Phone -->
-            <div class="mb-3">
-                <label class="form-label small fw-semibold">📞 Téléphone</label>
-                <input type="text" name="phone" value="{{ support.phone }}" class="form-control form-control-sm rounded-3" required>
-            </div>
-
-            <!-- Status -->
-            <div class="mb-4">
-                <label class="form-label small fw-semibold">⚙️ Statut</label>
-                <select name="Status" class="form-select form-select-sm rounded-3">
-                    <option value="Active" {% if support.Status == 'Active' %}selected{% endif %}>✅ Active</option>
-                    <option value="No Active" {% if support.Status == 'No Active' %}selected{% endif %}>❌ No Active</option>
-                </select>
-            </div>
-
-            <!-- Buttons -->
-            <div class="d-flex justify-content-between">
-                <a href="{% url 'liste_support_technique' %}" class="btn btn-sm btn-outline-secondary rounded-3 px-3">⬅ Annuler</a>
-                <button type="submit" class="btn btn-sm btn-success rounded-3 px-3">💾 Enregistrer</button>
-            </div>
-        </form>
+    <!-- PAGE-HEADER -->
+    <div class="page-header">
+      <h1 class="page-title my-auto">Modifier un Support Technique</h1>
+      <div>
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="{% url 'liste_support_technique' %}">Support Technique</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Modifier un Support Technique</li>
+        </ol>
+      </div>
     </div>
-</div>
 
-<style>
-    .form-control:focus, .form-select:focus {
-        border-color: #0d6efd;
-        box-shadow: 0 0 4px rgba(13, 110, 253, 0.25);
-    }
-    .btn-success {
-        background: linear-gradient(90deg, #28a745, #20c997);
-        border: none;
-    }
-    .btn-success:hover {
-        background: linear-gradient(90deg, #20c997, #28a745);
-    }
-</style>
+    <!-- FORM -->
+    <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+      <div class="col-md-8 col-lg-6 col-xl-6">
+        <div class="card custom-card shadow-sm">
+          <div class="card-header border-bottom">
+            <h4 class="card-title mb-0">Formulaire de modification</h4>
+          </div>
+          <div class="card-body p-4">
+
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}
+            {% endif %}
+
+            <form method="post">
+              {% csrf_token %}
+
+              <div class="form-group mb-3">
+                <label for="name">Nom complet</label>
+                <input type="text" name="name" class="form-control" value="{{ support.name }}" required>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="email">Adresse Email</label>
+                <input type="email" name="email" class="form-control" value="{{ support.email }}" required>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="phone">Numéro de téléphone</label>
+                <input type="text" name="phone" class="form-control" value="{{ support.phone }}">
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="status">Statut</label>
+                <select name="status" class="form-control" id="status">
+                  <option value="Active" {% if support.Status == "Active" %}selected{% endif %}>Active</option>
+                  <option value="No Active" {% if support.Status == "No Active" %}selected{% endif %}>Non Active</option>
+                </select>
+              </div>
+              
+
+              <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                <a href="{% url 'liste_support_technique' %}" class="btn btn-outline-secondary">Annuler</a>
+                <button type="submit" class="btn btn-success">Mettre à jour <i class="bi bi-arrow-repeat ms-1"></i></button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends "SuperAdmin/dashbordSuperAdmin.html" %}
+{% extends "Administrateur/dashbordAdministrateur.html" %}
 {% load static %}
 
 {% block content %}
@@ -118,6 +118,7 @@
                                         <thead class="border-top">
                                             <tr>
                                                 <th scope="col" class="">Username</th>
+                                                <th scope="col" class="">Nom complet</th>
                                                 <th scope="col" class="">Email</th>
                                                 <th scope="col" class="">Téléphone</th>
                                                 <th scope="col" class="">Statut</th>
@@ -129,6 +130,7 @@
                                           {% for s in supports %}
                                             <tr>
                                                 <td><h6 class="mb-0 fs-14 fw-semibold"> {{ s.user.username }}</h6></td>
+                                                <td><h6 class="mb-0 fs-14 fw-semibold"> {{ s.name }}</h6></td>
                                                 <td>
                                                     <div class="d-flex">
                                                         <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/9.jpg"></span>

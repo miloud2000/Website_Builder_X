@@ -1,40 +1,58 @@
 {% extends "Administrateur/dashbordAdministrateur.html" %}
 {% load static %}
-
 {% block content %}
-<div class="dashboard-content">
-  <div class="main-card">
-    <h2>
-      <i class="fas fa-info-circle text-primary me-2"></i>
-      Détail de la demande {{ demande.code_DemandeSupport }}
-    </h2>
 
-    <ul class="list-group mb-4">
-      <li class="list-group-item">
-        <strong>Client :</strong> {{ demande.cliente.user.username }}
-      </li>
-      <li class="list-group-item">
-        <strong>Support :</strong> {{ demande.achat_support.support.name }}
-      </li>
-      <li class="list-group-item">
-        <strong>Statut :</strong> {{ demande.status }}
-      </li>
-      <li class="list-group-item">
-        <strong>Date :</strong> {{ demande.date_created|date:"d/m/Y H:i" }}
-      </li>
-      <li class="list-group-item">
-        <strong>Gestionnaire :</strong>
-        {% if demande.updated_by %}
-          {{ demande.updated_by.user.username }}
-        {% else %}
-          —
-        {% endif %}
-      </li>
-    </ul>
+<div class="main-content app-content">
+  <div class="container-fluid">
 
-    <a href="{% url 'liste_demandes_support' %}" class="btn btn-secondary mt-3">
-      <i class="fas fa-arrow-left me-1"></i> Retour à la liste
-    </a>
+    <!-- PAGE-HEADER -->
+    <div class="page-header">
+      <h1 class="page-title my-auto text-dark">
+        <i class="mdi mdi-delete-forever"></i> Détail de la demande 
+      </h1>
+      <div>
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="{% url 'liste_demandes_support' %}">Gestion des demandes de Support</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Détail de la demande </li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- CARD DE SUPPRESSION -->
+    <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+      <div class="col-md-8 col-lg-6 col-xl-6">
+        <div class="card custom-card">
+          <div class="card-header">
+            <div class="card-title text-dark fw-bold">Détail de la demande  "{{ demande.code_DemandeSupport }}"</div>
+          </div>
+          <div class="card-body text-center">
+            <h6 class="card-title fw-semibold mb-3">Client : {{ demande.cliente.user.username }}</h6>
+            <h6 class="card-title fw-semibold mb-3">Support Nom : {{ demande.achat_support.support.name }}</h6>
+            <h6 class="card-title fw-semibold mb-3">Statut : {{ demande.status }}</h6>
+            <h6 class="card-title fw-semibold mb-3">Date : {{ demande.date_created|date:"d/m/Y H:i" }}</h6>
+            <p class="card-text">
+              <strong>Gestionnaire :</strong>
+              {% if demande.updated_by %}
+                {{ demande.updated_by.user.username }}
+              {% else %}
+                —
+              {% endif %}
+            </p>
+
+            <form method="POST">
+              {% csrf_token %}
+              <div class="d-flex justify-content-center gap-3 mt-4">
+                <a href="{% url 'liste_demandes_support' %}" class="btn btn-secondary">
+                  <i class="mdi mdi-close-circle-outline"></i> Retour à la liste
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
+
 {% endblock %}

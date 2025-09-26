@@ -2,81 +2,75 @@
 {% load static %}
 
 {% block content %}
+<div class="main-content app-content">
+  <div class="container-fluid">
 
-<style>
-    /* Card container */
-    .form-card {
-        max-width: 500px;
-        margin: 2rem auto;
-        padding: 2rem;
-        border-radius: 15px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        background: #ffffff;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+    <!-- PAGE-HEADER -->
+    <div class="page-header">
+      <h1 class="page-title my-auto">Modifier un Commercial</h1>
+      <div>
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="{% url 'liste_commercial' %}">Commercial</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Modifier un Commercial</li>
+        </ol>
+      </div>
+    </div>
 
-    .form-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
-    }
+    <!-- FORM -->
+    <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+      <div class="col-md-8 col-lg-6 col-xl-6">
+        <div class="card custom-card shadow-sm">
+          <div class="card-header border-bottom">
+            <h4 class="card-title mb-0">Formulaire de modification</h4>
+          </div>
+          <div class="card-body p-4">
 
-    .form-card h2 {
-        font-weight: 700;
-        color: #28a745;
-        text-align: center;
-        margin-bottom: 1.5rem;
-        font-size: 1.8rem;
-    }
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}
+            {% endif %}
 
-    .form-label {
-        font-weight: 500;
-        color: #555;
-    }
+            <form method="post">
+              {% csrf_token %}
 
-    .form-control:focus {
-        border-color: #28a745;
-        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-    }
+              <div class="form-group mb-3">
+                <label for="name">Nom</label>
+                <input type="text" name="name" class="form-control" value="{{ commercial.name }}" required>
+              </div>
 
-    .btn-submit {
-        width: 100%;
-        padding: 0.75rem;
-        font-size: 1rem;
-        font-weight: 600;
-        border-radius: 10px;
-        transition: all 0.3s ease;
-    }
+              <div class="form-group mb-3">
+                <label for="email">Adresse Email</label>
+                <input type="email" name="email" class="form-control" value="{{ commercial.email }}" required>
+              </div>
 
-    .btn-submit:hover {
-        background-color: #218838;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-</style>
+              <div class="form-group mb-3">
+                <label for="phone">Numéro de téléphone</label>
+                <input type="text" name="phone" class="form-control" value="{{ commercial.phone }}">
+              </div>
 
-<div class="form-card">
-    <h2>➕ Ajouter un commercial</h2>
-    <form method="POST">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label class="form-label">Nom</label>
-            <input type="text" name="name" value="{{ commercial.name|default:'' }}" class="form-control" placeholder="Entrer le nom" required>
+              <div class="form-group mb-3">
+                <label for="status">Statut</label>
+                <select name="status" class="form-control">
+                  <option value="Active" {% if commercial.status == "Active" %}selected{% endif %}>✅ Active</option>
+                  <option value="Inactive" {% if commercial.status == "Inactive" %}selected{% endif %}>⛔ Inactive</option>
+                </select>
+              </div>
+
+              <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                <a href="{% url 'liste_commercial' %}" class="btn btn-outline-secondary">Annuler</a>
+                <button type="submit" class="btn btn-success">Mettre à jour <i class="bi bi-arrow-repeat ms-1"></i></button>
+              </div>
+            </form>
+
+          </div>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" name="email" value="{{ commercial.email|default:'' }}" class="form-control" placeholder="Entrer l'email" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Téléphone</label>
-            <input type="text" name="phone" value="{{ commercial.phone|default:'' }}" class="form-control" placeholder="Entrer le numéro" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Statut</label>
-            <select name="status" class="form-control">
-                <option value="Active" {% if commercial.status == 'Active' %}selected{% endif %}>✅ Actif</option>
-                <option value="Inactive" {% if commercial.status == 'Inactive' %}selected{% endif %}>⛔ Inactif</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-success btn-submit">💾 Enregistrer</button>
-    </form>
+      </div>
+    </div>
+
+  </div>
 </div>
 {% endblock %}

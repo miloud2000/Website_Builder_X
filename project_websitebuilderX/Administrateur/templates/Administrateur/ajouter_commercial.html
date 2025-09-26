@@ -2,86 +2,76 @@
 {% load static %}
 
 {% block content %}
-<div class="container py-5" style="min-height: 100vh; display: flex; justify-content: center; align-items: center; background: #f0f7f6;">
-    <div class="card shadow-lg rounded-4 p-5" style="max-width: 550px; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: 1px solid rgba(0,128,0,0.2);">
-        <h2 class="text-center fw-bold mb-4" style="color: #198754; font-size: 1.8rem;">
-            ➕ Ajouter un commercial
-        </h2>
-        <form method="POST">
-            {% csrf_token %}
+<!-- Start::app-content -->
+<div class="main-content app-content">
+  <div class="container-fluid">
 
-            <div class="form-floating mb-3">
-                <input type="text" name="username" class="form-control border-success rounded-3" id="username" placeholder="Nom d'utilisateur" required>
-                <label for="username">👤 Nom d'utilisateur</label>
-            </div>
-
-            <div class="form-floating mb-3">
-                <input type="password" name="password" class="form-control border-success rounded-3" id="password" placeholder="Mot de passe" required>
-                <label for="password">🔒 Mot de passe</label>
-            </div>
-
-            <div class="form-floating mb-3">
-                <input type="text" name="name" class="form-control border-success rounded-3" id="fullname" placeholder="Nom complet" required>
-                <label for="fullname">📝 Nom complet</label>
-            </div>
-
-            <div class="form-floating mb-3">
-                <input type="email" name="email" class="form-control border-success rounded-3" id="email" placeholder="Email" required>
-                <label for="email">📧 Email</label>
-            </div>
-
-            <div class="form-floating mb-3">
-                <input type="text" name="phone" class="form-control border-success rounded-3" id="phone" placeholder="Téléphone" required>
-                <label for="phone">📞 Téléphone</label>
-            </div>
-
-            <div class="form-floating mb-4">
-                <select name="status" class="form-select border-success rounded-3" id="status">
-                    <option value="Active">✅ Actif</option>
-                    <option value="Inactive">⛔ Inactif</option>
-                </select>
-                <label for="status">⚙️ Statut</label>
-            </div>
-
-            <div class="d-grid">
-                <button type="submit" class="btn btn-success rounded-pill py-2 fw-bold shadow-sm" style="font-size: 1.1rem; transition: all 0.3s;">
-                    💾 Enregistrer
-                </button>
-            </div>
-        </form>
+    <!-- PAGE-HEADER -->
+    <div class="page-header">
+      <h1 class="page-title my-auto">Ajouter un Commercial</h1>
+      <div>
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="{% url 'liste_commercial' %}">Commercial</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Ajouter un Commercial</li>
+        </ol>
+      </div>
     </div>
+    <!-- PAGE-HEADER END -->
+      
+    <!-- Start::row-1 -->
+    <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+      <div class="col-md-8 col-lg-6 col-xl-6">
+        <div class="card custom-card shadow-sm">
+          <div class="card-header border-bottom">
+            <h4 class="card-title mb-0">Formulaire d’ajout</h4>
+          </div>
+          <div class="card-body p-4">
+            <form method="post">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="username" class="form-label">Nom d'utilisateur</label>
+                <input type="text" class="form-control" name="username" id="username" placeholder="Nom d'utilisateur">
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Adresse e-mail</label>
+                <input type="email" class="form-control" name="email" id="email" placeholder="exemple@domaine.com">
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Mot de passe</label>
+                <input type="password" class="form-control" name="password1" id="password1" placeholder="Mot de passe">
+              </div>
+              <div class="mb-3">
+                <label for="password2" class="form-label">Confirmer le mot de passe</label>
+                <input type="password" class="form-control" name="password2" id="password2" placeholder="Confirmer le mot de passe">
+              </div>
+              <div class="mb-3">
+                <label for="name" class="form-label">Nom complet</label>
+                <input type="text" class="form-control" name="name" id="name" placeholder="Nom complet">
+              </div>
+              <div class="mb-3">
+                <label for="phone" class="form-label">Téléphone</label>
+                <input type="tel" class="form-control" name="phone" id="phone" placeholder="+212 6 00 00 00 00">
+              </div>
+              
+              <div class="mb-3">
+                <label for="status">Statut</label>
+                <select class="form-control" id="status" name="status">
+                    <option value="Active">Actif</option>
+                    <option value="Inactive">Inactif</option>
+                </select>
+              </div>
+              <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                <button type="reset" class="btn btn-outline-secondary">Réinitialiser</button>
+                <button type="submit" class="btn btn-success">Enregistrer <i class="bi bi-download ms-1"></i></button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--End::row-1 -->
+
+  </div>
 </div>
-
-<style>
-    body {
-        font-family: 'Poppins', sans-serif;
-    }
-
-    .form-control, .form-select {
-        padding: 1rem;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-    }
-
-    .form-control:focus, .form-select:focus {
-        box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
-        border-color: #198754;
-    }
-
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-    }
-
-    button.btn-success:hover {
-        background-color: #145c33;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-    }
-
-    label {
-        color: #555;
-        font-weight: 500;
-    }
-</style>
+<!-- End::app-content -->
 {% endblock %}

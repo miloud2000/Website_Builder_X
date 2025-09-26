@@ -1,20 +1,54 @@
 {% extends "Administrateur/dashbordAdministrateur.html" %}
 {% load static %}
-
 {% block content %}
-<div class="container py-5">
-    <div class="card shadow-lg border-0 rounded-3">
-        <div class="card-body text-center">
-            <h2 class="text-danger fw-bold mb-4">⚠️ Suppression du commercial</h2>
-            <p class="fs-5">Voulez-vous vraiment supprimer le commercial <strong>{{ commercial.name }}</strong> ?</p>
-            <p class="text-muted">Cette action est irréversible.</p>
+
+<div class="main-content app-content">
+  <div class="container-fluid">
+
+    <!-- PAGE-HEADER -->
+    <div class="page-header">
+      <h1 class="page-title my-auto text-danger">
+        <i class="mdi mdi-delete-forever"></i> Supprimer un Commercial
+      </h1>
+      <div>
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="{% url 'liste_commercial' %}">Commercial</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Confirmation</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- CARD DE SUPPRESSION -->
+    <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+      <div class="col-md-8 col-lg-6 col-xl-6">
+        <div class="card custom-card">
+          <div class="card-header">
+            <div class="card-title text-danger fw-bold">Confirmation de suppression</div>
+          </div>
+          <div class="card-body text-center">
+            <h6 class="card-title fw-semibold mb-3">Êtes-vous sûr de vouloir supprimer cet Commercial ?</h6>
+            <p class="card-text">
+              <strong>{{ commercial.name }}</strong><br>
+              <em>{{ commercial.user.username }}</em>
+            </p>
 
             <form method="POST">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger px-4 me-2">🗑️ Supprimer</button>
-                <a href="{% url 'liste_commercial' %}" class="btn btn-secondary px-4">↩️ Annuler</a>
+              {% csrf_token %}
+              <div class="d-flex justify-content-center gap-3 mt-4">
+                <button type="submit" class="btn btn-danger">
+                  <i class="mdi mdi-trash-can-outline"></i> Supprimer
+                </button>
+                <a href="{% url 'liste_commercial' %}" class="btn btn-secondary">
+                  <i class="mdi mdi-close-circle-outline"></i> Annuler
+                </a>
+              </div>
             </form>
+          </div>
         </div>
+      </div>
     </div>
+
+  </div>
 </div>
+
 {% endblock %}

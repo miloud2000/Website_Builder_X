@@ -188,13 +188,41 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-
+from django.core.paginator import Paginator
 
 
 @login_required
 def liste_gestionnaires(request):
-    gestionnaires = GestionnaireComptes.objects.all().order_by('-date_created')
-    return render(request, 'Administrateur/liste_gestionnaires.html', {'gestionnaires': gestionnaires})
+    query = request.GET.get('q', '')
+    status_filter = request.GET.get('status', '')
+    per_page = int(request.GET.get('per_page', 10))  
+
+    gestionnaires = GestionnaireComptes.objects.select_related('user').order_by('-date_created')
+
+    if query:
+        gestionnaires = gestionnaires.filter(
+            Q(name__icontains=query) |
+            Q(email__icontains=query) |
+            Q(phone__icontains=query) |
+            Q(user__username__icontains=query)
+        )
+
+    if status_filter:
+        gestionnaires = gestionnaires.filter(Status=status_filter)
+
+    paginator = Paginator(gestionnaires, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'gestionnaires': page_obj.object_list,
+        'page_obj': page_obj,
+        'query': query,
+        'status_filter': status_filter,
+        'per_page': per_page,
+    }
+
+    return render(request, 'Administrateur/liste_gestionnaires.html', context)
 
 
 
@@ -404,7 +432,15 @@ def modifier_support_technique(request, support_id):
         support.name = request.POST.get('name')
         support.email = request.POST.get('email')
         support.phone = request.POST.get('phone')
-        support.Status = request.POST.get('Status')
+        status_value = request.POST.get('status')
+
+        # ✅ تحقق من صحة القيمة
+        if status_value in ['Active', 'No Active']:
+            support.Status = status_value
+        else:
+            messages.error(request, "❌ Statut invalide.")
+            return redirect('modifier_support_technique', support_id=support.id)
+
         support.save()
 
         HistoriqueAction.objects.create(
@@ -445,8 +481,39 @@ def supprimer_support_technique(request, support_id):
 
 @login_required
 def liste_commercial(request):
-    commerciaux = Commercial.objects.all().order_by('-date_created')
-    return render(request, 'Administrateur/liste_commercial.html', {'commerciaux': commerciaux})
+    query = request.GET.get('q', '')
+    status_filter = request.GET.get('status', '')
+    per_page = int(request.GET.get('per_page', 10))
+
+    commerciaux = Commercial.objects.select_related('user').order_by('-date_created')
+
+    if query:
+        commerciaux = commerciaux.filter(
+            Q(name__icontains=query) |
+            Q(email__icontains=query) |
+            Q(phone__icontains=query) |
+            Q(user__username__icontains=query) |
+            Q(user__email__icontains=query)
+        )
+
+    if status_filter:
+        commerciaux = commerciaux.filter(status=status_filter)
+
+    paginator = Paginator(commerciaux, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'commerciaux': page_obj.object_list,
+        'page_obj': page_obj,
+        'query': query,
+        'status_filter': status_filter,
+        'per_page': per_page,
+    }
+
+    return render(request, 'Administrateur/liste_commercial.html', context)
+
+
 
 
 
@@ -541,16 +608,36 @@ def supprimer_commercial(request, commercial_id):
 
 
 
-
-
 @login_required
 def liste_cliente(request):
+    query = request.GET.get('q', '')
+    per_page = int(request.GET.get('per_page', 10))
+
     clientes = Cliente.objects.select_related('user').order_by('-date_created')
 
+    if query:
+        clientes = clientes.filter(
+            Q(nom__icontains=query) |
+            Q(prenom__icontains=query) |
+            Q(email__icontains=query) |
+            Q(phone__icontains=query) |
+            Q(user__username__icontains=query) |
+            Q(user__email__icontains=query)
+        )
+
+    paginator = Paginator(clientes, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'clientes': clientes
+        'clientes': page_obj.object_list,
+        'page_obj': page_obj,
+        'query': query,
+        'per_page': per_page,
     }
+
     return render(request, 'Administrateur/liste_cliente.html', context)
+
 
 
 
@@ -658,59 +745,57 @@ def ajouter_cliente(request):
 
 
 
-# views.py
 
-from django.shortcuts import render
-from django.db.models import Q
-
-
+@login_required
 def liste_demandes_recharge(request):
     qs = (DemandeRecharger.objects
           .select_related('cliente__user', 'updated_by__user')
           .all())
 
-    # 1. Récupération des paramètres GET
-    client      = request.GET.get('client', '').strip()
-    statut      = request.GET.get('statut', '').strip()
-    date_start  = request.GET.get('date_start', '')
-    date_end    = request.GET.get('date_end', '')
-    montant_min = request.GET.get('montant_min', '')
-    montant_max = request.GET.get('montant_max', '')
+    # Récupération des filtres
+    query        = request.GET.get('q', '').strip()
+    status_filter = request.GET.get('status', '').strip()
+    date_filter   = request.GET.get('date', '')
+    code_filter   = request.GET.get('code', '').strip()
+    updated_by    = request.GET.get('updated_by', '').strip()
+    per_page      = int(request.GET.get('per_page', 10))
+    page_number   = request.GET.get('page')
 
-    # 2. Construction dynamique du filtre
-    if client:
-        qs = qs.filter(cliente__user__username__icontains=client)
+    # Application des filtres
+    if query:
+        qs = qs.filter(
+            Q(cliente__user__username__icontains=query) |
+            Q(cliente__user__email__icontains=query) |
+            Q(cliente__phone__icontains=query)
+        )
 
-    if statut:
-        qs = qs.filter(status=statut)
+    if status_filter:
+        qs = qs.filter(status=status_filter)
 
-    if date_start:
-        qs = qs.filter(date_created__date__gte=date_start)
+    if date_filter:
+        qs = qs.filter(date_created__date=date_filter)
 
-    if date_end:
-        qs = qs.filter(date_created__date__lte=date_end)
+    if code_filter:
+        qs = qs.filter(code_DemandeRecharger__icontains=code_filter)
 
-    if montant_min:
-        qs = qs.filter(solde__gte=montant_min)
+    if updated_by:
+        qs = qs.filter(updated_by_id=updated_by)
 
-    if montant_max:
-        qs = qs.filter(solde__lte=montant_max)
+    # Pagination
+    paginator = Paginator(qs.order_by('-date_created'), per_page)
+    page_obj = paginator.get_page(page_number)
 
-    demandes = qs.order_by('-date_created')
-
-    # 3. On renvoie aussi les valeurs de filtre pour pré-remplissage
     return render(request, "Administrateur/liste_demandes.html", {
-        'demandes': demandes,
-        'filter_values': {
-            'client':      client,
-            'statut':      statut,
-            'date_start':  date_start,
-            'date_end':    date_end,
-            'montant_min': montant_min,
-            'montant_max': montant_max,
-        }
+        'demandes': page_obj.object_list,
+        'page_obj': page_obj,
+        'gestionnaires': GestionnaireComptes.objects.select_related('user'),
+        'query': query,
+        'status_filter': status_filter,
+        'date': date_filter,
+        'code': code_filter,
+        'updated_by': updated_by,
+        'per_page': per_page,
     })
-
 
 
 
@@ -758,7 +843,10 @@ def detail_demande_recharge(request, id):
 
 # support/views.py (ou dans votre views.py existant)
 
+from django.core.paginator import Paginator
+from django.db.models import Q
 
+@login_required
 def liste_demandes_support(request):
     qs = (DemandeSupport.objects
           .select_related('cliente__user',
@@ -766,39 +854,50 @@ def liste_demandes_support(request):
                           'updated_by__user')
           .all())
 
-    # Récupération des paramètres GET
-    client       = request.GET.get('client', '').strip()
-    statut       = request.GET.get('statut', '').strip()
-    support_nom  = request.GET.get('support', '').strip()
-    date_start   = request.GET.get('date_start', '')
-    date_end     = request.GET.get('date_end', '')
+    # Récupération des filtres
+    query           = request.GET.get('q', '').strip()
+    status_filter   = request.GET.get('status', '').strip()
+    code_filter     = request.GET.get('code', '').strip()
+    status_consome  = request.GET.get('status_consome', '').strip()
+    updated_by      = request.GET.get('updated_by', '').strip()
+    per_page        = int(request.GET.get('per_page', 10))
+    page_number     = request.GET.get('page')
 
-    # Application dynamique des filtres
-    if client:
-        qs = qs.filter(cliente__user__username__icontains=client)
-    if statut:
-        qs = qs.filter(status=statut)
-    if support_nom:
-        qs = qs.filter(achat_support__support__name__icontains=support_nom)
-    if date_start:
-        qs = qs.filter(date_created__date__gte=date_start)
-    if date_end:
-        qs = qs.filter(date_created__date__lte=date_end)
+    # Application des filtres
+    if query:
+        qs = qs.filter(
+            Q(cliente__user__username__icontains=query) |
+            Q(cliente__user__email__icontains=query) |
+            Q(cliente__phone__icontains=query)
+        )
 
-    demandes = qs.order_by('-date_created')
+    if status_filter:
+        qs = qs.filter(status=status_filter)
+
+    if code_filter:
+        qs = qs.filter(code_DemandeSupport__icontains=code_filter)
+
+    if status_consome:
+        qs = qs.filter(status_consome=status_consome)
+
+    if updated_by:
+        qs = qs.filter(updated_by_id=updated_by)
+
+    # Pagination
+    paginator = Paginator(qs.order_by('-date_created'), per_page)
+    page_obj = paginator.get_page(page_number)
 
     return render(request, "Administrateur/liste_demandes_support.html", {
-        'demandes': demandes,
-        'filter_values': {
-            'client':     client,
-            'statut':     statut,
-            'support':    support_nom,
-            'date_start': date_start,
-            'date_end':   date_end,
-        }
+        'demandes': page_obj.object_list,
+        'page_obj': page_obj,
+        'techniciens': GestionnaireComptes.objects.all(),
+        'query': query,
+        'status_filter': status_filter,
+        'code': code_filter,
+        'status_consome': status_consome,
+        'updated_by': updated_by,
+        'per_page': per_page,
     })
-
-
 
 
 def detail_demande_support(request, pk):

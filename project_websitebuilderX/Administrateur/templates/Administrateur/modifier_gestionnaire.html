@@ -2,67 +2,75 @@
 {% load static %}
 
 {% block content %}
-<div class="container d-flex justify-content-center align-items-center py-5">
-    <div class="card shadow-lg border-0 rounded-4" style="max-width: 600px; width: 100%;">
-        <div class="card-body p-4">
+<div class="main-content app-content">
+  <div class="container-fluid">
 
-            <!-- Header -->
-            <h2 class="fw-bold text-warning text-center mb-3">
-                ✏️ Modifier le gestionnaire
-            </h2>
-            <p class="text-muted text-center mb-4">
-                Mettez à jour les informations du gestionnaire ci-dessous
-            </p>
+    <!-- PAGE-HEADER -->
+    <div class="page-header">
+      <h1 class="page-title my-auto">Modifier Gestionnaire des Comptes</h1>
+      <div>
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="{% url 'liste_gestionnaires' %}">Gestionnaire des Comptes</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Modifier Gestionnaire des Comptes</li>
+        </ol>
+      </div>
+    </div>
 
-            <!-- Form -->
-            <form method="POST">
-                {% csrf_token %}
+    <!-- FORM -->
+    <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+      <div class="col-md-8 col-lg-6 col-xl-6">
+        <div class="card custom-card shadow-sm">
+          <div class="card-header border-bottom">
+            <h4 class="card-title mb-0">Formulaire de modification</h4>
+          </div>
+          <div class="card-body p-4">
 
-                <div class="form-group mb-3">
-                    <label class="fw-semibold">👤 Nom</label>
-                    <input type="text" name="name" value="{{ gestionnaire.name }}" class="form-control rounded-pill" required>
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+              {% endfor %}
+            {% endif %}
 
-                <div class="form-group mb-3">
-                    <label class="fw-semibold">📧 Email</label>
-                    <input type="email" name="email" value="{{ gestionnaire.email }}" class="form-control rounded-pill" required>
-                </div>
+            <form method="post">
+              {% csrf_token %}
 
-                <div class="form-group mb-3">
-                    <label class="fw-semibold">📞 Téléphone</label>
-                    <input type="text" name="phone" value="{{ gestionnaire.phone }}" class="form-control rounded-pill" required>
-                </div>
+              <div class="form-group mb-3">
+                <label for="name">Nom complet</label>
+                <input type="text" name="name" class="form-control" value="{{ gestionnaire.name }}" required>
+              </div>
 
-                <div class="form-group mb-4">
-                    <label class="fw-semibold">⚙️ Statut</label>
-                    <select name="Status" class="form-control rounded-pill">
-                        <option value="Active" {% if gestionnaire.Status == 'Active' %}selected{% endif %}>✅ Active</option>
-                        <option value="No Active" {% if gestionnaire.Status == 'No Active' %}selected{% endif %}>⛔ Inactive</option>
-                    </select>
-                </div>
+              <div class="form-group mb-3">
+                <label for="email">Adresse Email</label>
+                <input type="email" name="email" class="form-control" value="{{ gestionnaire.email }}" required>
+              </div>
 
-                <!-- Submit Button -->
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-warning rounded-pill py-2 fw-semibold shadow-sm">
-                        💾 Enregistrer les modifications
-                    </button>
-                </div>
+              <div class="form-group mb-3">
+                <label for="phone">Numéro de téléphone</label>
+                <input type="text" name="phone" class="form-control" value="{{ gestionnaire.phone }}">
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="Status">Statut</label>
+                <select name="Status" class="form-control">
+                  <option value="Active" {% if gestionnaire.Status == "Active" %}selected{% endif %}>Active</option>
+                  <option value="No Active" {% if gestionnaire.Status == "No Active" %}selected{% endif %}>Non Active</option>
+                </select>
+              </div>
+
+              <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                <a href="{% url "liste_gestionnaires" %}" class="btn btn-outline-secondary">Annuler</a>
+                <button type="submit" class="btn btn-success">Mettre à jour <i class="bi bi-arrow-repeat ms-1"></i></button>
+              </div>
             </form>
 
+          </div>
         </div>
+      </div>
     </div>
-</div>
 
-<!-- Extra Styling -->
-<style>
-    h2 {
-        font-size: 1.5rem;
-    }
-    label {
-        font-size: 0.9rem;
-    }
-    .form-control {
-        padding: 0.6rem 1rem;
-    }
-</style>
+  </div>
+</div>
 {% endblock %}
