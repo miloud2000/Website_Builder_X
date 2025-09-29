@@ -43,18 +43,18 @@ from websitebuilder.tokens import account_activation_token
 #Administrateur
 
 
-# #Home of Administrateur
-# @login_required(login_url='login')
-# @allowedUsers(allowedGroups=['Administrateur']) 
-# def homeAdministrateur(request): 
-#     if request.user.is_authenticated:
-#         is_Administrateur = request.user.groups.filter(name='Administrateur').exists()
-#     else: 
-#         is_Administrateur= False  
+#Home of Administrateur
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['Administrateur']) 
+def homeAdministrateur(request): 
+    if request.user.is_authenticated:
+        is_Administrateur = request.user.groups.filter(name='Administrateur').exists()
+    else: 
+        is_Administrateur= False  
            
-#     context = {"is_Administrateur":is_Administrateur}
+    context = {"is_Administrateur":is_Administrateur}
  
-#     return render(request, "websitebuilder/Administrateur/homeAdministrateur.html",context)
+    return render(request, "websitebuilder/Administrateur/homeAdministrateur.html",context)
 
 
 from django.db.models import Sum, Count
@@ -798,8 +798,20 @@ def liste_demandes_recharge(request):
     })
 
 
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['Administrateur']) 
+def gestionnaire_compte_detail(request, gestionnaire_id, demande_id):
+    gestionnaire = get_object_or_404(GestionnaireComptes.objects.select_related('user'), id=gestionnaire_id)
+    demande = get_object_or_404(DemandeRecharger.objects.select_related('cliente__user'), id=demande_id)
 
-from django.shortcuts import render, get_object_or_404
+    context = {
+        'gestionnaire': gestionnaire,
+        'demande': demande,
+    }
+    return render(request, 'Administrateur/gestionnaire_detail.html', context)
+
+
+
 
 def detail_demande_recharge(request, id):
     demande = get_object_or_404(
@@ -890,7 +902,7 @@ def liste_demandes_support(request):
     return render(request, "Administrateur/liste_demandes_support.html", {
         'demandes': page_obj.object_list,
         'page_obj': page_obj,
-        'techniciens': GestionnaireComptes.objects.all(),
+        'techniciens': SupportTechnique.objects.all(),
         'query': query,
         'status_filter': status_filter,
         'code': code_filter,
@@ -898,6 +910,7 @@ def liste_demandes_support(request):
         'updated_by': updated_by,
         'per_page': per_page,
     })
+
 
 
 def detail_demande_support(request, pk):
@@ -914,20 +927,55 @@ def detail_demande_support(request, pk):
 
 
 
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
 
 
 @login_required
 def liste_websites(request):
-    """
-    Liste simple des sites (visible uniquement).
-    """
-    websites = Websites.objects.filter(is_visible=True).order_by('-date_created')
+    status     = request.GET.get('status', '').strip()
+    catégorie  = request.GET.get('catégorie', '').strip()
+    CMS        = request.GET.get('CMS', '').strip()
+    langues    = request.GET.get('langues', '').strip()
+    plan       = request.GET.get('plan', '').strip()
+    page       = request.GET.get('page', 1)
+    per_page   = 10 
+
+    websites = Websites.objects.filter(is_visible=True)
+
+    if status:
+        websites = websites.filter(status=status)
+    if catégorie:
+        websites = websites.filter(catégorie=catégorie)
+    if CMS:
+        websites = websites.filter(CMS=CMS)
+    if langues:
+        websites = websites.filter(langues=langues)
+    if plan:
+        websites = websites.filter(plan=plan)
+
+    websites = websites.order_by('-date_created')
+
+    paginator = Paginator(websites, per_page)
+    page_obj = paginator.get_page(page)
+
+    catégories_list = Websites.objects.values_list('catégorie', flat=True).distinct()
+    cms_list        = Websites.objects.values_list('CMS', flat=True).distinct()
+    langues_list    = Websites.objects.values_list('langues', flat=True).distinct()
+    plans_list      = Websites.objects.values_list('plan', flat=True).distinct()
+
     return render(request, "Administrateur/liste_websites.html", {
-        'websites': websites
+        'websites': page_obj.object_list,
+        'page_obj': page_obj,
+        'status': status,
+        'catégorie': catégorie,
+        'CMS': CMS,
+        'langues': langues,
+        'plan': plan,
+        'catégories_list': catégories_list,
+        'cms_list': cms_list,
+        'langues_list': langues_list,
+        'plans_list': plans_list,
     })
+
 
 
 
@@ -1007,6 +1055,7 @@ def modifier_website(request, pk):
     })
 
 
+
 @login_required
 def supprimer_website(request, pk):
     """
@@ -1037,18 +1086,36 @@ def supprimer_website(request, pk):
 
 
 
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
-
-
 
 @login_required
 def liste_supports(request):
-    supports = Supports.objects.order_by('-date_created')
+    status     = request.GET.get('status', '').strip()
+    page       = request.GET.get('page', 1)
+    per_page   = 10  
+
+    supports = Supports.objects.all()
+
+    if status:
+        supports = supports.filter(status=status)
+
+    supports = supports.order_by('-date_created')
+
+    paginator = Paginator(supports, per_page)
+    page_obj = paginator.get_page(page)
+
+   
+    status_choices     = Supports.objects.values_list('status', flat=True).distinct()
+ 
     return render(request, "Administrateur/liste_supports.html", {
-        'supports': supports
+        'supports': page_obj.object_list,
+        'page_obj': page_obj,
+        'status': status,
+        'status_choices': status_choices,
     })
+
+
+
+
 
 @login_required
 def ajouter_support(request):
@@ -1069,6 +1136,9 @@ def ajouter_support(request):
     else:
         form = SupportForm()
     return render(request, "Administrateur/ajouter_support.html", {'form': form})
+
+
+
 
 @login_required
 def modifier_support(request, pk):
@@ -1120,14 +1190,14 @@ def supprimer_support(request, pk):
 
 
 
-from django.shortcuts import render, get_object_or_404, redirect
+from django.core.paginator import Paginator
 from django.db.models import Q
 
 def tickets_list(request):
     tickets = Ticket.objects.all()
 
     # 🔍 Recherche rapide
-    search_query = request.GET.get('search')
+    search_query = request.GET.get('search', '').strip()
     if search_query:
         tickets = tickets.filter(
             Q(code_Ticket__icontains=search_query) |
@@ -1165,12 +1235,16 @@ def tickets_list(request):
     else:
         tickets = tickets.order_by('-date_created')
 
+    # 📄 Pagination
+    per_page = int(request.GET.get('per_page', 10))
+    page_number = request.GET.get('page')
+    paginator = Paginator(tickets, per_page)
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'tickets'        : tickets,
-        'status_choices' : Ticket.STATUS_CHOICES,
-        'type_choices'   : Ticket.objects.values_list('typeTicket', flat=True).distinct(),
-        'branche_choices': Ticket.objects.values_list('Branche',    flat=True).distinct(),
-        'clientes'       : Ticket.objects.values_list('cliente__id','cliente__user__username').distinct(),
+        'tickets'        : page_obj.object_list,
+        'page_obj'       : page_obj,
+        'per_page'       : per_page,
         'search_query'   : search_query,
         'status'         : status,
         'typeTicket'     : typeTicket,
@@ -1179,8 +1253,14 @@ def tickets_list(request):
         'date_start'     : date_start,
         'date_end'       : date_end,
         'sort_by'        : sort_by,
+        'status_choices' : Ticket.STATUS_CHOICES,
+        'type_choices'   : Ticket.objects.values_list('typeTicket', flat=True).distinct(),
+        'branche_choices': Ticket.objects.values_list('Branche', flat=True).distinct(),
+        'clientes'       : Ticket.objects.values_list('cliente__id','cliente__user__username').distinct(),
     }
     return render(request, 'Administrateur/tickets_list.html', context)
+
+
 
 
 
@@ -1189,9 +1269,31 @@ def ticket_detail(request, ticket_id):
     ticket = get_object_or_404(Ticket, id=ticket_id)
     conversations = ticket.conversations.order_by('timestamp')
 
+    user_type = None
+    user_id = None
+
+    try:
+        cliente = Cliente.objects.get(user=request.user)
+        user_type = 'Cliente'
+        user_id = cliente.id
+    except Cliente.DoesNotExist:
+        try:
+            support = SupportTechnique.objects.get(user=request.user)
+            user_type = 'SupportTechnique'
+            user_id = support.id
+        except SupportTechnique.DoesNotExist:
+            try:
+                gestionnaire = GestionnaireComptes.objects.get(user=request.user)
+                user_type = 'GestionnaireComptes'
+                user_id = gestionnaire.id
+            except GestionnaireComptes.DoesNotExist:
+                pass
+
     context = {
         'ticket': ticket,
         'conversations': conversations,
+        'user_type': user_type,
+        'user_id': user_id,
     }
     return render(request, 'Administrateur/ticket_detail.html', context)
 
@@ -1207,8 +1309,36 @@ def ticket_pdf(request, ticket_id):
     ticket = get_object_or_404(Ticket, id=ticket_id)
     conversations = ticket.conversations.order_by('timestamp')
 
+    # 🔍 Détection du type d'utilisateur
+    user_type = None
+    user_id = None
+
+    try:
+        cliente = Cliente.objects.get(user=request.user)
+        user_type = 'Cliente'
+        user_id = cliente.id
+    except Cliente.DoesNotExist:
+        try:
+            support = SupportTechnique.objects.get(user=request.user)
+            user_type = 'SupportTechnique'
+            user_id = support.id
+        except SupportTechnique.DoesNotExist:
+            try:
+                gestionnaire = GestionnaireComptes.objects.get(user=request.user)
+                user_type = 'GestionnaireComptes'
+                user_id = gestionnaire.id
+            except GestionnaireComptes.DoesNotExist:
+                pass
+
+    # 🔧 Génération du PDF
     template_path = 'Administrateur/detail_ticket_pdf.html'
-    context = {'ticket': ticket, 'conversations': conversations}
+    context = {
+        'ticket': ticket,
+        'conversations': conversations,
+        'user_type': user_type,
+        'user_id': user_id,
+    }
+
     template = get_template(template_path)
     html = template.render(context)
 

@@ -145,6 +145,7 @@
                                                 <th scope="col" class="">Code</th>
                                                 <th scope="col" class="">Mis à jour par</th>
                                                 <th scope="col" class="">Preuve</th>
+                                                <th scope="col" class="">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -171,7 +172,7 @@
                                                 <td class="mb-0 fs-14 fw-semibold">{{ demande.code_DemandeRecharger }}</td>
                                                 <td>
                                                     {% if demande.updated_by and demande.updated_by.user %}
-                                                    <a class="mb-0 fs-14 fw-semibold" href="{% url 'gestionnaire_detail' demande.updated_by.id %}" class="text-decoration-none">
+                                                    <a class="mb-0 fs-14 fw-semibold" href="{% url 'gestionnaire_compte_detail' demande.updated_by.id demande.id %}" class="text-decoration-none">
                                                         <span class="badge bg-dark-transparent rounded-pill text-dark p-2 px-3">{{ demande.updated_by.user.username }}</span>
                                                     </a>
                                                     {% else %}
@@ -186,6 +187,11 @@
                                                     {% else %}
                                                     <span class="text-muted small">Aucune</span>
                                                     {% endif %}
+                                                </td>
+                                                <td>
+                                                  <a href="{% url 'detail_demande_recharge' demande.id %}" class="text-decoration-none">
+                                                    <span class="badge bg-dark-transparent rounded-pill text-dark p-2 px-3">Voir les détails</span>
+                                                  </a>
                                                 </td>
                                                 
                                             </tr>

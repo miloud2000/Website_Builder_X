@@ -2,203 +2,164 @@
 {% load static %}
 
 {% block content %}
-<!-- Add Google Fonts and Font Awesome for a professional look -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-<style>
-    /* Global styles for a polished, clean look */
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: #f0f2f5;
-        color: #333;
-    }
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
 
-    /* Main content container styling */
-    .dashboard-content {
-        padding: 50px;
-    }
-
-    /* Main card container for the content */
-    .main-card {
-        background-color: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-        padding: 40px;
-    }
-
-    /* Heading styles */
-    .main-card h2 {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-bottom: 25px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid #e9ecef;
-    }
-
-    /* Table styles for a sleek look */
-    .supports-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-        table-layout: fixed;
-    }
-
-    .supports-table thead {
-        background-color: #f8f9fa;
-        color: #6c757d;
-        font-weight: 600;
-    }
-
-    .supports-table th, .supports-table td {
-        padding: 15px;
-        text-align: left;
-        border-bottom: 1px solid #e9ecef;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        font-weight: 400;
-        color: #555;
-    }
-
-    .supports-table tbody tr:hover {
-        background-color: #f9fafb;
-    }
-    
-    /* Optimized column widths for better readability */
-    .supports-table th:nth-child(1), .supports-table td:nth-child(1) { width: 30%; } /* Nom */
-    .supports-table th:nth-child(2), .supports-table td:nth-child(2) { width: 15%; } /* Statut */
-    .supports-table th:nth-child(3), .supports-table td:nth-child(3) { width: 15%; } /* Prix */
-    .supports-table th:nth-child(4), .supports-table td:nth-child(4) { width: 20%; } /* Date de création */
-    .supports-table th:nth-child(5), .supports-table td:nth-child(5) { width: 20%; text-align: center; } /* Actions */
-
-    /* Button styles */
-    .btn-success {
-        background-color: #28a745;
-        border-color: #28a745;
-        color: white;
-        font-weight: 600;
-        border-radius: 8px;
-        padding: 10px 20px;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .btn-success:hover {
-        background-color: #218838;
-        border-color: #1e7e34;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.2);
-    }
-    
-    .btn-outline-secondary {
-        border-color: #6c757d;
-        color: #6c757d;
-        border-radius: 8px;
-        padding: 10px 20px;
-        transition: transform 0.2s, background-color 0.2s;
-    }
-    
-    .btn-outline-secondary:hover {
-        background-color: #f8f9fa;
-        transform: translateY(-2px);
-    }
-
-    .btn-action {
-        color: #6c757d;
-        font-size: 1.1rem;
-        padding: 0 8px;
-        transition: color 0.2s, transform 0.2s;
-    }
-
-    .btn-action:hover {
-        color: #007bff;
-        transform: scale(1.1);
-    }
-
-    .btn-action.text-danger:hover {
-        color: #dc3545;
-    }
-
-    /* Empty state for the table */
-    .empty-state {
-        text-align: center;
-        padding: 50px;
-        color: #999;
-    }
-</style>
-
-<div class="dashboard-content">
-  <div class="main-card">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2 class="fw-bold m-0">
-        <i class="fas fa-life-ring me-3 text-primary"></i>
-        Liste des supports
-      </h2>
-      <a href="{% url 'ajouter_support' %}" class="btn btn-success">
-        <i class="fas fa-plus me-1"></i> Ajouter
-      </a>
-    </div>
-
-    <div class="mb-4">
-      <form method="get" class="d-flex align-items-center">
-        <label for="status-filter" class="me-2 text-muted fw-bold">Filtrer par statut:</label>
-        <select id="status-filter" name="status" class="form-select me-2" onchange="this.form.submit()">
-          <option value="">— Tous —</option>
-          <option value="Disponible" {% if request.GET.status == "Disponible" %}selected{% endif %}>Disponible</option>
-          <option value="No Disponible" {% if request.GET.status == "No Disponible" %}selected{% endif %}>No Disponible</option>
-        </select>
-        <a href="{% url 'liste_supports' %}" class="btn btn-outline-secondary">Réinitialiser</a>
-      </form>
-    </div>
-
-    <div class="table-responsive">
-      <table class="table supports-table">
-        <thead>
-          <tr>
-            <th>Nom</th>
-            <th>Statut</th>
-            <th>Prix (€)</th>
-            <th>Date de création</th>
-            <th class="text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for s in supports %}
-            <tr>
-              <td>{{ s.name }}</td>
-              <td>
-                <span class="badge 
-                  {% if s.status == 'Disponible' %} bg-success {% else %} bg-secondary {% endif %}">
-                  {{ s.status }}
-                </span>
-              </td>
-              <td>{{ s.prix }}</td>
-              <td>{{ s.date_created|date:"d/m/Y H:i" }}</td>
-              <td class="text-center">
-                <a href="{% url 'modifier_support' s.pk %}" class="btn-action" title="Modifier">
-                  <i class="fas fa-edit"></i>
-                </a>
-                <a href="{% url 'supprimer_support' s.pk %}" class="btn-action text-danger ms-3" title="Supprimer">
-                  <i class="fas fa-trash-alt"></i>
-                </a>
-              </td>
-            </tr>
-          {% empty %}
-            <tr>
-              <td colspan="5">
-                <div class="empty-state">
-                  <i class="fas fa-box-open fa-3x"></i>
-                  <p class="mt-3">Aucun support disponible.</p>
+                <!-- PAGE-HEADER -->
+                <div class="page-header">
+                  <h1 class="page-title my-auto">Liste du support</h1>
+                  <div>
+                    <ol class="breadcrumb mb-0">
+                      <li class="breadcrumb-item">
+                        <a href="#">Accueil</a>
+                      </li>
+                      <li class="breadcrumb-item active" aria-current="page">Liste du support</li>
+                    </ol>
+                  </div>
                 </div>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+                <!-- PAGE-HEADER END -->
+                <div class="page-header">
+                  <h1 class="page-title my-auto"></h1>
+                  <div>
+                    <ol class="breadcrumb mb-0">
+                      <li class="breadcrumb-item">
+                      </li>
+                      <a href="{% url 'ajouter_support' %}" class="btn btn-outline-primary btn-lg px-4">
+                        <i class="bi bi-plus-circle me-2"></i> Ajouter un support
+                      </a>
+                    </ol>
+                  </div>
+                </div>
+
+
+                <!-- Start::row-1 -->
+                <form method="get">
+                <div class="row">
+                    <div class="col-xxl-3 col-xl-4 col-lg-4 col-md-12">
+                        <div class="card custom-card">
+                            <div class="card-header"><div class="card-title">Statut</div></div>
+                            <div class="card-body">
+                              <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="status" value="" id="status-all" {% if not status %}checked{% endif %}>
+                                <label class="form-check-label" for="status-all">Tous</label>
+                              </div>
+                              {% for choice in status_choices %}
+                              <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="status" value="{{ choice }}" id="status-{{ forloop.counter }}" {% if status == choice %}checked{% endif %}>
+                                <label class="form-check-label" for="status-{{ forloop.counter }}">{{ choice }}</label>
+                              </div>
+                              {% endfor %}
+                            </div>
+                        </div>
+                      </div>  
+                    </form>
+                    <script>
+                        document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
+                          radio.addEventListener('change', function() {
+                            this.form.submit();
+                          });
+                        });
+                      </script>
+                      
+                    <div class="col-xxl-9 col-xl-8 col-lg-8 col-md-12">
+                        <div class="row">
+                            {% for support in supports  %}
+                            <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="card custom-card product-card">
+                                    <div class="card-body">
+                                        <a href="{% url 'support_details' support.id %}" class="product-image">
+                                            <img src="{% static 'img/websitebuilder-removebg-preview.png' %}" class="card-img mb-3" alt="No image">
+                                        </a>
+                    
+                                        <div class="product-icons">
+                                            <a href="{% url 'supprimer_support' support.pk %}" class="wishlist"><i class="ri-delete-bin-fill"></i></a>
+                                            <a href="{% url 'modifier_support' support.pk %}" class="cart"><i class="ri-edit-2-fill"></i></a>
+                                            {% comment %} <a href="{% url 'support_details' support.id %}" class="view"><i class="ri-eye-line"></i></a> {% endcomment %}
+                                        </div>
+                    
+                                        <p class="product-name fw-semibold mb-0 d-flex align-items-center justify-content-between">
+                                            {{ support.name }}
+                                            <span class="float-end text-warning fs-12">
+                                                4.2<i class="ri-star-s-fill align-middle ms-1 d-inline-block"></i>
+                                            </span>
+                                        </p>
+                    
+                                        <p class="product-description fs-11 text-muted mb-2" style="font-weight: bold;">
+                                          {{ support.status }}
+                                        </p>
+                                        
+                                        <p class="product-description fs-11 text-muted mb-2">
+                                          {{ support.description|truncatewords:20 }}
+                                        </p>
+                                        <p class="mb-1 fw-semibold fs-16 d-flex align-items-center justify-content-between">
+                                            <span>
+                                              {{ support.prix }} MAD
+                                                <span class="text-muted text-decoration-line-through ms-1 d-inline-block op-6">
+                                                    {{ support.prix|add:"100" }} MAD
+                                                </span>
+                                            </span>
+                                            <span class="badge bg-secondary-transparent float-end fs-10">50% off</span>
+                                        </p>
+                    
+                                        <p class="fs-11 text-success fw-semibold mb-0 d-flex align-items-center">
+                                            <i class="ti ti-discount-2 fs-16 me-1"></i>
+                                            Prix ​​de l'offre {{ support.prix }} MAD
+                                        </p>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="col-12">
+                                <div class="alert alert-warning text-center">Aucun site Web disponible</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                </div>
+                <!--End::row-1 -->
+
+                <!-- Pagination -->
+                <ul class="pagination justify-content-end">
+                    {% if page_obj.has_previous %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if status %}&status={{ status }}{% endif %}{% if catégorie %}&catégorie={{ catégorie }}{% endif %}{% if CMS %}&CMS={{ CMS }}{% endif %}{% if langues %}&langues={{ langues }}{% endif %}{% if plan %}&plan={{ plan }}{% endif %}">Précédent</a>
+                      </li>
+                    {% else %}
+                      <li class="page-item disabled"><a class="page-link">Précédent</a></li>
+                    {% endif %}
+                  
+                    {% for num in page_obj.paginator.page_range %}
+                      <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}{% if status %}&status={{ status }}{% endif %}{% if catégorie %}&catégorie={{ catégorie }}{% endif %}{% if CMS %}&CMS={{ CMS }}{% endif %}{% if langues %}&langues={{ langues }}{% endif %}{% if plan %}&plan={{ plan }}{% endif %}">{{ num }}</a>
+                      </li>
+                    {% endfor %}
+                  
+                    {% if page_obj.has_next %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if status %}&status={{ status }}{% endif %}{% if catégorie %}&catégorie={{ catégorie }}{% endif %}{% if CMS %}&CMS={{ CMS }}{% endif %}{% if langues %}&langues={{ langues }}{% endif %}{% if plan %}&plan={{ plan }}{% endif %}">Suivant</a>
+                      </li>
+                    {% else %}
+                      <li class="page-item disabled"><a class="page-link">Suivant</a></li>
+                    {% endif %}
+                  </ul>
+                  
+                <!-- Pagination -->
+
+            </div>
+        </div>
+        <!-- End::app-content -->
+
     </div>
 
-  </div>
-</div>
+    
+    <!-- Scroll To Top -->
+    <div class="scrollToTop">
+        <span class="arrow"><i class="ri-arrow-up-s-fill fs-20"></i></span>
+    </div>
+    <div id="responsive-overlay"></div>
+
 {% endblock %}

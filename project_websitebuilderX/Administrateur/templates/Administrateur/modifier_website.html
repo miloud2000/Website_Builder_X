@@ -1,159 +1,338 @@
 {% extends "Administrateur/dashbordAdministrateur.html" %}
 {% load static %}
+{% load widget_tweaks %}
 
 {% block content %}
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+ <!-- Start::app-content -->
+ <div class="main-content app-content">
+    <div class="container-fluid">
 
-<style>
-    /* Global styles for a polished, clean look */
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: #f0f2f5;
-        color: #333;
-    }
-
-    /* Main content container styling */
-    .dashboard-content {
-        padding: 50px;
-    }
-
-    /* Main card container for the content */
-    .main-card {
-        background-color: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-        padding: 40px;
-    }
-
-    /* Heading and separator */
-    .main-card h2 {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-bottom: 25px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid #e9ecef;
-    }
-
-    /* Form and input styles */
-    .form-label {
-        font-weight: 500;
-        color: #555;
-    }
-
-    .form-control, .form-select {
-        border-radius: 8px;
-        padding: 10px 15px;
-        font-size: 1rem;
-        border: 1px solid #dcdfe6;
-        transition: border-color 0.2s, box-shadow 0.2s;
-        width: 100%; /* Ensure full width */
-    }
-
-    .form-control:focus, .form-select:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
-    }
-    
-    /* Error and help text styling */
-    .form-text {
-        font-size: 0.875rem;
-    }
-
-    .text-danger {
-        font-size: 0.875rem;
-        margin-top: 5px;
-    }
-
-    /* Message alerts */
-    .alert {
-        border-radius: 8px;
-        font-weight: 500;
-        padding: 15px 20px;
-    }
-
-    /* Button styles */
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-        color: white;
-        font-weight: 600;
-        border-radius: 8px;
-        padding: 10px 20px;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
-    }
-
-    .btn-secondary {
-        background-color: #6c757d;
-        border-color: #6c757d;
-        color: white;
-        font-weight: 600;
-        border-radius: 8px;
-        padding: 10px 20px;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-    
-    .btn-secondary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(108, 117, 125, 0.2);
-    }
-
-</style>
-
-<div class="dashboard-content">
-  <div class="main-card">
-    
-    <h2 class="fw-bold">
-      <i class="fas fa-plus-circle me-3 text-primary"></i>
-      Ajouter un nouveau site
-    </h2>
-
-    {% if messages %}
-      {% for msg in messages %}
-        <div class="alert alert-{{ msg.tags }} alert-dismissible fade show" role="alert">
-          {{ msg }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      {% endfor %}
-    {% endif %}
-
-    <form method="post" enctype="multipart/form-data" novalidate>
-      {% csrf_token %}
-      <div class="row g-4">
-        {{ form.non_field_errors }}
-        {% for field in form %}
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label class="form-label" for="{{ field.id_for_label }}">
-                {{ field.label }}
-              </label>
-              {{ field }}
-              {% if field.help_text %}
-                <small class="form-text text-muted">{{ field.help_text }}</small>
-              {% endif %}
-              {% for err in field.errors %}
-                <div class="text-danger">{{ err }}</div>
-              {% endfor %}
-            </div>
+        <!-- PAGE-HEADER -->
+        <div class="page-header">
+          <h1 class="page-title my-auto">Mettre à jour le Site Web</h1>
+          <div>
+            <ol class="breadcrumb mb-0">
+              <li class="breadcrumb-item">
+                <a href="{% url "liste_websites" %}">Liste de sites Web</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">Mettre à jour le Site Web</li>
+            </ol>
           </div>
-        {% endfor %}
-      </div>
+        </div>
+        <!-- PAGE-HEADER END -->
 
-      <div class="mt-4 pt-3 border-top">
-        <button type="submit" class="btn btn-primary">
-          <i class="fas fa-save me-1"></i> Enregistrer
-        </button>
-        <a href="{% url 'liste_websites' %}" class="btn btn-secondary ms-2">
-          <i class="fas fa-arrow-left me-1"></i> Annuler
-        </a>
-      </div>
+
+        <!-- Start::row-1 -->
+        
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card custom-card">
+                    <div class="card-body add-products p-0">
+                        <div class="p-4">
+                            <form method="post" enctype="multipart/form-data" novalidate>
+                                {% csrf_token %}
+                            <div class="row gx-5">
+                                <div class="col-xxl-6 col-xl-12 col-lg-12 col-md-6">
+                                    <div class="card custom-card shadow-none mb-0">
+                                        <div class="card-body p-0">
+                                            <div class="row gy-3">
+                                                <div class="col-xl-12">
+                                                    <label for="id_name" class="form-label">Nom du site web</label>
+                                                  
+                                                    {{ form.name|add_class:"form-control"|attr:"id:id_name"|attr:"placeholder:Nom du site web" }}
+                                                  
+                                                    {% if form.name.errors %}
+                                                      <div class="invalid-feedback d-block">
+                                                        {% for error in form.name.errors %}
+                                                          {{ error }}
+                                                        {% endfor %}
+                                                      </div>
+                                                    {% endif %}
+                                                  
+                                                    <label for="id_name" class="form-label mt-1 fs-12 op-5 text-muted mb-0">
+                                                      *Product Name should not exceed 30 characters
+                                                    </label>
+                                                  </div>
+                                                <div class="col-xl-6">
+                                                    <label for="id_status" class="form-label">{{ form.status.label }}</label>
+                                                  
+                                                    {{ form.status|add_class:"form-select"|attr:"id:id_status"|attr:"data-trigger:true"|attr:"name:status" }}
+                                                  
+                                                    {% if form.status.errors %}
+                                                      <div class="invalid-feedback d-block">
+                                                        {% for error in form.status.errors %}
+                                                          {{ error }}
+                                                        {% endfor %}
+                                                      </div>
+                                                    {% endif %}
+                                                  
+                                                    <label for="id_status" class="form-label mt-1 fs-12 op-5 text-muted mb-0">
+                                                      *Product Name should not exceed 30 characters
+                                                    </label>
+                                                  </div>
+                                                <div class="col-xl-6">
+                                                    <label for="id_categorie" class="form-label">{{ form.catégorie.label }}</label>
+                                                  
+                                                    {{ form.catégorie|add_class:"form-select"|attr:"id:id_categorie"|attr:"data-trigger:true"|attr:"name:catégorie" }}
+                                                  
+                                                    {% if form.catégorie.errors %}
+                                                      <div class="invalid-feedback d-block">
+                                                        {% for error in form.catégorie.errors %}
+                                                          {{ error }}
+                                                        {% endfor %}
+                                                      </div>
+                                                    {% endif %}
+                                                  
+                                                    <label for="id_categorie" class="form-label mt-1 fs-12 op-5 text-muted mb-0">
+                                                      *Product Name should not exceed 30 characters
+                                                    </label>
+                                                  </div>
+                                                <div class="col-xl-6">
+                                                <label for="id_cms" class="form-label">{{ form.CMS.label }}</label>
+
+                                                {{ form.CMS|add_class:"form-select"|attr:"id:id_cms"|attr:"data-trigger:true"|attr:"name:CMS" }}
+
+                                                {% if form.CMS.errors %}
+                                                    <div class="invalid-feedback d-block">
+                                                    {% for error in form.CMS.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                    </div>
+                                                {% endif %}
+
+                                                <label for="id_cms" class="form-label mt-1 fs-12 op-5 text-muted mb-0">
+                                                    *Product Name should not exceed 30 characters
+                                                </label>
+                                                </div>
+
+                                                <div class="col-xl-6">
+                                                <label for="id_langues" class="form-label">{{ form.langues.label }}</label>
+
+                                                {{ form.langues|add_class:"form-control"|attr:"id:id_langues"|attr:"data-trigger:true"|attr:"name:langues" }}
+
+                                                {% if form.langues.errors %}
+                                                    <div class="invalid-feedback d-block">
+                                                    {% for error in form.langues.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                    </div>
+                                                {% endif %}
+
+                                                <label for="id_langues" class="form-label mt-1 fs-12 op-5 text-muted mb-0">
+                                                    *Product Name should not exceed 30 characters
+                                                </label>
+                                                </div>
+
+                                                <div class="col-xl-6">
+                                                    <label for="id_plan" class="form-label">{{ form.plan.label }}</label>
+                                                  
+                                                    {{ form.plan|add_class:"form-control"|attr:"id:id_plan"|attr:"data-trigger:true"|attr:"name:plan" }}
+                                                  
+                                                    {% if form.plan.errors %}
+                                                      <div class="invalid-feedback d-block">
+                                                        {% for error in form.plan.errors %}
+                                                          {{ error }}
+                                                        {% endfor %}
+                                                      </div>
+                                                    {% endif %}
+                                                  
+                                                    <label for="id_plan" class="form-label mt-1 fs-12 op-5 text-muted mb-0">
+                                                      *Product Name should not exceed 30 characters
+                                                    </label>
+                                                  </div>
+                                                  <div class="col-xl-6">
+                                                    <label for="id_url" class="form-label">URL du site</label>
+                                                  
+                                                    <div class="input-group">
+                                                      <span class="input-group-text"><i class="bi bi-link"></i></span>
+                                                      <input type="url" class="form-control {% if form.url.errors %}is-invalid{% endif %}" 
+                                                             id="id_url" name="url" placeholder="https://votre-site.com" 
+                                                             value="{{ form.video.value|default_if_none:'' }}">
+                                                    </div>
+                                                  
+                                                    <div class="form-text text-muted">Ex: https://votre-site.com</div>
+                                                  
+                                                    {% if form.url.errors %}
+                                                      <div class="invalid-feedback d-block">
+                                                        {% for error in form.url.errors %}
+                                                          {{ error }}
+                                                        {% endfor %}
+                                                      </div>
+                                                    {% endif %}
+                                                  
+                                                    <label for="id_url" class="form-label mt-1 fs-12 op-5 text-muted mb-0">
+                                                      *Product Name should not exceed 30 characters
+                                                    </label>
+                                                  </div>
+                                                  <div class="col-md-12">
+                                                    <label for="id_description" class="form-label fw-semibold">{{ form.description.label }}</label>
+                                                  
+                                                    {{ form.description|add_class:"form-control"|attr:"rows:4"|attr:"id:id_description"|attr:"placeholder:Description du site"|attr:"name:description" }}
+                                                  
+                                                    {% if form.description.errors %}
+                                                      <div class="invalid-feedback d-block">
+                                                        {% for error in form.description.errors %}
+                                                          {{ error }}
+                                                        {% endfor %}
+                                                      </div>
+                                                    {% endif %}
+                                                  
+                                                    <label for="id_description" class="form-label mt-1 fs-12 op-5 text-muted mb-0">
+                                                      *La description ne doit pas dépasser 300 caractères
+                                                    </label>
+                                                  </div>
+                                                  <div class="col-md-4">
+                                                    <label for="id_prix" class="form-label fw-semibold">{{ form.prix.label }}</label>
+                                                  
+                                                    <div class="input-group">
+                                                      <span class="input-group-text">MAD</span>
+                                                      {{ form.prix|add_class:"form-control"|attr:"id:id_prix"|attr:"placeholder:Prix du site"|attr:"name:prix" }}
+                                                    </div>
+                                                  
+                                                    {% if form.prix.errors %}
+                                                      <div class="invalid-feedback d-block">
+                                                        {% for error in form.prix.errors %}
+                                                          {{ error }}
+                                                        {% endfor %}
+                                                      </div>
+                                                    {% endif %}
+                                                  
+                                                    <label for="id_prix" class="form-label mt-1 fs-12 op-5 text-muted mb-0">
+                                                      *Le prix doit être exprimé en dirhams marocains (MAD)
+                                                    </label>
+                                                  </div>
+                                                  <div class="col-md-4">
+                                                    <label for="id_prix_loyer" class="form-label fw-semibold">{{ form.prix_loyer.label }}</label>
+                                                  
+                                                    <div class="input-group">
+                                                      <span class="input-group-text">MAD</span>
+                                                      {{ form.prix_loyer|add_class:"form-control"|attr:"id:id_prix_loyer"|attr:"placeholder:Prix du loyer"|attr:"name:prix_loyer" }}
+                                                    </div>
+                                                  
+                                                    {% if form.prix_loyer.errors %}
+                                                      <div class="invalid-feedback d-block">
+                                                        {% for error in form.prix_loyer.errors %}
+                                                          {{ error }}
+                                                        {% endfor %}
+                                                      </div>
+                                                    {% endif %}
+                                                  
+                                                    <label for="id_prix_loyer" class="form-label mt-1 fs-12 op-5 text-muted mb-0">
+                                                      *Le prix du loyer doit être exprimé en dirhams marocains (MAD)
+                                                    </label>
+                                                  </div>
+                                                  <div class="col-md-4">
+                                                    <label for="id_prix_hebergement" class="form-label fw-semibold">{{ form.prix_hebergement.label }}</label>
+                                                  
+                                                    <div class="input-group">
+                                                      <span class="input-group-text">MAD</span>
+                                                      {{ form.prix_hebergement|add_class:"form-control"|attr:"id:id_prix_hebergement"|attr:"placeholder:Prix de l’hébergement"|attr:"name:prix_hebergement" }}
+                                                    </div>
+                                                  
+                                                    {% if form.prix_hebergement.errors %}
+                                                      <div class="invalid-feedback d-block">
+                                                        {% for error in form.prix_hebergement.errors %}
+                                                          {{ error }}
+                                                        {% endfor %}
+                                                      </div>
+                                                    {% endif %}
+                                                  
+                                                    <label for="id_prix_hebergement" class="form-label mt-1 fs-12 op-5 text-muted mb-0">
+                                                      *Le prix de l’hébergement doit être exprimé en dirhams marocains (MAD)
+                                                    </label>
+                                                  </div>
+                                                  <div class="col-md-12">
+                                                    <label for="id_image" class="form-label fw-semibold">{{ form.image.label }}</label>
+                                                  
+                                                    {% if site.image %}
+                                                      <div class="current-image-preview mb-2 d-flex align-items-center">
+                                                        <img src="{{ site.image.url }}" alt="Image actuelle" class="img-thumbnail me-3" style="max-height: 80px;">
+                                                        <a href="{{ site.image.url }}" target="_blank" class="small text-muted">Voir l'image actuelle</a>
+                                                      </div>
+                                                    {% endif %}
+                                                  
+                                                    {{ form.image|add_class:"form-control"|attr:"id:id_image"|attr:"name:image" }}
+                                                  
+                                                    {% if form.image.errors %}
+                                                      <div class="invalid-feedback d-block">
+                                                        {% for error in form.image.errors %}
+                                                          {{ error }}
+                                                        {% endfor %}
+                                                      </div>
+                                                    {% endif %}
+                                                  
+                                                    <label for="id_image" class="form-label mt-1 fs-12 op-5 text-muted mb-0">
+                                                      *L’image doit être en format JPG, PNG ou WebP
+                                                    </label>
+                                                  </div>
+                                                
+                                                <div class="col-xl-12">
+                                                    <div class="px-4 py-3 border-top border-block-start-dashed d-sm-flex justify-content-end">
+                                                        <button class="btn btn-primary-light m-1">Enregistrer<i class="bi bi-save ms-2"></i></button>
+                                                        <a href="{% url 'liste_websites' %}" class="btn btn-success-light m-1">Annuler <i class="bi bi-x-circle ms-2"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                                <div class="col-xxl-6 col-xl-12 col-lg-12 col-md-6">
+                                    <div class="card custom-card shadow-none mb-0">
+                                        <div class="card-body p-0">
+                                            <div class="row gy-4">
+                                                <div class="col-xl-4">
+                                                    <label for="product-actual-price" class="form-label">Nom</label>
+                                                    <input type="text" class="form-control" id="product-actual-price" value="{{ site.name }}" readonly>
+                                                </div>                                                                                                    
+                                                <div class="col-xl-4">
+                                                    <label for="product-dealer-price" class="form-label">Catégorie</label>
+                                                    <input type="text" class="form-control" id="product-dealer-price" 
+                                                           value="{{ site.catégorie|default:'Catégorie' }}" readonly>
+                                                </div>
+                                                  
+                                                <div class="col-xl-4">
+                                                    <label for="product-discount" class="form-label">Plan</label>
+                                                    <input type="text" class="form-control" id="product-discount" 
+                                                           value="{{ site.plan|default:'Plan' }}" readonly>
+                                                </div>
+                                                <div class="col-xl-6">
+                                                    <label for="product-type" class="form-label">Prix</label>
+                                                    <div class="input-group">
+                                                      <span class="input-group-text">MAD</span>
+                                                      <input type="text" class="form-control" id="product-type" 
+                                                             value="{{ site.prix|default:'0' }}" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xl-6">
+                                                    <label for="product-weight" class="form-label">Date de création</label>
+                                                    <input type="text" class="form-control" id="product-weight" 
+                                                           value="{{ site.date_created|date:'d M Y' }}" readonly>
+                                                </div>
+                                                <div class="col-xl-6">
+                                                    <label class="form-label fw-semibold">Aperçu du site</label>
+                                                  
+                                                    <img id="preview-image"
+                                                         src="{% if site.image %}{{ site.image.url }}{% else %}{% static 'img/website_placeholder.jpg' %}{% endif %}"
+                                                         class="img-fluid rounded-4 mb-3 shadow-sm border"
+                                                         alt="Aperçu du site">
+                                                  
+                                                    <label for="preview-image" class="form-label mt-1 fs-12 op-5 text-muted mb-0">
+                                                      *L’image affichée est celle actuellement associée au site
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--End::row-1 -->
     </form>
-  </div>
+    </div>
 </div>
 {% endblock %}

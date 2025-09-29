@@ -2519,7 +2519,6 @@ def ticket_detail(request, ticket_id):
     user_type = None
     user_id = None
 
-    # تحديد نوع المستخدم الحالي من الجداول المرتبطة
     try:
         cliente = Cliente.objects.get(user=request.user)
         user_type = 'Cliente'
@@ -2535,7 +2534,7 @@ def ticket_detail(request, ticket_id):
                 user_type = 'GestionnaireComptes'
                 user_id = gestionnaire.id
             except GestionnaireComptes.DoesNotExist:
-                pass  # المستخدم غير معروف
+                pass 
 
     context = {
         'ticket': ticket,

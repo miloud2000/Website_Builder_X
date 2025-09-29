@@ -1,108 +1,56 @@
 {% extends "Administrateur/dashbordAdministrateur.html" %}
 {% load static %}
-
 {% block content %}
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-<style>
-    /* Global styles for a polished, clean look */
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: #f0f2f5;
-        color: #333;
-    }
+<div class="main-content app-content">
+  <div class="container-fluid">
 
-    /* Main content container styling */
-    .dashboard-content {
-        padding: 50px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: calc(100vh - 100px); /* Centers the card vertically */
-    }
-
-    /* Card container for the confirmation dialog */
-    .confirmation-card {
-        background-color: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-        padding: 40px;
-        max-width: 500px; /* Limits the card width for better readability */
-        text-align: center;
-    }
-    
-    .confirmation-card h3 {
-        font-size: 1.6rem;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-top: 15px;
-        margin-bottom: 10px;
-    }
-
-    .confirmation-card p {
-        font-size: 1rem;
-        color: #666;
-        margin-bottom: 25px;
-    }
-
-    /* Icon styling */
-    .confirmation-card .fa-icon {
-        font-size: 3.5rem;
-        color: #dc3545; /* A strong red for danger confirmation */
-    }
-
-    /* Button styles */
-    .btn-danger {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-        font-weight: 600;
-        border-radius: 8px;
-        padding: 10px 20px;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-    
-    .btn-danger:hover {
-        background-color: #c82333;
-        border-color: #bd2130;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
-    }
-
-    .btn-secondary {
-        background-color: #6c757d;
-        border-color: #6c757d;
-        color: white;
-        font-weight: 600;
-        border-radius: 8px;
-        padding: 10px 20px;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .btn-secondary:hover {
-        background-color: #5a6268;
-        border-color: #545b62;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(108, 117, 125, 0.2);
-    }
-</style>
-
-<div class="dashboard-content">
-    <div class="confirmation-card">
-        <i class="fas fa-exclamation-circle fa-icon mb-3"></i>
-        <h3>Confirmer la suppression</h3>
-        <p>Voulez-vous vraiment supprimer le support "**{{ support.name }}**" ? Cette action est irréversible.</p>
-
-        <form method="post" class="mt-4">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger me-2">
-                <i class="fas fa-trash-alt me-1"></i> Oui, supprimer
-            </button>
-            <a href="{% url 'liste_supports' %}" class="btn btn-secondary ms-2">
-                <i class="fas fa-arrow-left me-1"></i> Non, annuler
-            </a>
-        </form>
+    <!-- PAGE-HEADER -->
+    <div class="page-header">
+      <h1 class="page-title my-auto text-danger">
+        <i class="mdi mdi-delete-forever"></i> Supprimer un Commercial
+      </h1>
+      <div>
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item">
+            <a href="{% url "liste_supports" %}">Liste du support</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">Confirmer la suppression un support</li>
+        </ol>
+      </div>
     </div>
+
+    <!-- CARD DE SUPPRESSION -->
+    <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+      <div class="col-md-8 col-lg-6 col-xl-6">
+        <div class="card custom-card">
+          <div class="card-header">
+            <div class="card-title text-danger fw-bold">Confirmation de suppression</div>
+          </div>
+          <div class="card-body text-center">
+            <h6 class="card-title fw-semibold mb-3">Êtes-vous sûr de vouloir supprimer cet support ?</h6>
+            <p class="card-text">
+              <strong>{{ support.name }}</strong><br>
+              <em>{{ support.date_created }}</em>
+            </p>
+
+            <form method="POST">
+              {% csrf_token %}
+              <div class="d-flex justify-content-center gap-3 mt-4">
+                <button type="submit" class="btn btn-danger">
+                  <i class="mdi mdi-trash-can-outline"></i> Supprimer
+                </button>
+                <a href="{% url 'liste_supports' %}" class="btn btn-secondary">
+                  <i class="mdi mdi-close-circle-outline"></i> Annuler
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
+
 {% endblock %}

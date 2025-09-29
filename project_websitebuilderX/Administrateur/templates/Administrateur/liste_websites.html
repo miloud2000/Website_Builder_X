@@ -2,196 +2,235 @@
 {% load static %}
 
 {% block content %}
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-<style>
-    /* CSS Variables for easy color management */
-    :root {
-        --primary-color: #007bff;
-        --secondary-color: #6c757d;
-        --success-color: #28a745;
-        --danger-color: #dc3545;
-        --background-color: #f0f2f5;
-        --card-background: #ffffff;
-        --text-color: #333;
-        --heading-color: #2c3e50;
-        --border-color: #e9ecef;
-    }
-
-    /* Global styles for a polished, clean look */
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: var(--background-color);
-        color: var(--text-color);
-    }
-
-    /* Main content container styling */
-    .dashboard-content {
-        padding: 50px;
-    }
-
-    /* Main card container for the content */
-    .main-card {
-        background-color: var(--card-background);
-        border-radius: 12px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-        padding: 40px;
-    }
-
-    /* Heading styles */
-    .main-card h2 {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: var(--heading-color);
-        margin-bottom: 25px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid var(--border-color);
-    }
-
-    /* Table styles for a sleek look */
-    .website-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-        table-layout: fixed;
-    }
-
-    .website-table thead {
-        background-color: #f8f9fa;
-        color: var(--secondary-color);
-        font-weight: 600;
-    }
-
-    .website-table th, .website-table td {
-        padding: 15px;
-        text-align: left;
-        border-bottom: 1px solid var(--border-color);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        font-weight: 400;
-        color: #555;
-    }
-
-    .website-table tbody tr:hover {
-        background-color: #f9fafb;
-    }
-    
-    /* Optimized column widths for better readability */
-    .website-table th:nth-child(1), .website-table td:nth-child(1) { width: 25%; } /* Nom */
-    .website-table th:nth-child(2), .website-table td:nth-child(2) { width: 12%; } /* Statut */
-    .website-table th:nth-child(3), .website-table td:nth-child(3) { width: 12%; } /* Prix */
-    .website-table th:nth-child(4), .website-table td:nth-child(4) { width: 18%; } /* Catégorie */
-    .website-table th:nth-child(5), .website-table td:nth-child(5) { width: 18%; } /* Date de création */
-    .website-table th:nth-child(6), .website-table td:nth-child(6) { width: 15%; text-align: center; } /* Actions */
 
 
-    /* Button styles */
-    .btn-success {
-        background-color: var(--success-color);
-        border-color: var(--success-color);
-        color: white;
-        font-weight: 600;
-        border-radius: 8px;
-        padding: 10px 20px;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
 
-    .btn-success:hover {
-        background-color: #218838;
-        border-color: #1e7e34;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.2);
-    }
-
-    .btn-action {
-        color: var(--secondary-color);
-        font-size: 1.1rem;
-        padding: 0 8px;
-        transition: color 0.2s, transform 0.2s;
-    }
-
-    .btn-action:hover {
-        color: var(--primary-color);
-        transform: scale(1.1);
-    }
-
-    .btn-action.text-danger:hover {
-        color: var(--danger-color);
-    }
-
-    /* Empty state for the table */
-    .empty-state {
-        text-align: center;
-        padding: 50px;
-        color: #999;
-    }
-</style>
-
-<div class="dashboard-content">
-  <div class="main-card">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2 class="fw-bold m-0">
-        <i class="fas fa-globe me-3 text-primary"></i>
-        Liste des sites web
-      </h2>
-      <a href="{% url 'ajouter_website' %}" class="btn btn-success">
-        <i class="fas fa-plus me-1"></i> Ajouter un site
-      </a>
-    </div>
-
-    <div class="table-responsive">
-      <table class="table website-table">
-        <thead>
-          <tr>
-            <th>Nom</th>
-            <th>Statut</th>
-            <th>Prix (€)</th>
-            <th>Catégorie</th>
-            <th>Date de création</th>
-            <th class="text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for site in websites %}
-            <tr>
-              <td>{{ site.name }}</td>
-              <td>
-                <span class="badge 
-                  {% if site.status == 'Actif' %} bg-success {% elif site.status == 'Inactif' %} bg-secondary {% else %} bg-info {% endif %}">
-                  {{ site.status }}
-                </span>
-              </td>
-              <td>{{ site.prix }}</td>
-              <td>{{ site.catégorie }}</td>
-              <td>{{ site.date_created|date:"d/m/Y H:i" }}</td>
-               <td>
-                    <a href="{% url 'modifier_website' site.pk %}"
-                    class="text-decoration-none me-2" title="Modifier">
-                    <i class="fas fa-edit text-warning"></i>
-                    </a>
-                    <a href="{% url 'supprimer_website' site.pk %}"
-                    class="text-decoration-none" title="Supprimer">
-                    <i class="fas fa-trash-alt text-danger"></i>
-                    </a>
-                </td>
-            </tr>
-          {% empty %}
-            <tr>
-              <td colspan="6">
-                <div class="empty-state">
-                  <i class="fas fa-box-open fa-3x"></i>
-                  <p class="mt-3">Aucun site disponible pour le moment.</p>
+                <!-- PAGE-HEADER -->
+                <div class="page-header">
+                  <h1 class="page-title my-auto">Liste de sites Web</h1>
+                  <div>
+                    <ol class="breadcrumb mb-0">
+                      <li class="breadcrumb-item">
+                        <a href="{% url 'liste_websites' %}">Accueil</a>
+                      </li>
+                      <li class="breadcrumb-item active" aria-current="page">liste de sites Web</li>
+                    </ol>
+                  </div>
                 </div>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+                <!-- PAGE-HEADER END -->
+                <div class="page-header">
+                  <h1 class="page-title my-auto"></h1>
+                  <div>
+                    <ol class="breadcrumb mb-0">
+                      <li class="breadcrumb-item">
+                      </li>
+                      <a href="{% url 'ajouter_website' %}" class="btn btn-outline-primary btn-lg px-4">
+                        <i class="bi bi-plus-circle me-2"></i> Ajouter
+                      </a>
+                    </ol>
+                  </div>
+                </div>
+
+
+                <!-- Start::row-1 -->
+                <form method="get">
+                <div class="row">
+                    <div class="col-xxl-3 col-xl-4 col-lg-4 col-md-12">
+                        <div class="card custom-card">
+                            <div class="card-header"><div class="card-title">Statut</div></div>
+                            <div class="card-body">
+                              <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="status" value="" id="status-all" {% if not status %}checked{% endif %}>
+                                <label class="form-check-label" for="status-all">Tous</label>
+                              </div>
+                              <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="status" value="Active" id="status-active" {% if status == 'Active' %}checked{% endif %}>
+                                <label class="form-check-label" for="status-active">Actif</label>
+                              </div>
+                              <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="status" value="No Active" id="status-inactive" {% if status == 'No Active' %}checked{% endif %}>
+                                <label class="form-check-label" for="status-inactive">Inactif</label>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="card custom-card">
+                            <div class="card-header"><div class="card-title">Catégorie</div></div>
+                            <div class="card-body">
+                              <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="catégorie" value="" id="cat-all" {% if not catégorie %}checked{% endif %}>
+                                <label class="form-check-label" for="cat-all">Toutes</label>
+                              </div>
+                              {% for cat in catégories_list %}
+                                <div class="form-check mb-2">
+                                  <input class="form-check-input" type="radio" name="catégorie" value="{{ cat }}" id="cat-{{ forloop.counter }}" {% if catégorie == cat %}checked{% endif %}>
+                                  <label class="form-check-label" for="cat-{{ forloop.counter }}">{{ cat }}</label>
+                                </div>
+                              {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card custom-card">
+                            <div class="card-header"><div class="card-title">CMS</div></div>
+                            <div class="card-body">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="CMS" value="" id="cms-all" {% if not CMS %}checked{% endif %}>
+                                    <label class="form-check-label" for="cms-all">Toutes</label>
+                                </div>
+                                {% for c in cms_list %}
+                                <div class="form-check mb-2">
+                                  <input class="form-check-input" type="radio" name="CMS" value="{{ c }}" id="cms-{{ forloop.counter }}" {% if CMS == c %}checked{% endif %}>
+                                  <label class="form-check-label" for="cms-{{ forloop.counter }}">{{ c }}</label>
+                                </div>
+                              {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card custom-card">
+                            <div class="card-header"><div class="card-title">Langue</div></div>
+                            <div class="card-body">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="langues" value="" id="langue-all" {% if not langues %}checked{% endif %}>
+                                    <label class="form-check-label" for="langue-all">Toutes</label>
+                                </div>
+                                {% for l in langues_list %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="langues" value="{{ l }}" id="langue-{{ forloop.counter }}" {% if langues == l %}checked{% endif %}>
+                                        <label class="form-check-label" for="langue-{{ forloop.counter }}">{{ l }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card custom-card">
+                            <div class="card-header"><div class="card-title">Forfait</div></div>
+                            <div class="card-body">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="plan" value="" id="plan-all" {% if not plan %}checked{% endif %}>
+                                    <label class="form-check-label" for="plan-all">Tous</label>
+                                </div>
+                                {% for p in plans_list %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="plan" value="{{ p }}" id="plan-{{ forloop.counter }}" {% if plan == p %}checked{% endif %}>
+                                        <label class="form-check-label" for="plan-{{ forloop.counter }}">{{ p }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                            {% comment %} <div class="justify-content-end gap-2 mt-2">
+                                <button type="submit" class="btn btn-dark btn-sm px-4 rounded-pill">
+                                    <i class="bi bi-search"></i> Filtrer
+                                </button>
+                                <a href="{% url 'websites_list_superadmin' %}" class="btn btn-outline-secondary btn-sm px-4 rounded-pill">
+                                    <i class="bi bi-arrow-clockwise"></i> Réinitialiser
+                                </a>
+                            </div> {% endcomment %}
+                        </div>
+                    </form>
+                    <script>
+                        document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
+                          radio.addEventListener('change', function() {
+                            this.form.submit();
+                          });
+                        });
+                      </script>
+                      
+                    <div class="col-xxl-9 col-xl-8 col-lg-8 col-md-12">
+                        <div class="row">
+                            {% for site in websites %}
+                            <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="card custom-card product-card">
+                                    <div class="card-body">
+                                        <a href="{% url 'website_details' site.id %}" class="product-image">
+                                            {% if site.image %}
+                                                <img src="{{ site.image.url }}" class="card-img mb-3" alt="{{ site.name }}">
+                                            {% else %}
+                                                <img src="{% static 'assets/images/ecommerce/products/default.jpg' %}" class="card-img mb-3" alt="No image">
+                                            {% endif %}
+                                        </a>
+                    
+                                        <div class="product-icons">
+                                            <a href="{% url 'supprimer_website' site.pk %}" onclick="return confirm('Êtes-vous sûr de vouloir masquer {{ website.name }} ?')" class="wishlist"><i class="ri-delete-bin-fill"></i></a>
+                                            <a href="{% url 'modifier_website' site.pk %}" class="cart"><i class="ri-edit-2-fill"></i></a>
+                                            {% comment %} <a href="{% url 'website_details' site.id %}" class="view"><i class="ri-eye-line"></i></a> {% endcomment %}
+                                        </div>
+                    
+                                        <p class="product-name fw-semibold mb-0 d-flex align-items-center justify-content-between">
+                                            {{ site.name }}
+                                            <span class="float-end text-warning fs-12">
+                                                4.2<i class="ri-star-s-fill align-middle ms-1 d-inline-block"></i>
+                                            </span>
+                                        </p>
+                    
+                                        <p class="product-description fs-11 text-muted mb-2">
+                                            {{ site.catégorie }}
+                                        </p>
+                    
+                                        <p class="mb-1 fw-semibold fs-16 d-flex align-items-center justify-content-between">
+                                            <span>
+                                                {{ site.prix }} MAD
+                                                <span class="text-muted text-decoration-line-through ms-1 d-inline-block op-6">
+                                                    {{ site.prix|add:"100" }} MAD
+                                                </span>
+                                            </span>
+                                            <span class="badge bg-secondary-transparent float-end fs-10">50% off</span>
+                                        </p>
+                    
+                                        <p class="fs-11 text-success fw-semibold mb-0 d-flex align-items-center">
+                                            <i class="ti ti-discount-2 fs-16 me-1"></i>
+                                            Prix ​​de l'offre {{ site.prix }} MAD
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="col-12">
+                                <div class="alert alert-warning text-center">Aucun site Web disponible</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                </div>
+                <!--End::row-1 -->
+
+                <!-- Pagination -->
+                <ul class="pagination justify-content-end">
+                    {% if page_obj.has_previous %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if status %}&status={{ status }}{% endif %}{% if catégorie %}&catégorie={{ catégorie }}{% endif %}{% if CMS %}&CMS={{ CMS }}{% endif %}{% if langues %}&langues={{ langues }}{% endif %}{% if plan %}&plan={{ plan }}{% endif %}">Précédent</a>
+                      </li>
+                    {% else %}
+                      <li class="page-item disabled"><a class="page-link">Précédent</a></li>
+                    {% endif %}
+                  
+                    {% for num in page_obj.paginator.page_range %}
+                      <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}{% if status %}&status={{ status }}{% endif %}{% if catégorie %}&catégorie={{ catégorie }}{% endif %}{% if CMS %}&CMS={{ CMS }}{% endif %}{% if langues %}&langues={{ langues }}{% endif %}{% if plan %}&plan={{ plan }}{% endif %}">{{ num }}</a>
+                      </li>
+                    {% endfor %}
+                  
+                    {% if page_obj.has_next %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if status %}&status={{ status }}{% endif %}{% if catégorie %}&catégorie={{ catégorie }}{% endif %}{% if CMS %}&CMS={{ CMS }}{% endif %}{% if langues %}&langues={{ langues }}{% endif %}{% if plan %}&plan={{ plan }}{% endif %}">Suivant</a>
+                      </li>
+                    {% else %}
+                      <li class="page-item disabled"><a class="page-link">Suivant</a></li>
+                    {% endif %}
+                  </ul>
+                  
+                <!-- Pagination -->
+
+            </div>
+        </div>
+        <!-- End::app-content -->
+
     </div>
 
-  </div>
-</div>
+    
+    <!-- Scroll To Top -->
+    <div class="scrollToTop">
+        <span class="arrow"><i class="ri-arrow-up-s-fill fs-20"></i></span>
+    </div>
+    <div id="responsive-overlay"></div>
+
 {% endblock %}

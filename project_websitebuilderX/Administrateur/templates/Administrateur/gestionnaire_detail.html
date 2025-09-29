@@ -1,0 +1,49 @@
+{% extends "Administrateur/dashbordAdministrateur.html" %}
+{% load static %}
+{% block content %}
+
+<div class="main-content app-content">
+  <div class="container-fluid">
+
+    <!-- PAGE-HEADER -->
+    <div class="page-header">
+      <h1 class="page-title my-auto text-dark">
+        <i class="mdi mdi-delete-forever"></i> Détails du gestionnaire
+      </h1>
+      <div>
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="{% url 'liste_demandes_recharge' %}">Gestion des demandes de recharge</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Détails du gestionnaire </li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- CARD DE SUPPRESSION -->
+    <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+      <div class="col-md-8 col-lg-6 col-xl-6">
+        <div class="card custom-card">
+          <div class="card-header">
+            <div class="card-title text-dark fw-bold">Détail de la demande  "{{ demande.code_DemandeRecharger }}"</div>
+          </div>
+          <div class="card-body text-center">
+            <h6 class="card-title fw-semibold mb-3">Utilisateur: {{ gestionnaire.user.username }}</h6>
+            <h6 class="card-title fw-semibold mb-3">Nom de gestionnaire de compte: {{gestionnaire.name }}</h6>
+            <h6 class="card-title fw-semibold mb-3">Email : {{ gestionnaire.user.email }}</h6>
+            <h6 class="card-title fw-semibold mb-3">Statut : {{ gestionnaire.Status }}</h6>
+            <form method="POST">
+              {% csrf_token %}
+              <div class="d-flex justify-content-center gap-3 mt-4">
+                <a href="{% url 'liste_demandes_recharge' %}" class="btn btn-secondary">
+                  <i class="mdi mdi-close-circle-outline"></i> Retour à la liste
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

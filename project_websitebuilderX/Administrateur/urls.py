@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     
     path('dashbordHomeAdministrateur/',views.dashbordHomeAdministrateur, name="dashbordHomeAdministrateur"), 
-    # path('homeAdministrateur/',views.homeAdministrateur, name="homeAdministrateur"), 
+    path('homeAdministrateur/',views.homeAdministrateur, name="homeAdministrateur"), 
 
     path('gestionnaires/ajouter/', views.ajouter_gestionnaire, name='ajouter_gestionnaire'),
     path('gestionnaires/liste/', views.liste_gestionnaires, name='liste_gestionnaires'),
@@ -33,6 +33,8 @@ urlpatterns = [
 
     path('liste_demandes_recharge/', views.liste_demandes_recharge, name='liste_demandes_recharge'),
     path('demandes-recharge/<int:id>/',views.detail_demande_recharge,name='detail_demande_recharge'),
+    path('gestionnaire/<int:gestionnaire_id>/<int:demande_id>/', views.gestionnaire_compte_detail, name='gestionnaire_compte_detail'),
+
 
     path('demandes-support/',views.liste_demandes_support,name='liste_demandes_support'),
     path('demandes-support/<int:pk>/',views.detail_demande_support, name='detail_demande_support'),
@@ -49,8 +51,9 @@ urlpatterns = [
     path('supports/<int:pk>/modifier/',  views.modifier_support, name='modifier_support'),
     path('supports/<int:pk>/supprimer/', views.supprimer_support,name='supprimer_support'),
 
-    path('tickets/', views.tickets_list,    name='tickets_list'),
+    path('tickets/', views.tickets_list, name='tickets_list'),
     path('tickets/<int:ticket_id>/', views.ticket_detail, name='ticket_detail'),
+    path('ticket_pdf/<int:ticket_id>/', views.ticket_pdf, name='ticket_pdf'),
 
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
