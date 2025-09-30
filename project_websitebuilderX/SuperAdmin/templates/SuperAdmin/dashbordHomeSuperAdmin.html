@@ -402,7 +402,7 @@
                                                       <th scope="col" class="">Solde</th>
                                                       <th scope="col" class="">Email</th>
                                                       <th scope="col" class="">Statut</th>
-                                                      <th scope="col" class="">Actions</th>
+                                                      {% comment %} <th scope="col" class="">Actions</th> {% endcomment %}
                                                   </tr>
                                               </thead>
                                               <tbody>
@@ -424,12 +424,12 @@
                                                       <td><span class="fw-semibold">{{ client.solde }} MAD</span></td>
                                                       <td><h6 class="mb-0 fs-14 fw-semibold"> {{ client.email }}</h6></td>
                                                       <td><span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">Actif</span></td>
-                                                      <td>
+                                                      {% comment %} <td>
                                                           <div class="g-2">
                                                               <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
                                                               <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
                                                           </div>
-                                                      </td>
+                                                      </td> {% endcomment %}
                                                   </tr>
                                                   {% endfor %}
                                               </tbody>

@@ -38,6 +38,8 @@ urlpatterns = [
 
     path('demandes-support/',views.liste_demandes_support,name='liste_demandes_support'),
     path('demandes-support/<int:pk>/',views.detail_demande_support, name='detail_demande_support'),
+    path('supportTechnique/<int:supportTechnique_id>/', views.detail_supportTechnique, name='detail_supportTechnique'),
+
 
     path('websites/', views.liste_websites, name='liste_websites'),
     path('websites/ajouter/', views.ajouter_website, name='ajouter_website'),

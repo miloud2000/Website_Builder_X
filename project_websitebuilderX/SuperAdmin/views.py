@@ -1697,6 +1697,45 @@ def all_demandes_recharger(request):
 
 
 
+def detail_demande_recharge_superadmin(request, id):
+    demande = get_object_or_404(
+        DemandeRecharger.objects
+            .select_related('cliente__user', 'updated_by__user'),
+        id=id
+    )
+    traces_qs = demande.latracedemanderecharger_set.select_related(
+        'updated_by__user'
+    ).order_by('-date_created')
+
+    # on transforme chaque trace en dict prêt à l’usage
+    traces = [
+        {
+            "date": t.date_created.strftime("%d/%m/%Y %H:%M"),
+            "gestionnaire": t.updated_by.user.username if t.updated_by else "—",
+            "solde": f"{t.solde:.2f} MAD",
+        }
+        for t in traces_qs
+    ]
+
+    contexte = {
+        'demande': {
+            'code': demande.code_DemandeRecharger,
+            'client': demande.cliente.user.username,
+            'montant': f"{demande.solde:.2f} MAD",
+            'statut': demande.status,
+            'date': demande.date_created.strftime("%d/%m/%Y %H:%M"),
+            'gestionnaire': (
+                demande.updated_by.user.username
+                if demande.updated_by else '—'
+            ),
+            'motif': demande.motifNonAcceptation or '',
+            'image_url': demande.image.url if demande.image else None,
+        },
+        'traces': traces,
+    }
+    return render(request, 'SuperAdmin/detail_demande_recharge_superadmin.html', contexte)
+
+
 
 def get_filtered_demandes(request):
     demandes = DemandeRecharger.objects.select_related('cliente', 'updated_by').all()
@@ -1892,6 +1931,30 @@ def DemandeSupportAll(request):
     }
     return render(request, "SuperAdmin/DemandeSupportAll.html", context)
 
+
+
+
+def detail_demande_support_superadmin(request, pk):
+    demande = get_object_or_404(
+        DemandeSupport.objects
+            .select_related('cliente__user',
+                            'achat_support__support',
+                            'updated_by__user'),
+        pk=pk
+    )
+    return render(request, "SuperAdmin/detail_demande_support_superadmin.html", {
+        'demande': demande
+    })
+
+
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
+def supportTechnique_detail(request, supportTechnique_id):
+    supportTechnique = get_object_or_404(SupportTechnique, id=supportTechnique_id)
+    context = {'supportTechnique': supportTechnique}
+    return render(request, 'SuperAdmin/supportTechnique_detail.html', context)
 
 
 

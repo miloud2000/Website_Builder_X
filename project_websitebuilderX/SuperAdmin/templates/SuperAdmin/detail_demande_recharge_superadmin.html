@@ -8,12 +8,12 @@
     <!-- PAGE-HEADER -->
     <div class="page-header">
       <h1 class="page-title my-auto text-dark">
-        <i class="mdi mdi-delete-forever"></i> Détail du gestionnaire
+        <i class="mdi mdi-delete-forever"></i> Détail de la demande de recharge
       </h1>
       <div>
         <ol class="breadcrumb mb-0">
           <li class="breadcrumb-item"><a href="{% url 'all_demandes_recharger' %}">Gestion des demandes de recharge</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Détail du gestionnaire </li>
+          <li class="breadcrumb-item active" aria-current="page">Détail de la demande de recharge </li>
         </ol>
       </div>
     </div>
@@ -21,20 +21,31 @@
     <!-- CARD DE SUPPRESSION -->
     <div class="card">
       <div class="card-header">
-        <h5 class="mb-0">Détail du gestionnaire</h5>
+        <h5 class="mb-0">Détails de la demande</h5>
       </div>
       <div class="card-body">
         <ul class="list-group list-group-flush">
-          <li class="list-group-item"><strong>User Gestionnaire:</strong> {{ gestionnaire.user.username }}</li>
-          <li class="list-group-item"><strong>Nom Gestionnaire:</strong> {{ gestionnaire.name }}</li>
-          <li class="list-group-item"><strong>Email Gestionnaire:</strong> {{ gestionnaire.email }}</li>
-          <li class="list-group-item"><strong>Tel Gestionnaire:</strong> {{ gestionnaire.phone }}</li>
-          <li class="list-group-item"><strong>Date ajouter Gestionnaire:</strong> {{ gestionnaire.date_created }}</li>
-          <li class="list-group-item"><strong>Status Gestionnaire:</strong> {{ gestionnaire.Status }}</li>
+          <li class="list-group-item"><strong>Code:</strong> {{ demande.code }}</li>
+          <li class="list-group-item"><strong>Client:</strong> {{ demande.client }}</li>
+          <li class="list-group-item"><strong>Montant:</strong> {{ demande.montant }}</li>
+          <li class="list-group-item"><strong>Statut:</strong> {{ demande.statut }}</li>
+          <li class="list-group-item"><strong>Date:</strong> {{ demande.date }}</li>
+          <li class="list-group-item"><strong>Gestionnaire:</strong> {{ demande.gestionnaire }}</li>
+          <li class="list-group-item"><strong>Motif:</strong> {{ demande.motif|default:"—" }}</li>
+          <li class="list-group-item">
+            <strong>Preuve:</strong>
+            {% if demande.image_url %}
+              <a href="{{ demande.image_url }}" target="_blank">
+                <img src="{{ demande.image_url }}" class="img-thumbnail" style="width: 80px;">
+              </a>
+            {% else %}
+              <span class="text-muted">Aucune</span>
+            {% endif %}
+          </li>
         </ul>
       </div>
     </div>
-{% comment %}     
+    
     <h5 class="mt-4">Historique des modifications</h5>
     <table class="table table-bordered">
       <thead>
@@ -55,7 +66,7 @@
           <tr><td colspan="3" class="text-center text-muted">Aucune trace disponible.</td></tr>
         {% endfor %}
       </tbody>
-    </table> {% endcomment %}
+    </table>
     <a href="{% url 'all_demandes_recharger' %}" class="btn btn-secondary mt-3">
       <i class="fas fa-arrow-left me-1"></i> Retour à la liste
     </a>

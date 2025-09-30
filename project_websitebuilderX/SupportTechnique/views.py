@@ -54,13 +54,32 @@ from websitebuilder.tokens import account_activation_token
 #     return render(request, "SupportTechnique/homeSupportTechnique.html",context)
 
 
-
+from django.utils.timezone import now
 
 #DashbordHome of SupportTechnique
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SupportTechnique']) 
 def dashbordHomeSupportTechnique(request):  
-    return render(request, "SupportTechnique/dashbordHomeSupportTechnique.html")
+    support_user = SupportTechnique.objects.get(user=request.user)
+    demandes_count = DemandeSupport.objects.filter(updated_by=support_user).count()
+    not_done_count = DemandeSupport.objects.filter(status='Not Done yet').count()
+    total_supports = Supports.objects.count()
+    
+    today = now()
+    start_of_month = today.replace(day=1)
+    demandes_this_month = DemandeSupport.objects.filter(date_created__gte=start_of_month).count()
+
+
+    context = {
+        'demandes_count': demandes_count,
+        'not_done_count': not_done_count,
+        'total_supports': total_supports,
+        'demandes_this_month': demandes_this_month,
+        'today': today,
+        }
+
+    return render(request, "SupportTechnique/dashbordHomeSupportTechnique.html", context)
+
 
 
 

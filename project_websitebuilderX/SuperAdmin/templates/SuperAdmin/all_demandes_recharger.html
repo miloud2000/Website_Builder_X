@@ -145,6 +145,7 @@
                                                 <th scope="col" class="">Code</th>
                                                 <th scope="col" class="">Mis à jour par</th>
                                                 <th scope="col" class="">Preuve</th>
+                                                <th scope="col" class="">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -186,6 +187,11 @@
                                                     {% else %}
                                                     <span class="text-muted small">Aucune</span>
                                                     {% endif %}
+                                                </td>
+                                                <td>
+                                                  <a href="{% url 'detail_demande_recharge_superadmin' demande.id %}" class="text-decoration-none">
+                                                    <span class="badge bg-dark-transparent rounded-pill text-dark p-2 px-3">Voir les détails</span>
+                                                  </a>
                                                 </td>
                                                 
                                             </tr>

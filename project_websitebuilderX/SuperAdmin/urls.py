@@ -85,6 +85,7 @@ urlpatterns = [
 
     path('full_size_image_Super_Admin/<int:traceDemandeRecharger_id>/',views.full_size_image_Super_Admin, name="full_size_image_Super_Admin"), 
     path('gestionnaire/<int:gestionnaire_id>/', views.gestionnaire_detail, name='gestionnaire_detail'),
+    path('detail-demandes-recharge-superadmin/<int:id>/',views.detail_demande_recharge_superadmin,name='detail_demande_recharge_superadmin'),
 
 
     path('traceDemandeRechargerDone/',views.traceDemandeRechargerDone, name="traceDemandeRechargerDone"), 
@@ -97,6 +98,10 @@ urlpatterns = [
 
     path('DemandeSupportAll/',views.DemandeSupportAll, name="DemandeSupportAll"), 
     path('export-demande-support/<str:format>/', views.export_demande_support_filtered, name='export_demande_support_filtered'),
+    path('detail-demandes-support-superadmin/<int:pk>/',views.detail_demande_support_superadmin, name='detail_demande_support_superadmin'),
+    path('supportTechnique/<int:supportTechnique_id>/', views.supportTechnique_detail, name='supportTechnique_detail'),
+
+
 
     path('DemandeSupportDoneSA/',views.DemandeSupportDoneSA, name="DemandeSupportDoneSA"), 
     path('DemandeSupportNotDoneyetSA/',views.DemandeSupportNotDoneyetSA, name="DemandeSupportNotDoneyetSA"), 

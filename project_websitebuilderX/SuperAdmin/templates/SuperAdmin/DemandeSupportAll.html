@@ -131,6 +131,7 @@
                                                 <th scope="col" class="">Date de création</th>
                                                 <th scope="col" class="">Code de demande</th>
                                                 <th scope="col" class="">Mise à jour par</th>
+                                                <th scope="col" class="">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -164,12 +165,18 @@
                                                 <td class="mb-0 fs-14 fw-semibold">{{ DemandeSupport.code_DemandeSupport }}</td>
                                                 <td>
                                                     {% if DemandeSupport.updated_by and DemandeSupport.updated_by.user %}
-                                                    <a class="mb-0 fs-14 fw-semibold" href="" class="text-decoration-none">
+                                                    <a class="mb-0 fs-14 fw-semibold" href="{% url 'supportTechnique_detail' DemandeSupport.updated_by.id %}" class="text-decoration-none">
                                                         <span class="badge bg-dark-transparent rounded-pill text-dark p-2 px-3">{{ DemandeSupport.updated_by }}</span>
                                                     </a>
                                                     {% else %}
                                                     <span class="mb-0 fs-12 fw-semibold" >Non attribué</span>
                                                     {% endif %}
+                                                </td>
+                                              </td>
+                                                <td>
+                                                  <a href="{% url 'detail_demande_support_superadmin' DemandeSupport.id %}" class="text-decoration-none">
+                                                    <span class="badge bg-dark-transparent rounded-pill text-dark p-2 px-3">Voir les détails</span>
+                                                  </a>
                                                 </td>
                                             </tr>
                                             {% empty %}

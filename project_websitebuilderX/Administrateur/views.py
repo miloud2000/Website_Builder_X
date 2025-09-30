@@ -926,6 +926,15 @@ def detail_demande_support(request, pk):
     })
 
 
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['Administrateur']) 
+def detail_supportTechnique(request, supportTechnique_id):
+    supportTechnique = get_object_or_404(SupportTechnique.objects.select_related('user'), id=supportTechnique_id)
+
+    context = {
+        'supportTechnique': supportTechnique,
+    }
+    return render(request, 'Administrateur/detail_supportTechnique.html', context)
 
 
 

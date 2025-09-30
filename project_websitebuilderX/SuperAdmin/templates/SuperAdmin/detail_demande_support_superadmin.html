@@ -12,7 +12,7 @@
       </h1>
       <div>
         <ol class="breadcrumb mb-0">
-          <li class="breadcrumb-item"><a href="{% url 'liste_demandes_support' %}">Gestion des demandes de Support</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'DemandeSupportAll' %}">Gestion des demandes de Support</a></li>
           <li class="breadcrumb-item active" aria-current="page">Détail de la demande </li>
         </ol>
       </div>
@@ -31,7 +31,7 @@
             <h6 class="card-title fw-semibold mb-3">Statut : {{ demande.status }}</h6>
             <h6 class="card-title fw-semibold mb-3">Date : {{ demande.date_created|date:"d/m/Y H:i" }}</h6>
             <p class="card-text">
-              <strong>Support Technique </strong>
+              <strong>Support Technique:</strong>
               {% if demande.updated_by %}
                 {{ demande.updated_by.user.username }}
               {% else %}
@@ -42,7 +42,7 @@
             <form method="POST">
               {% csrf_token %}
               <div class="d-flex justify-content-center gap-3 mt-4">
-                <a href="{% url 'liste_demandes_support' %}" class="btn btn-secondary">
+                <a href="{% url 'DemandeSupportAll' %}" class="btn btn-secondary">
                   <i class="mdi mdi-close-circle-outline"></i> Retour à la liste
                 </a>
               </div>
