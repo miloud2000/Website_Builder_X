@@ -188,32 +188,29 @@
                   <div class="col-xxl-4 col-md-12">
                       <div class="card">
                           <div class="card-header">
-                              <h4 class="card-title fw-semibold">Demandes de Recharge Récentes</h4>
+                              <h4 class="card-title fw-semibold">Demandes de Support Récentes</h4>
                           </div>
                           <div class="card-body pb-0">
                               <ul class="task-list">
-                                {% for recharge in latest_recharges %}
+                                {% for demande in latest_demande_supports %}
                                   <li class="d-sm-flex">
                                     <div>
-                                      {% if recharge.status == 'Done' %}
+                                       {% if demande.status == 'Done' %}
                                         <i class="task-icon bg-success"></i>
-                                      {% elif recharge.status == 'Not Done yet' %}
+                                      {% elif demande.status == 'Not Done yet' %}
                                         <i class="task-icon bg-warning"></i>
                                       {% else %}
                                         <i class="task-icon bg-danger"></i>
                                       {% endif %}
                                       <h6 class="fw-semibold">
-                                        {{ recharge.status }}
+                                        {{ demande.status }}
                                         <span class="text-muted fs-11 mx-2 fw-normal">
-                                          {{ recharge.date_created|date:"d M Y" }}
+                                          {{ demande.date_created|date:"d M Y" }}
                                         </span>
                                       </h6>
                                       <p class="text-muted fs-12 mb-0">
-                                        {{ recharge.cliente.user.username }} demande recharge de
-                                        <strong>{{ recharge.solde }} MAD</strong>
-                                        {% if recharge.motifNonAcceptation %}
-                                          — <span class="text-danger">{{ recharge.motifNonAcceptation }}</span>
-                                        {% endif %}
+                                        {{ demande.cliente.user.username }} demande support
+                                        <strong>{{ demande.achat_support.support.name }}</strong>
                                       </p>
                                       </div>
                                       {% comment %} <div class="ms-auto d-md-flex">
@@ -235,7 +232,7 @@
                     <div class="card overflow-hidden">
                       <div class="card-header">
                         <div>
-                          <h3 class="card-title">Rapport des ventes par site web</h3>
+                          <h3 class="card-title">Derniers achats de support</h3>
                         </div>
                       </div>
                       <div class="card-body p-0 mt-2">
@@ -247,33 +244,37 @@
                         <div class="table-responsive mt-2 text-center">
                           <table class="table text-nowrap border-dashed mb-0">
                             <thead class="text-uppercase">
-                              <tr>
-                                <th scope="col" class="text-start">Nom du site web</th>
-                                <th scope="col">Pourcentage d’achats</th>
-                              </tr>
+                                <tr>
+                                    <th scope="col" class="text-start">Client</th>
+                                    <th scope="col">Support</th>
+                                    {% comment %} <th scope="col">Prix</th> {% endcomment %}
+                                    <th scope="col">Date</th>
+                                  </tr>
                             </thead>
                             <tbody>
-                              {% for site in website_achat_percentages|slice:":6" %}
-                              <tr>
-                                <td class="text-start p-3 d-flex align-items-center">
+                                {% for achat in latest_achat_supports %}
+                                <tr>
+                                  <td class="text-start p-3 d-flex align-items-center">
                                     {% if forloop.counter == 1 %}
-                                      <span class="sales-icon text-primary bg-primary-transparent"><i class="bi bi-display"></i></span>
+                                      <span class="sales-icon text-primary bg-primary-transparent"><i class="bi bi-person"></i></span>
                                     {% elif forloop.counter == 2 %}
-                                      <span class="sales-icon text-secondary bg-secondary-transparent"><i class="bi bi-display"></i></span>
+                                      <span class="sales-icon text-secondary bg-secondary-transparent"><i class="bi bi-person"></i></span>
                                     {% elif forloop.counter == 3 %}
-                                      <span class="sales-icon text-danger bg-danger-transparent"><i class="bi bi-display"></i></span>
+                                      <span class="sales-icon text-danger bg-danger-transparent"><i class="bi bi-person"></i></span>
                                     {% elif forloop.counter == 4 %}
-                                      <span class="sales-icon text-info bg-info-transparent"><i class="bi bi-display"></i></span>
+                                      <span class="sales-icon text-info bg-info-transparent"><i class="bi bi-person"></i></span>
                                     {% elif forloop.counter == 5 %}
-                                      <span class="sales-icon text-warning bg-warning-transparent"><i class="bi bi-display"></i></span>
+                                      <span class="sales-icon text-warning bg-warning-transparent"><i class="bi bi-person"></i></span>
                                     {% elif forloop.counter == 6 %}
-                                      <span class="sales-icon text-success bg-success-transparent"><i class="bi bi-display"></i></span>
+                                      <span class="sales-icon text-success bg-success-transparent"><i class="bi bi-person"></i></span>
                                     {% endif %}
-                                    {{ site.name }}
-                                </td>
-                                <td class="p-3">{{ site.percentage }}%</td>
-                              </tr>
-                              {% endfor %}
+                                    {{ achat.cliente.user.username }}
+                                  </td>
+                                  <td class="p-3">{{ achat.support.name }}</td>
+                                  {% comment %} <td class="p-3">{{ achat.prix }} MAD</td> {% endcomment %}
+                                  <td class="p-3">{{ achat.date_created|date:"d M Y" }}</td>
+                                </tr>
+                                {% endfor %}
                             </tbody>
                           </table>
                           <!--end /table-->
@@ -284,32 +285,33 @@
                   <div class="col-xxl-4 col-lg-6 col-md-12">
                       <div class="card">
                           <div class="card-header">
-                              <h4 class="card-title fw-semibold">Statistiques d’achat des supports</h4>
+                              <h4 class="card-title fw-semibold">Tickets mis à jour par vous</h4>
                           </div>
                           <div class="card-body">
                               <div class="browser-stats">
-                                {% for support in support_achat_percentages|slice:":6" %}
-                                  <div class="row mb-3">
-                                      <div class="col-sm-2 col-lg-3 col-xl-3 col-xxl-2 mb-sm-0 mb-3">
-                                        <img src="{% static 'images/browsers/chrome.svg' %}" class="img-fluid" alt="img">
-                                      </div>
-                                      <div class="col-sm-10 col-lg-9 col-xl-9 col-xxl-10 ps-sm-0">
-                                          <div class="d-flex align-items-end justify-content-between mb-1">
-                                              <h6 class="mb-1">{{ support.name }}</h6>
-                                              <h6 class="fw-semibold mb-1">
-                                                {{ support.count }} achats
-                                                <span class="{% if support.percentage >= 15 %}text-success{% else %}text-danger{% endif %} fs-11">
-                                                  (<i class="fe {% if support.percentage >= 15 %}fe-arrow-up{% else %}fe-arrow-down{% endif %}"></i>
-                                                  {{ support.percentage }}%)
-                                                </span>
-                                              </h6>
-                                          </div>
-                                          <div class="progress progress-sm mb-3">
-                                            <div class="progress-bar bg-primary" style="width: {{ support.percentage }}%;"></div>
-                                          </div>
-                                      </div>
+                                {% for ticket in latest_tickets_by_me %}
+                                <div class="row mb-3">
+                                  <div class="col-sm-2 col-lg-3 col-xl-3 col-xxl-2 mb-sm-0 mb-3">
+                                    <img src="{% static 'img/basic-rgb_1172029-9284.jpg' %}" class="img-fluid" alt="img">
                                   </div>
-                                  {% endfor %}
+                                  <div class="col-sm-10 col-lg-9 col-xl-9 col-xxl-10 ps-sm-0">
+                                    <div class="d-flex align-items-end justify-content-between mb-1">
+                                      <h6 class="mb-1">{{ ticket.code_Ticket }}</h6>
+                                      <h6 class="fw-semibold mb-1">
+                                        {{ ticket.status }}
+                                        <span class="{% if ticket.status == 'Fermée' %}text-danger{% elif ticket.status == 'En Cours de traitement' %}text-warning{% else %}text-success{% endif %} fs-11">
+                                          <i class="fe fe-clock"></i> {{ ticket.date_created|date:"d M Y" }}
+                                        </span>
+                                      </h6>
+                                    </div>
+                                    <div class="text-muted fs-12 mb-0">
+                                      {{ ticket.cliente.user.username }} — {{ ticket.typeTicket }} / {{ ticket.Branche }}
+                                    </div>
+                                  </div>
+                                </div>
+                              {% empty %}
+                                <p class="text-muted">Aucun ticket mis à jour par vous.</p>
+                              {% endfor %}
                                   </div>
                               </div>
                           </div>
@@ -352,59 +354,62 @@
                                 <div class="col-sm-12 col-md-6">
                                     <label class="mb-3 justify-content-end">
                                       <input type="search" name="search" value="{{ search_query }}" class="form-control" placeholder="Rechercher..." onkeydown="if(event.key==='Enter'){this.form.submit();}">
-                                      <a href="{% url 'dashbordHomeSuperAdmin' %}" class="btn btn-outline-secondary">Réinitialiser</a>
+                                      <a href="{% url 'dashbordHomeSupportTechnique' %}" class="btn btn-outline-secondary">Réinitialiser</a>
                                     </label>
                                 </div>
                               </form>
                               </div>
                               
                               <div class="tab-content">
-                                  <div class="tab-pane border-0 p-0 active" id="tab5">
-                                      <div class="table-responsive">
-                                          <table class="table table-bordered text-nowrap mb-0">
-                                              <thead class="border-top">
-                                                  <tr>
-                                                      <th scope="col" class="">Identifiant client</th>
-                                                      <th scope="col" class="">Client</th>
-                                                      <th scope="col" class="">Nom d'utilisateur</th>
-                                                      <th scope="col" class="">Date de création</th>
-                                                      <th scope="col" class="">Solde</th>
-                                                      <th scope="col" class="">Email</th>
-                                                      <th scope="col" class="">Statut</th>
-                                                      {% comment %} <th scope="col" class="">Actions</th> {% endcomment %}
-                                                  </tr>
-                                              </thead>
-                                              <tbody>
-                                                {% for client in clients %}
-                                                  <tr>
-                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #{{ client.code_client }}</h6></td>
-                                                      <td>
-                                                        <div class="d-flex">
-                                                            {% if client.photo %}
-                                                              <span class="avatar cover-image avatar-sm" style="background-image: url('{{ client.photo.url }}');"></span>
-                                                            {% else %}
-                                                              <span class="avatar cover-image avatar-sm bg-light text-muted">N/A</span>
-                                                            {% endif %}
-                                                            <h6 class="ms-3 my-auto fs-14 fw-semibold">{{ client.nom }} {{ client.prenom }}</h6>
-                                                          </div>
-                                                      </td>
-                                                      <td><h6 class="mb-0 fs-14 fw-semibold">{{ client.user.username }}</h6></td>
-                                                      <td>{{ client.date_created|date:"d M Y" }}</td>
-                                                      <td><span class="fw-semibold">{{ client.solde }} MAD</span></td>
-                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> {{ client.email }}</h6></td>
-                                                      <td><span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">Actif</span></td>
-                                                      {% comment %} <td>
-                                                          <div class="g-2">
-                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
-                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
-                                                          </div>
-                                                      </td> {% endcomment %}
-                                                  </tr>
-                                                  {% endfor %}
-                                              </tbody>
-                                          </table>
-                                      </div>
+                                <div class="tab-pane border-0 p-0 active" id="tab5">
+                                  <div class="table-responsive">
+                                    <table class="table table-bordered text-nowrap mb-0">
+                                      <thead class="border-top">
+                                        <tr>
+                                          <th scope="col">Code de demande</th>
+                                          <th scope="col">Client</th>
+                                          <th scope="col">Support</th>
+                                          <th scope="col">Prix</th>
+                                          <th scope="col">Statut</th>
+                                          <th scope="col">Date de création</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {% for demande in demandes_updated_by_me %}
+                                          <tr>
+                                            <td><h6 class="mb-0 fs-14 fw-semibold">{{ demande.code_DemandeSupport }}</h6></td>
+                                            <td>
+                                              <div class="d-flex">
+                                                {% if demande.cliente.photo %}
+                                                  <span class="avatar cover-image avatar-sm" style="background-image: url('{{ demande.cliente.photo.url }}');"></span>
+                                                {% else %}
+                                                  <span class="avatar cover-image avatar-sm bg-light text-muted">N/A</span>
+                                                {% endif %}
+                                                <h6 class="ms-3 my-auto fs-14 fw-semibold">{{ demande.cliente.nom }} {{ demande.cliente.prenom }}</h6>
+                                              </div>
+                                            </td>
+                                            <td><h6 class="mb-0 fs-14 fw-semibold">{{ demande.achat_support.support.name }}</h6></td>
+                                            <td><span class="fw-semibold">{{ demande.achat_support.prix }} MAD</span></td>
+                                            <td>
+                                              {% if demande.status == 'Done' %}
+                                                <span class="badge bg-success-transparent text-success p-2 px-3">Traitée</span>
+                                              {% else %}
+                                                <span class="badge bg-warning-transparent text-warning p-2 px-3">En attente</span>
+                                              {% endif %}
+                                            </td>
+                                            <td>{{ demande.date_created|date:"d M Y" }}</td>
+                                          </tr>
+                                        {% empty %}
+                                          <tr>
+                                            <td colspan="6" class="text-center text-muted">Aucune demande mise à jour par vous.</td>
+                                          </tr>
+                                        {% endfor %}
+                                      </tbody>
+                                    </table>
                                   </div>
+                                </div>
+                              </div>
+                              
                                   {% comment %} <div class="tab-pane border-0 p-0" id="tab6">
                                       <div class="table-responsive">
                                           <table class="table table-bordered text-nowrap mb-0">

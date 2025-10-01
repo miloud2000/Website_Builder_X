@@ -1199,7 +1199,7 @@
                         </li>
                         <!-- End::slide -->
 
-                        <!-- Start::slide -->
+                        {% comment %} <!-- Start::slide -->
                         <li class="slide has-sub">
                             <a href="javascript:void(0);" class="side-menu__item">
                                 <i class="fe fe-package side-menu__icon"></i>
@@ -1218,11 +1218,11 @@
                                 </li>
                                
                             </ul>
-                        </li>
+                        </li> {% endcomment %}
                         <!-- End::slide -->
                          <!-- Start::slide -->
                          <li class="slide">
-                            <a href="{% url 'liste_websites' %}" class="side-menu__item">
+                            <a href="{% url 'websites_liste' %}" class="side-menu__item">
                                 <i class="fe fe-aperture side-menu__icon"></i>
                                 <span class="side-menu__label">Liste des Websites</span>
                             </a>
@@ -1230,7 +1230,7 @@
                         <!-- Start::slide -->
                         <!-- Start::slide -->
                         <li class="slide">
-                            <a href="{% url 'liste_supports' %}" class="side-menu__item">
+                            <a href="{% url 'supports_list_support' %}" class="side-menu__item">
                                 <i class="fe fe-aperture side-menu__icon"></i>
                                 <span class="side-menu__label">Liste des Services</span>
                             </a>
@@ -1239,7 +1239,7 @@
                         
                         <!-- Start::slide -->
                         <li class="slide">
-                            <a href="{% url 'tickets_list' %}" class="side-menu__item">
+                            <a href="{% url 'list_ticket_ST' %}" class="side-menu__item">
                                 <i class="fe fe-layers side-menu__icon"></i>
                                 <span class="side-menu__label">Ticket</span>
                             </a>

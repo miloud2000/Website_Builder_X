@@ -132,21 +132,25 @@ def add_ticket(request):
 
 
 
-
+from django.core.paginator import Paginator
+from django.db.models import Q
+from datetime import datetime
 
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SupportTechnique']) 
 def list_ticket_ST(request):
     tickets = Ticket.objects.filter(typeTicket="Technique").order_by('-date_created')
 
-    # Apply filters
+    # 🔍 Filtrage
     code_ticket = request.GET.get('code_ticket', '')
     date_created = request.GET.get('date_created', '')
     username_client = request.GET.get('username_client', '')
     code_demande = request.GET.get('code_demande', '')
     branche = request.GET.get('branche', '')
-    status = request.GET.get('status', '')
-    
+    status_filter = request.GET.get('status', '')
+    per_page = int(request.GET.get('per_page', 10))
+    page_number = request.GET.get('page')
+
     if code_ticket:
         tickets = tickets.filter(code_Ticket__icontains=code_ticket)
     if date_created:
@@ -158,16 +162,27 @@ def list_ticket_ST(request):
     if username_client:
         tickets = tickets.filter(cliente__user__username__icontains=username_client)
     if code_demande:
-        tickets = tickets.filter(code_Demande=code_demande)
+        tickets = tickets.filter(code_Demande__icontains=code_demande)
     if branche:
         tickets = tickets.filter(Branche=branche)
-    if status:
-        tickets = tickets.filter(status=status)
-    
+    if status_filter:
+        tickets = tickets.filter(status=status_filter)
+
+    paginator = Paginator(tickets, per_page)
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'tickets' :tickets,
+        'page_obj': page_obj,
+        'per_page': per_page,
+        'code_ticket': code_ticket,
+        'date_created': date_created,
+        'username_client': username_client,
+        'code_demande': code_demande,
+        'branche': branche,
+        'status_filter': status_filter,
     }
-    return render(request, "Tickets/list_ticket_ST.html",context)
+
+    return render(request, "Tickets/list_ticket_ST.html", context)
 
 
 

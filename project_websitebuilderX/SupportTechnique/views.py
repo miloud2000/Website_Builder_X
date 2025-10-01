@@ -55,6 +55,8 @@ from websitebuilder.tokens import account_activation_token
 
 
 from django.utils.timezone import now
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 #DashbordHome of SupportTechnique
 @login_required(login_url='login')
@@ -69,6 +71,54 @@ def dashbordHomeSupportTechnique(request):
     start_of_month = today.replace(day=1)
     demandes_this_month = DemandeSupport.objects.filter(date_created__gte=start_of_month).count()
 
+    latest_demande_supports = (
+    DemandeSupport.objects
+    .filter(updated_by=support_user)
+    .select_related('cliente__user', 'achat_support__support')
+    .order_by('-date_created')[:6]
+    )
+    
+    
+    latest_achat_supports = (
+    AchatSupport.objects
+    .select_related('cliente__user', 'support')
+    .order_by('-date_created')[:6]
+    )
+
+
+    latest_tickets_by_me = (
+    Ticket.objects
+    .filter(updated_by_ts=support_user)
+    .select_related('cliente__user', 'supportName')
+    .order_by('-date_created')[:6]
+    )
+
+    support_user = SupportTechnique.objects.get(user=request.user)
+    demandes_updated_by_me = (
+    DemandeSupport.objects
+    .filter(updated_by=support_user)
+    .select_related('cliente__user', 'achat_support__support')
+    .order_by('-date_created')
+    )
+
+    # 🔍 Recherche et pagination
+    search_query = request.GET.get('search', '')
+    per_page = int(request.GET.get('per_page', 10))
+    page_number = request.GET.get('page')
+
+    demandes_qs = DemandeSupport.objects.filter(updated_by=support_user).select_related('cliente__user', 'achat_support__support')
+
+    if search_query:
+        demandes_qs = demandes_qs.filter(
+            Q(cliente__nom__icontains=search_query) |
+            Q(cliente__prenom__icontains=search_query) |
+            Q(cliente__user__username__icontains=search_query) |
+            Q(code_DemandeSupport__icontains=search_query) |
+            Q(achat_support__support__name__icontains=search_query)
+        )
+
+    paginator = Paginator(demandes_qs.order_by('-date_created'), per_page)
+    page_obj = paginator.get_page(page_number)
 
     context = {
         'demandes_count': demandes_count,
@@ -76,7 +126,14 @@ def dashbordHomeSupportTechnique(request):
         'total_supports': total_supports,
         'demandes_this_month': demandes_this_month,
         'today': today,
-        }
+        'latest_demande_supports': latest_demande_supports,
+        'latest_achat_supports': latest_achat_supports,
+        'latest_tickets_by_me': latest_tickets_by_me,
+        'demandes_updated_by_me': demandes_updated_by_me,
+        'page_obj': page_obj,
+        'per_page': per_page,
+        'search_query': search_query,
+    }
 
     return render(request, "SupportTechnique/dashbordHomeSupportTechnique.html", context)
 
@@ -177,27 +234,168 @@ def confirm_consome_support(request):
 
 
 #List of Demands Support Not Done yet [SupportTechnique]
+from django.core.paginator import Paginator
+from django.db.models import Q
+
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SupportTechnique']) 
 def DemandeSupportNotDoneyet(request): 
-    DemandeSupports = DemandeSupport.objects.filter(status='Not Done yet').order_by('-date_created')
-    context = {'DemandeSupports': DemandeSupports} 
-    return render(request, "SupportTechnique/DemandeSupportNotDoneyet.html",context)
+    query = request.GET.get('q', '')
+    status_filter = request.GET.get('status', 'Not Done yet')
+    per_page = int(request.GET.get('per_page', 10))
+    page_number = request.GET.get('page')
+
+    demandes_qs = DemandeSupport.objects.filter(status=status_filter).select_related('cliente__user', 'achat_support__support')
+
+    if query:
+        demandes_qs = demandes_qs.filter(
+            Q(cliente__nom__icontains=query) |
+            Q(cliente__prenom__icontains=query) |
+            Q(cliente__user__username__icontains=query) |
+            Q(code_DemandeSupport__icontains=query) |
+            Q(achat_support__support__name__icontains=query)
+        )
+
+    paginator = Paginator(demandes_qs.order_by('-date_created'), per_page)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'per_page': per_page,
+        'query': query,
+        'status_filter': status_filter,
+    }
+
+    return render(request, "SupportTechnique/DemandeSupportNotDoneyet.html", context)
 
 
 
 
 #List of Demands Support Done [SupportTechnique]
+from django.core.paginator import Paginator
+from django.db.models import Q
+
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SupportTechnique']) 
 def DemandeSupportDone(request): 
-    DemandeSupports = DemandeSupport.objects.filter(status='Done').order_by('-date_created')
-    context = {'DemandeSupports': DemandeSupports} 
-    return render(request, "SupportTechnique/DemandeSupportDone.html",context)
+    support_user = SupportTechnique.objects.get(user=request.user)
+
+    query = request.GET.get('q', '')
+    status_filter = request.GET.get('status', 'Done')
+    per_page = int(request.GET.get('per_page', 10))
+    page_number = request.GET.get('page')
+
+    demandes_qs = DemandeSupport.objects.filter(status=status_filter, updated_by=support_user).select_related('cliente__user', 'achat_support__support')
+
+    if query:
+        demandes_qs = demandes_qs.filter(
+            Q(cliente__nom__icontains=query) |
+            Q(cliente__prenom__icontains=query) |
+            Q(cliente__user__username__icontains=query) |
+            Q(code_DemandeSupport__icontains=query) |
+            Q(achat_support__support__name__icontains=query)
+        )
+
+    paginator = Paginator(demandes_qs.order_by('-date_created'), per_page)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'per_page': per_page,
+        'query': query,
+        'status_filter': status_filter,
+    }
+
+    return render(request, "SupportTechnique/DemandeSupportDone.html", context)
 
 
 
 
 
 
+
+@login_required
+def websites_liste(request):
+    status     = request.GET.get('status', '').strip()
+    catégorie  = request.GET.get('catégorie', '').strip()
+    CMS        = request.GET.get('CMS', '').strip()
+    langues    = request.GET.get('langues', '').strip()
+    plan       = request.GET.get('plan', '').strip()
+    page       = request.GET.get('page', 1)
+    per_page   = 10 
+
+    websites = Websites.objects.filter(is_visible=True)
+
+    if status:
+        websites = websites.filter(status=status)
+    if catégorie:
+        websites = websites.filter(catégorie=catégorie)
+    if CMS:
+        websites = websites.filter(CMS=CMS)
+    if langues:
+        websites = websites.filter(langues=langues)
+    if plan:
+        websites = websites.filter(plan=plan)
+
+    websites = websites.order_by('-date_created')
+
+    paginator = Paginator(websites, per_page)
+    page_obj = paginator.get_page(page)
+
+    catégories_list = Websites.objects.values_list('catégorie', flat=True).distinct()
+    cms_list        = Websites.objects.values_list('CMS', flat=True).distinct()
+    langues_list    = Websites.objects.values_list('langues', flat=True).distinct()
+    plans_list      = Websites.objects.values_list('plan', flat=True).distinct()
+
+    return render(request, "SupportTechnique/websites_liste.html", {
+        'websites': page_obj.object_list,
+        'page_obj': page_obj,
+        'status': status,
+        'catégorie': catégorie,
+        'CMS': CMS,
+        'langues': langues,
+        'plan': plan,
+        'catégories_list': catégories_list,
+        'cms_list': cms_list,
+        'langues_list': langues_list,
+        'plans_list': plans_list,
+    })
+
+
+
+
+def details_website(request, id):
+    website = get_object_or_404(Websites, id=id)
+    return render(request, 'SupportTechnique/details_website.html', {'website': website})
+
+
+
+
+def supports_list_support(request):
+    status = request.GET.get('status')
+
+    supports = Supports.objects.all()
+    if status:
+        supports = supports.filter(status=status)
+
+    supports = supports.order_by('-date_created')
+
+    # ✅ Pagination
+    paginator = Paginator(supports, 10)  # 10 éléments par page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,  # utilisé dans le template
+        'status': status,
+        'status_choices': ['Disponible', 'No Disponible'],
+    }
+    return render(request, 'SupportTechnique/supports_list_support.html', context)
+
+
+
+
+def details_support(request, id):
+    support = get_object_or_404(Supports, id=id)
+    return render(request, 'SupportTechnique/details_support.html', {'support': support})
 
