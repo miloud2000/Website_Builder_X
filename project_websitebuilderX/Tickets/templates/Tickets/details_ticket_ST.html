@@ -942,9 +942,12 @@
             </li>
             <div class="text-center bg-light p-3 rounded shadow-sm mx-auto" style="max-width: 600px;">
                 <strong>Description:</strong> {{ ticket.description }} <br>
+                {% if ticket.pièce_joint %}
                 <div class="text-center my-3">
-                    <img src="{{ ticket.pièce_joint.url }}" alt="Pièce jointe" class="img-fluid rounded shadow" style="max-width: 400px;">
+                  <img src="{{ ticket.pièce_joint.url }}" alt="Pièce jointe" class="img-fluid rounded shadow" style="max-width: 400px;">
                 </div>
+              {% endif %}
+              
             </div>
           {% for conv in conversations %}
             {% if conv.sender_type != 'Cliente' %}

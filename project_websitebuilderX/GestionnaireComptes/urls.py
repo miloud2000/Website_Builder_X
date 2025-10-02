@@ -7,7 +7,7 @@ urlpatterns = [
     
     
     path('dashbordHomeGestionnaireComptes/',views.dashbordHomeGestionnaireComptes, name="dashbordHomeGestionnaireComptes"), 
-    # path('homeGestionnairesComptes/',views.homeGestionnairesComptes, name="homeGestionnairesComptes"), 
+    path('homeGestionnairesComptes/',views.homeGestionnairesComptes, name="homeGestionnairesComptes"), 
 
     path('details_DemandeRecharger/<int:demande_recharger_id>/', views.details_DemandeRecharger, name='details_DemandeRecharger'),
     

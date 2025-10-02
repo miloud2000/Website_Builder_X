@@ -4,219 +4,1470 @@
 
 {% block content %}
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+          <div class="container-fluid">
 
 
-<!-- partial -->
-<div class="main-panel">
-    <div class="content-wrapper">
-      <div class="row">
-        <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-            <h3 class="font-weight-bold">Bienvenue Gestionnaire Comptes {{request.user}} </h3>
-            <h6 class="font-weight-normal mb-0">Sur Website Builder</h6>
-          </div>
-          <br>
-        <!-- start code of number -->
-       
-        <div class="app-wrapper">
-	    
-            <div class="app-content pt-3 p-md-3 p-lg-4">
-                <div class="container-xl">
-                    <div class="row g-4 mb-4">
-                        <div class="col-6 col-lg-3">
-                            <div class="app-card app-card-stat shadow-sm h-100">
-                                <div class="app-card-body p-3 p-lg-4">
-                                    <h4 class="stats-type mb-1">Total Client </h4>
-                                    <div class="stats-figure" style="FONT-WEIGHT: BOLD;
-                                    font-size: xx-large;">100 Client</div>
-                                </div>
-                                <a class="app-card-link-mask" href="#"></a>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3" >
-                            <div class="app-card app-card-stat shadow-sm h-100">
-                                <div class="app-card-body p-3 p-lg-4">
-                                    <h4 class="stats-type mb-1">Total Websites</h4>
-                                    <div class="stats-figure" style="FONT-WEIGHT: BOLD;
-                                    font-size: xx-large;">50 Website</div>
-                                </div>
-                                <a class="app-card-link-mask" href="#"></a>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="app-card app-card-stat shadow-sm h-100">
-                                <div class="app-card-body p-3 p-lg-4">
-                                    <h4 class="stats-type mb-1">Total Service</h4>
-                                    <div class="stats-figure" style="FONT-WEIGHT: BOLD;
-                                    font-size: xx-large;">60 Service</div>
-                                </div>
-                                <a class="app-card-link-mask" href="#"></a>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="app-card app-card-stat shadow-sm h-100">
-                                <div class="app-card-body p-3 p-lg-4">
-                                    <h4 class="stats-type mb-1">Total Admin</h4>
-                                    <div class="stats-figure" style="FONT-WEIGHT: BOLD;
-                                    font-size: xx-large;">4 Admin</div>
-                                </div>
-                                <a class="app-card-link-mask" href="#"></a>
-                            </div>
-                        </div>
-                        
-                    </div>
-                    
+              <!-- PAGE-HEADER -->
+              <div class="page-header">
+                <h1 class="page-title my-auto">Bienvenue Gestionnaire Comptes {{request.user}}</h1>
+                <div>
+                  <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                      <a href="javascript:void(0)">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Dashboard 01</li>
+                  </ol>
                 </div>
-            </div>
-         
-        </div>   
-        <div class="col-md-12 grid-margin">
-          <div class="row">
-            <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-              <h3 class="font-weight-bold">Last activation </h3>
-              {% comment %} <h6 class="font-weight-normal mb-0">Sur Website Builder</h6> {% endcomment %}
-            </div>
-            
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        
-      </div>
-      <div class="row">
-       
-      </div>
-      <div class="row">
-       
-      </div>
-      <div class="row">
-        <div class="col-md-7 grid-margin stretch-card">
-          <div class="card">
-            <div class="card-body">
-              <p class="card-title mb-0">Dernier mes sites Web</p>
-              <div class="table-responsive">
-                <table class="table table-striped table-borderless">
-                  <thead>
-                    <tr>
-                      <th>Nom du site Web</th>
-                      {% comment %} <th>Price</th> {% endcomment %}
-                      <th>Date</th>
-                      <th>Status</th>
-                    </tr>  
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>E-Commerce ALT12</td>
-                      {% comment %} <td class="font-weight-bold">$362</td> {% endcomment %}
-                      <td>21 Sep 2023</td>
-                      <td class="font-weight-medium"><div class="badge badge-success">Complété</div></td>
-                    </tr>
-                    <tr>
-                      <td>SBloger ALT12</td>
-                      {% comment %} <td class="font-weight-bold">$116</td> {% endcomment %}
-                      <td>13 Jun 2024</td>
-                      <td class="font-weight-medium"><div class="badge badge-success">Complété</div></td>
-                    </tr>
-                    <tr>
-                      <td>Nouvelles ALT45</td>
-                      {% comment %} <td class="font-weight-bold">$551</td> {% endcomment %}
-                      <td>28 Sep 2025</td>
-                      <td class="font-weight-medium"><div class="badge badge-warning">En attente</div></td>
-                    </tr>
-                    <tr>
-                      <td>E-Commerce ALT44</td>
-                      {% comment %} <td class="font-weight-bold">$523</td> {% endcomment %}
-                      <td>30 Jun 2023</td>
-                      <td class="font-weight-medium"><div class="badge badge-warning">En attente</div></td>
-                    </tr>
-                    <tr>
-                      <td>Nouvelles ALT67</td>
-                      {% comment %} <td class="font-weight-bold">$781</td> {% endcomment %}
-                      <td>01 Nov 2023</td>
-                      <td class="font-weight-medium"><div class="badge badge-danger">Annulé</div></td>
-                    </tr>
-                  </tbody>
-                </table>
               </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-5 grid-margin stretch-card">
-            <div class="card">
-                <div class="card-body">
-                    <img style="
-                    width: 329px;
-                    height: 267px;
-                " src="{% static "img/test1.png" %}" alt="#">
-                </div>
-            </div>
-          </div>
-        
-      </div>
-      <div class="row">
-      </div>
-      
-      <div class="row">
-        <div class="col-md-12 grid-margin stretch-card">
-          <div class="card">
-            <div class="card-body">
-              <p class="card-title">Mes derniers services</p>
+              <!-- PAGE-HEADER END -->
+
+              <!-- ROW-1 -->
               <div class="row">
-                <div class="col-12">
-                  <div class="table-responsive">
-                    <table id="example" class="display expandable-table" style="width:100%">
-                      <thead>
-                        <tr>
-                          <th>Service de nom</th>
-                          <th>Description</th>
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Maintenance de DNS</td>
-                          <td>Lorem ipsum dolor sit amet consectetur adipisicing</td>
-                          <td class="badge badge-success" style="margin: 2px;">Consomé</td>
-                        </tr>
-                      </tbody>
-                  </table>
+                <!-- Demandes mises à jour -->
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xxl-3">
+                    <div class="card overflow-hidden">
+                      <div class="card-body">
+                        <div class="d-flex">
+                          <div class="mt-2">
+                            <h6 class="fw-normal">Demandes mises à jour</h6>
+                            <h2 class="mb-0 text-dark fw-semibold">{{ demandes_modifiees_count }}</h2>
+                          </div>
+                          <div class="ms-auto">
+                            <div class="chart-wrapper mt-1">
+                                <canvas id="saleschart"
+                                        class="chart-dropshadow"
+                                        height="100"
+                                        data-values='[{{ demandes_modifiees_count }}]'>
+                                </canvas>
+                            </div>
+                          </div>
+                        </div>
+                        <span class="text-muted fs-12">
+                          <span class="text-primary"><i class="fe fe-edit text-primary"></i> Par vous</span>
+                        </span>
+                      </div>
+                    </div>
+                </div>
+                  
+                <!-- Demandes en attente -->
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xxl-3">
+                  <div class="card overflow-hidden">
+                    <div class="card-body">
+                      <div class="d-flex">
+                        <div class="mt-2">
+                          <h6 class="fw-normal">Demandes en attente</h6>
+                          <h2 class="mb-0 text-dark fw-semibold">{{ demandes_en_attente_count }}</h2>
+                        </div>
+                        <div class="ms-auto">
+                          <div class="chart-wrapper mt-1">
+                            <canvas id="leadschart" class="chart-dropshadow" height="100" data-values='[{{ demandes_en_attente_count }}]'></canvas>
+                          </div>
+                        </div>
+                      </div>
+                      <span class="text-muted fs-12">
+                        Toutes les demandes non traitées
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              </div>
-            </div>
 
-            
-          </div>
-        </div>
-    </div>
-
-    <div id="notifications">
-      {% if messages %}
-          <div id="toast-container" class="position-fixed top-50 start-50 translate-middle" style="z-index: 1000;">
-              {% for message in messages %}
-                  <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <!-- Total Supports -->
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xxl-3">
+                  <div class="card overflow-hidden">
+                    <div class="card-body">
                       <div class="d-flex">
-                          <div class="toast-body">
-                              {{ message }}
+                        <div class="mt-2">
+                          <h6 class="fw-normal">Total des demande</h6>
+                          <h2 class="mb-0 text-dark fw-semibold">{{ total_supports }}</h2>
+                        </div>
+                        <div class="ms-auto">
+                          <div class="chart-wrapper mt-1">
+                            <canvas id="profitchart" class="chart-dropshadow" data-values='[{{ total_supports }}]'></canvas>
                           </div>
-                          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                      </div>
+                      <span class="text-muted fs-12">
+                        Tous les demandes 
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Demandes ce mois -->
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xxl-3">
+                  <div class="card overflow-hidden">
+                    <div class="card-body">
+                      <div class="d-flex">
+                        <div class="mt-2">
+                          <h6 class="fw-normal">Demandes ce mois</h6>
+                          <h2 class="mb-0 text-dark fw-semibold">{{ demandes_this_month }}</h2>
+                        </div>
+                        <div class="ms-auto">
+                          <div class="chart-wrapper mt-1">
+                            <canvas id="costchart" class="chart-dropshadow" data-values='[{{ demandes_this_month }}]'></canvas>
+                          </div>
+                        </div>
+                      </div>
+                      <span class="text-muted fs-12">
+                        Total des demandes créées en {{ today|date:"F Y" }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+              <!-- ROW-1 END -->
+
+              
+{% comment %}               
+              <!-- ROW-2 -->
+              <div class="row">
+                  <div class="col-xxl-9">
+                      <div class="card overflow-hidden">
+                          <div class="card-header">
+                              <h3 class="card-title">Sales Analytics</h3>
+                          </div>
+                          <div class="card-body">
+                              <div class="d-flex mx-auto text-center justify-content-center mb-4">
+                                  <div class="d-flex text-center justify-content-center me-3"><span
+                                          class="dot-label bg-primary my-auto"></span>Total Sales</div>
+                                  <div class="d-flex text-center justify-content-center"><span
+                                          class="dot-label bg-secondary my-auto"></span>Total Orders</div>
+                              </div>
+                              <div class="chartjs-wrapper-demo w-100">
+                                  <canvas id="transactions" class="chart-dropshadow w-100"></canvas>
+                              </div>
+                          </div>
                       </div>
                   </div>
-              {% endfor %}
+                  <!-- COL END -->
+                  <div class="col-xxl-3">
+                      <div class="card overflow-hidden">
+                          <div class="card-body pb-0 bg-recentorder">
+                              <h3 class="card-title text-fixed-white mb-4">Recent Orders</h3>
+                              <div class="chartjs-wrapper-demo">
+                                  <canvas id="recentorders" class="chart-dropshadow"></canvas>
+                              </div>
+                          </div>
+                          <div id="back-chart"></div>
+                          <div class="card-body">
+                              <div class="d-flex mb-4 mt-3">
+                                  <div class="avatar avatar-md bg-secondary-transparent text-secondary bradius me-3">
+                                      <i class="fe fe-check"></i>
+                                  </div>
+                                  <div class="">
+                                      <h6 class="mb-1 fw-semibold fs-14">Delivered Orders</h6>
+                                      <p class="fw-normal fs-12 mb-1"> <span class="text-success">3.5%</span>
+                                          increased </p>
+                                  </div>
+                                  <div class=" ms-auto mb-auto">
+                                      <p class="fw-bold fs-20 mb-0"> 1,768 </p>
+                                  </div>
+                              </div>
+                              <div class="d-flex">
+                                  <div class="avatar  avatar-md bg-pink-transparent text-pink bradius me-3">
+                                      <i class="fe fe-x"></i>
+                                  </div>
+                                  <div class="">
+                                      <h6 class="mb-1 fw-semibold fs-14">Cancelled Orders</h6>
+                                      <p class="fw-normal fs-12 mb-1"> <span class="text-success">1.2%</span>
+                                          increased </p>
+                                  </div>
+                                  <div class=" ms-auto mb-auto">
+                                      <p class="fw-bold fs-20 mb-0"> 3,675 </p>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <!-- COL END -->
+              </div>
+              <!-- ROW-2 END --> {% endcomment %}
+
+              <!-- ROW-3 -->
+              <div class="row">
+                  <div class="col-xxl-4 col-md-12">
+                      <div class="card">
+                          <div class="card-header">
+                              <h4 class="card-title fw-semibold">Demandes de Support Récentes</h4>
+                          </div>
+                          <div class="card-body pb-0">
+                              <ul class="task-list">
+                                {% for demande in latest_demande_supports %}
+                                  <li class="d-sm-flex">
+                                    <div>
+                                       {% if demande.status == 'Done' %}
+                                        <i class="task-icon bg-success"></i>
+                                      {% elif demande.status == 'Not Done yet' %}
+                                        <i class="task-icon bg-warning"></i>
+                                      {% else %}
+                                        <i class="task-icon bg-danger"></i>
+                                      {% endif %}
+                                      <h6 class="fw-semibold">
+                                        {{ demande.status }}
+                                        <span class="text-muted fs-11 mx-2 fw-normal">
+                                          {{ demande.date_created|date:"d M Y" }}
+                                        </span>
+                                      </h6>
+                                      <p class="text-muted fs-12 mb-0">
+                                        {{ demande.cliente.user.username }} demande support
+                                        <strong>{{ demande.achat_support.support.name }}</strong>
+                                      </p>
+                                      </div>
+                                      {% comment %} <div class="ms-auto d-md-flex">
+                                          <a href="javascript:void(0)" class="text-muted me-2" data-bs-toggle="tooltip"
+                                              data-bs-placement="top" title="Edit" aria-label="Edit"><span
+                                                  class="fe fe-edit"></span></a>
+                                          <a aria-label="anchor" href="javascript:void(0)" class="text-muted"><span
+                                                  class="fe fe-trash-2"></span></a>
+                                      </div> {% endcomment %}
+                                  </li>
+                                  {% empty %}
+                                  <li><p class="text-muted">Aucune demande récente.</p></li>
+                                  {% endfor %}
+                              </ul>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-xxl-4 col-lg-6 col-md-12">
+                    <div class="card overflow-hidden">
+                      <div class="card-header">
+                        <div>
+                          <h3 class="card-title">Derniers achats de support</h3>
+                        </div>
+                      </div>
+                      <div class="card-body p-0 mt-2">
+                        {% comment %}
+                        <div class="">
+                          <div id="visitors-countries" class="worldh world-map h-250"></div>
+                        </div>
+                        {% endcomment %}
+                        <div class="table-responsive mt-2 text-center">
+                          <table class="table text-nowrap border-dashed mb-0">
+                            <thead class="text-uppercase">
+                                <tr>
+                                    <th scope="col" class="text-start">Client</th>
+                                    <th scope="col">Support</th>
+                                    {% comment %} <th scope="col">Prix</th> {% endcomment %}
+                                    <th scope="col">Date</th>
+                                  </tr>
+                            </thead>
+                            <tbody>
+                                {% for achat in latest_achat_supports %}
+                                <tr>
+                                  <td class="text-start p-3 d-flex align-items-center">
+                                    {% if forloop.counter == 1 %}
+                                      <span class="sales-icon text-primary bg-primary-transparent"><i class="bi bi-person"></i></span>
+                                    {% elif forloop.counter == 2 %}
+                                      <span class="sales-icon text-secondary bg-secondary-transparent"><i class="bi bi-person"></i></span>
+                                    {% elif forloop.counter == 3 %}
+                                      <span class="sales-icon text-danger bg-danger-transparent"><i class="bi bi-person"></i></span>
+                                    {% elif forloop.counter == 4 %}
+                                      <span class="sales-icon text-info bg-info-transparent"><i class="bi bi-person"></i></span>
+                                    {% elif forloop.counter == 5 %}
+                                      <span class="sales-icon text-warning bg-warning-transparent"><i class="bi bi-person"></i></span>
+                                    {% elif forloop.counter == 6 %}
+                                      <span class="sales-icon text-success bg-success-transparent"><i class="bi bi-person"></i></span>
+                                    {% endif %}
+                                    {{ achat.cliente.user.username }}
+                                  </td>
+                                  <td class="p-3">{{ achat.support.name }}</td>
+                                  {% comment %} <td class="p-3">{{ achat.prix }} MAD</td> {% endcomment %}
+                                  <td class="p-3">{{ achat.date_created|date:"d M Y" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                          </table>
+                          <!--end /table-->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xxl-4 col-lg-6 col-md-12">
+                      <div class="card">
+                          <div class="card-header">
+                              <h4 class="card-title fw-semibold">Tickets mis à jour par vous</h4>
+                          </div>
+                          <div class="card-body">
+                              <div class="browser-stats">
+                                {% for ticket in latest_tickets_by_me %}
+                                <div class="row mb-3">
+                                  <div class="col-sm-2 col-lg-3 col-xl-3 col-xxl-2 mb-sm-0 mb-3">
+                                    <img src="{% static 'img/basic-rgb_1172029-9284.jpg' %}" class="img-fluid" alt="img">
+                                  </div>
+                                  <div class="col-sm-10 col-lg-9 col-xl-9 col-xxl-10 ps-sm-0">
+                                    <div class="d-flex align-items-end justify-content-between mb-1">
+                                      <h6 class="mb-1">{{ ticket.code_Ticket }}</h6>
+                                      <h6 class="fw-semibold mb-1">
+                                        {{ ticket.status }}
+                                        <span class="{% if ticket.status == 'Fermée' %}text-danger{% elif ticket.status == 'En Cours de traitement' %}text-warning{% else %}text-success{% endif %} fs-11">
+                                          <i class="fe fe-clock"></i> {{ ticket.date_created|date:"d M Y" }}
+                                        </span>
+                                      </h6>
+                                    </div>
+                                    <div class="text-muted fs-12 mb-0">
+                                      {{ ticket.cliente.user.username }} — {{ ticket.typeTicket }} / {{ ticket.Branche }}
+                                    </div>
+                                  </div>
+                                </div>
+                              {% empty %}
+                                <p class="text-muted">Aucun ticket mis à jour par vous.</p>
+                              {% endfor %}
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <!-- ROW-3 END -->
+
+              <!-- ROW-4 -->
+              <div class="row">
+                  <div class="col-12 col-sm-12">
+                      <div class="card">
+                          <div class="card-header d-lg-flex">
+                              <h3 class="card-title mb-lg-0 mb-3">Liste des clients</h3>
+                              <div class="tabs-menu1 ms-auto border-0 p-0">
+                                  <!-- Tabs -->
+                                  {% comment %} <ul class="nav panel-tabs product-sale">
+                                      <li><a href="#tab5" class="active" data-bs-toggle="tab">All products</a></li>
+                                      <li><a href="#tab6" data-bs-toggle="tab">Shipped</a></li>
+                                      <li><a href="#tab7" data-bs-toggle="tab">Pending</a></li>
+                                      <li><a href="#tab8" data-bs-toggle="tab">Cancelled</a></li>
+                                  </ul> {% endcomment %}
+                              </div>
+                          </div>
+                          <div class="card-body product-table">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                  <form method="get">
+                                    <label class="mb-3">
+                                      Afficher
+                                      <select name="per_page" class="form-control" onchange="this.form.submit()">
+                                        <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                                        <option value="25" {% if per_page == 25 %}selected{% endif %}>25</option>
+                                        <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+                                        <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
+                                      </select>
+                                      entrées
+                                    </label>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <label class="mb-3 justify-content-end">
+                                      <input type="search" name="search" value="{{ search_query }}" class="form-control" placeholder="Rechercher..." onkeydown="if(event.key==='Enter'){this.form.submit();}">
+                                      <a href="{% url 'dashbordHomeSupportTechnique' %}" class="btn btn-outline-secondary">Réinitialiser</a>
+                                    </label>
+                                </div>
+                              </form>
+                              </div>
+                              
+                              <div class="tab-content">
+                                <div class="tab-pane border-0 p-0 active" id="tab5">
+                                  <div class="table-responsive">
+                                    <table class="table table-bordered text-nowrap mb-0">
+                                      <thead class="border-top">
+                                        <tr>
+                                          <th scope="col">Code de demande</th>
+                                          <th scope="col">Client</th>
+                                          <th scope="col">Support</th>
+                                          <th scope="col">Prix</th>
+                                          <th scope="col">Statut</th>
+                                          <th scope="col">Date de création</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {% for demande in demandes_updated_by_me %}
+                                          <tr>
+                                            <td><h6 class="mb-0 fs-14 fw-semibold">{{ demande.code_DemandeSupport }}</h6></td>
+                                            <td>
+                                              <div class="d-flex">
+                                                {% if demande.cliente.photo %}
+                                                  <span class="avatar cover-image avatar-sm" style="background-image: url('{{ demande.cliente.photo.url }}');"></span>
+                                                {% else %}
+                                                  <span class="avatar cover-image avatar-sm bg-light text-muted">N/A</span>
+                                                {% endif %}
+                                                <h6 class="ms-3 my-auto fs-14 fw-semibold">{{ demande.cliente.nom }} {{ demande.cliente.prenom }}</h6>
+                                              </div>
+                                            </td>
+                                            <td><h6 class="mb-0 fs-14 fw-semibold">{{ demande.achat_support.support.name }}</h6></td>
+                                            <td><span class="fw-semibold">{{ demande.achat_support.prix }} MAD</span></td>
+                                            <td>
+                                              {% if demande.status == 'Done' %}
+                                                <span class="badge bg-success-transparent text-success p-2 px-3">Traitée</span>
+                                              {% else %}
+                                                <span class="badge bg-warning-transparent text-warning p-2 px-3">En attente</span>
+                                              {% endif %}
+                                            </td>
+                                            <td>{{ demande.date_created|date:"d M Y" }}</td>
+                                          </tr>
+                                        {% empty %}
+                                          <tr>
+                                            <td colspan="6" class="text-center text-muted">Aucune demande mise à jour par vous.</td>
+                                          </tr>
+                                        {% endfor %}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                                  {% comment %} <div class="tab-pane border-0 p-0" id="tab6">
+                                      <div class="table-responsive">
+                                          <table class="table table-bordered text-nowrap mb-0">
+                                              <thead class="border-top">
+                                                  <tr>
+                                                      <th scope="col" class="">Tracking Id</th>
+                                                      <th scope="col" class="">Product</th>
+                                                      <th scope="col" class="">Customer</th>
+                                                      <th scope="col" class="">Date</th>
+                                                      <th scope="col" class="">Amount</th>
+                                                      <th scope="col" class="">Payment Mode</th>
+                                                      <th scope="col" class="">Status</th>
+                                                      <th scope="col" class="">Action</th>
+                                                  </tr>
+                                              </thead>
+                                              <tbody>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #98765490</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/9.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Headsets</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Cherry Blossom</h6></td>
+                                                      <td>30 Aug 2023</td>
+                                                      <td><span class="fw-semibold">$6.721.5</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> Online Payment</h6></td>
+                                                      <td><span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">Shipped</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #76348798</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/11.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Flower Pot</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Simon Sais</h6></td>
+                                                      <td>15 Nov 2023</td>
+                                                      <td><span class="fw-semibold">$35,7863</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> Online Payment</h6></td>
+                                                      <td><span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">Shipped</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #23986456</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/4.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Pen Drive</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Manny Jah</h6></td>
+                                                      <td>27 Jan  2023</td>
+                                                      <td><span class="fw-semibold">$5,89,6437</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Cash on Delivery</h6></td>
+                                                      <td><span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">Shipped</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #87456325</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/8.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">New Bowl</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Florinda Carasco</h6></td>
+                                                      <td>19 Sep 2023</td>
+                                                      <td><span class="fw-semibold">$17.98</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Online Payment</h6></td>
+                                                      <td><span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">Shipped</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #65783926</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/6.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Leather Watch</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Ivan Notheridiya</h6></td>
+                                                      <td>06 Oct 2023</td>
+                                                      <td><span class="fw-semibold">$8.654.4</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Cash on Delivery</h6></td>
+                                                      <td><span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">Shipped</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #34654895</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/1.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Digital Camera</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Willie Findit</h6></td>
+                                                      <td>10 Jul 2023</td>
+                                                      <td><span class="fw-semibold">$8.654.4</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Cash on Delivery</h6></td>
+                                                      <td><span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">Shipped</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #98765345</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/10.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Earphones</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Addie Minstra</h6></td>
+                                                      <td>25 Jun 2023</td>
+                                                      <td><span class="fw-semibold">$7,34,9768</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Online Payment</h6></td>
+                                                      <td><span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">Shipped</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #67546577</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/2.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Shoes</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Laura Biding</h6></td>
+                                                      <td>22 Feb 2023</td>
+                                                      <td><span class="fw-semibold">$7.76.654</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Cash on Delivery</h6></td>
+                                                      <td><span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">Shipped</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                              </tbody>
+                                          </table>
+                                      </div>
+                                  </div>
+                                  <div class="tab-pane border-0 p-0" id="tab7">
+                                      <div class="table-responsive">
+                                          <table class="table table-bordered text-nowrap mb-0">
+                                              <thead class="border-top">
+                                                  <tr>
+                                                      <th scope="col" class="">Tracking Id</th>
+                                                      <th scope="col" class="">Product</th>
+                                                      <th scope="col" class="">Customer</th>
+                                                      <th scope="col" class="">Date</th>
+                                                      <th scope="col" class="">Amount</th>
+                                                      <th scope="col" class="">Payment Mode</th>
+                                                      <th scope="col" class="">Status</th>
+                                                      <th scope="col" class="">Action</th>
+                                                  </tr>
+                                              </thead>
+                                              <tbody>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #98765490</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/9.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Headsets</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Cherry Blossom</h6></td>
+                                                      <td>30 Aug 2023</td>
+                                                      <td><span class="fw-semibold">$6.721.5</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> Online Payment</h6></td>
+                                                      <td><span class="badge bg-warning-transparent rounded-pill text-warning p-2 px-3">Pending</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #76348798</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/11.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Flower Pot</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Simon Sais</h6></td>
+                                                      <td>15 Nov 2023</td>
+                                                      <td><span class="fw-semibold">$35,7863</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> Online Payment</h6></td>
+                                                      <td><span class="badge bg-warning-transparent rounded-pill text-warning p-2 px-3">Pending</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #23986456</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/4.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Pen Drive</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Manny Jah</h6></td>
+                                                      <td>27 Jan  2023</td>
+                                                      <td><span class="fw-semibold">$5,89,6437</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Cash on Delivery</h6></td>
+                                                      <td><span class="badge bg-warning-transparent rounded-pill text-warning p-2 px-3">Pending</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #87456325</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/8.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">New Bowl</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Florinda Carasco</h6></td>
+                                                      <td>19 Sep 2023</td>
+                                                      <td><span class="fw-semibold">$17.98</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Online Payment</h6></td>
+                                                      <td><span class="badge bg-warning-transparent rounded-pill text-warning p-2 px-3">Pending</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #65783926</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/6.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Leather Watch</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Ivan Notheridiya</h6></td>
+                                                      <td>06 Oct 2023</td>
+                                                      <td><span class="fw-semibold">$8.654.4</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Cash on Delivery</h6></td>
+                                                      <td><span class="badge bg-warning-transparent rounded-pill text-warning p-2 px-3">Pending</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #34654895</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/1.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Digital Camera</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Willie Findit</h6></td>
+                                                      <td>10 Jul 2023</td>
+                                                      <td><span class="fw-semibold">$8.654.4</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Cash on Delivery</h6></td>
+                                                      <td><span class="badge bg-warning-transparent rounded-pill text-warning p-2 px-3">Pending</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #98765345</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/10.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Earphones</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Addie Minstra</h6></td>
+                                                      <td>25 Jun 2023</td>
+                                                      <td><span class="fw-semibold">$7,34,9768</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Online Payment</h6></td>
+                                                      <td><span class="badge bg-warning-transparent rounded-pill text-warning p-2 px-3">Pending</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #67546577</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/2.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Shoes</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Laura Biding</h6></td>
+                                                      <td>22 Feb 2023</td>
+                                                      <td><span class="fw-semibold">$7.76.654</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Cash on Delivery</h6></td>
+                                                      <td><span class="badge bg-warning-transparent rounded-pill text-warning p-2 px-3">Pending</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                              </tbody>
+                                          </table>
+                                      </div>
+                                  </div>
+                                  <div class="tab-pane border-0 p-0" id="tab8">
+                                      <div class="table-responsive">
+                                          <table class="table table-bordered text-nowrap mb-0">
+                                              <thead class="border-top">
+                                                  <tr>
+                                                      <th scope="col" class="">Tracking Id</th>
+                                                      <th scope="col" class="">Product</th>
+                                                      <th scope="col" class="">Customer</th>
+                                                      <th scope="col" class="">Date</th>
+                                                      <th scope="col" class="">Amount</th>
+                                                      <th scope="col" class="">Payment Mode</th>
+                                                      <th scope="col" class="">Status</th>
+                                                      <th scope="col" class="">Action</th>
+                                                  </tr>
+                                              </thead>
+                                              <tbody>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #98765490</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/9.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Headsets</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Cherry Blossom</h6></td>
+                                                      <td>30 Aug 2023</td>
+                                                      <td><span class="fw-semibold">$6.721.5</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> Online Payment</h6></td>
+                                                      <td><span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">Cancelled</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #76348798</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/11.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Flower Pot</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Simon Sais</h6></td>
+                                                      <td>15 Nov 2023</td>
+                                                      <td><span class="fw-semibold">$35,7863</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> Online Payment</h6></td>
+                                                      <td><span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">Cancelled</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #23986456</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/4.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Pen Drive</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Manny Jah</h6></td>
+                                                      <td>27 Jan  2023</td>
+                                                      <td><span class="fw-semibold">$5,89,6437</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Cash on Delivery</h6></td>
+                                                      <td><span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">Cancelled</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #87456325</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/8.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">New Bowl</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Florinda Carasco</h6></td>
+                                                      <td>19 Sep 2023</td>
+                                                      <td><span class="fw-semibold">$17.98</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Online Payment</h6></td>
+                                                      <td><span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">Cancelled</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #65783926</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/6.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Leather Watch</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Ivan Notheridiya</h6></td>
+                                                      <td>06 Oct 2023</td>
+                                                      <td><span class="fw-semibold">$8.654.4</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Cash on Delivery</h6></td>
+                                                      <td><span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">Cancelled</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #34654895</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/1.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Digital Camera</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Willie Findit</h6></td>
+                                                      <td>10 Jul 2023</td>
+                                                      <td><span class="fw-semibold">$8.654.4</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Cash on Delivery</h6></td>
+                                                      <td><span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">Cancelled</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #98765345</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/10.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Earphones</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Addie Minstra</h6></td>
+                                                      <td>25 Jun 2023</td>
+                                                      <td><span class="fw-semibold">$7,34,9768</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Online Payment</h6></td>
+                                                      <td><span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">Cancelled</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold"> #67546577</h6></td>
+                                                      <td>
+                                                          <div class="d-flex">
+                                                              <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/2.jpg"></span>
+                                                              <h6 class="ms-3 my-auto fs-14 fw-semibold">Shoes</h6>
+                                                          </div>
+                                                      </td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Laura Biding</h6></td>
+                                                      <td>22 Feb 2023</td>
+                                                      <td><span class="fw-semibold">$7.76.654</span></td>
+                                                      <td><h6 class="mb-0 fs-14 fw-semibold">Cash on Delivery</h6></td>
+                                                      <td><span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">Cancelled</span></td>
+                                                      <td>
+                                                          <div class="g-2">
+                                                              <a class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                                              <a class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="fe fe-trash-2 fs-14"></span></a>
+                                                          </div>
+                                                      </td>
+                                                  </tr>
+                                              </tbody>
+                                          </table>
+                                      </div>
+                                  </div>
+                              </div> {% endcomment %}
+                              <div class="row mt-3">
+                                <div class="col-sm-12 col-md-6 my-auto">
+                                  <span>
+                                    Affichage de {{ page_obj.start_index }} à {{ page_obj.end_index }} sur {{ page_obj.paginator.count }} entrées
+                                  </span>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                  <nav aria-label="Navigation des pages">
+                                    <ul class="pagination justify-content-end mb-0">
+                                      {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                          <a class="page-link" href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}&search={{ search_query }}">Précédent</a>
+                                        </li>
+                                      {% else %}
+                                        <li class="page-item disabled"><a class="page-link">Précédent</a></li>
+                                      {% endif %}
+                              
+                                      {% for num in page_obj.paginator.page_range %}
+                                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                          <a class="page-link" href="?page={{ num }}&per_page={{ per_page }}&search={{ search_query }}">{{ num }}</a>
+                                        </li>
+                                      {% endfor %}
+                              
+                                      {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                          <a class="page-link" href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}&search={{ search_query }}">Suivant</a>
+                                        </li>
+                                      {% else %}
+                                        <li class="page-item disabled"><a class="page-link">Suivant</a></li>
+                                      {% endif %}
+                                    </ul>
+                                  </nav>
+                                </div>
+                              </div>                              
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <!-- ROW-4 END -->
+
           </div>
-      {% endif %}
-    </div>
+      </div>
+      <!-- End::app-content -->
 
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-  $(document).ready(function(){
-      $('.toast').toast({ delay: 5000 }); // Initialize all toasts with a 5-second delay
-      $('.toast').toast('show'); // Show all toasts
-  });
-</script>
-
+      <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModal" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-body">
+                <div class="input-group">
+                  <a href="javascript:void(0);" class="input-group-text" id="Search-Grid"><i class="fe fe-search header-link-icon fs-18"></i></a>
+                  <input type="search" class="form-control border-0 px-2" placeholder="Search" aria-label="Username">
+                  <a href="javascript:void(0);" class="input-group-text" id="voice-search"><i class="fe fe-mic header-link-icon"></i></a>
+                  <a href="javascript:void(0);" class="btn btn-light btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fe fe-more-vertical"></i>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">Separated link</a></li>
+                  </ul>
+                </div>
+                <div class="mt-4">
+                  <p class="font-weight-semibold text-muted mb-2">Are You Looking For...</p>
+                  <span class="search-tags"><i class="fe fe-user me-2"></i>People<a href="javascript:void(0)" class="tag-addon"><i class="fe fe-x"></i></a></span>
+                  <span class="search-tags"><i class="fe fe-file-text me-2"></i>Pages<a href="javascript:void(0)" class="tag-addon"><i class="fe fe-x"></i></a></span>
+                  <span class="search-tags"><i class="fe fe-align-left me-2"></i>Articles<a href="javascript:void(0)" class="tag-addon"><i class="fe fe-x"></i></a></span>
+                  <span class="search-tags"><i class="fe fe-server me-2"></i>Tags<a href="javascript:void(0)" class="tag-addon"><i class="fe fe-x"></i></a></span>
+                </div>
+                <div class="my-4">
+                  <p class="font-weight-semibold text-muted mb-2">Recent Search :</p>
+                  <div class="p-2 border br-5 d-flex align-items-center text-muted mb-2 alert">
+                    <a href="notifications.html"><span>Notifications</span></a>
+                    <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert" aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                  </div>
+                  <div class="p-2 border br-5 d-flex align-items-center text-muted mb-2 alert">
+                    <a href="alerts.html"><span>Alerts</span></a>
+                    <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert" aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                  </div>
+                  <div class="p-2 border br-5 d-flex align-items-center text-muted mb-0 alert">
+                    <a href="mail.html"><span>Mail</span></a>
+                    <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert" aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <div class="btn-group ms-auto">
+                  <button class="btn btn-sm btn-primary-light">Search</button>
+                  <button class="btn btn-sm btn-primary">Clear Recents</button>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+      <!-- Start Switcher -->
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="sidebar-right" aria-labelledby="offcanvasRightLabel2">
+          <div class="offcanvas-header border-bottom bg-primary text-fixed-white">
+              <h6 class="offcanvas-title d-inline-flex text-fixed-white" id="offcanvasRightLabel2">
+                  <span class=" me-2 d-inline-flex">
+                      <i class="fe fe-bell my-auto"></i> <span class=" pulse w-9 h-9 bg-success rounded-circle"></span>
+                  </span>
+                  Notifications
+              </h6>
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body p-0">
+              <nav class="nav nav-tabs nav-justified" role="tablist">
+                  <button class="nav-link active" id="sidebar-side1" data-bs-toggle="tab" data-bs-target="#sidebar-slidepane-1"
+                      type="button" role="tab" aria-controls="sidebar-slidepane-1" aria-selected="true"><i class="d-inline-flex fe fe-settings me-1"></i> Feeds</button>
+                  <button class="nav-link" id="sidebar-side2" data-bs-toggle="tab" data-bs-target="#sidebar-slidepane-2"
+                      type="button" role="tab" aria-controls="sidebar-slidepane-2" aria-selected="false"><i class="d-inline-flex fe fe-message-circle me-1"></i>Chat</button>
+                  <button class="nav-link" id="sidebar-side3" data-bs-toggle="tab" data-bs-target="#sidebar-slidepane-3"
+                      type="button" role="tab" aria-controls="sidebar-slidepane-3" aria-selected="false"><i class="d-inline-flex fe fe-anchor me-1"></i>Timeline</button>
+              </nav>
+              <div class="tab-content">
+                  <div class="tab-pane fade show active border-0 p-0" id="sidebar-slidepane-1" role="tabpanel" aria-labelledby="sidebar-side1" tabindex="0">
+                      <div class="p-3 fw-semibold">Feeds</div>
+                      <div class="py-3 px-4 pt-0">
+                          <div class="row mb-3">
+                              <div class="col-sm-2 mb-sm-0 mb-3">
+                                  <span class="feeds avatar avatar-sm avatar-rounded bg-primary-transparent"><i class="fe fe-user text-primary"></i></span>
+                              </div>
+                              <div class="col-sm-10 ps-sm-0 my-auto">
+                                  <div class="d-flex align-items-end justify-content-between ms-2">
+                                      <h6 class="mb-0 fw-normal fs-14">New user registered</h6>
+                                      <div>
+                                          <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings me-1"></i></a>
+                                          <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-x"></i></a>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row mb-3">
+                              <div class="col-sm-2 mb-sm-0 mb-3">
+                                  <span class="feeds avatar avatar-sm avatar-rounded bg-secondary-transparent"><i class="fe fe-shopping-cart text-secondary"></i></span>
+                              </div>
+                              <div class="col-sm-10 ps-sm-0 my-auto">
+                                  <div class="d-flex align-items-end justify-content-between ms-2">
+                                      <h6 class="mb-0 fw-normal fs-14">New order delivered</h6>
+                                      <div>
+                                          <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings me-1"></i></a>
+                                          <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-x"></i></a>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row mb-3">
+                              <div class="col-sm-2 mb-sm-0 mb-3">
+                                  <span class="feeds avatar avatar-sm avatar-rounded bg-danger-transparent"><i class="fe fe-bell text-danger"></i></span>
+                              </div>
+                              <div class="col-sm-10 ps-sm-0 my-auto">
+                                  <div class="d-flex align-items-end justify-content-between ms-2">
+                                      <h6 class="mb-0 fw-normal fs-14">You have pending tasks</h6>
+                                      <div>
+                                          <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings me-1"></i></a>
+                                          <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-x"></i></a>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row mb-3">
+                              <div class="col-sm-2 mb-sm-0 mb-3">
+                                  <span class="feeds avatar avatar-sm avatar-rounded bg-warning-transparent"><i class="fe fe-gitlab text-warning"></i></span>
+                              </div>
+                              <div class="col-sm-10 ps-sm-0 my-auto">
+                                  <div class="d-flex align-items-end justify-content-between ms-2">
+                                      <h6 class="mb-0 fw-normal fs-14">New version arrived</h6>
+                                      <div>
+                                          <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings me-1"></i></a>
+                                          <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-x"></i></a>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row mb-3">
+                              <div class="col-sm-2 mb-sm-0 mb-3">
+                                  <span class="feeds avatar avatar-sm avatar-rounded bg-pink-transparent"><i class="fe fe-database text-pink"></i></span>
+                              </div>
+                              <div class="col-sm-10 ps-sm-0 my-auto">
+                                  <div class="d-flex align-items-end justify-content-between ms-2">
+                                      <h6 class="mb-0 fw-normal fs-14">Server #1 overloaded</h6>
+                                      <div>
+                                          <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings me-1"></i></a>
+                                          <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-x"></i></a>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row">
+                              <div class="col-sm-2 mb-sm-0 mb-3">
+                                  <span class="feeds avatar avatar-sm avatar-rounded bg-info-transparent"><i class="fe fe-check-circle text-info"></i></span>
+                              </div>
+                              <div class="col-sm-10 ps-sm-0 my-auto">
+                                  <div class="d-flex align-items-end justify-content-between ms-2">
+                                      <h6 class="mb-0 fw-normal fs-14">New project launched</h6>
+                                      <div>
+                                          <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings me-1"></i></a>
+                                          <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-x"></i></a>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="p-3 fw-semibold">Settings</div>
+                      <div class="py-3 px-4 pt-0">
+                          <div class="row mb-3">
+                              <div class="col-sm-2 mb-sm-0 mb-3">
+                                  <span class="feeds avatar avatar-sm avatar-rounded bg-primary-transparent"><i class="fe fe-settings text-primary"></i></span>
+                              </div>
+                              <div class="col-sm-10 ps-sm-0 my-auto">
+                                  <div class="d-flex align-items-end justify-content-between ms-2">
+                                      <h6 class="mb-0 fw-normal fs-14">General Settings</h6>
+                                      <div>
+                                          <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings"></i></a>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row mb-3">
+                              <div class="col-sm-2 mb-sm-0 mb-3">
+                                  <span class="feeds avatar avatar-sm avatar-rounded bg-secondary-transparent"><i class="fe fe-map-pin text-secondary"></i></span>
+                              </div>
+                              <div class="col-sm-10 ps-sm-0 my-auto">
+                                  <div class="d-flex align-items-end justify-content-between ms-2">
+                                      <h6 class="mb-0 fw-normal fs-14">Map Settings</h6>
+                                      <div>
+                                          <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings"></i></a>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row mb-3">
+                              <div class="col-sm-2 mb-sm-0 mb-3">
+                                  <span class="feeds avatar avatar-sm avatar-rounded bg-danger-transparent"><i class="fe fe-headphones text-danger"></i></span>
+                              </div>
+                              <div class="col-sm-10 ps-sm-0 my-auto">
+                                  <div class="d-flex align-items-end justify-content-between ms-2">
+                                      <h6 class="mb-0 fw-normal fs-14">Support Settings</h6>
+                                      <div>
+                                          <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings"></i></a>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row mb-3">
+                              <div class="col-sm-2 mb-sm-0 mb-3">
+                                  <span class="feeds avatar avatar-sm avatar-rounded bg-warning-transparent"><i class="fe fe-credit-card text-warning"></i></span>
+                              </div>
+                              <div class="col-sm-10 ps-sm-0 my-auto">
+                                  <div class="d-flex align-items-end justify-content-between ms-2">
+                                      <h6 class="mb-0 fw-normal fs-14">Payment  Settings</h6>
+                                      <div>
+                                          <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings"></i></a>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row">
+                              <div class="col-sm-2 mb-sm-0 mb-3">
+                                  <span class="feeds avatar avatar-sm avatar-rounded bg-pink-transparent"><i class="fe fe-bell text-pink"></i></span>
+                              </div>
+                              <div class="col-sm-10 ps-sm-0 my-auto">
+                                  <div class="d-flex align-items-end justify-content-between ms-2">
+                                      <h6 class="mb-0 fw-normal fs-14">Notification Settings</h6>
+                                      <div>
+                                          <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings"></i></a>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="tab-pane fade border-0 p-0" id="sidebar-slidepane-2" role="tabpanel" aria-labelledby="sidebar-side2" tabindex="0">
+                      <div class="p-3 fw-semibold">Today</div>
+                      <div class="d-flex align-items-center py-3 px-3 pt-0">
+                          <div class="me-2">
+                              <span class="avatar avatar-md avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/2.jpg"></span>
+                          </div>
+                          <div class="">
+                              <a href="chat.html">
+                                  <div class="fw-semibold text-dark" >Addie Minstra</div>
+                                  <p class="mb-0 fs-12 text-muted"> Hey! there I' am available.... </p>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="d-flex align-items-center py-3 px-3 pt-0">
+                          <div class="me-2">
+                              <span class="avatar avatar-md online avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/11.jpg"></span>
+                          </div>
+                          <div class="">
+                              <a href="chat.html">
+                                  <div class="fw-semibold text-dark">Rose Bush</div>
+                                  <p class="mb-0 fs-12 text-muted"> Okay...I will be waiting for you </p>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="d-flex align-items-center py-3 px-3 pt-0">
+                          <div class="me-2">
+                              <span class="avatar avatar-md avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/10.jpg"></span>
+                          </div>
+                          <div class="">
+                              <a href="chat.html">
+                                  <div class="fw-semibold text-dark">Claude Strophobia</div>
+                                  <p class="mb-0 fs-12 text-muted"> Hi we can explain our new project......</p>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="d-flex align-items-center py-3 px-3 pt-0">
+                          <div class="me-2">
+                              <span class="avatar avatar-md avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/13.jpg"></span>
+                          </div>
+                          <div class="">
+                              <a href="chat.html">
+                                  <div class="fw-semibold text-dark">Eileen Dover</div>
+                                  <p class="mb-0 fs-12 text-muted"> New product Launching...</p>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="d-flex align-items-center py-3 px-3 pt-0">
+                          <div class="me-2">
+                              <span class="avatar avatar-md online avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/12.jpg"></span>
+                          </div>
+                          <div class="">
+                              <a href="chat.html">
+                                  <div class="fw-semibold text-dark">Willie Findit</div>
+                                  <p class="mb-0 fs-12 text-muted"> Okay...I will be waiting for you </p>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="d-flex align-items-center py-3 px-3 pt-0">
+                          <div class="me-2">
+                              <span class="avatar avatar-md avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/15.jpg"></span>
+                          </div>
+                          <div class="">
+                              <a href="chat.html">
+                                  <div class="fw-semibold text-dark">Manny Jah</div>
+                                  <p class="mb-0 fs-12 text-muted">  Hi we can explain our new project......</p>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="d-flex align-items-center py-0 px-3">
+                          <div class="me-2">
+                              <span class="avatar avatar-md avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/4.jpg"></span>
+                          </div>
+                          <div class="">
+                              <a href="chat.html">
+                                  <div class="fw-semibold text-dark">Cherry Blossom</div>
+                                  <p class="mb-0 fs-12 text-muted"> Hey! there I' am available....</p>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="p-3 fw-semibold">Yesterday</div>
+                      <div class="d-flex align-items-center py-3 px-3 pt-0">
+                          <div class="me-2">
+                              <span class="avatar avatar-md online avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/7.jpg"></span>
+                          </div>
+                          <div class="">
+                              <a href="chat.html">
+                                  <div class="fw-semibold text-dark">Simon Sais</div>
+                                  <p class="mb-0 fs-12 text-muted">Schedule Realease...... </p>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="d-flex align-items-center py-3 px-3 pt-0">
+                          <div class="me-2">
+                              <span class="avatar avatar-md avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/9.jpg"></span>
+                          </div>
+                          <div class="">
+                              <a href="chat.html">
+                                  <div class="fw-semibold text-dark">Laura Biding</div>
+                                  <p class="mb-0 fs-12 text-muted">Hi we can explain our new project...... </p>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="d-flex align-items-center py-3 px-3 pt-0">
+                          <div class="me-2">
+                              <span class="avatar avatar-md online avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/2.jpg"></span>
+                          </div>
+                          <div class="">
+                              <a href="chat.html">
+                                  <div class="fw-semibold text-dark">Addie Minstra</div>
+                                  <p class="mb-0 fs-12 text-muted">Contact me for details....</p>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="d-flex align-items-center py-3 px-3 pt-0">
+                          <div class="me-2">
+                              <span class="avatar avatar-md avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/9.jpg"></span>
+                          </div>
+                          <div class="">
+                              <a href="chat.html">
+                                  <div class="fw-semibold text-dark">Ivan Notheridiya</div>
+                                  <p class="mb-0 fs-12 text-muted">Hi we can explain our new project......</p>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="d-flex align-items-center py-3 px-3 pt-0">
+                          <div class="me-2">
+                              <span class="avatar avatar-md avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/14.jpg"></span>
+                          </div>
+                          <div class="">
+                              <a href="chat.html">
+                                  <div class="fw-semibold text-dark">Dulcie Veeta</div>
+                                  <p class="mb-0 fs-12 text-muted"> Okay...I will be waiting for you</p>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="d-flex align-items-center py-3 px-3 pt-0">
+                          <div class="me-2">
+                              <span class="avatar avatar-md avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/11.jpg"></span>
+                          </div>
+                          <div class="">
+                              <a href="chat.html">
+                                  <div class="fw-semibold text-dark">Florinda Carasco</div>
+                                  <p class="mb-0 fs-12 text-muted">New product Launching...</p>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="d-flex align-items-center py-3 px-3 pt-0">
+                          <div class="me-2">
+                              <span class="avatar avatar-md online avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/11.jpg"></span>
+                          </div>
+                          <div class="">
+                              <a href="chat.html">
+                                  <div class="fw-semibold text-dark">Cherry Blossom</div>
+                                  <p class="mb-0 fs-12 text-muted">cherryblossom@gmail.com</p>
+                              </a>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="tab-pane fade border-0 p-3" id="sidebar-slidepane-3" role="tabpanel" aria-labelledby="sidebar-side3" tabindex="0">
+                      <ul class="task-list timeline-task">
+                          <li class="d-sm-flex">
+                              <div>
+                                  <i class="task-icon1"></i>
+                                  <h6 class="fw-semibold fs-14">Task Finished<span
+                                          class="text-muted fs-11 mx-2 fw-normal">09 July 2021</span></h6>
+                                  <p class="text-muted fs-12 mb-0">Adam Berry finished task on<a href="javascript:void(0)" class="fw-semibold text-primary"> Project Management</a></p>
+                              </div>
+                              <div class="ms-auto d-md-flex task-icon-link">
+                                  <a aria-label="anchor" href="javascript:void(0)" class="text-muted me-2"><i class="fe fe-edit"></i></a>
+                                  <a aria-label="anchor" href="javascript:void(0)" class="text-muted"><i class="fe fe-trash-2 fs-12"></i></a>
+                              </div>
+                          </li>
+                          <li class="d-sm-flex">
+                              <div>
+                                  <i class="task-icon1"></i>
+                                  <h6 class="fw-semibold fs-14">New Comment<span
+                                          class="text-muted fs-11 mx-2 fw-normal">05 July 2021</span></h6>
+                                  <p class="text-muted fs-12 mb-0">Victoria commented on Project <a href="javascript:void(0)"
+                                          class="fw-semibold text-primary"> AngularJS Template</a></p>
+                              </div>
+                              <div class="ms-auto d-md-flex task-icon-link">
+                                  <a aria-label="anchor" href="javascript:void(0)" class="text-muted me-2"><i class="fe fe-edit"></i></a>
+                                  <a aria-label="anchor" href="javascript:void(0)" class="text-muted"><i class="fe fe-trash-2 fs-12"></i></a>
+                              </div>
+                          </li>
+                          <li class="d-sm-flex">
+                              <div>
+                                  <i class="task-icon1"></i>
+                                  <h6 class="fw-semibold fs-14">New Comment<span
+                                          class="text-muted fs-11 mx-2 fw-normal">25 June 2021</span></h6>
+                                  <p class="text-muted fs-12 mb-0">Victoria commented on Project <a href="javascript:void(0)"
+                                          class="fw-semibold text-primary"> AngularJS Template</a></p>
+                              </div>
+                              <div class="ms-auto d-md-flex task-icon-link">
+                                  <a aria-label="anchor" href="javascript:void(0)" class="text-muted me-2"><i class="fe fe-edit"></i></a>
+                                  <a aria-label="anchor" href="javascript:void(0)" class="text-muted"><i class="fe fe-trash-2 fs-12"></i></a>
+                              </div>
+                          </li>
+                          <li class="d-sm-flex">
+                              <div>
+                                  <i class="task-icon1"></i>
+                                  <h6 class="fw-semibold fs-14">Task Overdue<span
+                                          class="text-muted fs-11 mx-2 fw-normal">14 June 2021</span></h6>
+                                  <p class="text-muted mb-0 fs-12">Petey Cruiser finished task <a href="javascript:void(0)"
+                                          class="fw-semibold text-primary"> Integrated management</a></p>
+                              </div>
+                              <div class="ms-auto d-md-flex task-icon-link">
+                                  <a aria-label="anchor" href="javascript:void(0)" class="text-muted me-2"><i class="fe fe-edit"></i></a>
+                                  <a aria-label="anchor" href="javascript:void(0)" class="text-muted"><i class="fe fe-trash-2 fs-12"></i></a>
+                              </div>
+                          </li>
+                          <li class="d-sm-flex">
+                              <div>
+                                  <i class="task-icon1"></i>
+                                  <h6 class="fw-semibold fs-14">Task Overdue<span
+                                          class="text-muted fs-11 mx-2 fw-normal">29 June 2021</span></h6>
+                                  <p class="text-muted mb-0 fs-12">Petey Cruiser finished task <a href="javascript:void(0)"
+                                          class="fw-semibold text-primary"> Integrated management</a></p>
+                              </div>
+                              <div class="ms-auto d-md-flex task-icon-link">
+                                  <a aria-label="anchor" href="javascript:void(0)" class="text-muted me-2"><i class="fe fe-edit"></i></a>
+                                  <a aria-label="anchor" href="javascript:void(0)" class="text-muted"><i class="fe fe-trash-2 fs-12"></i></a>
+                              </div>
+                          </li>
+                          <li class="d-sm-flex">
+                              <div>
+                                  <i class="task-icon1"></i>
+                                  <h6 class="fw-semibold fs-14">Task Finished<span
+                                          class="text-muted fs-11 mx-2 fw-normal">09 July 2021</span></h6>
+                                  <p class="text-muted fs-12 mb-0">Adam Berry finished task on<a href="javascript:void(0)"
+                                          class="fw-semibold text-primary"> Project Management</a></p>
+                              </div>
+                              <div class="ms-auto d-md-flex task-icon-link">
+                                  <a aria-label="anchor" href="javascript:void(0)" class="text-muted me-2"><i class="fe fe-edit"></i></a>
+                                  <a aria-label="anchor" href="javascript:void(0)" class="text-muted"><i class="fe fe-trash-2 fs-12"></i></a>
+                              </div>
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <!-- End Switcher -->
 
     {% endblock %}

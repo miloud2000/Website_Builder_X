@@ -44,38 +44,64 @@ from websitebuilder.tokens import account_activation_token
 
 
 # #Home of GestionnairesComptes
-# @login_required(login_url='login')
-# @allowedUsers(allowedGroups=['GestionnaireComptes']) 
-# def homeGestionnairesComptes(request): 
-#     if request.user.is_authenticated:
-#         is_GestionnaireComptes = request.user.groups.filter(name='GestionnaireComptes').exists()
-#     else: 
-#         is_GestionnaireComptes= False  
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['GestionnaireComptes']) 
+def homeGestionnairesComptes(request): 
+    if request.user.is_authenticated:
+        is_GestionnaireComptes = request.user.groups.filter(name='GestionnaireComptes').exists()
+    else: 
+        is_GestionnaireComptes= False  
     
-#     # if request.user.is_authenticated:
-#     #     new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
-#     #     if new_demandes.exists():
-#     #         messages.info(request, f'You have {new_demandes.count()} new demande(s) to review.')
+    # if request.user.is_authenticated:
+    #     new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    #     if new_demandes.exists():
+    #         messages.info(request, f'You have {new_demandes.count()} new demande(s) to review.')
            
-#     context = {"is_GestionnaireComptes":is_GestionnaireComptes}
+    context = {"is_GestionnaireComptes":is_GestionnaireComptes}
  
-#     return render(request, "websitebuilder/GestionnaireComptes/homeGestionnaireComptes.html",context)
+    return render(request, "websitebuilder/GestionnaireComptes/homeGestionnaireComptes.html",context)
 
 
 
-
-
+from django.utils import timezone
+from django.utils.timezone import localtime
 #DashbordHome of GestionnaireComptes
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes']) 
 def dashbordHomeGestionnaireComptes(request):  
     if request.user.is_authenticated:
         new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
-        if new_demandes.exists():
-            messages.info(request, f'You have {new_demandes.count()} new demande(s) to review.')
-            
-    return render(request, "GestionnaireComptes/dashbordHomeGestionnaireComptes.html")
+        for demande in new_demandes:
+            time_str = localtime(demande.date_created).strftime("%H:%M")
+            messages.info(
+                request,
+                f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
+            )
 
+    # Comptage des demandes modifiées par le gestionnaire
+    demandes_modifiees_count = DemandeRecharger.objects.filter(
+        updated_by__user=request.user
+    ).count()
+
+    # Comptage des demandes en attente
+    demandes_en_attente_count = new_demandes.count()
+
+    # Comptage des demandes créées ce mois
+    now = timezone.now()
+    demandes_this_month = DemandeRecharger.objects.filter(
+        date_created__year=now.year,
+        date_created__month=now.month
+    ).count()
+
+    context = {
+        'demandes_modifiees_count': demandes_modifiees_count,
+        'demandes_en_attente_count': demandes_en_attente_count,
+        'total_supports': DemandeRecharger.objects.count(),
+        'demandes_this_month': demandes_this_month,
+        'today': now,
+    }
+
+    return render(request, "GestionnaireComptes/dashbordHomeGestionnaireComptes.html", context)
 
 
 
@@ -84,8 +110,11 @@ def dashbordHomeGestionnaireComptes(request):
 def dashbordGestionnaireComptes(request):
     if request.user.is_authenticated:
         new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
-        if new_demandes.exists():
-            messages.info(request, f'You have {new_demandes.count()} new demande(s) to review.')
+        for demande in new_demandes:
+            messages.info(
+                request,
+                f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter."
+            )
 
     return render(request, "GestionnaireComptes/dashbordGestionnaireComptes.html")
 
