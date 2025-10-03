@@ -65,6 +65,8 @@ def homeGestionnairesComptes(request):
 
 from django.utils import timezone
 from django.utils.timezone import localtime
+from itertools import chain
+from operator import attrgetter
 #DashbordHome of GestionnaireComptes
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes']) 
@@ -92,6 +94,30 @@ def dashbordHomeGestionnaireComptes(request):
         date_created__year=now.year,
         date_created__month=now.month
     ).count()
+    
+    latest_demande_supports = DemandeRecharger.objects.filter(
+    updated_by__user=request.user
+    ).order_by('-date_created')[:6]
+    
+    # Derniers achats
+    latest_achats = AchatWebsites.objects.select_related('cliente__user', 'websites').order_by('-date_created')[:6]
+
+    # Dernières locations
+    latest_locations = LocationWebsites.objects.select_related('cliente__user', 'websites').order_by('-date_created')[:6]
+
+    # Fusionner les deux et trier par date
+    latest_web_transactions = sorted(
+        chain(latest_achats, latest_locations),
+        key=attrgetter('date_created'),
+        reverse=True
+    )[:6]
+    
+    
+    latest_tickets_by_me = Ticket.objects.filter(
+    updated_by_gc__user=request.user
+    ).order_by('-date_created')[:6]
+
+
 
     context = {
         'demandes_modifiees_count': demandes_modifiees_count,
@@ -99,6 +125,9 @@ def dashbordHomeGestionnaireComptes(request):
         'total_supports': DemandeRecharger.objects.count(),
         'demandes_this_month': demandes_this_month,
         'today': now,
+        'latest_demande_supports': latest_demande_supports,
+        'latest_web_transactions': latest_web_transactions,
+        'latest_tickets_by_me': latest_tickets_by_me,
     }
 
     return render(request, "GestionnaireComptes/dashbordHomeGestionnaireComptes.html", context)

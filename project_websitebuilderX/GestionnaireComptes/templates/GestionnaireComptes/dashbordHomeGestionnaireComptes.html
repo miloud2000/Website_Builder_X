@@ -190,14 +190,14 @@
                   <div class="col-xxl-4 col-md-12">
                       <div class="card">
                           <div class="card-header">
-                              <h4 class="card-title fw-semibold">Demandes de Support Récentes</h4>
+                              <h4 class="card-title fw-semibold">Demandes de Recharge Récentes</h4>
                           </div>
                           <div class="card-body pb-0">
-                              <ul class="task-list">
+                            <ul class="task-list">
                                 {% for demande in latest_demande_supports %}
                                   <li class="d-sm-flex">
                                     <div>
-                                       {% if demande.status == 'Done' %}
+                                      {% if demande.status == 'Done' %}
                                         <i class="task-icon bg-success"></i>
                                       {% elif demande.status == 'Not Done yet' %}
                                         <i class="task-icon bg-warning"></i>
@@ -211,22 +211,15 @@
                                         </span>
                                       </h6>
                                       <p class="text-muted fs-12 mb-0">
-                                        {{ demande.cliente.user.username }} demande support
-                                        <strong>{{ demande.achat_support.support.name }}</strong>
+                                        {{ demande.cliente.user.username }} demande recharge de <strong>{{ demande.solde }} MAD</strong>
                                       </p>
-                                      </div>
-                                      {% comment %} <div class="ms-auto d-md-flex">
-                                          <a href="javascript:void(0)" class="text-muted me-2" data-bs-toggle="tooltip"
-                                              data-bs-placement="top" title="Edit" aria-label="Edit"><span
-                                                  class="fe fe-edit"></span></a>
-                                          <a aria-label="anchor" href="javascript:void(0)" class="text-muted"><span
-                                                  class="fe fe-trash-2"></span></a>
-                                      </div> {% endcomment %}
+                                    </div>
                                   </li>
-                                  {% empty %}
+                                {% empty %}
                                   <li><p class="text-muted">Aucune demande récente.</p></li>
-                                  {% endfor %}
+                                {% endfor %}
                               </ul>
+                              
                           </div>
                       </div>
                   </div>
@@ -234,7 +227,7 @@
                     <div class="card overflow-hidden">
                       <div class="card-header">
                         <div>
-                          <h3 class="card-title">Derniers achats de support</h3>
+                          <h3 class="card-title">Derniers achats ou locations de sites web</h3>
                         </div>
                       </div>
                       <div class="card-body p-0 mt-2">
@@ -254,30 +247,39 @@
                                   </tr>
                             </thead>
                             <tbody>
-                                {% for achat in latest_achat_supports %}
-                                <tr>
-                                  <td class="text-start p-3 d-flex align-items-center">
-                                    {% if forloop.counter == 1 %}
-                                      <span class="sales-icon text-primary bg-primary-transparent"><i class="bi bi-person"></i></span>
-                                    {% elif forloop.counter == 2 %}
-                                      <span class="sales-icon text-secondary bg-secondary-transparent"><i class="bi bi-person"></i></span>
-                                    {% elif forloop.counter == 3 %}
-                                      <span class="sales-icon text-danger bg-danger-transparent"><i class="bi bi-person"></i></span>
-                                    {% elif forloop.counter == 4 %}
-                                      <span class="sales-icon text-info bg-info-transparent"><i class="bi bi-person"></i></span>
-                                    {% elif forloop.counter == 5 %}
-                                      <span class="sales-icon text-warning bg-warning-transparent"><i class="bi bi-person"></i></span>
-                                    {% elif forloop.counter == 6 %}
-                                      <span class="sales-icon text-success bg-success-transparent"><i class="bi bi-person"></i></span>
-                                    {% endif %}
-                                    {{ achat.cliente.user.username }}
-                                  </td>
-                                  <td class="p-3">{{ achat.support.name }}</td>
-                                  {% comment %} <td class="p-3">{{ achat.prix }} MAD</td> {% endcomment %}
-                                  <td class="p-3">{{ achat.date_created|date:"d M Y" }}</td>
-                                </tr>
+                                {% for trans in latest_web_transactions %}
+                                  <tr>
+                                    <td class="text-start p-3 d-flex align-items-center">
+                                      {% if forloop.counter == 1 %}
+                                        <span class="sales-icon text-primary bg-primary-transparent"><i class="bi bi-person"></i></span>
+                                      {% elif forloop.counter == 2 %}
+                                        <span class="sales-icon text-secondary bg-secondary-transparent"><i class="bi bi-person"></i></span>
+                                      {% elif forloop.counter == 3 %}
+                                        <span class="sales-icon text-danger bg-danger-transparent"><i class="bi bi-person"></i></span>
+                                      {% elif forloop.counter == 4 %}
+                                        <span class="sales-icon text-info bg-info-transparent"><i class="bi bi-person"></i></span>
+                                      {% elif forloop.counter == 5 %}
+                                        <span class="sales-icon text-warning bg-warning-transparent"><i class="bi bi-person"></i></span>
+                                      {% elif forloop.counter == 6 %}
+                                        <span class="sales-icon text-success bg-success-transparent"><i class="bi bi-person"></i></span>
+                                      {% endif %}
+                                      {{ trans.cliente.user.username }}
+                                    </td>
+                                    <td class="p-3">
+                                      {{ trans.websites.name }}
+                                      {% if trans.transaction_type == 'LocationWebsites' %}
+                                        <span class="badge bg-warning-transparent text-warning ms-1">Location</span>
+                                      {% else %}
+                                        <span class="badge bg-success-transparent text-success ms-1">Achat</span>
+                                      {% endif %}
+                                    </td>
+                                    <td class="p-3">{{ trans.date_created|date:"d M Y" }}</td>
+                                  </tr>
+                                {% empty %}
+                                  <tr><td colspan="3" class="text-muted">Aucune transaction récente.</td></tr>
                                 {% endfor %}
-                            </tbody>
+                              </tbody>
+                              
                           </table>
                           <!--end /table-->
                         </div>
@@ -285,57 +287,56 @@
                     </div>
                   </div>
                   <div class="col-xxl-4 col-lg-6 col-md-12">
-                      <div class="card">
-                          <div class="card-header">
-                              <h4 class="card-title fw-semibold">Tickets mis à jour par vous</h4>
-                          </div>
-                          <div class="card-body">
-                              <div class="browser-stats">
-                                {% for ticket in latest_tickets_by_me %}
-                                <div class="row mb-3">
-                                  <div class="col-sm-2 col-lg-3 col-xl-3 col-xxl-2 mb-sm-0 mb-3">
-                                    <img src="{% static 'img/basic-rgb_1172029-9284.jpg' %}" class="img-fluid" alt="img">
-                                  </div>
-                                  <div class="col-sm-10 col-lg-9 col-xl-9 col-xxl-10 ps-sm-0">
-                                    <div class="d-flex align-items-end justify-content-between mb-1">
-                                      <h6 class="mb-1">{{ ticket.code_Ticket }}</h6>
-                                      <h6 class="fw-semibold mb-1">
-                                        {{ ticket.status }}
-                                        <span class="{% if ticket.status == 'Fermée' %}text-danger{% elif ticket.status == 'En Cours de traitement' %}text-warning{% else %}text-success{% endif %} fs-11">
-                                          <i class="fe fe-clock"></i> {{ ticket.date_created|date:"d M Y" }}
-                                        </span>
-                                      </h6>
-                                    </div>
-                                    <div class="text-muted fs-12 mb-0">
-                                      {{ ticket.cliente.user.username }} — {{ ticket.typeTicket }} / {{ ticket.Branche }}
-                                    </div>
-                                  </div>
-                                </div>
-                              {% empty %}
-                                <p class="text-muted">Aucun ticket mis à jour par vous.</p>
-                              {% endfor %}
-                                  </div>
-                              </div>
-                          </div>
+                    <div class="card">
+                      <div class="card-header">
+                        <h4 class="card-title fw-semibold">Tickets mis à jour par vous</h4>
                       </div>
+                      <div class="card-body">
+                        <div class="browser-stats">
+                          {% for ticket in latest_tickets_by_me %}
+                            <div class="row mb-3">
+                              <div class="col-sm-2 col-lg-3 col-xl-3 col-xxl-2 mb-sm-0 mb-3">
+                                <img src="{% static 'img/basic-rgb_1172029-9284.jpg' %}" class="img-fluid" alt="img">
+                              </div>
+                              <div class="col-sm-10 col-lg-9 col-xl-9 col-xxl-10 ps-sm-0">
+                                <div class="d-flex align-items-end justify-content-between mb-1">
+                                  <h6 class="mb-1">{{ ticket.code_Ticket }}</h6>
+                                  <h6 class="fw-semibold mb-1">
+                                    {{ ticket.status }}
+                                    <span class="{% if ticket.status == 'Fermée' %}text-danger{% elif ticket.status == 'En Cours de traitement' %}text-warning{% else %}text-success{% endif %} fs-11">
+                                      <i class="fe fe-clock"></i> {{ ticket.date_created|date:"d M Y" }}
+                                    </span>
+                                  </h6>
+                                </div>
+                                <div class="text-muted fs-12 mb-0">
+                                  {{ ticket.cliente.user.username }} — {{ ticket.typeTicket }} / {{ ticket.Branche }}
+                                </div>
+                              </div>
+                            </div>
+                          {% empty %}
+                            <p class="text-muted">Aucun ticket mis à jour par vous.</p>
+                          {% endfor %}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-              </div>
+                  
               <!-- ROW-3 END -->
 
               <!-- ROW-4 -->
-              <div class="row">
+             {% comment %} <div class="row">
                   <div class="col-12 col-sm-12">
                       <div class="card">
                           <div class="card-header d-lg-flex">
                               <h3 class="card-title mb-lg-0 mb-3">Liste des clients</h3>
                               <div class="tabs-menu1 ms-auto border-0 p-0">
                                   <!-- Tabs -->
-                                  {% comment %} <ul class="nav panel-tabs product-sale">
+                                   <ul class="nav panel-tabs product-sale">
                                       <li><a href="#tab5" class="active" data-bs-toggle="tab">All products</a></li>
                                       <li><a href="#tab6" data-bs-toggle="tab">Shipped</a></li>
                                       <li><a href="#tab7" data-bs-toggle="tab">Pending</a></li>
                                       <li><a href="#tab8" data-bs-toggle="tab">Cancelled</a></li>
-                                  </ul> {% endcomment %}
+                                  </ul> 
                               </div>
                           </div>
                           <div class="card-body product-table">
@@ -410,7 +411,7 @@
                                     </table>
                                   </div>
                                 </div>
-                              </div>
+                              </div>{% endcomment %}
                               
                                   {% comment %} <div class="tab-pane border-0 p-0" id="tab6">
                                       <div class="table-responsive">
@@ -952,7 +953,7 @@
                                           </table>
                                       </div>
                                   </div>
-                              </div> {% endcomment %}
+                              </div> 
                               <div class="row mt-3">
                                 <div class="col-sm-12 col-md-6 my-auto">
                                   <span>
@@ -990,7 +991,7 @@
                           </div>
                       </div>
                   </div>
-              </div>
+              </div>{% endcomment %}
               <!-- ROW-4 END -->
 
           </div>
