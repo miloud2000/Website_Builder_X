@@ -1,4 +1,5 @@
-{% extends "Commercial/dashbordCommercial.html" %}
+{% extends "GestionnaireComptes/dashbordGestionnaireComptes.html" %}
+
 {% load static %}
 
 {% block content %}
@@ -14,22 +15,14 @@
                   <div>
                     <ol class="breadcrumb mb-0">
                       <li class="breadcrumb-item">
-                        <a href="{% url 'list_websites_c' %}">Accueil</a>
+                        <a href="{% url 'websites_liste_GestionnaireComptes' %}">Accueil</a>
                       </li>
                       <li class="breadcrumb-item active" aria-current="page">liste de sites Web</li>
                     </ol>
                   </div>
                 </div>
                 <!-- PAGE-HEADER END -->
-                <div class="page-header">
-                  <h1 class="page-title my-auto"></h1>
-                  <div>
-                    <ol class="breadcrumb mb-0">
-                      <li class="breadcrumb-item">
-                      </li>
-                    </ol>
-                  </div>
-                </div>
+               
 
 
                 <!-- Start::row-1 -->
@@ -137,7 +130,7 @@
                             <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
                                 <div class="card custom-card product-card">
                                     <div class="card-body">
-                                        <a href="{% url 'details_website_commercial' site.id %}" class="product-image">
+                                        <a href="{% url 'details_website_GestionnaireComptes' site.id %}" class="product-image">
                                             {% if site.image %}
                                                 <img src="{{ site.image.url }}" class="card-img mb-3" alt="{{ site.name }}">
                                             {% else %}
@@ -146,9 +139,9 @@
                                         </a>
                     
                                         <div class="product-icons">
-                                            <a href="{% url 'details_website_commercial' site.pk %}" class="wishlist"><i class="ri-eye-line"></i></a>
-                                            {% comment %} <a href="{% url 'modifier_website' site.pk %}" class="cart"><i class="ri-edit-2-fill"></i></a> {% endcomment %}
-                                            {% comment %} <a href="{% url 'website_details' site.id %}" class="view"><i class="ri-eye-line"></i></a> {% endcomment %}
+                                            {% comment %} <a href="{% url 'supprimer_website' site.pk %}" onclick="return confirm('Êtes-vous sûr de vouloir masquer {{ website.name }} ?')" class="wishlist"><i class="ri-delete-bin-fill"></i></a>
+                                            <a href="{% url 'modifier_website' site.pk %}" class="cart"><i class="ri-edit-2-fill"></i></a> {% endcomment %}
+                                            <a href="{% url 'details_website_GestionnaireComptes' site.id %}" class="wishlist"><i class="ri-eye-line"></i></a>
                                         </div>
                     
                                         <p class="product-name fw-semibold mb-0 d-flex align-items-center justify-content-between">

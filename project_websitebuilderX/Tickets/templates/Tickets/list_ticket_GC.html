@@ -3,143 +3,231 @@
 {% load static %}
 
 {% block content %}
-<div class="container" style="margin-top: 30px;">
-    <form method="get" action="{% url 'list_ticket_GC' %}">
-        <div class="container mt-4">
-            <div class="row">
-                <div class="col-12 col-md-6 col-lg-4 mb-3">
-                    <input type="text" class="form-control rounded" name="code_ticket" value="{{ request.GET.code_ticket }}" placeholder="Code Ticket">
-                </div>
-                <div class="col-12 col-md-6 col-lg-4 mb-3">
-                    <input type="date" class="form-control rounded" name="date_created" value="{{ request.GET.date_created }}">
-                </div>
-                <div class="col-12 col-md-6 col-lg-4 mb-3">
-                    <input type="text" class="form-control rounded" name="username_client" value="{{ request.GET.username_client }}" placeholder="Username Client">
-                </div>
-                <div class="col-12 col-md-6 col-lg-4 mb-3">
-                    <select class="form-control rounded" name="branche">
-                        <option value="">Tout Sujet</option>
-                        <option value="Problème de paiement" {% if request.GET.branche == "Problème de paiement" %}selected{% endif %}>Problème de paiement</option>
-                        <option value="Problème de solde" {% if request.GET.branche == "Problème de solde" %}selected{% endif %}>Problème de solde</option>
-                        <option value="Autre" {% if request.GET.branche == "Autre" %}selected{% endif %}>Autre</option>
-                    </select>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4 mb-3">
-                    <select class="form-control rounded" name="status">
-                        <option value="">Tous les statuts</option>
-                        <option value="Ouvert" {% if request.GET.status == "Ouvert" %}selected{% endif %}>Ouvert</option>
-                        <option value="En Cours de traitement" {% if request.GET.status == "En Cours de traitement" %}selected{% endif %}>En Cours de traitement</option>
-                        <option value="Fermée" {% if request.GET.status == "Fermée" %}selected{% endif %}>Fermée</option>
-                    </select>
-                </div>
-                <div class="col-12 col-md-6 col-lg-4 mb-3">
-                    <button class="btn btn-primary w-100 rounded" style="margin: 3px;" type="submit"><i class="fa fa-search"></i> Rechercher</button><br>
-                    <button class="btn btn-secondary w-100 rounded" style="margin: 3px;"  type="reset" onclick="window.location.href='{% url 'list_ticket_GC' %}'"><i class="fa fa-refresh"></i> Réinitialiser</button>
 
-                </div>
-                {% comment %} <div class="col-12 col-md-6 col-lg-4 mb-3">
-                    <button class="btn btn-secondary w-100 rounded" type="reset" onclick="window.location.href='{% url 'list_ticket_GC' %}'"><i class="fa fa-refresh"></i> Réinitialiser</button>
-                </div> {% endcomment %}
-            </div>
-        </div>
-    </form>
+
+<div class="main-content app-content">
+  <div class="container-fluid">
     <br>
-
-    <div class="row">
-        <div class="col-xl-12">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="header-title pb-3 mt-0">Les Tickets</h5>
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr class="align-self-center">
-                                    <th>Username Client</th>
-                                    <th>Sujet</th>
-                                    <th>Code Ticket</th>
-                                    <th>Statut</th>
-                                    <th>Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% if tickets %}
-                                    {% for ticket in tickets %}
-                                    <tr>
-                                        <td style="font-weight: bold;">{{ ticket.cliente.user.username }}</td>
-                                        <td style="font-weight: bold;">{{ ticket.Branche }}</td>
-                                        <td style="font-weight: bold;">{{ ticket.code_Ticket }}</td>
-                                        <td>
-                                            {% if ticket.status == "Ouvert" %}
-                                                <span class="badge badge-success" style="font-weight: bold;">{{ ticket.status }}</span>
-                                            {% elif ticket.status == "En Cours de traitement" %}
-                                                <span class="badge badge-warning" style="font-weight: bold;">{{ ticket.status }}</span>
-                                            {% elif ticket.status == "Fermée" %}
-                                                <span class="badge badge-danger" style="font-weight: bold;">{{ ticket.status }}</span>
-                                            {% endif %}
-                                        </td>
-                                        <td style="font-weight: bold;">{{ ticket.date_created|date:"d/m/Y H:i" }}</td>
-                                        <td style="font-weight: bold;">
-                                            <a href="{% url 'details_ticket_GC' ticket.code_Ticket %}" class="btn btn-primary">View</a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                {% else %}
-                                    <tr>
-                                        <td colspan="6" class="text-center font-weight-bold">Aucun ticket disponible</td>
-                                    </tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <!--end table-responsive-->
-                </div>
+            <!-- PAGE-HEADER -->
+            <div class="page-header">
+              <h1 class="page-title my-auto">Liste Ticket</h1>
+              <div>
+                <ol class="breadcrumb mb-0">
+                  <li class="breadcrumb-item">
+                    <a href="#">Home</a>
+                  </li>
+                  <li class="breadcrumb-item active" aria-current="page">Liste Ticket</li>
+                </ol>
+              </div>
             </div>
-        </div>
-    </div>
-</div>
+            <!-- ROW-4 -->
+            <div class="row">
+              <div class="col-12 col-sm-12">
+                  <div class="card">  
+                      <div class="card-header d-lg-flex">
+                          <h3 class="card-title mb-lg-0 mb-3">Liste Ticket</h3>
+                          <div class="tabs-menu1 ms-auto border-0 p-0">
+                              <!-- Tabs -->
+                              {% comment %} <ul class="nav panel-tabs product-sale">
+                                  <li><a href="#tab5" class="active" data-bs-toggle="tab">All products</a></li>
+                                    <li><a href="#tab6" data-bs-toggle="tab">Shipped</a></li>
+                                    <li><a href="#tab7" data-bs-toggle="tab">Pending</a></li>
+                                    <li><a href="#tab8" data-bs-toggle="tab">Cancelled</a></li>
+                                </ul> {% endcomment %}
+                              
+                                {% comment %} <div class="d-flex justify-content-end mb-3 gap-2">
+                                  
+                                  <a href="{% url 'export_demandes_excel' %}?{{ request.GET.urlencode }}" class="btn btn-outline-success">
+                                    <i class="mdi mdi-file-excel"></i> Export Excel
+                                  </a>
+                                  <a href="{% url 'export_demandes_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-outline-danger">
+                                    <i class="mdi mdi-file-pdf-box"></i> Export PDF
+                                  </a>
+                                </div> {% endcomment %}
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center mb-3">
+                            
+                          </div>
+                        </div>
+                        <div class="card-body product-table">
+                            <form method="get" action="{% url 'list_ticket_GC' %}" class="row g-3 mb-4">
+                          
+                              <!-- 🔢 Code Ticket -->
+                              <div class="col-md-6">
+                                <input type="text" name="code_ticket" class="form-control" placeholder="Code Ticket" value="{{ request.GET.code_ticket }}">
+                              </div>
+                          
+                              <!-- 📅 Date de création -->
+                              <div class="col-md-6">
+                                <input type="date" name="date_created" class="form-control" value="{{ request.GET.date_created }}">
+                              </div>
+                          
+                              <!-- 👤 Username Client -->
+                              <div class="col-md-6">
+                                <input type="text" name="username_client" class="form-control" placeholder="Nom d'utilisateur du client" value="{{ request.GET.username_client }}">
+                              </div>
+                          
+                              <!-- 🔢 Code Demande -->
+                              <div class="col-md-6">
+                                <input type="text" name="code_demande" class="form-control" placeholder="Code de la demande" value="{{ request.GET.code_demande }}">
+                              </div>
+                          
+                              <!-- 🧭 Branche -->
+                              <div class="col-md-6">
+                                <select name="branche" class="form-select">
+                                  <option value="">Tout Sujet</option>
+                                  <option value="Website" {% if request.GET.branche == "Website" %}selected{% endif %}>Website</option>
+                                  <option value="Service" {% if request.GET.branche == "Service" %}selected{% endif %}>Service</option>
+                                  <option value="Application" {% if request.GET.branche == "Application" %}selected{% endif %}>Application</option>
+                                  <option value="Autre" {% if request.GET.branche == "Autre" %}selected{% endif %}>Autre</option>
+                                </select>
+                              </div>
+                          
+                              <!-- ✅ Statut -->
+                              <div class="col-md-6">
+                                <select name="status" class="form-select">
+                                  <option value="">Tous les statuts</option>
+                                  <option value="Ouvert" {% if request.GET.status == "Ouvert" %}selected{% endif %}>Ouvert</option>
+                                  <option value="En Cours de traitement" {% if request.GET.status == "En Cours de traitement" %}selected{% endif %}>En Cours de traitement</option>
+                                  <option value="Fermée" {% if request.GET.status == "Fermée" %}selected{% endif %}>Fermée</option>
+                                </select>
+                              </div>
+                          
+                              <!-- 🔘 Boutons -->
+                              <div class="col-md-6 d-flex align-items-end gap-2">
+                                <button type="submit" class="btn btn-primary w-100">
+                                  <i class="fa fa-search"></i> Rechercher
+                                </button>
+                                <button type="reset" class="btn btn-outline-secondary w-100" onclick="window.location.href='{% url 'list_ticket_GC' %}'">
+                                  <i class="fa fa-refresh"></i> Réinitialiser
+                                </button>
+                              </div>
+                          
+                            </form>
+                          </div>
+                          
+                          
+                        <div class="card-body product-table">
+                                <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <form method="get">
+                                    <label class="mb-3">
+                                        Show
+                                        <select name="per_page" class="form-control" data-trigger onchange="this.form.submit()">
+                                        <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                                        <option value="25" {% if per_page == 25 %}selected{% endif %}>25</option>
+                                        <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+                                        <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
+                                        </select>
+                                        Entries
+                                    </label>
+                                    </form>
+                                </div>
+                                </div>
+                                {% comment %} <div class="col-sm-12 col-md-6">
+                                    <label class="mb-3 justify-content-end">
+                                        <input type="search" class="form-control" placeholder="Search...">
+                                    </label>
+                                </div> {% endcomment %}
+                            </div>
+                            <div class="tab-content" style="padding: 17px;">
+                                <div class="tab-pane border-0 p-0 active" id="tab5">
+                                    <div class="table-responsive">
+                                      <table class="table table-bordered text-nowrap mb-0">
+                                        <thead class="border-top">
+                                            <tr>
+                                                <th scope="col" class="">Code Ticket</th>
+                                                <th scope="col" class="">Nom d'utilisateur Client</th>
+                                                <th scope="col" class="">Sujet</th>
+                                                <th scope="col" class="">Code Demande</th>
+                                                <th scope="col" class="">Statut</th>
+                                                <th scope="col" class="">Date</th>
+                                                <th scope="col" class="">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                          {% for ticket in page_obj  %}
+                                            <tr>
+                                                <td><h6 class="mb-0 fs-14 fw-semibold">{{ticket.code_Ticket}}</h6></td>
+                                                <td><h6 class="mb-0 fs-14 fw-semibold">{{ticket.cliente.user.username}}</h6></td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/9.jpg"></span>
+                                                        <h6 class="ms-3 my-auto fs-14 fw-semibold">{{ticket.Branche}}</h6>
+                                                    </div>
+                                                </td>
+                                                <td><h6 class="mb-0 fs-14 fw-semibold">{{ticket.code_Demande}}</h6></td>
 
-<style>
-    {% comment %} body{
-        background:#f5f5f5;
-        margin-top:20px;
-    } {% endcomment %}
-    .card {
-        border: none;
-        -webkit-box-shadow: 1px 0 20px rgba(96,93,175,.05);
-        box-shadow: 1px 0 20px rgba(96,93,175,.05);
-        margin-bottom: 30px;
-    }
-    .table th {
-        font-weight: 500;
-        color: #827fc0;
-    }
-    .table thead {
-        background-color: #f3f2f7;
-    }
-    .table>tbody>tr>td, .table>tfoot>tr>td, .table>thead>tr>td {
-        padding: 14px 12px;
-        vertical-align: middle;
-    }
-    .table tr td {
-        color: #8887a9;
-    }
-    .thumb-sm {
-        height: 32px;
-        width: 32px;
-    }
-    .badge-soft-warning {
-        background-color: rgba(248,201,85,.2);
-        color: #f8c955;
-    }
-    
-    .badge {
-        font-weight: 500;
-    }
-    .badge-soft-primary {
-        background-color: rgba(96,93,175,.2);
-        color: #605daf;
-    }
-</style>
+                                              <!-- Statut de consommation -->
+                                              <td class="mb-0 fs-14 fw-semibold">
+                                                {% if ticket.status == "Ouvert"%}
+                                                  <span class="badge bg-success-transparent text-success">{{ ticket.status }}</span>
+                                                {% elif ticket.status == "En Cours de traitement" %}
+                                                  <span class="badge bg-warning-transparent text-warning">{{ ticket.status }}</span>
+                                                {% elif ticket.status == "Fermée" %}
+                                                  <span class="badge bg-danger-transparent text-danger">{{ ticket.status }}</span>
+                                                {% endif %}
+                                              </td>
+                                              <td><h6 class="mb-0 fs-14 fw-semibold">{{ticket.date_created}}</h6></td>
+                                              <td>
+                                                <a href="{% url 'details_ticket_GC' ticket.code_Ticket %}" class="btn btn-primary">View</a>
+                                              </td>
+
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                              <td colspan="7" class="text-center text-muted">Aucun Ticket trouvé.</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                           
+          
+                              <div class="row mt-3">
+                                <div class="col-sm-12 col-md-6 my-auto">
+                                  <span>
+                                    Affichage de {{ page_obj.start_index }} à {{ page_obj.end_index }} sur {{ page_obj.paginator.count }} entrées
+                                  </span>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                  <nav aria-label="Navigation des pages">
+                                    <ul class="pagination justify-content-end mb-0">
+                                      {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                          <a class="page-link" href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}&q={{ query }}&status={{ status_filter }}">Précédent</a>
+                                        </li>
+                                      {% else %}
+                                        <li class="page-item disabled"><a class="page-link">Précédent</a></li>
+                                      {% endif %}
+                              
+                                      {% for num in page_obj.paginator.page_range %}
+                                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                          <a class="page-link" href="?page={{ num }}&per_page={{ per_page }}&q={{ query }}&status={{ status_filter }}">{{ num }}</a>
+                                        </li>
+                                      {% endfor %}
+                              
+                                      {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                          <a class="page-link" href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}&q={{ query }}&status={{ status_filter }}">Suivant</a>
+                                        </li>
+                                      {% else %}
+                                        <li class="page-item disabled"><a class="page-link">Suivant</a></li>
+                                      {% endif %}
+                                    </ul>
+                                  </nav>
+                                </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+        <!-- ROW-4 END -->
+      </div>
+    </div>
+
+
+
 
 {% endblock %}

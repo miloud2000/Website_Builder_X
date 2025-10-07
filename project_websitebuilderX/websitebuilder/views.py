@@ -224,7 +224,7 @@ def user_login(request):
                 from websitebuilder.models import Commercial
                 try:
                     commercial = Commercial.objects.get(user=user)
-                    if commercial.Status != 'Active':
+                    if commercial.status != 'Active':
                         messages.error(request, "Votre compte Commercial n'est pas actif.")
                         return redirect('user_login')
                 except Commercial.DoesNotExist:

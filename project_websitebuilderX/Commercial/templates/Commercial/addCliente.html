@@ -1,121 +1,96 @@
+{% extends "Commercial/dashbordCommercial.html" %}
+
 {% load static %}
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="{% static 'form/fonts/icomoon/style.css' %}">
+{% block content %}
 
-    <link rel="stylesheet" href="{% static 'form/css/owl.carousel.min.css' %}">
+<!-- Start::app-content -->
+<div class="main-content app-content">
+  <div class="container-fluid">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{% static 'form/css/bootstrap.min.css' %}">
-    
-    <!-- Style -->
-    <link rel="stylesheet" href="{% static 'form/css/style.css' %}">
-
-    <title>Add Cliente</title>
-  </head>
-  <body>
-  
-
-  
-  <div class="content">
-    <div class="container">
-      {% if messages %}
-      {% for message in messages %}
-        {% if message.tags == 'error' %}
-          <div class="alert alert-danger" role="alert">
-            {{ message }}
+    <!-- PAGE-HEADER -->
+    <div class="page-header">
+      <h1 class="page-title my-auto">Ajouter un Cliente</h1>
+      <div>
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="{% url 'ClienteCommercial' %}">Client</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Ajouter un Client</li>
+        </ol>
+      </div>
+    </div>
+    <!-- PAGE-HEADER END -->
+      
+    <!-- Start::row-1 -->
+    <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+      <div class="col-md-8 col-lg-6 col-xl-6">
+        <div class="card custom-card shadow-sm">
+          <div class="card-header border-bottom">
+            <h4 class="card-title mb-0">Formulaire d’ajout</h4>
           </div>
-        {% endif %}
-      {% endfor %}
-      {% endif %}
-
-      <div class="row">
-        <div class="col-md-6">
-          <img src="{% static 'form/images/undraw_remotely_2j6y.svg' %}" alt="Image" class="img-fluid">
+          <div class="card-body p-4">
+            <form method="post">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="username" class="form-label">Nom d'utilisateur</label>
+                <input type="text" class="form-control" name="username" id="username" placeholder="Nom d'utilisateur">
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Adresse e-mail</label>
+                <input type="email" class="form-control" name="email" id="email" placeholder="exemple@domaine.com">
+              </div>
+              {% comment %} <div class="mb-3">
+                <label for="name" class="form-label">Nom complet</label>
+                <input type="text" class="form-control" name="name" id="name" placeholder="Nom complet">
+              </div> {% endcomment %}
+              <div class="mb-3">
+                <label for="prenom" class="form-label">Prenom</label>
+                <input type="text" class="form-control" name="prenom" id="prenom" placeholder="Prenom">
+              </div>
+              <div class="mb-3">
+                <label for="nom" class="form-label">Nom</label>
+                <input type="text" class="form-control" name="nom" id="nom" placeholder="Nom">
+              </div>
+              <div class="mb-3">
+                <label for="phone" class="form-label">Téléphone</label>
+                <input type="tel" class="form-control" name="phone" id="phone" placeholder="+212 6 00 00 00 00">
+              </div>
+              <div class="mb-3">
+                <label for="nom_entreprise" class="form-label">Nom de l'entreprise</label>
+                <input type="text" class="form-control" name="nom_entreprise" id="nom_entreprise" placeholder="Ex: AgadirTech Solutions">
+              </div>
+              
+              <div class="mb-3">
+                <label for="numero_ice" class="form-label">Numéro ICE</label>
+                <input type="text" class="form-control" name="numero_ice" id="numero_ice" placeholder="Ex: 001234567890">
+              </div>
+              
+              <div class="mb-3">
+                <label for="address" class="form-label">Adresse</label>
+                <input type="text" class="form-control" name="address" id="address" placeholder="Ex: Lot 45, Quartier Industriel, Agadir">
+              </div>
+              
+              
+              <div class="mb-3">
+                <label for="password" class="form-label">Mot de passe</label>
+                <input type="password" class="form-control" name="password1" id="password1" placeholder="Mot de passe">
+              </div>
+              <div class="mb-3">
+                <label for="password2" class="form-label">Confirmer le mot de passe</label>
+                <input type="password" class="form-control" name="password2" id="password2" placeholder="Confirmer le mot de passe">
+              </div>
+              <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                <button type="reset" class="btn btn-outline-secondary">Réinitialiser</button>
+                <button type="submit" class="btn btn-success">Enregistrer <i class="bi bi-download ms-1"></i></button>
+              </div>
+              
+            </form>
+          </div>
         </div>
-        <div class="col-md-6 contents">
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="mb-4">
-                        <h3>Ajouter Client</h3>
-                        <p class="mb-4">Lorem ipsum dolor sit amet elit. Sapiente sit aut eos consectetur adipisicing.</p>
-                    </div>
-                    <form action="" method="POST">
-                        {% csrf_token %}
-                        
-                        <div class="form-group first">
-                            <label for="username">Username</label>
-                            <input type="text" class="form-control" id="username" name="username" value="{{ form.username.value|default:'' }}">
-                            {% for error in form.username.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="text" class="form-control" id="email" name="email" value="{{ form.email.value|default:'' }}">
-                            {% for error in form.email.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="password1">Password</label>
-                            <input type="password" class="form-control" id="password1" name="password1">
-                            {% for error in form.password1.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="password2">Re-type Password</label>
-                            <input type="password" class="form-control" id="password2" name="password2">
-                            {% for error in form.password2.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="prenom">Prenom</label>
-                            <input type="text" class="form-control" id="prenom" name="prenom" value="{{ form.prenom.value|default:'' }}">
-                            {% for error in form.prenom.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="nom">Nom</label>
-                            <input type="text" class="form-control" id="nom" name="nom" value="{{ form.nom.value|default:'' }}">
-                            {% for error in form.nom.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-group last mb-4">
-                            <label for="phone">Phone</label>
-                            <input type="text" class="form-control" id="phone" name="phone" value="{{ form.phone.value|default:'' }}">
-                            {% for error in form.phone.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        
+      </div>
+    </div>
+    <!--End::row-1 -->
 
-  
-    <script src="{% static 'form/js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'form/js/popper.min.js' %}"></script>
-    <script src="{% static 'form/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'form/js/main.js' %}"></script>
-  </body>
-</html>
+  </div>
+</div>
+<!-- End::app-content -->
+{% endblock %}

@@ -1,0 +1,175 @@
+{% extends "GestionnaireComptes/dashbordGestionnaireComptes.html" %}
+
+{% load static %}
+
+{% block content %}
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+
+                <!-- PAGE-HEADER -->
+                <div class="page-header">
+                  <h1 class="page-title my-auto">Détails du support</h1>
+                  <div>
+                    <ol class="breadcrumb mb-0">
+                      <li class="breadcrumb-item">
+                        <a href="{% url "supports_list_GestionnaireComptes" %}">Liste de support</a>
+                      </li>
+                      <li class="breadcrumb-item active" aria-current="page">Détails du support</li>
+                    </ol>
+                  </div>
+                </div>
+                <!-- PAGE-HEADER END -->
+
+
+
+                <!-- Start::row-1 -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="row ">
+                                    <div class="col-xxl-4 col-xl-12">
+                                        <div class="row">
+                                            <div class="col-xxl-12 col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-md-5 mb-3">
+                                                <div class="product-details-wrapper">
+                                                  <!-- Swiper Preview -->
+                                                  <div class="swiper swiper-preview-details bd-gray-100 product-details-page">
+                                                    <div class="swiper-wrapper">
+                                                      {% for i in "1234" %}
+                                                        <div class="swiper-slide">
+                                                          <img class="img-fluid" src="{% static 'img/websitebuilder-removebg-preview.png' %}" alt="img">
+                                                        </div>
+                                                      {% endfor %}
+                                                    </div>
+                                                    <div class="swiper-button-next"></div>
+                                                    <div class="swiper-button-prev"></div>
+                                                  </div>
+                                              
+                                                  <!-- Swiper Thumbnails -->
+                                                  <div class="swiper swiper-view-details mt-2">
+                                                    <div class="swiper-wrapper">
+                                                      {% for i in "1234" %}
+                                                        <div class="swiper-slide">
+                                                          <img class="img-fluid" src="{% static 'img/websitebuilder-removebg-preview.png' %}" alt="img">
+                                                        </div>
+                                                      {% endfor %}
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+
+                                            <div class="col-xxl-12 col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-md-5 mb-3">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xxl-8 col-xl-12 ">
+                                        <div class="row product-scroll  rounded-3 border p-3">
+                                            <div class="col-xl-8 mt-xxl-0 mt-3">
+                                                <div>
+                                                    <p class="fs-18 fw-semibold mb-0">{{ support.name }}</p>
+                                                    <p class="fs-18 mb-4">
+                                                        <i class="ri-star-s-fill text-warning align-middle"></i>
+                                                        <i class="ri-star-s-fill text-warning align-middle"></i>
+                                                        <i class="ri-star-s-fill text-warning align-middle"></i>
+                                                        <i class="ri-star-s-fill text-warning align-middle"></i>
+                                                        <i class="ri-star-half-s-fill text-warning align-middle"></i>
+                                                        {% comment %} <span class="fw-semibold text-muted ms-1">4.3<a class="text-info" href="javascript:void(0);">(2.4k Reviews)</a></span> {% endcomment %}
+                                                    </p>
+                                                    <div class="row mb-4">
+                                                        <div class="col-xxl-3 col-xl-12">
+                                                            <p class="mb-1 lh-1 fs-11 text-success fw-semibold">Offre spéciale</p>
+                                                            <div class="d-flex">
+                                                                <h3 class="mb-1 fw-semibold"><span>{{ support.prix }} MAD <span class="text-muted text-decoration-line-through ms-1  fs-16 op-6">{{ support.prix|add:"100" }} MAD</span></span></h3>
+                                                            </div>
+                                                            <span class="rounded-1 fs-11 badge bg-danger-transparent">50% Off</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-4">
+                                                        <p class="fs-15 fw-semibold mb-1"><i class="ti ti-discount-2 fs-17 me-1 text-success"></i>Informations:</p>
+                                                        <p class="text-muted mb-0 ps-2 mt-2">
+                                                            <i class="ti ti-discount-2 fs-14 text-success d-inline-flex"></i>
+                                                            <span>
+                                                              {{ support.name }}
+                                                            </span>
+                                                         </p>
+                                                         <p class="text-muted mb-0 ps-2 mt-2">
+                                                            <i class="ti ti-discount-2 fs-14 text-success d-inline-flex"></i>
+                                                            <span>
+                                                              {{ support.status }}
+                                                            </span>
+                                                        </p>
+                                                        <p class="text-muted mb-0 ps-2 mt-2">
+                                                            <i class="ti ti-discount-2 fs-14 text-success d-inline-flex"></i>
+                                                            <span>
+                                                              {{ support.date_created|date:"d/m/Y" }}
+                                                            </span>
+                                                        </p>
+                                                        <p class="text-muted mb-0 ps-2 mt-2">
+                                                            <i class="ti ti-discount-2 fs-14 text-success d-inline-flex"></i>
+                                                            <span>
+                                                              {{ support.prix }} MAD
+                                                            </span>
+                                                        </p>
+
+                                                    </div>
+                                                    <div class="mb-4">
+                                                        <p class="fs-15 fw-semibold mb-1">Description :</p>
+                                                        <p class="text-muted mb-0">
+                                                          {{ support.description }}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% comment %}<div class="col-xl-4 mt-xxl-0 mt-3">
+
+                                             <div class="border p-3 rounded-3 mb-3">
+                                                <p class="fs-16 fw-semibold mb-2">Louer un site web :</p>
+                                                <div class="row">
+                                                    <div class="col-xl-12">
+                                                        <div class="row">
+                                                            {% if website.prix_loyer %}
+                                                            <div class="col-xl-5">
+                                                               <span class="fs-14 fw-semibold">Prix ​​Loyer</span>
+                                                            </div>
+                                                            <div class="col-xl-7">
+                                                                <p class="text-muted fs-14">{{ website.prix_loyer }} MAD</p>
+                                                            </div>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="row">
+                                                            {% if website.prix_hebergement %}
+                                                            <div class="col-xl-5">
+                                                               <span class="fs-14 fw-semibold">Prix Hébergementr</span>
+                                                            </div>
+                                                            <div class="col-xl-7">
+                                                                <p class="text-muted fs-14"> {{ website.prix_hebergement }} MAD</p>
+                                                            </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="border rounded-3 p-3">
+                                                {% if website.video %}
+                                                <p class="fs-15 fw-semibold mb-2">Vidéo de Présentation:</p>
+                                                <p class="fs-12 text-muted"><iframe src="{{ website.video }}" title="Vidéo de présentation du site web" allowfullscreen class="rounded-3 shadow-sm"></iframe></p>
+                                                {% endif %}
+                                            </div> {% endcomment %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End::row-1 -->
+              
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+
+    {% endblock %}

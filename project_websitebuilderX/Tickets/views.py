@@ -188,20 +188,30 @@ def list_ticket_ST(request):
 
 
 from datetime import datetime
-
+from django.utils.timezone import localtime
 
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes'])
 def list_ticket_GC(request):
-    tickets = Ticket.objects.filter(typeTicket="Facturation").order_by('-date_created')
-    
-    # Apply filters
+    new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    for demande in new_demandes:
+        time_str = localtime(demande.date_created).strftime("%H:%M")
+        messages.info(
+        request,
+        f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
+    )
+    per_page = int(request.GET.get('per_page', 10))
+    page_number = request.GET.get('page', 1)
+
+    # Filters
     code_ticket = request.GET.get('code_ticket', '')
     date_created = request.GET.get('date_created', '')
     username_client = request.GET.get('username_client', '')
     branche = request.GET.get('branche', '')
-    status = request.GET.get('status', '')
-    
+    status_filter = request.GET.get('status', '')
+
+    tickets = Ticket.objects.filter(typeTicket="Facturation")
+
     if code_ticket:
         tickets = tickets.filter(code_Ticket__icontains=code_ticket)
     if date_created:
@@ -209,17 +219,29 @@ def list_ticket_GC(request):
             date_created = datetime.strptime(date_created, '%Y-%m-%d').date()
             tickets = tickets.filter(date_created__date=date_created)
         except ValueError:
-            pass  # Handle invalid date format if necessary
+            pass
     if username_client:
         tickets = tickets.filter(cliente__user__username__icontains=username_client)
     if branche:
         tickets = tickets.filter(Branche=branche)
-    if status:
-        tickets = tickets.filter(status=status)
-    
+    if status_filter:
+        tickets = tickets.filter(status=status_filter)
+
+    tickets = tickets.order_by('-date_created')
+
+    paginator = Paginator(tickets, per_page)
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'tickets': tickets,
+        'page_obj': page_obj,
+        'per_page': per_page,
+        'code_ticket': code_ticket,
+        'date_created': date_created,
+        'username_client': username_client,
+        'branche': branche,
+        'status_filter': status_filter,
     }
+
     return render(request, "Tickets/list_ticket_GC.html", context)
 
 
@@ -296,6 +318,13 @@ from django.utils.timezone import now
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes'])
 def details_ticket_GC(request, code_Ticket):
+    new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    for demande in new_demandes:
+        time_str = localtime(demande.date_created).strftime("%H:%M")
+        messages.info(
+        request,
+        f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
+    )
     ticket = get_object_or_404(Ticket, code_Ticket=code_Ticket)
     conversations = ticket.conversations.all().order_by('timestamp')
 

@@ -20,7 +20,12 @@ urlpatterns = [
 
     path('full_size_image/<int:DemandeRecharger_id>/', views.view_full_size_image, name='full_size_image'),
 
-    
+    path('websites_liste_GestionnaireComptes/',views.websites_liste_GestionnaireComptes, name="websites_liste_GestionnaireComptes"), 
+    path('details_website_GestionnaireComptes/<int:id>/', views.details_website_GestionnaireComptes, name='details_website_GestionnaireComptes'),
+
+    path('supports_list_GestionnaireComptes/',views.supports_list_GestionnaireComptes, name="supports_list_GestionnaireComptes"), 
+    path('details_support_GestionnaireComptes/<int:id>/', views.details_support_GestionnaireComptes, name='details_support_GestionnaireComptes'),
+
     
     # path('done_demande_recharger/<int:demande_recharger_id>/', views.done_demande_recharger, name='done_demande_recharger'),
     

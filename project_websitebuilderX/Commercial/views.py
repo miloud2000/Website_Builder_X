@@ -43,27 +43,93 @@ from websitebuilder.tokens import account_activation_token
 
 
 
-# #Home of Administrateur
 
 
-
-
-
+from itertools import chain 
 #DashbordHome of Commercial
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['Commercial']) 
 def dashbordHomeCommercial(request):  
-    return render(request, "Commercial/dashbordHomeCommercial.html")
+    clients_added_count = Cliente.objects.filter(added_by=request.user).count()
+    demandes_en_attente_count = DemandeRecharger.objects.filter(status='Not Done yet').count()
+    total_websites_count = Websites.objects.count()  
+    total_supports = Supports.objects.count()
+    total_clients = Cliente.objects.count()
+    latest_clients = Cliente.objects.filter(added_by=request.user).order_by('-date_created')[:6]
+
+    current_user = request.user
+
+    my_clients = Cliente.objects.filter(added_by=current_user)
+
+    achats = AchatWebsites.objects.filter(cliente__in=my_clients, date_created__isnull=False)
+    locations = LocationWebsites.objects.filter(cliente__in=my_clients, date_created__isnull=False)
+    free_webs = GetFreeWebsites.objects.filter(cliente__in=my_clients, date_created__isnull=False)
+
+    combined = chain(achats, locations, free_webs)
+    all_transactions = sorted(
+        combined,
+        key=lambda x: x.date_created or now(),
+        reverse=True
+    )[:6]
+    
+    
+    latest_achat_supports = AchatSupport.objects.filter(
+        cliente__in=my_clients
+    ).order_by('-date_created')[:6]
+
+    
+    context = {
+        'clients_added_count': clients_added_count,
+        'demandes_en_attente_count': demandes_en_attente_count,
+        'total_websites_count': total_websites_count,
+        'total_supports': total_supports,
+        'total_clients': total_clients,
+        'latest_clients': latest_clients,
+        'all_transactions': all_transactions,
+        'latest_achat_supports': latest_achat_supports,
+        }
+    return render(request, "Commercial/dashbordHomeCommercial.html", context)
 
 
 
 
+from django.core.paginator import Paginator
+from django.db.models import Q
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['Commercial']) 
-def ClienteCommercial(request): 
-    clientes = Cliente.objects.all()
-    context = {'clientes': clientes} 
-    return render(request, "Commercial/ClienteCommercial.html",context)
+def ClienteCommercial(request):  
+    # paramètres GET
+    query = request.GET.get('q', '')
+    status_filter = request.GET.get('status', '')
+    per_page = int(request.GET.get('per_page', 10))
+    page_number = request.GET.get('page', 1)
+
+    base_queryset = Cliente.objects.filter(added_by=request.user)
+
+    if query:
+        base_queryset = base_queryset.filter(
+            Q(nom__icontains=query) |
+            Q(prenom__icontains=query) |
+            Q(email__icontains=query) |
+            Q(user__username__icontains=query)
+        )
+
+    if status_filter:
+        base_queryset = base_queryset.filter(status=status_filter)
+
+    base_queryset = base_queryset.order_by('-date_created')
+
+    
+    paginator = Paginator(base_queryset, per_page)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'query': query,
+        'status_filter': status_filter,
+        'per_page': per_page,
+    }
+    return render(request, "Commercial/ClienteCommercial.html", context)
 
 
 
@@ -200,17 +266,76 @@ def deleteCliente_c(request, cliente_id):
 
 
 
+
 #List of websites that are displayed to the Commercial
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['Commercial']) 
-def list_websites_c(request): 
-    websites = Websites.objects.all()
-    context = {
-        'websites': websites,
-        }  
-    return render(request, "Commercial/list_websites.html",context)
+def list_websites_c(request):  
+
+    # استلام الفلاتر من GET
+    status     = request.GET.get('status', '').strip()
+    catégorie  = request.GET.get('catégorie', '').strip()
+    CMS        = request.GET.get('CMS', '').strip()
+    langues    = request.GET.get('langues', '').strip()
+    plan       = request.GET.get('plan', '').strip()
+    page       = request.GET.get('page', 1)
+    per_page   = int(request.GET.get('per_page', 10))
+
+    # قاعدة البيانات
+    websites = Websites.objects.filter(is_visible=True)
+
+    if status:
+        websites = websites.filter(status=status)
+    if catégorie:
+        websites = websites.filter(catégorie=catégorie)
+    if CMS:
+        websites = websites.filter(CMS=CMS)
+    if langues:
+        websites = websites.filter(langues=langues)
+    if plan:
+        websites = websites.filter(plan=plan)
+
+    websites = websites.order_by('-date_created')
+
+    # pagination
+    paginator = Paginator(websites, per_page)
+    page_obj = paginator.get_page(page)
+
+    # استخراج القوائم المميزة
+    catégories_list = Websites.objects.values_list('catégorie', flat=True).distinct()
+    cms_list        = Websites.objects.values_list('CMS', flat=True).distinct()
+    langues_list    = Websites.objects.values_list('langues', flat=True).distinct()
+    plans_list      = Websites.objects.values_list('plan', flat=True).distinct()
+
+    return render(request, "Commercial/list_websites.html", {
+        'websites': page_obj.object_list,
+        'page_obj': page_obj,
+        'status': status,
+        'catégorie': catégorie,
+        'CMS': CMS,
+        'langues': langues,
+        'plan': plan,
+        'catégories_list': catégories_list,
+        'cms_list': cms_list,
+        'langues_list': langues_list,
+        'plans_list': plans_list,
+        'per_page': per_page,
+    })
 
 
+
+from django.utils.timezone import localtime
+
+def details_website_commercial(request, id):
+    new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    for demande in new_demandes:
+        time_str = localtime(demande.date_created).strftime("%H:%M")
+        messages.info(
+        request,
+        f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
+    )
+    website = get_object_or_404(Websites, id=id)
+    return render(request, 'Commercial/details_website_commercial.html', {'website': website})
 
 
 
@@ -295,3 +420,43 @@ def all_list_websites_c(request):
 
     return render(request, 'Commercial/all_list_websites.html', context)
 
+
+
+
+
+
+def supports_list_commercial(request):
+    status = request.GET.get('status')
+
+    supports = Supports.objects.all()
+    if status:
+        supports = supports.filter(status=status)
+
+    supports = supports.order_by('-date_created')
+
+    # ✅ Pagination
+    paginator = Paginator(supports, 10)  # 10 éléments par page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,  # utilisé dans le template
+        'status': status,
+        'status_choices': ['Disponible', 'No Disponible'],
+    }
+    return render(request, 'Commercial/supports_list_commercial.html', context)
+
+
+
+
+
+def details_support_commercial(request, id):
+    new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    for demande in new_demandes:
+        time_str = localtime(demande.date_created).strftime("%H:%M")
+        messages.info(
+        request,
+        f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
+    )
+    support = get_object_or_404(Supports, id=id)
+    return render(request, 'Commercial/details_support_commercial.html', {'support': support})

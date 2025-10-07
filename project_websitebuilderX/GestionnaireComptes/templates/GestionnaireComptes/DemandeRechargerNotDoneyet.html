@@ -150,7 +150,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                          {% for DemandeRecharger in DemandeRechargers  %}
+                                          {% for DemandeRecharger in page_obj  %}
                                             <tr>
                                                 <td><h6 class="mb-0 fs-14 fw-semibold">{{ forloop.counter }}</h6></td>
                                                 <td>
@@ -180,7 +180,7 @@
                                             </tr>
                                             {% empty %}
                                             <tr>
-                                              <td colspan="7" class="text-center text-muted">Aucun administrateur trouvé.</td>
+                                              <td colspan="7" class="text-center text-muted">Aucun Demande de recharge pas encore effectuée trouvé.</td>
                                             </tr>
                                             {% endfor %}
                                         </tbody>
