@@ -3,332 +3,337 @@
 <html lang="en">
 
 <head>
+  <!-- Required meta tags -->
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <link rel="icon" href="{% static 'img/websitebuilder-removebg-preview.png' %} ">
-  <title>WebSite Builder</title>
-  <link href="{% static 'dashbord/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
-  <link href="{% static 'dashbord/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
-  <link href="{% static 'dashbord/css/ruang-admin.min.css' %}" rel="stylesheet">
+  <title>WebSite Builder 2</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="{% static 'Dashboard2/vendors/feather/feather.css' %}">
+  <link rel="stylesheet" href="{% static 'Dashboard2/vendors/ti-icons/css/themify-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'Dashboard2/vendors/css/vendor.bundle.base.css' %}">
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <link rel="stylesheet" href="{% static 'Dashboard2/vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}">
+  <link rel="stylesheet" href="{% static 'Dashboard2/vendors/ti-icons/css/themify-icons.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'Dashboard2/js/select.dataTables.min.css' %}">
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="{% static 'Dashboard2/css/vertical-layout-light/style.css' %}">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="{% static 'img/websitebuilder-removebg-preview.png' %} " />
+  {% comment %} <link rel="shortcut icon" href="{% static 'Dashboard2/images/favicon.png' %}" /> {% endcomment %}
+
+
+   <!-- FontAwesome JS-->
+   <script defer src="{% static 'assets/plugins/fontawesome/js/all.min.js' %} "></script>
+
+   <!-- Include Bootstrap CSS and JavaScript -->
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </head>
-
-<body id="page-top">
-  <div id="wrapper">
-    <!-- Sidebar -->
-    <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'home' %}">
-        <div class="sidebar-brand-icon">
-          <img src="{% static 'img/websitebuilder-removebg-preview.png' %}">
-        </div>
-        <div class="sidebar-brand-text mx-3">WebSite Builder</div>
-      </a>
-      <hr class="sidebar-divider my-0">
-      <li class="nav-item active">
-        <a class="nav-link" href="">
-            <i class='fas fa-align-center'></i>
-            <span>Dashboard</span></a>
-      </li>
-      <hr class="sidebar-divider">
-      <div class="sidebar-heading">
-        Features
+<body>
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+      <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+        <a class="navbar-brand brand-logo mr-5" href="{% url 'dashbordHome' %}"><img src="{% static 'img/logo-1-removebg-preview.png' %} " class="mr-2" style="padding-left: 10px;" alt="logo"/></a>
+        {% comment %} <a class="navbar-brand brand-logo-mini" href="index.html"><img src="{% static 'img/logo-1-removebg-preview.png' %} " alt="logo"/></a> {% endcomment %}
       </div>
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="">
-          <i class='fas fa-user-alt'></i>
-          <span>Détails de l'utilisateur</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
-            aria-expanded="true" aria-controls="collapseBootstrap">
-            <i class="fab fa-fw fa-wpforms"></i>
-            <span>Mes Services</span>
-        </a>
-        <div id="collapseBootstrap" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="{% url 'MesServices' %}">All Services</a>
-                <a class="collapse-item" data-toggle="collapse" data-target="#collapseWebSites"
-                    aria-expanded="false" aria-controls="collapseWebSites">WebSites</a>
-                <div class="collapse" id="collapseWebSites">
-                    <a class="collapse-item" href="{% url 'WebSites' %}">All WebSites</a>
-                    <a class="collapse-item" href="#">IR0449</a>
-                    <a class="collapse-item" href="#">IR5324</a>
-                </div>
-                <a class="collapse-item" href="" data-toggle="collapse" data-target="#submenuServices"
-                    aria-expanded="false" aria-controls="submenuServices">Services</a>
-                <div class="collapse" id="submenuServices">
-                    <a class="collapse-item" href="{% url 'Services' %}">All Services</a>
-                    <a class="collapse-item" href="#">SR6720</a>
-                    <a class="collapse-item" href="#">SR5324</a>
-                </div>
+      <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+          <span class="icon-menu"></span>
+        </button>
+        <ul class="navbar-nav mr-lg-2">
+          {% comment %} <li class="nav-item nav-search d-none d-lg-block">
+            <div class="input-group">
+              <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
+                <span class="input-group-text" id="search">
+                  <i class="icon-search"></i>
+                </span>
+              </div>
+              <input type="text" class="form-control" id="navbar-search-input" placeholder="Search now" aria-label="search" aria-describedby="search">
             </div>
-        </div>
-    </li>
+          </li> {% endcomment %}
+        </ul>
+        <ul class="navbar-nav navbar-nav-right">
+          <li class="nav-item dropdown">
+            <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
+              {{ user.cliente.solde }} MAD
+            </a>
+          </li>
+        
+          <li class="nav-item nav-profile dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+              <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="profile"/>
+            </a> 
+            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+              <a class="dropdown-item" href="{% url 'detailUser' %}">
+                <i class="fa-solid fa-user text-primary"></i>&nbsp;
+                Profile
+              </a>
+              <a class="dropdown-item" href="{% url 'userLogout' %}">
+                <i class="ti-power-off text-primary"></i>
+                Logout
+              </a>
+            </div>
+          </li>
+          {% comment %} <li class="nav-item nav-settings d-none d-lg-flex">
+            <a class="nav-link" href="#">
+              <i class="icon-ellipsis"></i>
+            </a>
+          </li> {% endcomment %}
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+          <span class="icon-menu"></span>
+        </button>
+      </div>
+    </nav>
+    <div class="container-fluid page-body-wrapper">
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashbordHome' %}">
+              <i class="fa-solid fa-list"></i>&nbsp;
+              <span class="menu-title">Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+              <i class="fa-solid fa-layer-group"></i>&nbsp;
+                  <span class="menu-title">Mes Services</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="ui-basic">
+                <ul class="nav flex-column sub-menu" style="margin-left: -32px;">
+                    <li class="nav-item"> <a class="nav-link" href="{% url 'MesServices' %}">ALL Services</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#collapseWebsites" aria-expanded="false" aria-controls="collapseWebsites">
+                            <span class="menu-title">WebSites</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="collapseWebsites">
+                          <ul class="nav flex-column sub-menu" style="margin-left: -25px;">
+                            <li class="nav-item"> <a class="nav-link" href="{% url 'WebSites' %}">All WebSites</a></li>
+                            {% if user.is_authenticated %}
+                            {% if WebsiteBuilders %}
+                            {% for WebsiteBuilder in WebsiteBuilders %}
+                          
+                                {% if WebsiteBuilder.location_website_builder %}
+                                <li class="nav-item">
+                                  <a class="nav-link" href="{% url 'edite_website_Location' WebsiteBuilder.location_website_builder.nameWebsite %}">{{ WebsiteBuilder.location_website_builder.nameWebsite }}</a>
+                              </li>
+                                {% elif WebsiteBuilder.website_builder %}
+                                <li class="nav-item">
+                                  <a class="nav-link" href="{% url 'edite_website' WebsiteBuilder.website_builder.nameWebsite %}">{{ WebsiteBuilder.website_builder.nameWebsite }}</a>
+                                  </li>
+                                  {% elif WebsiteBuilder.getfree_website_builder %}
+                                  <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'edite_free_website' WebsiteBuilder.getfree_website_builder.nameWebsite %}">{{ WebsiteBuilder.getfree_website_builder.nameWebsite }}</a>
+                                    </li>
+                                {% else %}
+                                    N/A
+                                {% endif %}
+
+                           {% endfor %}
+                          {% endif %}
+                          {% endif %}
+                                    
+                        </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#collapseServices" aria-expanded="false" aria-controls="collapseServices">
+                          Support
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="collapseServices">
+                            <ul class="nav flex-column sub-menu" style="margin-left: -25px;">
+                                <li class="nav-item"> <a class="nav-link" href="{% url 'Services' %}">All Support</a></li>
+                                {% if user.is_authenticated %}
+                                {% with achatsupport_objects=user.cliente.achatsupport_set.all %}
+                                    {% for achat in achatsupport_objects|dictsortreversed:"date_created" %}
+                                        {% if forloop.counter <= 6 %}
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#">{{ achat.support.name }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endwith %}
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </li>
+
+
+    <!-- Your JavaScript code -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Get the Mes Services parent item
+        var mesServicesItem = document.querySelector('#ui-basic');
     
+        // Add an event listener to all sub-menu items within Mes Services
+        var subMenuItems = mesServicesItem.querySelectorAll('.nav-link');
+        subMenuItems.forEach(function(item) {
+            item.addEventListener('click', function(event) {
+                // Prevent the default anchor behavior
+                event.preventDefault();
     
-      
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'solde_et_facturation' %}" >
-          <i class='fas fa-money-check-alt'></i>
-          <span>Solde et facturation</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'list_websites' %}">
-            <i class='fas fa-clipboard-list'></i>
-          <span>Liste des Websites</span>
-        </a>
-      </li>
-      {% comment %} <hr class="sidebar-divider">
-      <div class="sidebar-heading">
-        Examples
-      </div> {% endcomment %}
-      <li class="nav-item">
-        <a class="nav-link">
-          <i class='fas fa-list-alt'></i>
-          <span>Listes des Services</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">
-            <i class='fas fa-clone'></i>
-          <span>Ticket</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">
-            <i class='fas fa-hands-helping'></i>
-          <span>Help</span>
-        </a>
-      </li>
-      {% comment %} <hr class="sidebar-divider">
-      <div class="version" id="version-ruangadmin"></div> {% endcomment %}
-    </ul>
-    <!-- Sidebar -->
-    <div id="content-wrapper" class="d-flex flex-column">
-      <div id="content">
-        <!-- TopBar -->
-        <nav class="navbar navbar-expand navbar-light bg-navbar topbar mb-4 static-top">
-          <button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3">
-            <i class="fa fa-bars"></i>
-          </button>
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item dropdown no-arrow">
-              {% comment %} <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-search fa-fw"></i>
-              </a> {% endcomment %}
-              <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                aria-labelledby="searchDropdown">
-                <form class="navbar-search">
-                  <div class="input-group">
-                    <input type="text" class="form-control bg-light border-1 small" placeholder="What do you want to look for?"
-                      aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
-                    <div class="input-group-append">
-                      <button class="btn btn-primary" type="button">
-                        <i class="fas fa-search fa-sm"></i>
-                      </button>
-                    </div>
+                // Stop the event from propagating to the parent collapse
+                event.stopPropagation();
+    
+                // Get the URL from the href attribute
+                var url = item.getAttribute('href');
+    
+                // Check if the URL is a valid selector (starts with '#')
+                if (url && url.startsWith('#')) {
+                    // Toggle the collapse
+                    var target = document.querySelector(url);
+                    if (target) {
+                        target.classList.toggle('show');
+                    }
+                } else {
+                    // Redirect to the URL specified in the href attribute
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+    
+    </script>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="collapse" href="#ui-facturation" aria-expanded="false" aria-controls="ui-facturation">
+          <i class="fa-solid fa-receipt"></i>&nbsp;
+          <span class="menu-title">Solde et facturation</span>
+          <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse" id="ui-facturation">
+          <ul class="nav flex-column sub-menu" style="margin-left: -32px;">
+              <li class="nav-item"> 
+                  <a class="nav-link" href="{% url 'solde_et_facturation' %}">Solde et facturation</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="#ui-basic2" data-toggle="collapse" data-target="#collapsDemande">
+                      <span class="menu-title">List Demande Recharger</span>
+                      <i class="menu-arrow"></i>
+                  </a>
+                  <div class="collapse" id="collapsDemande">
+                      <ul class="nav flex-column sub-menu" style="margin-left: -25px;">
+                          <li class="nav-item"> <a class="nav-link" href="{% url 'list_demande_recharger' %}">Toutes les Demandes</a></li>
+                          <li class="nav-item"> <a class="nav-link" href="{% url 'list_Demande_Recharger_Complete' %}">Demandes Complété</a></li>
+                          <li class="nav-item"> <a class="nav-link" href="{% url 'list_Demande_Recharger_En_attente' %}">Demandes En attente</a></li>
+                          <li class="nav-item"> <a class="nav-link" href="{% url 'list_Demande_Recharger_Annule' %}">Demandes Annulé</a></li>
+                      </ul>
                   </div>
-                </form>
-              </div>
-            </li>
-            <li class="nav-item dropdown no-arrow mx-1">
-              {% comment %} <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-bell fa-fw"></i>
-                <span class="badge badge-danger badge-counter">3+</span>
-              </a>
-              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                aria-labelledby="alertsDropdown">
-                <h6 class="dropdown-header">
-                  Alerts Center
-                </h6>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                  <div class="mr-3">
-                    <div class="icon-circle bg-primary">
-                      <i class="fas fa-file-alt text-white"></i>
-                    </div>
-                  </div>
-                  <div>
-                    <div class="small text-gray-500">December 12, 2019</div>
-                    <span class="font-weight-bold">A new monthly report is ready to download!</span>
-                  </div>
-                </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                  <div class="mr-3">
-                    <div class="icon-circle bg-success">
-                      <i class="fas fa-donate text-white"></i>
-                    </div>
-                  </div>
-                  <div>
-                    <div class="small text-gray-500">December 7, 2019</div>
-                    $290.29 has been deposited into your account!
-                  </div>
-                </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                  <div class="mr-3">
-                    <div class="icon-circle bg-warning">
-                      <i class="fas fa-exclamation-triangle text-white"></i>
-                    </div>
-                  </div>
-                  <div>
-                    <div class="small text-gray-500">December 2, 2019</div>
-                    Spending Alert: We've noticed unusually high spending for your account.
-                  </div>
-                </a>
-                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
-              </div> {% endcomment %}
-            </li>
-            <li class="nav-item dropdown no-arrow mx-1">
-              {% comment %} <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-envelope fa-fw"></i>
-                <span class="badge badge-warning badge-counter">2</span>
-              </a>
-              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                aria-labelledby="messagesDropdown">
-                <h6 class="dropdown-header">
-                  Message Center
-                </h6>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                  <div class="dropdown-list-image mr-3">
-                    <img class="rounded-circle" src="img/man.png" style="max-width: 60px" alt="">
-                    <div class="status-indicator bg-success"></div>
-                  </div>
-                  <div class="font-weight-bold">
-                    <div class="text-truncate">Hi there! I am wondering if you can help me with a problem I've been
-                      having.</div>
-                    <div class="small text-gray-500">Udin Cilok · 58m</div>
-                  </div>
-                </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                  <div class="dropdown-list-image mr-3">
-                    <img class="rounded-circle" src="img/girl.png" style="max-width: 60px" alt="">
-                    <div class="status-indicator bg-default"></div>
-                  </div>
-                  <div>
-                    <div class="text-truncate">Am I a good boy? The reason I ask is because someone told me that people
-                      say this to all dogs, even if they aren't good...</div>
-                    <div class="small text-gray-500">Jaenab · 2w</div>
-                  </div>
-                </a>
-                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
-              </div> {% endcomment %}
-            </li>
-            <li class="nav-item dropdown no-arrow mx-1">
-              {% comment %} <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-tasks fa-fw"></i>
-                <span class="badge badge-success badge-counter">3</span>
-              </a>
-              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                aria-labelledby="messagesDropdown">
-                <h6 class="dropdown-header">
-                  Task
-                </h6>
-                <a class="dropdown-item align-items-center" href="#">
-                  <div class="mb-3">
-                    <div class="small text-gray-500">Design Button
-                      <div class="small float-right"><b>50%</b></div>
-                    </div>
-                    <div class="progress" style="height: 12px;">
-                      <div class="progress-bar bg-success" role="progressbar" style="width: 50%" aria-valuenow="50"
-                        aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </div>
-                </a>
-                <a class="dropdown-item align-items-center" href="#">
-                  <div class="mb-3">
-                    <div class="small text-gray-500">Make Beautiful Transitions
-                      <div class="small float-right"><b>30%</b></div>
-                    </div>
-                    <div class="progress" style="height: 12px;">
-                      <div class="progress-bar bg-warning" role="progressbar" style="width: 30%" aria-valuenow="30"
-                        aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </div>
-                </a>
-                <a class="dropdown-item align-items-center" href="#">
-                  <div class="mb-3">
-                    <div class="small text-gray-500">Create Pie Chart
-                      <div class="small float-right"><b>75%</b></div>
-                    </div>
-                    <div class="progress" style="height: 12px;">
-                      <div class="progress-bar bg-danger" role="progressbar" style="width: 75%" aria-valuenow="75"
-                        aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </div>
-                </a>
-                <a class="dropdown-item text-center small text-gray-500" href="#">View All Taks</a>
-              </div> {% endcomment %}
-            </li>
-            <div class="topbar-divider d-none d-sm-block"></div>
-            <li class="nav-item dropdown no-arrow">
-              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                <img class="img-profile rounded-circle" src="{% static 'img/websitebuilder-removebg-preview.png' %}" style="max-width: 60px">
-                <span class="ml-2 d-none d-lg-inline text-white small">Mohamed Guessoum</span>
-              </a>
-              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Profile
-                </a>
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Settings
-                </a>
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Activity Log
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#logoutModal">
-                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Logout
-                </a>
-              </div>
-            </li>
+              </li>
           </ul>
-        </nav>
-        <!-- Topbar -->
-
-        <!-- Container Fluid-->
-        <div class="container-fluid" id="container-wrapper">
-          <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            {% comment %} <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="./">Home</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-            </ol> {% endcomment %}
-          </div>
-
-        {% block content %}
-
-
-        {% endblock  %}	
-
-
-  <!-- Scroll to top -->
-  <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-  </a>
-
-  <script src="{% static 'dashbord/vendor/jquery/jquery.min.js' %}"></script>
-  <script src="{% static 'dashbord/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-  <script src="{% static 'dashbord/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
-  <script src="{% static 'dashbord/js/ruang-admin.min.js' %}"></script>
-  <script src="{% static 'dashbord/vendor/chart.js/Chart.min.js' %}"></script>
-  <script src="{% static 'dashbord/js/demo/chart-area-demo.js' %}"></script>
+      </div>
+  </li>
   
-   <!-- Page level plugins -->
-  <script src="{% static 'dashbord/vendor/datatables/jquery.dataTables.min.js' %}"></script>
-  <script src="{% static 'dashbord/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
-   
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          // Get the "ui-basic2" link
+          var uiBasic2Link = document.querySelector('[href="#ui-basic2"]');
+      
+          // Get the collapse div
+          var collapsDemande = document.getElementById('collapsDemande');
+      
+          // Add an event listener to toggle the visibility of the collapse when the link is clicked
+          uiBasic2Link.addEventListener('click', function(event) {
+              // Prevent the default anchor behavior
+              event.preventDefault();
+      
+              // Stop the event from propagating to the parent collapse
+              event.stopPropagation();
+      
+              // Toggle the collapse
+              collapsDemande.classList.toggle('show');
+          });
+      });
+  </script>
+          {% comment %} <li class="nav-item">
+            <a class="nav-link" href="{% url 'solde_et_facturation' %}" >
+              <i class="fa-solid fa-receipt"></i>&nbsp;
+              <span class="menu-title">Solde et facturation</span>
+            </a>
+          </li> {% endcomment %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'list_websites' %}" >
+              <i class="fa-solid fa-rectangle-list"></i>&nbsp;
+              <span class="menu-title">Catalogue Website</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'list_services' %}" >
+              <i class="fa-solid fa-rectangle-list"></i>&nbsp;
+              <span class="menu-title">Catalogue Support</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'ticket_list' %}" aria-expanded="false" >
+              <i class="fa-solid fa-ticket"></i>&nbsp;
+              <span class="menu-title">Ticket</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="" >
+              <i class="fa-solid fa-handshake-angle"></i>&nbsp;
+              <span class="menu-title">Help</span>
+            </a>
+          </li>
+          {% comment %} <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#error" aria-expanded="false" aria-controls="error">
+              <i class="icon-ban menu-icon"></i>
+              <span class="menu-title">Error pages</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="error">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="pages/samples/error-404.html"> 404 </a></li>
+                <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="pages/documentation/documentation.html">
+              <i class="icon-paper menu-icon"></i>
+              <span class="menu-title">Documentation</span>
+            </a>
+          </li> {% endcomment %}
+        </ul>
+      </nav>
+       {% block content %}
+
+
+        {% endblock  %}	 
+      
+      </div>
+    </div>   
+  </div>
+  
+
+  <!-- plugins:js -->
+  <script src="{% static 'Dashboard2/vendors/js/vendor.bundle.base.js' %}"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page -->
+  <script src="{% static 'Dashboard2/vendors/chart.js/Chart.min.js' %}"></script>
+ 
+
+  <!-- End plugin js for this page -->
+  <!-- inject:js -->
+  <script src="{% static 'Dashboard2/js/off-canvas.js' %}"></script>
+  <script src="{% static 'Dashboard2/js/hoverable-collapse.js' %}"></script>
+  <script src="{% static 'Dashboard2/js/template.js' %}"></script>
+  <script src="{% static 'Dashboard2/js/settings.js' %}"></script>
+  <script src="{% static 'Dashboard2/js/todolist.js' %}"></script>
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <script src="{% static 'Dashboard2/js/dashboard.js' %}"></script>
+  <script src="{% static 'Dashboard2/js/Chart.roundedBarCharts.js' %}"></script>
+  <!-- End custom js for this page-->
 </body>
 
 </html>
+

@@ -35,62 +35,19 @@ from websitebuilder.models import (
     DemandeRecharger, Cliente,
     AchatWebsites, LocationWebsites, GetFreeWebsites
 )
-from django.db.models import Q
-from itertools import chain
-def home(request):
-    is_Cliente = is_SupportTechnique = is_Administrateur = is_Commercial = False
-    demandes = []
-    produits = []
-    services = []  # ✅ Initialisation ici
-    factures = []
 
-    if request.user.is_authenticated:
-        is_Cliente = request.user.groups.filter(name='Cliente').exists()
-        is_SupportTechnique = request.user.groups.filter(name='SupportTechnique').exists()
-        is_Administrateur = request.user.groups.filter(name='Administrateur').exists()
-        is_Commercial = request.user.groups.filter(name='Commercial').exists()
 
-        if is_Cliente:
-            try:
-                cliente = Cliente.objects.get(user=request.user)
-
-                demandes = DemandeRecharger.objects.filter(
-                    cliente=cliente,
-                    status='Done'
-                ).order_by('-date_created')[:3]
-
-                achats = AchatWebsites.objects.filter(cliente=cliente).order_by('-date_created')[:3]
-                locations = LocationWebsites.objects.filter(cliente=cliente).order_by('-date_created')[:3]
-                gratuits = GetFreeWebsites.objects.filter(cliente=cliente).order_by('-date_created')[:3]
-
-                produits = sorted(
-                    chain(achats, locations, gratuits),
-                    key=lambda x: x.date_created,
-                    reverse=True
-                )[:3]
-
-                services = AchatSupport.objects.filter(
-                    cliente=cliente,
-                    StatusConsomé='Consomé'
-                ).order_by('-date_created')[:3]
-
-                factures = Facturations.objects.filter(cliente=cliente).order_by('-date_created')[:3]
-
-            except Cliente.DoesNotExist:
-                pass  # Les listes sont déjà initialisées à vide
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['Cliente']) 
+def dashbordHome(request):  
+    cliente = request.user.cliente
+    WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
+    AchatSupports = AchatSupport.objects.filter(cliente=cliente).order_by('-date_created')[:5]
     context = {
-        "is_Cliente": is_Cliente,
-        "is_SupportTechnique": is_SupportTechnique,
-        "is_Administrateur": is_Administrateur,
-        "is_Commercial": is_Commercial,
-        "demandes": demandes,
-        "produits": produits,
-        "services": services,
-        "factures": factures,
+        'WebsiteBuilders': WebsiteBuilders,
+        'AchatSupports': AchatSupports,
     }
-
-    return render(request, "websitebuilder/home.html", context)
+    return render(request, "clients/dashbordHome.html",context)
 
 
 
@@ -235,7 +192,7 @@ def user_login(request):
             login(request, user)
 
             if user.groups.filter(name='Cliente').exists():
-                return redirect('/home')
+                return redirect('/dashbordHome')
             if user.groups.filter(name='SupportTechnique').exists():
                 return redirect('/homeSupportTechnique')
             if user.groups.filter(name='GestionnaireComptes').exists():

@@ -3,110 +3,292 @@
 {% load static %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12 grid-margin stretch-card">
-      <div class="card">
-        
-  {% if messages %}
-  {% for message in messages %}
-    <div class="alert alert-success" role="alert">
-      {{ message }}
-    </div>
-  {% endfor %}
-{% endif %}
-<div class="row">
-  <div class="card-body">
-      <p class="card-title">mes services (WebSites)</p>
-    <div class="row">
-      <div class="col-12">
-        <div class="table-responsive">
-          <table id="example" class="display expandable-table" style="width:100%">
-            <thead>
-              <tr>
-                <th>Website N°</th>
-                <th>Website de nom</th>
-                <th>Prix</th>
-                <th>Date Ajouter</th>
-                <th>Builder Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for website in combined_websites %}
-              <tr>
-                  <td>{{ forloop.counter }}</td>
-                  <td>
-                      {% if website.websites %}
-                          {{ website.websites.name }}
-                      {% else %}
-                          {{ website.nameWebsite }}
-                      {% endif %}
-                  </td>
-                  <td>
-                      {% if website.transaction_type == 'AchatWebsites' %}
-                          {{ website.prix_achat }} MAD
-                      {% elif website.transaction_type == 'LocationWebsites' %}
-                          {{ website.prix_loyer }} MAD
-                      {% elif website.transaction_type == 'GetFreeWebsite' %}
-                          {{ website.prix_free }} MAD
-                      {% else %}
-                         N/N
-                      {% endif %}
-                  </td>
-                  <td>{{ website.date_created|date:"d M Y" }}</td>
-                  <td>
-                      {% if website.BuilderStatus == 'Builder' %}
-                          <span class="badge badge-success">{{ website.BuilderStatus }}</span>
-                      {% else %}
-                          <span class="badge badge-danger">{{ website.BuilderStatus }}</span>
-                      {% endif %}
-                  </td>
-              </tr>
-          {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
 
 
-  <div class="card-body">
-    <p class="card-title">mes services (Supports)</p>
-  <div class="row">
-    <div class="col-12">
-      <div class="table-responsive">
-        <table id="example" class="display expandable-table" style="width:100%">
-          <thead>
-            <tr>
-              <th>Support N°</th>
-              <th>Support de nom</th>
-              <th>Prix</th>
-              <th>Date Ajouter</th>
-              <th>Builder Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for achat_support in achat_supports %}
-              <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{achat_support.support.name}}</td>
-                <td>{{achat_support.support.prix}} MAD</td>
-                <td>{{achat_support.support.date_created|date:"d M Y" }}</td>
-                {% if achat_support.StatusConsomé == 'Consomé' %}  
-                <td><span class="badge badge-success">{{ achat_support.StatusConsomé }}</span></td>
-                {% else %}
-                <td><span class="badge badge-danger">{{ achat_support.StatusConsomé }}</span></td>
-                {% endif %}
-              </tr>
+<div class="main-content app-content">
+  <div class="container-fluid">
+          {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
               {% endfor %}
-
-          </tbody>
-        </table>
+          {% endif %}
+            <!-- PAGE-HEADER -->
+            <div class="page-header">
+              <h1 class="page-title my-auto">Mes services</h1>
+              <div>
+                <ol class="breadcrumb mb-0">
+                  <li class="breadcrumb-item">
+                    <a href="javascript:void(0)">Home</a>
+                  </li>
+                  <li class="breadcrumb-item active" aria-current="page">Mes services</li>
+                </ol>
+              </div>
+            </div>
+            <!-- ROW-4 -->
+            <div class="row">
+              <div class="col-12 col-sm-12">
+                  <div class="card">  
+                      <div class="card-header d-lg-flex">
+                          <h3 class="card-title mb-lg-0 mb-3">Mes services</h3>
+                          <div class="tabs-menu1 ms-auto border-0 p-0">
+                              <!-- Tabs -->
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center mb-3">
+                            
+                          </div>
+                        </div>
+                        <div class="card-body product-table">
+                          <div class="row">
+                             
+                          </div>
+                        <div class="card-body product-table">
+                            <div class="row">
+                              {% comment %} <div class="col-sm-12 col-md-6">
+                                <form method="get">
+                                  <label class="mb-3">
+                                    Show
+                                    <select name="per_page" class="form-control" data-trigger onchange="this.form.submit()">
+                                      <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                                      <option value="25" {% if per_page == 25 %}selected{% endif %}>25</option>
+                                      <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+                                      <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
+                                    </select>
+                                    Entries
+                                  </label>
+                                </form>
+                              </div> {% endcomment %}
+                            </div>
+                                {% comment %} <div class="col-sm-12 col-md-6">
+                                    <label class="mb-3 justify-content-end">
+                                        <input type="search" class="form-control" placeholder="Search...">
+                                    </label>
+                                </div> {% endcomment %}
+                            </div>
+                            <div class="tab-content">
+                                <div class="tab-pane border-0 p-0 active" id="tab5">
+                                    <div class="table-responsive">
+                                      <table class="table table-bordered text-nowrap mb-0">
+                                        <thead class="border-top">
+                                            <tr>
+                                                <th scope="col" class="">N°</th>
+                                                <th scope="col" class="">Nom du site</th>
+                                                <th scope="col" class="">Prix</th>
+                                                <th scope="col" class="">Date d'ajout</th>
+                                                <th scope="col" class="">Builder Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                          {% for website in combined_websites %}
+                                            <tr>
+                                                <td><h6 class="mb-0 fs-14 fw-semibold"> {{ forloop.counter }}</h6></td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/9.jpg"></span>
+                                                        <h6 class="ms-3 my-auto fs-14 fw-semibold"> 
+                                                        {% if website.websites %}
+                                                          {{ website.websites.name }}
+                                                      {% else %}
+                                                          {{ website.nameWebsite }}
+                                                      {% endif %}</h6>
+                                                    </div>
+                                                </td>
+                                                <td><h6 class="mb-0 fs-14 fw-semibold"> 
+                                                  {% if website.transaction_type == 'AchatWebsites' %}
+                                                  {{ website.prix_achat }} MAD
+                                                  {% elif website.transaction_type == 'LocationWebsites' %}
+                                                  {{ website.prix_loyer }} MAD
+                                                  {% elif website.transaction_type == 'GetFreeWebsite' %}
+                                                  {{ website.prix_free }} MAD
+                                                  {% else %}
+                                                   N/N
+                                                  {% endif %}
+                                              </h6>
+                                              </td>
+                                                <td>
+                                                  {{ website.date_created|date:"d M Y" }}
+                                                </td>
+                                                <td>
+                                                  {% if website.BuilderStatus == 'Builder' %}
+                                                    <span class="badge bg-success-transparent text-success">{{ website.BuilderStatus }}</span>
+                                                  {% else %}
+                                                    <span class="badge bg-danger-transparent text-danger">{{ website.BuilderStatus }}</span>
+                                                  {% endif %}
+                                                </td>                                                
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                              <td colspan="7" class="text-center text-muted">Aucun services trouvé.</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                              {% comment %} <div class="row mt-3">
+                                <div class="col-sm-12 col-md-6 my-auto">
+                                  <span>
+                                    Affichage de {{ page_obj.start_index }} à {{ page_obj.end_index }} sur {{ page_obj.paginator.count }} entrées
+                                  </span>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                  <nav aria-label="Navigation des pages">
+                                    <ul class="pagination justify-content-end mb-0">
+                                      {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                          <a class="page-link" href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}&q={{ query }}&status={{ status_filter }}">Précédent</a>
+                                        </li>
+                                      {% else %}
+                                        <li class="page-item disabled"><a class="page-link">Précédent</a></li>
+                                      {% endif %}
+                              
+                                      {% for num in page_obj.paginator.page_range %}
+                                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                          <a class="page-link" href="?page={{ num }}&per_page={{ per_page }}&q={{ query }}&status={{ status_filter }}">{{ num }}</a>
+                                        </li>
+                                      {% endfor %}
+                              
+                                      {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                          <a class="page-link" href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}&q={{ query }}&status={{ status_filter }}">Suivant</a>
+                                        </li>
+                                      {% else %}
+                                        <li class="page-item disabled"><a class="page-link">Suivant</a></li>
+                                      {% endif %}
+                                    </ul>
+                                  </nav>
+                                </div>
+                              </div> {% endcomment %}
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                <div class="col-12 col-sm-12">
+                    <div class="card">  
+                        <div class="card-header d-lg-flex">
+                            <h3 class="card-title mb-lg-0 mb-3">Mes services (Supports)</h3>
+                            <div class="tabs-menu1 ms-auto border-0 p-0">
+                                <!-- Tabs -->
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                              
+                            </div>
+                          </div>
+                          <div class="card-body product-table">
+                            <div class="row">
+                               
+                            </div>
+                          <div class="card-body product-table">
+                              {% comment %} <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                  <form method="get">
+                                    <label class="mb-3">
+                                      Show
+                                      <select name="per_page" class="form-control" data-trigger onchange="this.form.submit()">
+                                        <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                                        <option value="25" {% if per_page == 25 %}selected{% endif %}>25</option>
+                                        <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+                                        <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
+                                      </select>
+                                      Entries
+                                    </label>
+                                  </form>
+                                </div>
+                              </div> {% endcomment %}
+                                  {% comment %} <div class="col-sm-12 col-md-6">
+                                      <label class="mb-3 justify-content-end">
+                                          <input type="search" class="form-control" placeholder="Search...">
+                                      </label>
+                                  </div> {% endcomment %}
+                              </div>
+                              <div class="tab-content">
+                                  <div class="tab-pane border-0 p-0 active" id="tab5">
+                                      <div class="table-responsive">
+                                        <table class="table table-bordered text-nowrap mb-0">
+                                          <thead class="border-top">
+                                              <tr>
+                                                  <th scope="col" class="">N°</th>
+                                                  <th scope="col" class="">Nom du Support</th>
+                                                  <th scope="col" class="">Prix</th>
+                                                  <th scope="col" class="">Date d'ajout</th>
+                                                  <th scope="col" class="">Builder Status</th>
+                                              </tr>
+                                          </thead>
+                                          <tbody>
+                                            {% for achat_support in achat_supports %}
+                                              <tr>
+                                                  <td><h6 class="mb-0 fs-14 fw-semibold"> {{ forloop.counter }}</h6></td>
+                                                  <td>
+                                                      <div class="d-flex">
+                                                          <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/9.jpg"></span>
+                                                          <h6 class="ms-3 my-auto fs-14 fw-semibold"> {{achat_support.support.name}}</h6>
+                                                      </div>
+                                                  </td>
+                                                  <td><h6 class="mb-0 fs-14 fw-semibold">{{achat_support.support.prix}} MAD</h6>
+                                                </td>
+                                                  <td>
+                                                    {{achat_support.support.date_created|date:"d M Y" }}
+                                                  </td>
+                                                  {% if achat_support.StatusConsomé == 'Consomé' %}  
+                                                  <td><span class="badge bg-success-transparent text-success">{{ achat_support.StatusConsomé }}</span></td>
+                                                  {% else %}
+                                                  <td><span class="badge bg-success-transparent text-danger">{{ achat_support.StatusConsomé }}</span></td>
+                                                  {% endif %}                                             
+                                              </tr>
+                                              {% empty %}
+                                              <tr>
+                                                <td colspan="7" class="text-center text-muted">Aucun services(Support) trouvé.</td>
+                                              </tr>
+                                              {% endfor %}
+                                          </tbody>
+                                      </table>
+                                  </div>
+                              </div>
+                                {% comment %} <div class="row mt-3">
+                                  <div class="col-sm-12 col-md-6 my-auto">
+                                    <span>
+                                      Affichage de {{ page_obj.start_index }} à {{ page_obj.end_index }} sur {{ page_obj.paginator.count }} entrées
+                                    </span>
+                                  </div>
+                                  <div class="col-sm-12 col-md-6">
+                                    <nav aria-label="Navigation des pages">
+                                      <ul class="pagination justify-content-end mb-0">
+                                        {% if page_obj.has_previous %}
+                                          <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}&q={{ query }}&status={{ status_filter }}">Précédent</a>
+                                          </li>
+                                        {% else %}
+                                          <li class="page-item disabled"><a class="page-link">Précédent</a></li>
+                                        {% endif %}
+                                
+                                        {% for num in page_obj.paginator.page_range %}
+                                          <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                            <a class="page-link" href="?page={{ num }}&per_page={{ per_page }}&q={{ query }}&status={{ status_filter }}">{{ num }}</a>
+                                          </li>
+                                        {% endfor %}
+                                
+                                        {% if page_obj.has_next %}
+                                          <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}&q={{ query }}&status={{ status_filter }}">Suivant</a>
+                                          </li>
+                                        {% else %}
+                                          <li class="page-item disabled"><a class="page-link">Suivant</a></li>
+                                        {% endif %}
+                                      </ul>
+                                    </nav>
+                                  </div>
+                                </div> {% endcomment %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        <!-- ROW-4 END -->
       </div>
     </div>
-  </div>
-</div>
-</div>
+
 
 
 
