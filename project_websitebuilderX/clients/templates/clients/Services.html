@@ -3,362 +3,263 @@
 {% load static %}
 
 {% block content %}
- <!-- partial -->
- <div class="main-panel">
-  <div class="content-wrapper">
-    <div class="row">
-      {% if messages %}
-      <script>
-          // Function to automatically close alerts after 5 seconds
-          setTimeout(function() {
-              $('.alert').alert('close');
-          }, 7000);
-      </script>
-      {% for message in messages %}
-          {% if message.tags == 'success' %}
-              <div class="alert alert-success alert-dismissible fade show" role="alert">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="main-content app-content">
+  <div class="container-fluid">
+          {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                   {{ message }}
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
-          {% elif message.tags == 'error' %}
-              <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                  {{ message }}
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}
           {% endif %}
-      {% endfor %}
-  {% endif %}
-  
-  
-      {% comment %} <div class="col-lg-6 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">Basic Table</h4>
-            <p class="card-description">
-              Add class <code>.table</code>
-            </p>
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Profile</th>
-                    <th>VatNo.</th>
-                    <th>Created</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Jacob</td>
-                    <td>53275531</td>
-                    <td>12 May 2017</td>
-                    <td><label class="badge badge-danger">Pending</label></td>
-                  </tr>
-                  <tr>
-                    <td>Messsy</td>
-                    <td>53275532</td>
-                    <td>15 May 2017</td>
-                    <td><label class="badge badge-warning">In progress</label></td>
-                  </tr>
-                  <tr>
-                    <td>John</td>
-                    <td>53275533</td>
-                    <td>14 May 2017</td>
-                    <td><label class="badge badge-info">Fixed</label></td>
-                  </tr>
-                  <tr>
-                    <td>Peter</td>
-                    <td>53275534</td>
-                    <td>16 May 2017</td>
-                    <td><label class="badge badge-success">Completed</label></td>
-                  </tr>
-                  <tr>
-                    <td>Dave</td>
-                    <td>53275535</td>
-                    <td>20 May 2017</td>
-                    <td><label class="badge badge-warning">In progress</label></td>
-                  </tr>
-                </tbody>
-              </table>
+            <!-- PAGE-HEADER -->
+            <div class="page-header">
+              <h1 class="page-title my-auto">Mes Supports</h1>
+              <div>
+                <ol class="breadcrumb mb-0">
+                  <li class="breadcrumb-item">
+                    <a href="javascript:void(0)">Home</a>
+                  </li>
+                  <li class="breadcrumb-item active" aria-current="page">Mes Supports</li>
+                </ol>
+              </div>
             </div>
-          </div>
-        </div>
-      </div> {% endcomment %}
-      {% comment %} <div class="col-lg-6 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">Hoverable Table</h4>
-            <p class="card-description">
-              Add class <code>.table-hover</code>
-            </p>
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th>User</th>
-                    <th>Product</th>
-                    <th>Sale</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Jacob</td>
-                    <td>Photoshop</td>
-                    <td class="text-danger"> 28.76% <i class="ti-arrow-down"></i></td>
-                    <td><label class="badge badge-danger">Pending</label></td>
-                  </tr>
-                  <tr>
-                    <td>Messsy</td>
-                    <td>Flash</td>
-                    <td class="text-danger"> 21.06% <i class="ti-arrow-down"></i></td>
-                    <td><label class="badge badge-warning">In progress</label></td>
-                  </tr>
-                  <tr>
-                    <td>John</td>
-                    <td>Premier</td>
-                    <td class="text-danger"> 35.00% <i class="ti-arrow-down"></i></td>
-                    <td><label class="badge badge-info">Fixed</label></td>
-                  </tr>
-                  <tr>
-                    <td>Peter</td>
-                    <td>After effects</td>
-                    <td class="text-success"> 82.00% <i class="ti-arrow-up"></i></td>
-                    <td><label class="badge badge-success">Completed</label></td>
-                  </tr>
-                  <tr>
-                    <td>Dave</td>
-                    <td>53275535</td>
-                    <td class="text-success"> 98.05% <i class="ti-arrow-up"></i></td>
-                    <td><label class="badge badge-warning">In progress</label></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div> {% endcomment %}
-      <div class="col-lg-12 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title"> Mes Supports</h4>
-            {% comment %} <p class="card-description">
-              Add class <code>.table-striped</code>
-            </p> {% endcomment %}
-            <div class="table-responsive">
-             <table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ServiceID</th>
-            <th>Nom du Service</th>
-            <th>Prix</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Status Consomé</th>
-            <th>Code Demande</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for achatSupport in achatSupports %}
-        <tr>
-            <td class="py-1">{{ achatSupport.support.id }}</td>
-            <td>{{ achatSupport.support.name }}</td>
-            <td>{{ achatSupport.support.prix }} MAD</td>
-            <td>{{ achatSupport.date_created|date:"d M Y" }}</td>
-            {% if achatSupport.Status == 'Active' %}  
-            <td><span class="badge badge-success">{{ achatSupport.Status }}</span></td>
-            {% else %}
-            <td><span class="badge badge-danger">{{ achatSupport.Status }}</span></td>
-            {% endif %}
-            {% if achatSupport.StatusConsomé == 'Consomé' %}  
-            <td><span class="badge badge-success">{{ achatSupport.StatusConsomé }}</span></td>
-            {% else %}
-            <td><span class="badge badge-danger">{{ achatSupport.StatusConsomé }}</span></td>
-            {% endif %}
-            <td>
-                {% if achatSupport.Status == 'Active' %}
-                    {% if achatSupport.demandesupport_set.exists %}
-                        {{ achatSupport.demandesupport_set.first.code_DemandeSupport }}
-                    {% endif %}
-                {% endif %}
-            </td>
-              <td>
-                  {% if achatSupport.Status == 'No Active' %} 
-                      <button class="btn btn-sm btn-primary" onclick="showConfirmationModal('{{ achatSupport.id }}', '{{ achatSupport.support.name }}')">Confirm Active</button>
-                  {% else %}
-                  {% endif %}
-                  <a href="#" class="btn btn-sm btn-primary">Voir</a>
-              </td>
-          </tr>
-          {% endfor %}
-      </tbody>
-    </table>
+            <!-- ROW-4 -->
+            <div class="row">
+              <div class="col-12 col-sm-12">
+                  <div class="card">  
+                      <div class="card-header d-lg-flex">
+                          <h3 class="card-title mb-lg-0 mb-3">Mes Supports</h3>
+                          <div class="tabs-menu1 ms-auto border-0 p-0">
+                              <!-- Tabs -->
+                              {% comment %} <ul class="nav panel-tabs product-sale">
+                                  <li><a href="#tab5" class="active" data-bs-toggle="tab">All products</a></li>
+                                    <li><a href="#tab6" data-bs-toggle="tab">Shipped</a></li>
+                                    <li><a href="#tab7" data-bs-toggle="tab">Pending</a></li>
+                                    <li><a href="#tab8" data-bs-toggle="tab">Cancelled</a></li>
+                                </ul> {% endcomment %}
+                              
+                                {% comment %} <div class="d-flex justify-content-end mb-3 gap-2">
+                                  <a href="{% url 'addAdministrateur' %}" class="btn btn-success">
+                                    <i class="mdi mdi-account-plus"></i> Ajouter Administrateur
+                                  </a>&nbsp;
+                                  <a href="{% url 'export_admins_csv' %}" class="btn btn-outline-secondary">
+                                    <i class="mdi mdi-file-delimited-outline"></i> Export CSV
+                                  </a>
+                                  <a href="{% url 'export_admins_excel' %}" class="btn btn-outline-success">
+                                    <i class="mdi mdi-file-excel"></i> Export Excel
+                                  </a>
+                                  <a href="{% url 'export_admins_pdf' %}" class="btn btn-outline-danger">
+                                    <i class="mdi mdi-file-pdf-box"></i> Export PDF
+                                  </a>
+                                </div> {% endcomment %}
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center mb-3">
+                            
+                          </div>
+                        </div>
+                        <div class="card-body product-table">
+                          <div class="row">
+                              {% comment %} <div class="col-sm-12 col-md-6">
+                                <form method="get" class="row g-3 mb-4">
+                                  <div class="col-md-6">
+                                    <input type="search" name="q" class="form-control" id="input-search" placeholder="🔍 Rechercher par nom, username, email ou téléphone" value="{{ request.GET.q }}">
+                                  </div>
+                                  <div class="col-md-4">
+                                    <select name="status" class="form-control" data-trigger name="choices-single-default" id="choices-single-default" >
+                                      <option value="">Tous les statuts</option>
+                                      <option value="Active" {% if request.GET.status == "Active" %}selected{% endif %}>Active</option>
+                                      <option value="No Active" {% if request.GET.status == "No Active" %}selected{% endif %}>Inactif</option>
+                                    </select>
+                                  </div>
+                                
+                                  <!-- 🔘 Boutons Filtrer + Annuler -->
+                                  <div class="col-md-2 d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                      <i class="mdi mdi-filter-variant"></i> Filtrer
+                                    </button> 
+                                    <a href="{% url 'AdministrateurSuperAdmin' %}" class="btn btn-outline-secondary w-100">
+                                      <i class="mdi mdi-filter-remove"></i> Annuler
+                                    </a>
+                                  </div>
+                                </form>
+                              </div> {% endcomment %}
+                          </div>
+                        <div class="card-body product-table">
+                            <div class="row">
+                              <div class="col-sm-12 col-md-6">
+                                <form method="get">
+                                  <label class="mb-3">
+                                    Show
+                                    <select name="per_page" class="form-control" data-trigger onchange="this.form.submit()">
+                                      <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                                      <option value="25" {% if per_page == 25 %}selected{% endif %}>25</option>
+                                      <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+                                      <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
+                                    </select>
+                                    Entries
+                                  </label>
+                                </form>
+                              </div>
+                            </div>
+                                {% comment %} <div class="col-sm-12 col-md-6">
+                                    <label class="mb-3 justify-content-end">
+                                        <input type="search" class="form-control" placeholder="Search...">
+                                    </label>
+                                </div> {% endcomment %}
+                            </div>
+                            <div class="tab-content">
+                                <div class="tab-pane border-0 p-0 active" id="tab5">
+                                    <div class="table-responsive">
+                                      <table class="table table-bordered text-nowrap mb-0">
+                                        <thead class="border-top">
+                                            <tr>
+                                                <th scope="col" class="">ServiceID</th>
+                                                <th scope="col" class="">Nom du Service</th>
+                                                <th scope="col" class="">Prix</th>
+                                                <th scope="col" class="">Status</th>
+                                                <th scope="col" class="">Status Consomé</th>
+                                                <th scope="col" class="">Code Demande</th>
+                                                <th scope="col" class="">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                          {% for achatSupport in page_obj %}
+                                            <tr>
+                                                <td><h6 class="mb-0 fs-14 fw-semibold">{{ achatSupport.support.id }}</h6></td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/9.jpg"></span>
+                                                        <h6 class="ms-3 my-auto fs-14 fw-semibold">{{ achatSupport.support.name }}</h6>
+                                                    </div>
+                                                </td>
+                                                <td><h6 class="mb-0 fs-14 fw-semibold">{{ achatSupport.support.prix }} MAD</h6></td>
+                                                {% if achatSupport.Status == 'Active' %}  
+                                                <td><span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">{{ achatSupport.Status }}</span></td>
+                                                {% else %}
+                                                <td><span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">{{ achatSupport.Status }}</span></td>
+                                                {% endif %}
+                                                {% if achatSupport.StatusConsomé == 'Consomé' %}  
+                                                <td><span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">{{ achatSupport.StatusConsomé }}</span></td>
+                                                {% else %}
+                                                <td><span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">{{ achatSupport.StatusConsomé }}</span></td>
+                                                {% endif %}
+                                                <td>
+                                                    <div class="g-2">
+                                                      {% if achatSupport.Status == 'Active' %}
+                                                      {% if achatSupport.demandesupport_set.exists %}
+                                                          {{ achatSupport.demandesupport_set.first.code_DemandeSupport }}
+                                                      {% endif %}
+                                                  {% endif %}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                  <div class="g-2">
+                                                    {% if achatSupport.Status == 'No Active' %} 
+                                                      <button class="btn btn-sm btn-primary" onclick="showConfirmationModal('{{ achatSupport.id }}', '{{ achatSupport.support.name }}')">Confirm Active</button>
+                                                  {% else %}
+                                                  {% endif %}
+                                                  <a href="#" class="btn btn-sm btn-primary">Voir</a>
+                                                  </div>
+                                              </td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                              <td colspan="7" class="text-center text-muted">Aucun Support trouvé.</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                  <!-- Modal -->
+                                    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                                      <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content shadow-sm border-0">
+                                          <!-- Header -->
+                                          <div class="modal-header bg-primary text-white">
+                                            <h5 class="modal-title" id="confirmationModalLabel">
+                                              <i class="fe fe-alert-triangle me-2"></i> Confirmation d’activation
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                          </div>
 
-        <!-- Add this modal HTML at the end of your body -->
-        <div id="confirmationModal" class="modal">
-            <div class="modal-content">
-                <!-- Confirmation content will be inserted here -->
-            </div>
-        </div>
+                                          <!-- Body -->
+                                          <div class="modal-body">
+                                            <p id="confirmationText" class="mb-3">Êtes-vous sûr de vouloir activer ce service ?</p>
+                                            <form id="confirmConsumptionForm" method="post" action="{% url 'confirm_consome_demande_support' %}">
+                                              {% csrf_token %}
+                                              <input type="hidden" name="support_id" id="supportIdInput">
+                                              <div class="text-end">
+                                                <button type="submit" class="btn btn-success me-2">✅ Oui, confirmer</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">❌ Annuler</button>
+                                              </div>
+                                            </form>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
 
-      <script>
-          function showConfirmationModal(supportId, serviceName) {
-              var modal = document.getElementById('confirmationModal');
-              var modalContent = modal.querySelector('.modal-content');
-              modalContent.innerHTML = `
-                  <div class="close" onclick="hideConfirmationModal()">&times;</div>
-                  <h1>Confirm Active</h1>
-                  <p>Are you sure you want to confirm Active of service ${serviceName}?</p>
-                  <form id="confirmConsumptionForm" action="{% url 'confirm_consome_demande_support' %}" method="post">
-                      {% csrf_token %}
-                      <input type="hidden" name="support_id" value="${supportId}">
-                      <button class="btn btn-primary" type="submit">Yes, Confirm Active</button>
-                      <button class="btn btn-primary" type="button" onclick="hideConfirmationModal()">Cancel</button>
-                  </form>
-              `;
-              modal.style.display = 'block';
-          }
-
-          function hideConfirmationModal() {
-              var modal = document.getElementById('confirmationModal');
-              modal.style.display = 'none';
-          }
-      </script>
-
-            </div>
-          </div>
-        </div>
-      </div>
-      
-    </div>
-  </div>
-
-  
-
-    <style>
-        /* Modal Styles */
-        .modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        {% comment %} z-index: 1; /* Sit on top */ {% endcomment %}
-        left: 0;
-        top: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-        }
-
-        /* Modal Content */
-        .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto; /* 15% from the top and centered */
-        padding: 20px;
-        border: 1px solid #888;
-        width: 47%; /* Could be more or less, depending on screen size */
-        }
-
-        /* Close Button */
-        .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-        }
-
-    </style>
-
-
-
-
-{% comment %}<div class="container-fluid" id="container-wrapper">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-      <h1 class="h3 mb-0 text-gray-800">My Services</h1>
-       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="./">Home</a></li>
-        <li class="breadcrumb-item">Tables</li>
-        <li class="breadcrumb-item active" aria-current="page">Simple Tables</li>
-      </ol> 
-    </div>
-
-    <div class="row">
-      <div class="col-lg-12 mb-4">
-        <!-- Simple Tables -->
-        <div class="card">
-          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">My Services</h6>
-          </div>
-          <div class="table-responsive">
-            <table class="table align-items-center table-flush">
-              <thead class="thead-light">
-                <tr>
-                  <th>Service ID</th>
-                  <th>Name Service</th>
-                  <th>Image</th>
-                  <th>Description</th>
-                  <th>Prix</th>
-                  <th>Ticket</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                  <th>Détail</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><a href="#">SR6720</a></td>
-                  <td>Maintenance de DNS</td>
-                  <td><img style="width: 100px; height: 100px;" src="{% static 'img/dns-png-16.png' %}" alt="#"></td>
-                  <td><p style="width: 100px; height: 100px;">Lorem ipsum dolor sit amet consectetur adipisicing elit. </p></td>
-                  <td><span>200MAD</span></td>
-                  <td><span>286382</span></td>
-                  <td><span class="badge badge-success">Consomé</span></td>
-                  <td><a href="#" class="btn btn-sm btn-primary">Voir</a></td>
-                </tr>
-                <tr>
-                  <td><a href="#">SR5324</a></td>
-                  <td>Maintenance de SSL</td>
-                  <td><img style="width: 100px; height: 100px;" src="{% static 'img/MAINTENANCE-862x762-1.png' %}" alt="#"></td>
-                  <td><p style="width: 100px; height: 100px;">Lorem ipsum dolor sit amet consectetur adipisicing elit. </p></td>
-                  <td><span>200MAD</span></td>
-                  <td><span></span></td>
-                  <td><span class="badge badge-danger">Non Consomé!</span></td>
-                  <td><a href="#" class="btn btn-sm btn-primary">Voir</a></td>
-                  <td><a href="#" class="btn btn-sm btn-primary">Détail</a></td>
-
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="card-footer"></div>
-        </div>
+                                    <script>
+                                      function showConfirmationModal(supportId, serviceName) {
+                                        document.getElementById('supportIdInput').value = supportId;
+                                        document.getElementById('confirmationText').innerText =
+                                          `Êtes-vous sûr de vouloir activer le service "${serviceName}" ?`;
+                                    
+                                        var modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+                                        modal.show();
+                                      }
+                                    </script>
+                                    
+                                    
+                                </div>
+                            </div>
+                              <div class="row mt-3">
+                                <div class="col-sm-12 col-md-6 my-auto">
+                                  <span>
+                                    Affichage de {{ page_obj.start_index }} à {{ page_obj.end_index }} sur {{ page_obj.paginator.count }} entrées
+                                  </span>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                  <nav aria-label="Navigation des pages">
+                                    <ul class="pagination justify-content-end mb-0">
+                                      {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                          <a class="page-link" href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}&q={{ query }}&status={{ status_filter }}">Précédent</a>
+                                        </li>
+                                      {% else %}
+                                        <li class="page-item disabled"><a class="page-link">Précédent</a></li>
+                                      {% endif %}
+                              
+                                      {% for num in page_obj.paginator.page_range %}
+                                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                          <a class="page-link" href="?page={{ num }}&per_page={{ per_page }}&q={{ query }}&status={{ status_filter }}">{{ num }}</a>
+                                        </li>
+                                      {% endfor %}
+                              
+                                      {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                          <a class="page-link" href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}&q={{ query }}&status={{ status_filter }}">Suivant</a>
+                                        </li>
+                                      {% else %}
+                                        <li class="page-item disabled"><a class="page-link">Suivant</a></li>
+                                      {% endif %}
+                                    </ul>
+                                  </nav>
+                                </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+        <!-- ROW-4 END -->
       </div>
     </div>
-    <!--Row-->
 
-    
-  </div>
-  <!---Container Fluid-->
-</div>
 
-</div>
-</div>
 
-<!-- Scroll to top -->
-<a class="scroll-to-top rounded" href="#page-top">
-<i class="fas fa-angle-up"></i>
-</a>
 
-{% endcomment %}
 {% endblock %}

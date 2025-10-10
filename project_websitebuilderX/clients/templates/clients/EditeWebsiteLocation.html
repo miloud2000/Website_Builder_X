@@ -3,408 +3,261 @@
 {% load static %}
 
 {% block content %}
-<!-- partial -->
-<div class="main-panel">
-    <div class="content-wrapper">
-      {% if messages %}
-      <script>
-          setTimeout(function() {
-              $('.alert').alert('close');
-          }, 7000);
-      </script>
-      {% for message in messages %}
-          {% if message.tags == 'success' %}
-              <div class="alert alert-success alert-dismissible fade show" role="alert">
-                  {{ message }}
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
-          {% elif message.tags == 'error' %}
-              <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                  {{ message }}
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
-          {% endif %}
-      {% endfor %}
-  {% endif %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+     <!-- Start::app-content -->
+ <div class="main-content app-content">
+    <br>
+    <div class="container-fluid">
+        {% if messages %}
+        <script>
+            setTimeout(function() {
+                $('.alert').alert('close');
+            }, 7000);
+        </script>
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message }}
+                   
+                </div>
+            {% elif message.tags == 'error' %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ message }}
+                   
+        </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+
+        <!-- PAGE-HEADER -->
+        <div class="page-header">
+          <h1 class="page-title my-auto">Mettre à jour Nom du site Web : <span class="font-weight-bold">{{website_builder_location.nameWebsite}}</h1>
+          <div>
+            <ol class="breadcrumb mb-0">
+              <li class="breadcrumb-item">
+                <a href="javascript:void(0)">Home</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">Mettre à jour du site Web</li>
+            </ol>
+          </div>
+        </div>
+        <!-- PAGE-HEADER END -->
   
-      <div class="row">
-        <div class="col-md-12 grid-margin">
-          <div class="row">
-            <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-              <h3 class="font-weight-bold">Mettre à jour les paramètres du site Web</h3>
-              <h6 class="font-weight-normal mb-0">Nom du site Web : <span class="font-weight-bold">{{website_builder_location.nameWebsite}}</span></h6>
-            </div>
-            {% comment %} <div class="col-12 col-xl-4">
-             <div class="justify-content-end d-flex">
-              <div class="dropdown flex-md-grow-1 flex-xl-grow-0">
-                <button class="btn btn-sm btn-light bg-white dropdown-toggle" type="button" id="dropdownMenuDate2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                 <i class="mdi mdi-calendar"></i> Today (10 Jan 2021)
-                </button>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuDate2">
-                  <a class="dropdown-item" href="#">January - March</a>
-                  <a class="dropdown-item" href="#">March - June</a>
-                  <a class="dropdown-item" href="#">June - August</a>
-                  <a class="dropdown-item" href="#">August - November</a>
-                </div>
-              </div>
-             </div>
-            </div> {% endcomment %}
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        {% comment %} <div class="col-md-6 grid-margin stretch-card">
-          <div class="card tale-bg">
-            <div class="card-people mt-auto">
-              <img src="images/dashboard/people.svg" alt="people">
-              <div class="weather-info">
-                <div class="d-flex">
-                  <div>
-                    <h2 class="mb-0 font-weight-normal"><i class="icon-sun mr-2"></i>31<sup>C</sup></h2>
-                  </div>
-                  <div class="ml-2">
-                    <h4 class="location font-weight-normal">Bangalore</h4>
-                    <h6 class="font-weight-normal">India</h6>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> {% endcomment %}
-        {% comment %} <div class="col-md-6 grid-margin transparent">
-          <div class="row">
-            <div class="col-md-6 mb-4 stretch-card transparent">
-              <div class="card card-tale">
-                <div class="card-body">
-                  <p class="mb-4">Today’s Bookings</p>
-                  <p class="fs-30 mb-2">4006</p>
-                  <p>10.00% (30 days)</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 mb-4 stretch-card transparent">
-              <div class="card card-dark-blue">
-                <div class="card-body">
-                  <p class="mb-4">Total Bookings</p>
-                  <p class="fs-30 mb-2">61344</p>
-                  <p>22.00% (30 days)</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6 mb-4 mb-lg-0 stretch-card transparent">
-              <div class="card card-light-blue">
-                <div class="card-body">
-                  <p class="mb-4">Number of Meetings</p>
-                  <p class="fs-30 mb-2">34040</p>
-                  <p>2.00% (30 days)</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 stretch-card transparent">
-              <div class="card card-light-danger">
-                <div class="card-body">
-                  <p class="mb-4">Number of Clients</p>
-                  <p class="fs-30 mb-2">47033</p>
-                  <p>0.22% (30 days)</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> {% endcomment %}
-      </div>
-      <div class="row">
-        {% comment %} <div class="col-md-6 grid-margin stretch-card">
-          <div class="card">
-            <div class="card-body">
-              <p class="card-title">Order Details</p>
-              <p class="font-weight-500">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
-              <div class="d-flex flex-wrap mb-5">
-                <div class="mr-5 mt-3">
-                  <p class="text-muted">Order value</p>
-                  <h3 class="text-primary fs-30 font-weight-medium">12.3k</h3>
-                </div>
-                <div class="mr-5 mt-3">
-                  <p class="text-muted">Orders</p>
-                  <h3 class="text-primary fs-30 font-weight-medium">14k</h3>
-                </div>
-                <div class="mr-5 mt-3">
-                  <p class="text-muted">Users</p>
-                  <h3 class="text-primary fs-30 font-weight-medium">71.56%</h3>
-                </div>
-                <div class="mt-3">
-                  <p class="text-muted">Downloads</p>
-                  <h3 class="text-primary fs-30 font-weight-medium">34040</h3>
-                </div> 
-              </div>
-              <canvas id="order-chart"></canvas>
-            </div>
-          </div>
-        </div> {% endcomment %}
-        {% comment %} <div class="col-md-6 grid-margin stretch-card">
-          <div class="card">
-            <div class="card-body">
-             <div class="d-flex justify-content-between">
-              <p class="card-title">Sales Report</p>
-              <a href="#" class="text-info">View all</a>
-             </div>
-              <p class="font-weight-500">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
-              <div id="sales-legend" class="chartjs-legend mt-4 mb-2"></div>
-              <canvas id="sales-chart"></canvas>
-            </div>
-          </div>
-        </div> {% endcomment %}
-      </div>
-      <div class="row">
-        {% comment %} <div class="col-md-12 grid-margin stretch-card">
-          <div class="card position-relative">
-            <div class="card-body">
-              <div id="detailedReports" class="carousel slide detailed-report-carousel position-static pt-2" data-ride="carousel">
-                <div class="carousel-inner">
-                  <div class="carousel-item active">
-                    <div class="row">
-                      <div class="col-md-12 col-xl-3 d-flex flex-column justify-content-start">
-                        <div class="ml-xl-4 mt-3">
-                        <p class="card-title">Detailed Reports</p>
-                          <h1 class="text-primary">$34040</h1>
-                          <h3 class="font-weight-500 mb-xl-4 text-primary">North America</h3>
-                          <p class="mb-2 mb-xl-0">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
-                        </div>  
-                        </div>
-                      <div class="col-md-12 col-xl-9">
-                        <div class="row">
-                          <div class="col-md-6 border-right">
-                            <div class="table-responsive mb-3 mb-md-0 mt-3">
-                              <table class="table table-borderless report-table">
-                                <tr>
-                                  <td class="text-muted">Illinois</td>
-                                  <td class="w-100 px-0">
-                                    <div class="progress progress-md mx-4">
-                                      <div class="progress-bar bg-primary" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                  </td>
-                                  <td><h5 class="font-weight-bold mb-0">713</h5></td>
-                                </tr>
-                                <tr>
-                                  <td class="text-muted">Washington</td>
-                                  <td class="w-100 px-0">
-                                    <div class="progress progress-md mx-4">
-                                      <div class="progress-bar bg-warning" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                  </td>
-                                  <td><h5 class="font-weight-bold mb-0">583</h5></td>
-                                </tr>
-                                <tr>
-                                  <td class="text-muted">Mississippi</td>
-                                  <td class="w-100 px-0">
-                                    <div class="progress progress-md mx-4">
-                                      <div class="progress-bar bg-danger" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                  </td>
-                                  <td><h5 class="font-weight-bold mb-0">924</h5></td>
-                                </tr>
-                                <tr>
-                                  <td class="text-muted">California</td>
-                                  <td class="w-100 px-0">
-                                    <div class="progress progress-md mx-4">
-                                      <div class="progress-bar bg-info" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                  </td>
-                                  <td><h5 class="font-weight-bold mb-0">664</h5></td>
-                                </tr>
-                                <tr>
-                                  <td class="text-muted">Maryland</td>
-                                  <td class="w-100 px-0">
-                                    <div class="progress progress-md mx-4">
-                                      <div class="progress-bar bg-primary" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                  </td>
-                                  <td><h5 class="font-weight-bold mb-0">560</h5></td>
-                                </tr>
-                                <tr>
-                                  <td class="text-muted">Alaska</td>
-                                  <td class="w-100 px-0">
-                                    <div class="progress progress-md mx-4">
-                                      <div class="progress-bar bg-danger" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                  </td>
-                                  <td><h5 class="font-weight-bold mb-0">793</h5></td>
-                                </tr>
-                              </table>
-                            </div>
-                          </div>
-                          <div class="col-md-6 mt-3">
-                            <canvas id="north-america-chart"></canvas>
-                            <div id="north-america-legend"></div>
-                          </div>
-                        </div>
-                      </div>
+  
+        <!-- Start::row-1 -->
+        <div class="row">
+            <div class="col-xl-8">
+                <div class="card">
+                    <img class="card-img-top " src="{{ website_builder_location.website.image.url }}" alt="Card image cap">
+                    <div class="card-body border-bottom">
+                        <div class="d-md-flex flex-wrap align-items-center">
+                            <!-- Nom du site Web -->
+                            <a href="javascript:void(0);" class="d-flex me-4 mb-sm-0 mb-2">
+                              <span class="bg-primary-transparent text-primary avatar">
+                                <i class="fe fe-globe"></i>
+                              </span>
+                              <span class="my-auto ms-2 text-muted fw-semibold">
+                                {{ website_builder_location.nameWebsite }}
+                              </span>
+                            </a>
+                          
+                            <!-- Date de génération -->
+                            <a href="javascript:void(0);" class="d-flex me-4 mb-sm-0 mb-2">
+                              <span class="bg-secondary-transparent text-secondary avatar">
+                                <i class="fe fe-calendar"></i>
+                              </span>
+                              <span class="my-auto ms-2 text-muted fw-semibold">
+                                {{ website_builder_location.location_website.date_debut|date:"d M Y" }}
+                              </span>
+                            </a>
+                             <!-- Date de génération -->
+                             <a href="javascript:void(0);" class="d-flex me-4 mb-sm-0 mb-2">
+                              <span class="bg-secondary-transparent text-danger avatar">
+                                <i class="fe fe-calendar"></i>
+                              </span>
+                              <span class="my-auto ms-2 text-muted fw-semibold">
+                                {{ website_builder_location.location_website.date_fin|date:"d M Y" }}
+                              </span>
+                            </a>
+                          
+                            <!-- Nom du template -->
+                            <a href="javascript:void(0);" class="d-flex me-4 mb-sm-0 mb-2">
+                              <span class="bg-info-transparent text-info avatar">
+                                <i class="fe fe-layout"></i>
+                              </span>
+                              <span class="my-auto ms-2 text-muted fw-semibold">
+                                {{ website_builder_location.website.name }}
+                              </span>
+                            </a>
+                          
+                            {% comment %} <!-- Date fin hébergement -->
+                            <a href="javascript:void(0);" class="d-flex me-4 mb-sm-0 mb-2">
+                              <span class="bg-warning-transparent text-warning avatar">
+                                <i class="fe fe-clock"></i>
+                              </span>
+                              <span class="my-auto ms-2 text-muted fw-semibold">
+                                {{ website_builder.date_fin_hebergement|date:"d M Y" }}
+                              </span>
+                            </a> {% endcomment %}
+                          
+                            <!-- Type d'achat -->
+                            <a href="javascript:void(0);" class="d-flex me-4 mb-sm-0 mb-2">
+                              <span class="bg-success-transparent text-success avatar">
+                                <i class="fe fe-shopping-cart"></i>
+                              </span>
+                              <span class="my-auto ms-2 text-muted fw-semibold">Location</span>
+                            </a>
+                          
+                            <!-- Statut du site -->
+                            <a href="javascript:void(0);" class="d-flex me-4 mb-sm-0 mb-2">
+                              <span class="bg-dark-transparent text-dark avatar">
+                                <i class="fe fe-activity"></i>
+                              </span>
+                              <span class="my-auto ms-2 fw-semibold">
+                                {% if website_builder_location.Statu_du_website == '1' %}
+                                  <span class="badge bg-success rounded-pill text-white p-2 px-3">Active</span>
+                                {% elif website_builder_location.Statu_du_website == '2' %}
+                                  <span class="badge bg-warning rounded-pill text-white p-2 px-3">Suspendu</span>
+                                {% elif website_builder_location.Statu_du_website == '3' %}
+                                  <span class="badge bg-secondary rounded-pill text-white p-2 px-3">Demande de Résiliation</span>
+                                {% elif website_builder_location.Statu_du_website == '4' %}
+                                  <span class="badge bg-info rounded-pill text-white p-2 px-3">Paiement en retard</span>
+                                {% elif website_builder_location.Statu_du_website == '5' %}
+                                  <span class="badge bg-dark rounded-pill text-white p-2 px-3">En attente de Suppression</span>
+                                {% elif website_builder_location.Statu_du_website == '6' %}
+                                  <span class="badge bg-danger rounded-pill text-white p-2 px-3">Il sera supprimé après un jour</span>
+                                {% elif website_builder_location.Statu_du_website == '8' %}
+                                  <span class="badge bg-danger rounded-pill text-white p-2 px-3">Demande de Supprimé</span>
+                                {% endif %}
+                                {% if website_builder_location.Statu_du_website == '8' %}  {% comment %} and not delete_status == '1' {% endcomment %}
+                                  <p>Statu du website  : <span class="badge badge-danger">Demande de Supprimé</span></p>
+                                {% endif %}
+                              </span>
+                              
+                            </a>
+                          
+                            {% if expiration_passed and reset_status == '0' %}
+                              <p>Statu du website Reset : <span class="badge badge-info">Réinitialiser en cours</span></p>
+                            {% endif %}
+                            {% if expiration_passed and reset_status == '1' %}
+                            <p>Statu du website Reset : <span class="badge badge-info">Réinitialiser, c'est fait</span></p>
+                            {% endif %}
+                          </div>                          
                     </div>
-                  </div>
-                  <div class="carousel-item">
-                    <div class="row">
-                      <div class="col-md-12 col-xl-3 d-flex flex-column justify-content-start">
-                        <div class="ml-xl-4 mt-3">
-                        <p class="card-title">Detailed Reports</p>
-                          <h1 class="text-primary">$34040</h1>
-                          <h3 class="font-weight-500 mb-xl-4 text-primary">North America</h3>
-                          <p class="mb-2 mb-xl-0">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
-                        </div>  
-                        </div>
-                      <div class="col-md-12 col-xl-9">
-                        <div class="row">
-                          <div class="col-md-6 border-right">
-                            <div class="table-responsive mb-3 mb-md-0 mt-3">
-                              <table class="table table-borderless report-table">
-                                <tr>
-                                  <td class="text-muted">Illinois</td>
-                                  <td class="w-100 px-0">
-                                    <div class="progress progress-md mx-4">
-                                      <div class="progress-bar bg-primary" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                  </td>
-                                  <td><h5 class="font-weight-bold mb-0">713</h5></td>
-                                </tr>
-                                <tr>
-                                  <td class="text-muted">Washington</td>
-                                  <td class="w-100 px-0">
-                                    <div class="progress progress-md mx-4">
-                                      <div class="progress-bar bg-warning" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                  </td>
-                                  <td><h5 class="font-weight-bold mb-0">583</h5></td>
-                                </tr>
-                                <tr>
-                                  <td class="text-muted">Mississippi</td>
-                                  <td class="w-100 px-0">
-                                    <div class="progress progress-md mx-4">
-                                      <div class="progress-bar bg-danger" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                  </td>
-                                  <td><h5 class="font-weight-bold mb-0">924</h5></td>
-                                </tr>
-                                <tr>
-                                  <td class="text-muted">California</td>
-                                  <td class="w-100 px-0">
-                                    <div class="progress progress-md mx-4">
-                                      <div class="progress-bar bg-info" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                  </td>
-                                  <td><h5 class="font-weight-bold mb-0">664</h5></td>
-                                </tr>
-                                <tr>
-                                  <td class="text-muted">Maryland</td>
-                                  <td class="w-100 px-0">
-                                    <div class="progress progress-md mx-4">
-                                      <div class="progress-bar bg-primary" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                  </td>
-                                  <td><h5 class="font-weight-bold mb-0">560</h5></td>
-                                </tr>
-                                <tr>
-                                  <td class="text-muted">Alaska</td>
-                                  <td class="w-100 px-0">
-                                    <div class="progress progress-md mx-4">
-                                      <div class="progress-bar bg-danger" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                  </td>
-                                  <td><h5 class="font-weight-bold mb-0">793</h5></td>
-                                </tr>
-                              </table>
-                            </div>
+
+
+                    <div class="card-body">
+                      {% if expiration_passed and not resiliation_exists and not reprendre_exists and not delete_exists and website_builder_location.Statu_du_website == '1' %}
+                          <button type="button" class="btn btn-sm badge bg-secondary rounded-pill text-white" style="width: 131px; height: 26px;" data-toggle="modal" data-target="#confirmResiliationModal">Resiliation</button>
+                          <form id="resiliationForm" method="POST" action="{% url 'add_website_resiliation' %}" style="display: none;">
+                              {% csrf_token %}
+                              <input type="hidden" name="cliente_id" value="{{ request.user.cliente.id }}">
+                              <input type="hidden" name="location_website_builder_id" value="{{ website_builder_location.id }}">
+                              <input type="hidden" name="website_id" value="{{ website_builder_location.website.id }}">
+                          </form>
+                      {% endif %}
+                      
+                       <!-- Reprendre Resiliation -->
+                      {% if expiration_passed and not resiliation_exists and not resiliation_exists and not delete_exists and website_builder_location.Statu_du_website == '3' %}
+                          <button type="button" class="btn btn-sm badge bg-secondary rounded-pill text-white" style="width: 131px; height: 26px;" data-toggle="modal" data-target="#confirmResiliationModal2">Reprendre</button>
+                          <form id="resiliationForm" method="POST" action="{% url 'add_website_reprendre' %}" style="display: none;">
+                              {% csrf_token %}
+                              <input type="hidden" name="cliente_id" value="{{ request.user.cliente.id }}">
+                              <input type="hidden" name="location_website_builder_id" value="{{ website_builder_location.id }}">
+                              <input type="hidden" name="website_id" value="{{ website_builder_location.website.id }}">
+                          </form>
+                      {% endif %}
+
+                       <!-- Suspendre -->
+                      {% if expiration_passed and not suspendre_exists and not reprendre_suspendre_exists and not delete_exists and website_builder_location.Statu_du_website == '1' %}
+                          <button type="button" class="btn btn-sm badge bg-warning rounded-pill text-white" style="width: 131px; height: 26px;" data-toggle="modal" data-target="#confirmSuspendreModal">Suspendre</button>
+                          <form id="suspendreForm" method="POST" action="{% url 'add_website_suspendre' %}" style="display: none;">
+                              {% csrf_token %}
+                              <input type="hidden" name="cliente_id" value="{{ request.user.cliente.id }}">
+                              <input type="hidden" name="location_website_builder_id" value="{{ website_builder_location.id }}">
+                              <input type="hidden" name="website_builder_id" value="{{ website_builder.id }}">
+                          </form>
+                      {% endif %}
+
+                      
+                        <!-- Reprendre Suspendre -->
+                        {% if expiration_passed and not reprendre_suspendre_exists and not suspendre_exists and not delete_exists and website_builder_location.Statu_du_website == '2' %}
+                          <button type="button" class="btn btn-sm badge bg-warning rounded-pill text-white" style="width: 158px; height: 26px;" data-toggle="modal" data-target="#confirmSuspendreModal2">Reprendre Suspendre</button>
+                            <form id="suspendreForm2" method="POST" action="{% url 'add_website_suspendre_reprendre' %}" style="display: none;">
+                              {% csrf_token %}
+                                <input type="hidden" name="cliente_id" value="{{ request.user.cliente.id }}">
+                                <input type="hidden" name="location_website_builder_id" value="{{ website_builder_location.id }}">
+                                <input type="hidden" name="website_builder_id" value="{{ website_builder.id }}">
+                              </form>
+                        {% endif %}
+
+                        <!-- Reset -->
+                        {% if expiration_passed and not reset_request and not delete_exists %}
+                            <button type="button" class="btn btn-sm badge bg-info rounded-pill text-white" style="width: 131px; height: 26px;" data-toggle="modal" data-target="#confirmResetModal">Reset</button>
+                            <form id="resetForm" method="POST" action="{% url 'add_website_reset' %}" style="display: none;">
+                                {% csrf_token %}
+                                <input type="hidden" name="cliente_id" value="{{ request.user.cliente.id }}">
+                                <input type="hidden" name="location_website_builder_id" value="{{ website_builder_location.id }}">
+                                <input type="hidden" name="website_builder_id" value="{{ website_builder.id }}">
+                            </form>
+                        {% endif %}
+                       
+                        {% if not delete_exists %}
+                            <button type="button" class="btn btn-sm badge bg-info rounded-pill text-white" style="width: 131px; height: 26px;" data-toggle="modal" data-target="#addPeriodModal">Add period</button>
+                        {% endif %}
+                        
+
+                        <div class="modal fade" id="addPeriodModal" tabindex="-1" role="dialog" aria-labelledby="addPeriodModalLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                      <h5 class="modal-title" id="addPeriodModalLabel">Ajouter une période de localisation</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                      </button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <form id="addPeriodForm" method="POST" action="{% url 'add_period_location' location_id=website_builder_location.location_website.id %}">
+                                          {% csrf_token %}
+                                          <input type="hidden" name="location_id" value="{{ location_id }}">
+                                          <input type="hidden" name="website_builder_location_id" value="{{ website_builder_location.nameWebsite }}">
+                                          <div class="form-group">
+                                              <label for="rental_period">Choisissez la période de location :</label>
+                                              <select class="form-control" id="rental_period" name="rental_period">
+                                                  <option value="1">1 mois</option>
+                                                  <option value="2">2 mois</option>
+                                                  <option value="3">3 mois</option>
+                                                  <option value="4">4 mois</option>
+                                                  <option value="5">5 mois</option>
+                                                  <option value="6">6 mois</option>
+                                              </select>
+                                          </div>
+                                          <div class="form-group">
+                                              <label for="total_price">Prix ​​total:</label>
+                                              <input type="text" class="form-control" id="total_price" name="total_price" readonly>
+                                          </div>
+                                          <button type="submit" class="btn btn-primary">Confirmer</button>
+                                      </form>
+                                  </div>
+                              </div>
                           </div>
-                          <div class="col-md-6 mt-3">
-                            <canvas id="south-america-chart"></canvas>
-                            <div id="south-america-legend"></div>
-                          </div>
-                        </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-                <a class="carousel-control-prev" href="#detailedReports" role="button" data-slide="prev">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#detailedReports" role="button" data-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Next</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div> {% endcomment %}
-      </div>
       
-      <div class="row">
-        <div class="col-md-7 grid-margin stretch-card">
-          <div class="card">
-            <div class="card-body">
-              <p class="card-title mb-0 font-weight-bold">les informations du site Web</p>
-              <div class="table-responsive">
-                <br>
-                <p>Nom du site Web :  <span class="font-weight-bold">{{website_builder_location.nameWebsite}}</span> </p>
-                <p>Date de Site Web du générateur :  <span class="font-weight-bold">{{website_builder_location.location_website.date_debut}}</span> </p>
-                <p>Date Fin de Location :  <span class="font-weight-bold">{{website_builder_location.location_website.date_fin}}</span> </p>
-                <p>Nom du template  :  <span class="font-weight-bold">{{website_builder_location.website.name}}</span> </p>
-                <p>type d'achat  :  <span class="font-weight-bold">Location</span> </p>
-                {% if website_builder_location.Statu_du_website == '1' %}
-                        <p>Statu du website  : <span class="badge badge-success">Active</span></p>
-                {% endif %}
-                {% if website_builder_location.Statu_du_website == '2' %}
-                        <p>Statu du website  : <span class="badge badge-warning">Suspendu</span></p>
-                {% endif %}
-                {% if website_builder_location.Statu_du_website == '3' %}
-                        <p>Statu du website  : <span class="badge badge-secondary">Demande de résiliation</span></p>
-                {% endif %}
-                {% if website_builder_location.Statu_du_website == '4' %}
-                        <p>Statu du website  : <span class="badge badge-info">Paiement en retard </span></p>
-                {% endif %}
-                {% if website_builder_location.Statu_du_website == '5' %}
-                        <p>Statu du website  : <span class="badge badge-dark">En attente de suppression </span></p>
-                {% endif %}
-                {% if website_builder_location.Statu_du_website == '6' %}
-                        <p>Statu du website  : <span class="badge badge-danger">Il sera supprimé après un jour </span></p>
-                {% endif %}
-                {% if website_builder_location.Statu_du_website == '7' %}
-                        <p>Statu du website  : <span class="badge badge-danger">Supprimé</span></p>
-                {% endif %}
-                {% if website_builder_location.Statu_du_website == '8' %}  {% comment %} and not delete_status == '1' {% endcomment %}
-                <p>Statu du website  : <span class="badge badge-danger">Demande de Supprimé</span></p>
-                {% endif %}
-
-                {% comment %} {% if delete_status == '1' %}
-                <div class="table-responsive">
-                  <p>Statu du website  : <span class="badge badge-danger">Deleted</span></p>
-                </div>
-                &nbsp;&nbsp;
-              {% endif %} {% endcomment %}
-
-                {% if expiration_passed and reset_status == '0' %}
-                  <div class="table-responsive">
-                    <p>Statu du website Reset : <span class="badge badge-info">Reset en cours</span></p>
+                      <script>
+                          document.getElementById('rental_period').addEventListener('change', function () {
+                              var selectedPeriod = this.value;
+                              var prixLoyer = parseFloat("{{ website_builder_location.location_website.websites.prix_loyer }}");
+                              var totalPrice = prixLoyer * parseInt(selectedPeriod);
+                              document.getElementById('total_price').value = totalPrice.toFixed(2) + " MAD";
+                          });
+                      </script>
                   </div>
-                  &nbsp;&nbsp;
-                {% endif %}
 
-                {% if expiration_passed and reset_status == '1' %}
-                <div class="table-responsive">
-                  <p>Statu du website Reset : <span class="badge badge-info">Reset Its Done</span></p>
-                </div>
-                &nbsp;&nbsp;
-              {% endif %}
-              
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Modal confirmation Resiliation-->
+                  <!-- Modal confirmation Resiliation-->
         <div class="modal fade" id="confirmResiliationModal" tabindex="-1" role="dialog" aria-labelledby="confirmResiliationModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
               <div class="modal-content">
@@ -415,11 +268,11 @@
                       </button>
                   </div>
                   <div class="modal-body">
-                      Are you sure you want to submit a resiliation request?
+                    Êtes-vous sûr de vouloir soumettre une demande d’escalade ?
                   </div>
                   <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                      <button type="button" class="btn btn-primary" onclick="document.getElementById('resiliationForm').submit()">Confirm</button>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                      <button type="button" class="btn btn-primary" onclick="document.getElementById('resiliationForm').submit()">Confirmer</button>
                   </div>
               </div>
           </div>
@@ -436,11 +289,11 @@
                       </button>
                   </div>
                   <div class="modal-body">
-                      Are you sure you want to submit a Reprendre Resiliation request?
+                    Êtes-vous sûr de vouloir soumettre une demande de résiliation Reprendre ?
                   </div>
                   <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                      <button type="button" class="btn btn-primary" onclick="document.getElementById('resiliationForm').submit()">Confirm</button>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                      <button type="button" class="btn btn-primary" onclick="document.getElementById('resiliationForm').submit()">Confirmer</button>
                   </div>
               </div>
           </div>
@@ -457,11 +310,11 @@
                       </button>
                   </div>
                   <div class="modal-body">
-                      Are you sure you want to submit a Suspendre request?
+                    Êtes-vous sûr de vouloir soumettre une demande de suspension ?
                   </div>
                   <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                      <button type="button" class="btn btn-primary" onclick="document.getElementById('suspendreForm').submit()">Confirm</button>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                      <button type="button" class="btn btn-primary" onclick="document.getElementById('suspendreForm').submit()">Confirmer</button>
                   </div>
               </div>
           </div>
@@ -478,11 +331,11 @@
                       </button>
                   </div>
                   <div class="modal-body">
-                      Are you sure you want to submit a Reprendre Suspendre request?
+                    Êtes-vous sûr de vouloir soumettre une demande de Reprendre Suspendre ?
                   </div>
                   <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                      <button type="button" class="btn btn-primary" onclick="document.getElementById('suspendreForm2').submit()">Confirm</button>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                      <button type="button" class="btn btn-primary" onclick="document.getElementById('suspendreForm2').submit()">Confirmer</button>
                   </div>
               </div>
           </div>
@@ -499,181 +352,27 @@
                       </button>
                   </div>
                   <div class="modal-body">
-                      Are you sure you want to submit a Reset request?
+                    Êtes-vous sûr de vouloir soumettre une demande de réinitialisation ?
                   </div>
                   <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                      <button type="button" class="btn btn-primary" onclick="document.getElementById('resetForm').submit()">Confirm</button>
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                      <button type="button" class="btn btn-primary" onclick="document.getElementById('resetForm').submit()">Confirmer</button>
                   </div>
               </div>
           </div>
         </div>
-
-        <!-- Modal confirmation delete -->
-        {% comment %} <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                  <div class="modal-header">
-                      <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmation</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                      </button>
-                  </div>
-                  <div class="modal-body">
-                      Are you sure you want to submit a Delete request?
-                  </div>
-                  <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                      <!-- Submit the form when Confirm button is clicked -->
-                      <button type="button" class="btn btn-primary" onclick="document.getElementById('deleteForm').submit()">Confirm</button>
-                  </div>
-              </div>
-          </div>
-        </div> {% endcomment %}
-        
-        <div class="col-md-5 grid-margin stretch-card">
-            <div class="card">
-                <div class="card-body">
-                    <img style="width: 329px; height: 267px;" src="{% static "img/css-image-gallery.jpg" %}" alt="#">
                 </div>
-            </div>
-          </div>
-          <div class="row" style="width: 100%;margin-left: -1px;padding-bottom: 33px;">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="card-title mb-0 font-weight-bold">Les Actions</p>
-                        <br>
-                        <div class="d-flex flex-wrap">
-                            <!-- Resiliation -->
-                            {% if expiration_passed and not resiliation_exists and not reprendre_exists and not delete_exists and website_builder_location.Statu_du_website == '1' %}
-                            <div class="p-2">
-                                <button type="button" class="btn btn-sm badge badge-pill badge-secondary" style="width: 131px; height: 26px;" data-toggle="modal" data-target="#confirmResiliationModal">Resiliation</button>
-                                <form id="resiliationForm" method="POST" action="{% url 'add_website_resiliation' %}" style="display: none;">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="cliente_id" value="{{ request.user.cliente.id }}">
-                                    <input type="hidden" name="location_website_builder_id" value="{{ website_builder_location.id }}">
-                                    <input type="hidden" name="website_id" value="{{ website_builder_location.website.id }}">
-                                </form>
-                            </div>
-                            {% endif %}
-        
-                            <!-- Reprendre Resiliation -->
-                            {% if expiration_passed and not resiliation_exists and not resiliation_exists and not delete_exists and website_builder_location.Statu_du_website == '3' %}
-                            <div class="p-2">
-                                <button type="button" class="btn btn-sm badge badge-pill badge-secondary" style="width: 131px; height: 26px;" data-toggle="modal" data-target="#confirmResiliationModal2">Reprendre</button>
-                                <form id="resiliationForm" method="POST" action="{% url 'add_website_reprendre' %}" style="display: none;">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="cliente_id" value="{{ request.user.cliente.id }}">
-                                    <input type="hidden" name="location_website_builder_id" value="{{ website_builder_location.id }}">
-                                    <input type="hidden" name="website_id" value="{{ website_builder_location.website.id }}">
-                                </form>
-                            </div>
-                            {% endif %}
-        
-                            <!-- Suspendre -->
-                            {% if expiration_passed and not suspendre_exists and not reprendre_suspendre_exists and not delete_exists and website_builder_location.Statu_du_website == '1' %}
-
-                            <div class="p-2">
-                                <button type="button" class="btn btn-sm badge badge-pill badge-warning" style="width: 131px; height: 26px;" data-toggle="modal" data-target="#confirmSuspendreModal">Suspendre</button>
-                                <form id="suspendreForm" method="POST" action="{% url 'add_website_suspendre' %}" style="display: none;">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="cliente_id" value="{{ request.user.cliente.id }}">
-                                    <input type="hidden" name="location_website_builder_id" value="{{ website_builder_location.id }}">
-                                    <input type="hidden" name="website_builder_id" value="{{ website_builder.id }}">
-                                </form>
-                            </div>
-                            {% endif %}
-        
-                            <!-- Reprendre Suspendre -->
-                            {% if expiration_passed and not reprendre_suspendre_exists and not suspendre_exists and not delete_exists and website_builder_location.Statu_du_website == '2' %}
-                            <div class="p-2">
-                                <button type="button" class="btn btn-sm badge badge-pill badge-warning" style="width: 158px; height: 26px;" data-toggle="modal" data-target="#confirmSuspendreModal2">Reprendre Suspendre</button>
-                                <form id="suspendreForm2" method="POST" action="{% url 'add_website_suspendre_reprendre' %}" style="display: none;">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="cliente_id" value="{{ request.user.cliente.id }}">
-                                    <input type="hidden" name="location_website_builder_id" value="{{ website_builder_location.id }}">
-                                    <input type="hidden" name="website_builder_id" value="{{ website_builder.id }}">
-                                </form>
-                            </div>
-                            {% endif %}
-        
-                            <!-- Reset -->
-                            {% if expiration_passed and not reset_request and not delete_exists %}
-                            <div class="p-2">
-                                <button type="button" class="btn btn-sm badge badge-pill badge-info" style="width: 131px; height: 26px;" data-toggle="modal" data-target="#confirmResetModal">Reset</button>
-                                <form id="resetForm" method="POST" action="{% url 'add_website_reset' %}" style="display: none;">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="cliente_id" value="{{ request.user.cliente.id }}">
-                                    <input type="hidden" name="location_website_builder_id" value="{{ website_builder_location.id }}">
-                                    <input type="hidden" name="website_builder_id" value="{{ website_builder.id }}">
-                                </form>
-                            </div>
-                            {% endif %}
-        
-                            <!-- Add period of Location Button -->
-                            {% if not delete_exists %}
-                            <div class="p-2">
-                                <button type="button" class="btn btn-sm badge badge-pill badge-info" style="width: 131px; height: 26px;" data-toggle="modal" data-target="#addPeriodModal">Add period</button>
-                            </div>
-                            {% endif %}
+                <div class="row">
+                    <!-- Première carte : Mettre à jour WordPress -->
+                    <div class="col-md-6 mb-4">
+                      <div class="card h-100">
+                        <div class="card-header bg-light">
+                          <div class="card-title font-weight-bold">Mettre à jour</div>
                         </div>
-        
-                        <div class="modal fade" id="addPeriodModal" tabindex="-1" role="dialog" aria-labelledby="addPeriodModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="addPeriodModalLabel">Add Period of Location</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form id="addPeriodForm" method="POST" action="{% url 'add_period_location' location_id=website_builder_location.location_website.id %}">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="location_id" value="{{ location_id }}">
-                                            <input type="hidden" name="website_builder_location_id" value="{{ website_builder_location.nameWebsite }}">
-                                            <div class="form-group">
-                                                <label for="rental_period">Choose rental period:</label>
-                                                <select class="form-control" id="rental_period" name="rental_period">
-                                                    <option value="1">1 month</option>
-                                                    <option value="2">2 months</option>
-                                                    <option value="3">3 months</option>
-                                                    <option value="4">4 months</option>
-                                                    <option value="5">5 months</option>
-                                                    <option value="6">6 months</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="total_price">Total Price:</label>
-                                                <input type="text" class="form-control" id="total_price" name="total_price" readonly>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">Confirm</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-        
-                        <script>
-                            document.getElementById('rental_period').addEventListener('change', function () {
-                                var selectedPeriod = this.value;
-                                var prixLoyer = parseFloat("{{ website_builder_location.location_website.websites.prix_loyer }}");
-                                var totalPrice = prixLoyer * parseInt(selectedPeriod);
-                                document.getElementById('total_price').value = totalPrice.toFixed(2) + " MAD";
-                            });
-                        </script>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row" style="width: 100%; margin-left: -1px;">
-          <div class="col-md-7 grid-margin stretch-card">
-              <div class="card">
-                  <div class="card-body">
-                      <p class="font-weight-bold">Mettre à jour</p>
-                      <div class="table-responsive">
+                        <div class="card-body">
                           <form method="post" action="{% url 'update_wordpress' %}">
+                            {% csrf_token %}
+                            <form method="post" action="{% url 'update_wordpress' %}">
                               {% csrf_token %}
                               <div class="form-group">
                                   <input type="hidden" name="website_builder_id" value="{{ website_builder.id }}">
@@ -701,113 +400,105 @@
                               </div>
                               <button type="submit" class="btn btn-primary">Update WordPress Site</button>
                           </form>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          
-          <div class="col-md-5 grid-margin stretch-card">
-              <div class="card">
-                  <div class="card-body">
-                    <p class="font-weight-bold">Mettre à jour Contactez-nous</p>
-                    <div class="table-responsive">
-                      <form method="post" action="">
-                          {% csrf_token %}
-                          <div class="form-group">
-                              <input type="hidden" name="website_builder_id" value="{{ website_builder.id }}">
-                              <input type="hidden" name="website_builder_location_id" value="{{ website_builder_location.id }}">
-          
-                              <label for="title">New Address:</label>
-                              <input type="text" class="form-control" id="title" name="title" placeholder="Enter new title">
-                          </div>
-                          <div class="form-group">
-                              <label for="description">New Téléphone:</label>
-                              <input type="text" class="form-control" id="description" name="description" placeholder="Enter new description">
-                          </div>
-                          <div class="form-group">
-                            <label for="admin-email">New Adresse e-mail:</label>
-                            <input type="email" class="form-control" id="admin-email" name="admin_email" placeholder="Enter new admin email">
                         </div>
-                        <button type="submit" class="btn btn-primary">Update WordPress Site</button>
-                    </form>
+                      </div>
+                    </div>
+                  
+                    <!-- Deuxième carte : Mettre à jour Contactez-nous -->
+                    <div class="col-md-6 mb-4">
+                      <div class="card h-100">
+                        <div class="card-header bg-light">
+                          <div class="card-title font-weight-bold">Mettre à jour Contactez-nous</div>
+                        </div>
+                        <div class="card-body">
+                          <form method="post" action="">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="hidden" name="website_builder_id" value="{{ website_builder.id }}">
+                                <input type="hidden" name="website_builder_location_id" value="{{ website_builder_location.id }}">
+            
+                                <label for="title">New Address:</label>
+                                <input type="text" class="form-control" id="title" name="title" placeholder="Enter new title">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">New Téléphone:</label>
+                                <input type="text" class="form-control" id="description" name="description" placeholder="Enter new description">
+                            </div>
+                            <div class="form-group">
+                              <label for="admin-email">New Adresse e-mail:</label>
+                              <input type="email" class="form-control" id="admin-email" name="admin_email" placeholder="Enter new admin email">
+                          </div>
+                          <button type="submit" class="btn btn-primary">Update WordPress Site</button>
+                      </form> 
+                        </div>
+                      </div>
                     </div>
                   </div>
-              </div>
-          </div>
-      </div>
-
-      <a href="{% url "generateur_description" %}" class="btn btn-primary btn-icon-split">
-        <span class="text">Générateur Description</span>
-     </a>
-
-        
-
-          
-        {% comment %} <div class="col-md-5 grid-margin stretch-card">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">To Do Lists</h4>
-                                <div class="list-wrapper pt-2">
-                                    <ul class="d-flex flex-column-reverse todo-list todo-list-custom">
-                                        <li>
-                                            <div class="form-check form-check-flat">
-                                                <label class="form-check-label">
-                                                    <input class="checkbox" type="checkbox">
-                                                    Meeting with Urban Team
-                                                </label>
-                                            </div>
-                                            <i class="remove ti-close"></i>
-                                        </li>
-                                        <li class="completed">
-                                            <div class="form-check form-check-flat">
-                                                <label class="form-check-label">
-                                                    <input class="checkbox" type="checkbox" checked>
-                                                    Duplicate a project for new customer
-                                                </label>
-                                            </div>
-                                            <i class="remove ti-close"></i>
-                                        </li>
-                                        <li>
-                                            <div class="form-check form-check-flat">
-                                                <label class="form-check-label">
-                                                    <input class="checkbox" type="checkbox">
-                                                    Project meeting with CEO
-                                                </label>
-                                            </div>
-                                            <i class="remove ti-close"></i>
-                                        </li>
-                                        <li class="completed">
-                                            <div class="form-check form-check-flat">
-                                                <label class="form-check-label">
-                                                    <input class="checkbox" type="checkbox" checked>
-                                                    Follow up of team zilla
-                                                </label>
-                                            </div>
-                                            <i class="remove ti-close"></i>
-                                        </li>
-                                        <li>
-                                            <div class="form-check form-check-flat">
-                                                <label class="form-check-label">
-                                                    <input class="checkbox" type="checkbox">
-                                                    Level up for Antony
-                                                </label>
-                                            </div>
-                                            <i class="remove ti-close"></i>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="add-items d-flex mb-0 mt-2">
-                                    <input type="text" class="form-control todo-list-input"  placeholder="Add new task">
-                                    <button class="add btn btn-icon text-primary todo-list-add-btn bg-transparent"><i class="icon-circle-plus"></i></button>
-                                </div>
+                  
+                 
+                <a href="{% url "generateur_description" %}" class="btn btn-primary btn-icon-split">
+                    <span class="text">Générateur Description</span>
+                 </a>
+            </div>
+            <div class="col-xl-4">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Les informations de site web</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex overflow-visible">
+                            <div class="media-body valign-middle">
+                                <a href="profile.html" class="fw-semibold text-dark">Nom du website</a>
+                                <p class="text-muted mb-0">{{website_builder_location.website.name}}</p>
                             </div>
                         </div>
-         </div> {% endcomment %}
-      </div>
-     
-          </div>
+                        <div class="d-flex overflow-visible mt-4">
+                            <div class="media-body valign-middle">
+                                <a href="profile.html" class="fw-semibold text-dark">Description</a>
+                                <p class="text-muted mb-0">{{website_builder_location.website.description}}</p>
+                            </div>
+                        </div>
+                        <div class="d-flex overflow-visible mt-4">
+                            <div class="media-body valign-middle">
+                                <a href="profile.html" class="fw-semibold text-dark">Catégorie</a>
+                                <p class="text-muted mb-0">{{website_builder_location.website.catégorie}}</p>
+                            </div>
+                        </div>
+                        <div class="d-flex overflow-visible mt-4">
+                            <div class="media-body valign-middle">
+                                <a href="profile.html" class="fw-semibold text-dark">CMS</a>
+                                <p class="text-muted mb-0">{{website_builder_location.website.CMS}}</p>
+                            </div>
+                        </div>
+                        <div class="d-flex overflow-visible mt-4">
+                            <div class="media-body valign-middle">
+                                <a href="profile.html" class="fw-semibold text-dark">Plan</a>
+                                <p class="text-muted mb-0">{{website_builder_location.website.plan}}</p>
+                            </div>
+                        </div>
+                        <div class="d-flex overflow-visible mt-4">
+                            <div class="media-body valign-middle">
+                                <a href="profile.html" class="fw-semibold text-dark">Langue</a>
+                                <p class="text-muted mb-0">{{website_builder_location.website.langues}}</p>
+                            </div>
+                        </div>
+                        <div class="d-flex overflow-visible mt-4">
+                            <div class="media-body valign-middle">
+                                <a href="profile.html" class="fw-semibold text-dark">Date de création</a>
+                                <p class="text-muted mb-0">{{website_builder_location.website.date_created}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+  
+              
+            </div>
         </div>
+        <!--End::row-1 -->
+  
     </div>
+  </div>
+  <!-- End::app-content -->
 
 
-    {% endblock %}
+{% endblock %}

@@ -15,6 +15,7 @@ urlpatterns = [
 
     #Client
     path('dashboard/',views.dashboard, name="dashboard"), 
+     path('',views.dashbordHome, name="dashbordHome"), 
     path('dashbordHome/',views.dashbordHome, name="dashbordHome"),
     path('editUser/',views.editUser, name="editUser"), 
     path('MesServices/',views.MesServices, name="MesServices"), 

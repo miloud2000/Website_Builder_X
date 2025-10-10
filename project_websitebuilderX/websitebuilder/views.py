@@ -37,17 +37,122 @@ from websitebuilder.models import (
 )
 
 
+
+from itertools import chain
+from django.utils.timezone import now
+from collections import Counter
+from django.core.paginator import Paginator
+from django.db.models import Q
+#DashbordHome of Cliente
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['Cliente']) 
 def dashbordHome(request):  
     cliente = request.user.cliente
+
+    total_achat = AchatWebsites.objects.filter(cliente=cliente).count()
+    total_location = LocationWebsites.objects.filter(cliente=cliente).count()
+    total_free = GetFreeWebsites.objects.filter(cliente=cliente).count()
+
+    total_sites = total_achat + total_location + total_free
+
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
     AchatSupports = AchatSupport.objects.filter(cliente=cliente).order_by('-date_created')[:5]
+
+    total_support_achat = AchatSupport.objects.filter(cliente=cliente).count()
+
+    total_tickets_created = Ticket.objects.filter(cliente=cliente).count()
+    
+    total_solde = cliente.solde
+    
+    latest_recharges = DemandeRecharger.objects.filter(cliente=cliente).order_by('-date_created')[:6]
+    
+    
+    achats = AchatWebsites.objects.filter(cliente=cliente)
+    locations = LocationWebsites.objects.filter(cliente=cliente)
+    free_webs = GetFreeWebsites.objects.filter(cliente=cliente)
+
+
+    def wrap_transaction(obj, type_label):
+        return {
+            'websites': obj.websites,
+            'date_created': obj.date_created,
+            'transaction_type': type_label,
+            'duree': getattr(obj, 'duree', None),  
+        }
+
+    wrapped_achats = [wrap_transaction(obj, 'Achat') for obj in achats]
+    wrapped_locations = [wrap_transaction(obj, 'Location') for obj in locations]
+    wrapped_free = [wrap_transaction(obj, 'Gratuit') for obj in free_webs]
+
+    combined = chain(wrapped_achats, wrapped_locations, wrapped_free)
+    latest_web_transactions = sorted(
+        combined,
+        key=lambda x: x['date_created'] or now(),
+        reverse=True
+    )[:6]
+
+    achats_support = AchatSupport.objects.filter(cliente=cliente).order_by('-date_created')
+
+    support_counter = Counter()
+    total_supports = 0
+
+    for achat in achats_support:
+        if achat.support:
+            support_name = achat.support.name
+            support_counter[support_name] += 1
+            total_supports += 1
+
+    support_achat_percentages = []
+    for name, count in support_counter.items():
+        percentage = round((count / total_supports) * 100, 2) if total_supports > 0 else 0
+        support_achat_percentages.append({
+            'name': name,
+            'count': count,
+            'percentage': percentage
+        })
+
+    support_achat_percentages.sort(key=lambda x: x['count'], reverse=True)
+    
+    latest_demandes_support = DemandeSupport.objects.filter(cliente=cliente).order_by('-date_created')[:10]
+    
+    search_query = request.GET.get('search', '').strip()
+    per_page = int(request.GET.get('per_page', 10))
+    page_number = request.GET.get('page', 1)
+
+    demandes_queryset = DemandeSupport.objects.filter(cliente=cliente)
+
+    if search_query:
+        demandes_queryset = demandes_queryset.filter(
+            Q(code_DemandeSupport__icontains=search_query) |
+            Q(achat_support__support__name__icontains=search_query) |
+            Q(status__icontains=search_query)
+        )
+
+    demandes_queryset = demandes_queryset.order_by('-date_created')
+
+    paginator = Paginator(demandes_queryset, per_page)
+    page_obj = paginator.get_page(page_number)
+    
     context = {
         'WebsiteBuilders': WebsiteBuilders,
         'AchatSupports': AchatSupports,
+        'total_achat': total_achat,
+        'total_location': total_location,
+        'total_free': total_free,
+        'total_sites': total_sites,
+        'total_support_achat': total_support_achat,
+        'total_tickets_created': total_tickets_created,
+        'total_solde': total_solde,
+        'latest_recharges': latest_recharges,
+        'latest_web_transactions': latest_web_transactions,
+        'support_achat_percentages': support_achat_percentages[:6], 
+        'latest_demandes_support': latest_demandes_support,
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'per_page': per_page,
     }
-    return render(request, "clients/dashbordHome.html",context)
+    return render(request, "clients/dashbordHome.html", context)
+
 
 
 

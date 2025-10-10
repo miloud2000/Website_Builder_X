@@ -9,6 +9,7 @@
 
 <div class="main-content app-content">
   <div class="container-fluid">
+    <br>
           {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
@@ -397,28 +398,33 @@
                                         {% endif %}
 
                                          <!-- Modal for each location -->
-                                        <div class="modal fade" id="addWebsiteModal{{ location.id }}" tabindex="-1" role="dialog" aria-labelledby="addWebsiteModalLabel" aria-hidden="true">
-                                          <div class="modal-dialog" role="document">
-                                              <div class="modal-content">
-                                                  <div class="modal-header">
-                                                      <h5 class="modal-title" id="addWebsiteModalLabel">Add Website</h5>
-                                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                          <span aria-hidden="true">&times;</span>
-                                                      </button>
-                                                  </div>
-                                                  <div class="modal-body">
-                                                      <form method="post" action="{% url 'add_locationWebsiteBuilder' %}">
-                                                          {% csrf_token %}
-                                                          <input type="hidden" name="cliente_id" value="{{ location.cliente_id }}">
-                                                          <input type="hidden" name="website_id" value="{{ location.id }}">
-                                                          <div class="form-group">
-                                                              <label for="nameWebsite">Name:</label>
-                                                              <input type="text" class="form-control" id="nameWebsite" name="nameWebsite" required>
-                                                          </div>
-                                                          <button type="submit" class="btn btn-primary">Submit</button>
-                                                      </form>
-                                                  </div>
+                                       <!-- Modal -->
+                                        <div class="modal fade" id="addWebsiteLocationModal{{ location.id }}" tabindex="-1" role="dialog" aria-labelledby="addWebsiteModalLabel{{ location.id }}" aria-hidden="true">
+                                          <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content border-0 shadow">
+                                              <div class="modal-header bg-primary text-white">
+                                                <h5 class="modal-title" id="addWebsiteModalLabel{{ location.id }}">Ajouter un site web</h5>
+                                                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fermer">
+                                                  <span aria-hidden="true">&times;</span>
+                                                </button>
                                               </div>
+                                              <div class="modal-body">
+                                                <form method="post" action="{% url 'add_locationWebsiteBuilder' %}">
+                                                  {% csrf_token %}
+                                                  <input type="hidden" name="cliente_id" value="{{ location.cliente_id }}">
+                                                  <input type="hidden" name="website_id" value="{{ location.id }}">
+
+                                                  <div class="form-group">
+                                                    <label for="nameWebsite{{ location.id }}">Nom du site web</label>
+                                                    <input type="text" class="form-control" id="nameWebsite{{ location.id }}" name="nameWebsite" placeholder="Ex: monsite.com" required>
+                                                  </div>
+
+                                                  <div class="text-right mt-3">
+                                                    <button type="submit" class="btn btn-primary">Valider</button>
+                                                  </div>
+                                                </form>
+                                              </div>
+                                            </div>
                                           </div>
                                         </div>
                                                                                     
@@ -433,7 +439,9 @@
                                               {% endif %}
                                               {% endif %}
                                               {% if location.BuilderStatus == 'Not yet' %}
-                                                  <button class="btn btn-sm btn-primary add-website" data-toggle="modal" data-target="#addWebsiteModal{{ location.id }}">Build</button>
+                                              <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addWebsiteLocationModal{{ location.id }}">
+                                                Build
+                                              </button>                                              
                                               {% endif %}
                                               <a href="#" class="btn btn-sm btn-primary">View</a>
                                             </div>

@@ -485,33 +485,61 @@ def WebSites(request):
 
 
 #List of all supports owned by the registered client
+from django.core.paginator import Paginator
+
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['Cliente']) 
 def Services(request):
     cliente = request.user.cliente
-    achatSupports = AchatSupport.objects.filter(cliente=cliente).order_by('-date_created')
-    WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
-    context = {
-        'achatSupports': achatSupports,
-        'WebsiteBuilders': WebsiteBuilders,
-    }   
-    return render(request, "clients/Services.html",context)
 
+    # Récupérer le paramètre per_page
+    per_page = int(request.GET.get('per_page', 10))  # Valeur par défaut = 10
+
+    # Récupérer les supports
+    achatSupports = AchatSupport.objects.filter(cliente=cliente).order_by('-date_created')
+
+    # Pagination
+    paginator = Paginator(achatSupports, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # WebsiteBuilders (non paginés)
+    WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
+
+    context = {
+        'page_obj': page_obj,
+        'per_page': per_page,
+        'WebsiteBuilders': WebsiteBuilders,
+        'query': request.GET.get('q', ''),
+        'status_filter': request.GET.get('status', ''),
+    }
+    return render(request, "clients/Services.html", context)
 
 
 
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['Cliente']) 
 def solde_et_facturation(request): 
-    cliente = request.user.cliente   
+    cliente = request.user.cliente
+
+    # Paramètre per_page
+    per_page = int(request.GET.get('per_page', 10))  # Valeur par défaut = 10
+
+    # Facturations paginées
+    facturations_list = Facturations.objects.filter(cliente=cliente).order_by('-date_created')
+    paginator = Paginator(facturations_list, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # WebsiteBuilders (non paginés)
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
-    facturations = Facturations.objects.filter(cliente=cliente).order_by('-date_created')
+
     context = {
         'WebsiteBuilders': WebsiteBuilders,
-        'facturations': facturations,
+        'page_obj': page_obj,
+        'per_page': per_page,
     } 
-    return render(request, "clients/solde_et_facturation.html",context)
-
+    return render(request, "clients/solde_et_facturation.html", context)
 
 
 from django.http import HttpResponse
