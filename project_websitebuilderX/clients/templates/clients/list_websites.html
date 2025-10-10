@@ -3,334 +3,231 @@
 
 {% block content %}
 
-<div class="container">
-	<br>
-	{% if messages %}
-	{% for message in messages %}
-	  {% if message.tags == 'error' %}
-		<div class="alert alert-danger" role="alert">
-		  {{ message }}
-		</div>
-	  {% endif %}
-	{% endfor %}
-	{% endif %}
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
 
-	{% if messages %}
-  {% for message in messages %}
-      {% if message.tags == 'success' %}
-        <div class="alert alert-success" role="alert">
-          {{ message }}
+                <!-- PAGE-HEADER -->
+                <div class="page-header">
+                  <h1 class="page-title my-auto">Liste de sites Web</h1>
+                  <div>
+                    <ol class="breadcrumb mb-0">
+                      <li class="breadcrumb-item">
+                        <a href="{% url "list_websites" %}">Accueil</a>
+                      </li>
+                      <li class="breadcrumb-item active" aria-current="page">liste de sites Web</li>
+                    </ol>
+                  </div>
+                </div>
+                <!-- PAGE-HEADER END -->
+                <div class="page-header">
+                  <h1 class="page-title my-auto"></h1>
+                  <div>
+                    {% comment %} <ol class="breadcrumb mb-0">
+                      <li class="breadcrumb-item">
+                      </li>
+                      
+                    </ol> {% endcomment %}
+                  </div>
+                </div>
+
+
+                <!-- Start::row-1 -->
+                <form method="get">
+                <div class="row">
+                    <div class="col-xxl-3 col-xl-4 col-lg-4 col-md-12">
+                        <div class="card custom-card">
+                            <div class="card-header"><div class="card-title">Statut</div></div>
+                            <div class="card-body">
+                              <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="status" value="" id="status-all" {% if not status %}checked{% endif %}>
+                                <label class="form-check-label" for="status-all">Tous</label>
+                              </div>
+                              <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="status" value="Active" id="status-active" {% if status == 'Active' %}checked{% endif %}>
+                                <label class="form-check-label" for="status-active">Actif</label>
+                              </div>
+                              <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="status" value="No Active" id="status-inactive" {% if status == 'No Active' %}checked{% endif %}>
+                                <label class="form-check-label" for="status-inactive">Inactif</label>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="card custom-card">
+                            <div class="card-header"><div class="card-title">Catégorie</div></div>
+                            <div class="card-body">
+                              <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="catégorie" value="" id="cat-all" {% if not catégorie %}checked{% endif %}>
+                                <label class="form-check-label" for="cat-all">Toutes</label>
+                              </div>
+                              {% for cat in catégories_list %}
+                                <div class="form-check mb-2">
+                                  <input class="form-check-input" type="radio" name="catégorie" value="{{ cat }}" id="cat-{{ forloop.counter }}" {% if catégorie == cat %}checked{% endif %}>
+                                  <label class="form-check-label" for="cat-{{ forloop.counter }}">{{ cat }}</label>
+                                </div>
+                              {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card custom-card">
+                            <div class="card-header"><div class="card-title">CMS</div></div>
+                            <div class="card-body">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="CMS" value="" id="cms-all" {% if not CMS %}checked{% endif %}>
+                                    <label class="form-check-label" for="cms-all">Toutes</label>
+                                </div>
+                                {% for c in cms_list %}
+                                <div class="form-check mb-2">
+                                  <input class="form-check-input" type="radio" name="CMS" value="{{ c }}" id="cms-{{ forloop.counter }}" {% if CMS == c %}checked{% endif %}>
+                                  <label class="form-check-label" for="cms-{{ forloop.counter }}">{{ c }}</label>
+                                </div>
+                              {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card custom-card">
+                            <div class="card-header"><div class="card-title">Langue</div></div>
+                            <div class="card-body">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="langues" value="" id="langue-all" {% if not langues %}checked{% endif %}>
+                                    <label class="form-check-label" for="langue-all">Toutes</label>
+                                </div>
+                                {% for l in langues_list %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="langues" value="{{ l }}" id="langue-{{ forloop.counter }}" {% if langues == l %}checked{% endif %}>
+                                        <label class="form-check-label" for="langue-{{ forloop.counter }}">{{ l }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card custom-card">
+                            <div class="card-header"><div class="card-title">Forfait</div></div>
+                            <div class="card-body">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="plan" value="" id="plan-all" {% if not plan %}checked{% endif %}>
+                                    <label class="form-check-label" for="plan-all">Tous</label>
+                                </div>
+                                {% for p in plans_list %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="plan" value="{{ p }}" id="plan-{{ forloop.counter }}" {% if plan == p %}checked{% endif %}>
+                                        <label class="form-check-label" for="plan-{{ forloop.counter }}">{{ p }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                            {% comment %} <div class="justify-content-end gap-2 mt-2">
+                                <button type="submit" class="btn btn-dark btn-sm px-4 rounded-pill">
+                                    <i class="bi bi-search"></i> Filtrer
+                                </button>
+                                <a href="{% url 'websites_list_superadmin' %}" class="btn btn-outline-secondary btn-sm px-4 rounded-pill">
+                                    <i class="bi bi-arrow-clockwise"></i> Réinitialiser
+                                </a>
+                            </div> {% endcomment %}
+                        </div>
+                    </form>
+                    <script>
+                        document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
+                          radio.addEventListener('change', function() {
+                            this.form.submit();
+                          });
+                        });
+                      </script>
+                      
+                    <div class="col-xxl-9 col-xl-8 col-lg-8 col-md-12">
+                        <div class="row">
+                            {% for website in page_obj %}
+                            <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="card custom-card product-card">
+                                    <div class="card-body">
+                                        <a href="{% url 'detail_website' slugWebsites=website.slugWebsites %}" class="product-image">
+                                            {% if website.image %}
+                                                <img src="{{ website.image.url }}" class="card-img mb-3" alt="{{ website.name }}">
+                                            {% else %}
+                                                <img src="{% static 'assets/images/ecommerce/products/default.jpg' %}" class="card-img mb-3" alt="No image">
+                                            {% endif %}
+                                        </a>
+                    
+                                        <div class="product-icons">
+                                            {% comment %} <a href="{% url 'hide_website' slugWebsites=website.slugWebsites %}" onclick="return confirm('Êtes-vous sûr de vouloir masquer {{ website.name }} ?')" class="wishlist"><i class="ri-delete-bin-fill"></i></a>
+                                            <a href="{% url 'edit_website' slugWebsites=website.slugWebsites %}" class="cart"><i class="ri-edit-2-fill"></i></a> {% endcomment %}
+                                            <a href="{% url 'detail_website' slugWebsites=website.slugWebsites %}" class="wishlist"><i class="ri-eye-line"></i></a>
+                                        </div>
+                    
+                                        <p class="product-name fw-semibold mb-0 d-flex align-items-center justify-content-between">
+                                            {{ website.name }}
+                                            <span class="float-end text-warning fs-12">
+                                                4.2<i class="ri-star-s-fill align-middle ms-1 d-inline-block"></i>
+                                            </span>
+                                        </p>
+                    
+                                        <p class="product-description fs-11 text-muted mb-2">
+                                            {{ website.catégorie }}
+                                        </p>
+                    
+                                        <p class="mb-1 fw-semibold fs-16 d-flex align-items-center justify-content-between">
+                                            <span>
+                                                {{ website.prix }} MAD
+                                                <span class="text-muted text-decoration-line-through ms-1 d-inline-block op-6">
+                                                    {{ website.prix|add:"100" }} MAD
+                                                </span>
+                                            </span>
+                                            <span class="badge bg-secondary-transparent float-end fs-10">50% off</span>
+                                        </p>
+                    
+                                        <p class="fs-11 text-success fw-semibold mb-0 d-flex align-items-center">
+                                            <i class="ti ti-discount-2 fs-16 me-1"></i>
+                                            Prix ​​de l'offre {{ website.prix }} MAD
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="col-12">
+                                <div class="alert alert-warning text-center">Aucun site Web disponible</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                </div>
+                <!--End::row-1 -->
+
+                <!-- Pagination -->
+                <ul class="pagination justify-content-end">
+                    {% if page_obj.has_previous %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if status %}&status={{ status }}{% endif %}{% if catégorie %}&catégorie={{ catégorie }}{% endif %}{% if CMS %}&CMS={{ CMS }}{% endif %}{% if langues %}&langues={{ langues }}{% endif %}{% if plan %}&plan={{ plan }}{% endif %}">Précédent</a>
+                      </li>
+                    {% else %}
+                      <li class="page-item disabled"><a class="page-link">Précédent</a></li>
+                    {% endif %}
+                  
+                    {% for num in page_obj.paginator.page_range %}
+                      <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}{% if status %}&status={{ status }}{% endif %}{% if catégorie %}&catégorie={{ catégorie }}{% endif %}{% if CMS %}&CMS={{ CMS }}{% endif %}{% if langues %}&langues={{ langues }}{% endif %}{% if plan %}&plan={{ plan }}{% endif %}">{{ num }}</a>
+                      </li>
+                    {% endfor %}
+                  
+                    {% if page_obj.has_next %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if status %}&status={{ status }}{% endif %}{% if catégorie %}&catégorie={{ catégorie }}{% endif %}{% if CMS %}&CMS={{ CMS }}{% endif %}{% if langues %}&langues={{ langues }}{% endif %}{% if plan %}&plan={{ plan }}{% endif %}">Suivant</a>
+                      </li>
+                    {% else %}
+                      <li class="page-item disabled"><a class="page-link">Suivant</a></li>
+                    {% endif %}
+                  </ul>
+                  
+                <!-- Pagination -->
+
+            </div>
         </div>
-      {% endif %}
-    {% endfor %}
-  {% endif %}
-	
-<section class="section-products">
-	<div class="row justify-content-center text-center">
-		<div class="col-md-8 col-lg-6">
-			<div class="header">
-				{% comment %} <h3>Featured Product</h3> {% endcomment %}
-				<h2>Popular WebSites</h2>
-                <h3><a href="{% url 'all_list_websites' %}"><button type="button" class="btn btn-primary btn-sm">All Websites</button></a></h3>
-			</div>
-		</div>
-	</div>
-	<div class="row">
-		{% for website in websites %}
-			<div class="col-md-6 col-lg-4 col-xl-3">
-				<div id="product-1" class="single-product">
-					<div class="part-1">
-						<img src="{% static 'img/css-image-gallery.jpg' %}" style="width: 100%; height: 100%;">
-						<ul>
-							<li><a href="{% url 'detail_website' website.slugWebsites %}"><i class="fas fa-expand"></i></a></li>
-						</ul>
-					</div>
-					<div class="part-2">
-						<h3 class="product-title">{{ website.name }}</h3>
-						<h4 class="product-price">{{ website.prix }} MAD</h4>
-						<a href="{% url 'detail_website' website.slugWebsites %}"><button type="button" class="btn btn-primary btn-sm">Voir</button></a>
-						{% comment %} <a href="#" onclick="showConfirmationModal('{{ website.id }}', '{{ website.name }}', '{{ website.prix }}')"><button type="button" class="btn btn-primary btn-sm">Achat</button></a>
-						<a href="#" onclick="showLoyerModal('{{ website.id }}', '{{ website.name }}', '{{ website.prix }}')"><button type="button" class="btn btn-primary btn-sm">Loyer</button></a> {% endcomment %}
-					</div>
-				</div>
-			</div>
-		{% endfor %}
-	</div>
-	<!-- Modal for "Loyer" action -->
-	<div id="loyerModal" class="modal">
-		<div class="modal-content">
-			<!-- Loyer content -->
-		</div>
-	</div>
-	<script>
-		function showLoyerModal(websiteId, websiteName, websitePrice) {
-			var modal = document.getElementById('loyerModal');
-			var modalContent = modal.querySelector('.modal-content');
-			modalContent.innerHTML = `
-				<div class="close" onclick="hideLoyerModal()">&times;</div>
-				<h1>Confirmer location </h1>
-				<p>Please Confirmer your location of "${websiteName}" for ${websitePrice} MAD.</p>
-				<p><span class="badge badge-warning"> Alert: </span> The Location start date is the date now, not the date builder.</p>
-				<form action="{% url 'confirm_loyer_website' %}" method="post">
-					{% csrf_token %}
-					<input type="hidden" name="website_id" value="${websiteId}">
-					<button class="btn btn-primary" type="submit">Confirm</button>
-				</form>
-			`;
-			modal.style.display = 'block';
-		}
-	
-		function hideLoyerModal() {
-			var modal = document.getElementById('loyerModal');
-			modal.style.display = 'none';
-		}
-	</script>
-	
-	<script>
-		// Function to show the confirmation popup
-		function showConfirmationModal(websiteId, websiteName, websitePrice) {
-		// Get the modal element
-		var modal = document.getElementById('confirmationModal');
-	
-		// Set the website details in the modal
-		var modalContent = modal.querySelector('.modal-content');
-		modalContent.innerHTML = `
-			<div class="close" onclick="hideConfirmationModal()">&times;</div>
-			<h1>Confirmer l'achat</h1>
-			<p>Please Confirmer your l'achat of "${websiteName}" for ${websitePrice} MAD.</p>
-			<form action="{% url 'confirm_Achat_website' %}" method="post">
-			{% csrf_token %}
-			<input type="hidden" name="website_id" value="${websiteId}">
-			<button class="btn btn-primary" type="submit">Confirm</button>
-			</form>
-		`;
-	
-		// Show the modal
-		modal.style.display = 'block';
-		}
+        <!-- End::app-content -->
 
-	// Function to hide the confirmation popup
-		function hideConfirmationModal() {
-		var modal = document.getElementById('confirmationModal');
-		modal.style.display = 'none';
-		}
-	</script>
+    </div>
 
-
-
-<div id="confirmationModal" class="modal" >
-	<div class="modal-content">
-	  <!-- Confirmation content -->
-	</div>
-  </div>  
-
-
-
-
-<style>
-	/* Modal Styles */
-	.modal {
-	display: none; /* Hidden by default */
-	position: fixed; /* Stay in place */
-	{% comment %} z-index: 1; /* Sit on top */ {% endcomment %}
-	left: 0;
-	top: 0;
-	width: 100%; /* Full width */
-	height: 100%; /* Full height */
-	overflow: auto; /* Enable scroll if needed */
-	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-	}
-
-	/* Modal Content */
-	.modal-content {
-	background-color: #fefefe;
-	margin: 15% auto; /* 15% from the top and centered */
-	padding: 20px;
-	border: 1px solid #888;
-	width: 47%; /* Could be more or less, depending on screen size */
-	}
-
-	/* Close Button */
-	.close {
-	color: #aaa;
-	float: right;
-	font-size: 28px;
-	font-weight: bold;
-	}
-
-	.close:hover,
-	.close:focus {
-	color: black;
-	text-decoration: none;
-	cursor: pointer;
-	}
-
-</style>
-
-
-<style>
-	@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
-
-	body {
-		font-family: "Poppins", sans-serif;
-		color: #444444;
-	}
-
-	a,
-	a:hover {
-		text-decoration: none;
-		color: inherit;
-	}
-
-	.section-products {
-		padding: 20px 0 54px;
-	}
-
-	.section-products .header {
-		margin-bottom: 50px;
-	}
-
-	.section-products .header h3 {
-		font-size: 1rem;
-		color: #fe302f;
-		font-weight: 500;
-	}
-
-	.section-products .header h2 {
-		font-size: 2.2rem;
-		font-weight: 400;
-		color: #444444; 
-	}
-
-	.section-products .single-product {
-		margin-bottom: 26px;
-	}
-
-	.section-products .single-product .part-1 {
-		position: relative;
-		height: 250px;
-		width: 100%;
-		max-height: 290px;
-		margin-bottom: 20px;
-		overflow: hidden;
-	}
-
-	.section-products .single-product .part-1::before {
-			position: absolute;
-			content: "";
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			z-index: -1;
-			transition: all 0.3s;
-	}
-
-	.section-products .single-product:hover .part-1::before {
-			transform: scale(1.2,1.2) rotate(5deg);
-	}
-
-	{% comment %} .section-products #product-1 .part-1::before {
-		background: url("https://i.ibb.co/L8Nrb7p/1.jpg") no-repeat center;
-		background-size: cover;
-			transition: all 0.3s;
-	} {% endcomment %}
-
-	{% comment %} .section-products #product-2 .part-1::before {
-		background: url("https://i.ibb.co/cLnZjnS/2.jpg") no-repeat center;
-		background-size: cover;
-	}
-
-	.section-products #product-3 .part-1::before {
-		background: url("https://i.ibb.co/L8Nrb7p/1.jpg") no-repeat center;
-		background-size: cover;
-	}
-
-	.section-products #product-4 .part-1::before {
-		background: url("https://i.ibb.co/cLnZjnS/2.jpg") no-repeat center;
-		background-size: cover;
-	} {% endcomment %}
-
-	.section-products .single-product .part-1 .discount,
-	.section-products .single-product .part-1 .new {
-		position: absolute;
-		top: 15px;
-		left: 20px;
-		color: #ffffff;
-		background-color: #fe302f;
-		padding: 2px 8px;
-		text-transform: uppercase;
-		font-size: 0.85rem;
-	}
-
-	.section-products .single-product .part-1 .new {
-		left: 0;
-		background-color: #444444;
-	}
-
-	.section-products .single-product .part-1 ul {
-		position: absolute;
-		bottom: -41px;
-		left: 20px;
-		margin: 0;
-		padding: 0;
-		list-style: none;
-		opacity: 0;
-		transition: bottom 0.5s, opacity 0.5s;
-	}
-
-	.section-products .single-product:hover .part-1 ul {
-		bottom: 30px;
-		opacity: 1;
-	}
-
-	.section-products .single-product .part-1 ul li {
-		display: inline-block;
-		margin-right: 4px;
-	}
-
-	.section-products .single-product .part-1 ul li a {
-		display: inline-block;
-		width: 40px;
-		height: 40px;
-		line-height: 40px;
-		background-color: #ffffff;
-		color: #444444;
-		text-align: center;
-		box-shadow: 0 2px 20px rgb(50 50 50 / 10%);
-		transition: color 0.2s;
-	}
-
-	.section-products .single-product .part-1 ul li a:hover {
-		color: #fe302f;
-	}
-
-	.section-products .single-product .part-2 .product-title {
-		font-size: 1rem;
-	}
-
-	.section-products .single-product .part-2 h4 {
-		display: inline-block;
-		font-size: 1rem;
-	}
-
-	.section-products .single-product .part-2 .product-old-price {
-		position: relative;
-		padding: 0 7px;
-		margin-right: 2px;
-		opacity: 0.6;
-	}
-
-	.section-products .single-product .part-2 .product-old-price::after {
-		position: absolute;
-		content: "";
-		top: 50%;
-		left: 0;
-		width: 100%;
-		height: 1px;
-		background-color: #444444;
-		transform: translateY(-50%);
-	}
-</style>
+    
+    <!-- Scroll To Top -->
+    <div class="scrollToTop">
+        <span class="arrow"><i class="ri-arrow-up-s-fill fs-20"></i></span>
+    </div>
+    <div id="responsive-overlay"></div>
 
 {% endblock %}

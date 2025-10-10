@@ -8,7 +8,8 @@ urlpatterns = [
     path('dashbordHome',views.dashbordHome, name="dashbordHome"), 
     
     # path('dashboard/',views.dashboard, name="dashboard"), 
-    
+    path('home',views.home, name="home"), 
+
     
     path('register/',views.register, name="register"), 
     path('user_login/',views.user_login, name="user_login"), 

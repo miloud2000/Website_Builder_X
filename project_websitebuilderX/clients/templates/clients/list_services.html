@@ -2,417 +2,155 @@
 {% load static %}
 
 {% block content %}
-<div class="container">
-    <br>
-	{% if messages %}
-	{% for message in messages %}
-	  {% if message.tags == 'error' %}
-		<div class="alert alert-danger" role="alert">
-		  {{ message }}
-		</div>
-	  {% endif %}
-	{% endfor %}
-	{% endif %}
 
-	{% if messages %}
-  {% for message in messages %}
-      {% if message.tags == 'success' %}
-        <div class="alert alert-success" role="alert">
-          {{ message }}
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+
+                <!-- PAGE-HEADER -->
+                <div class="page-header">
+                  <h1 class="page-title my-auto">Liste du support</h1>
+                  <div>
+                    <ol class="breadcrumb mb-0">
+                      <li class="breadcrumb-item">
+                        <a href="{% url "list_services" %}">Accueil</a>
+                      </li>
+                      <li class="breadcrumb-item active" aria-current="page">Liste du support</li>
+                    </ol>
+                  </div>
+                </div>
+                <!-- PAGE-HEADER END -->
+                <div class="page-header">
+                  <h1 class="page-title my-auto"></h1>
+                  <div>
+                  </div>
+                </div>
+
+
+                <!-- Start::row-1 -->
+                <form method="get">
+                <div class="row">
+                    <div class="col-xxl-3 col-xl-4 col-lg-4 col-md-12">
+                        <div class="card custom-card">
+                            <div class="card-header"><div class="card-title">Statut</div></div>
+                            <div class="card-body">
+                              <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="status" value="" id="status-all" {% if not status %}checked{% endif %}>
+                                <label class="form-check-label" for="status-all">Tous</label>
+                              </div>
+                              {% for choice in status_choices %}
+                              <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="status" value="{{ choice }}" id="status-{{ forloop.counter }}" {% if status == choice %}checked{% endif %}>
+                                <label class="form-check-label" for="status-{{ forloop.counter }}">{{ choice }}</label>
+                              </div>
+                              {% endfor %}
+                            </div>
+                        </div>
+                      </div>  
+                    </form>
+                    <script>
+                        document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
+                          radio.addEventListener('change', function() {
+                            this.form.submit();
+                          });
+                        });
+                      </script>
+                      
+                    <div class="col-xxl-9 col-xl-8 col-lg-8 col-md-12">
+                        <div class="row">
+                            {% for support in page_obj  %}
+                            <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                <div class="card custom-card product-card">
+                                    <div class="card-body">
+                                        <a href="{% url 'detail_support' support.id %}" class="product-image">
+                                            <img src="{% static 'img/websitebuilder-removebg-preview.png' %}" class="card-img mb-3" alt="No image">
+                                        </a>
+                    
+                                        <div class="product-icons">
+                                            <a href="{% url 'detail_support' support.id %}" class="wishlist"><i class="ri-eye-line"></i></a>
+                                        </div>
+                    
+                                        <p class="product-name fw-semibold mb-0 d-flex align-items-center justify-content-between">
+                                            {{ support.name }}
+                                            <span class="float-end text-warning fs-12">
+                                                4.2<i class="ri-star-s-fill align-middle ms-1 d-inline-block"></i>
+                                            </span>
+                                        </p>
+                    
+                                        <p class="product-description fs-11 text-muted mb-2" style="font-weight: bold;">
+                                          {{ support.status }}
+                                        </p>
+                                        
+                                        <p class="product-description fs-11 text-muted mb-2">
+                                          {{ support.description|truncatewords:20 }}
+                                        </p>
+                                        <p class="mb-1 fw-semibold fs-16 d-flex align-items-center justify-content-between">
+                                            <span>
+                                              {{ support.prix }} MAD
+                                                <span class="text-muted text-decoration-line-through ms-1 d-inline-block op-6">
+                                                    {{ support.prix|add:"100" }} MAD
+                                                </span>
+                                            </span>
+                                            <span class="badge bg-secondary-transparent float-end fs-10">50% off</span>
+                                        </p>
+                    
+                                        <p class="fs-11 text-success fw-semibold mb-0 d-flex align-items-center">
+                                            <i class="ti ti-discount-2 fs-16 me-1"></i>
+                                            Prix ​​de l'offre {{ support.prix }} MAD
+                                        </p>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="col-12">
+                                <div class="alert alert-warning text-center">Aucun site Web disponible</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                </div>
+                <!--End::row-1 -->
+
+                <!-- Pagination -->
+                <ul class="pagination justify-content-end">
+                    {% if page_obj.has_previous %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if status %}&status={{ status }}{% endif %}{% if catégorie %}&catégorie={{ catégorie }}{% endif %}{% if CMS %}&CMS={{ CMS }}{% endif %}{% if langues %}&langues={{ langues }}{% endif %}{% if plan %}&plan={{ plan }}{% endif %}">Précédent</a>
+                      </li>
+                    {% else %}
+                      <li class="page-item disabled"><a class="page-link">Précédent</a></li>
+                    {% endif %}
+                  
+                    {% for num in page_obj.paginator.page_range %}
+                      <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}{% if status %}&status={{ status }}{% endif %}{% if catégorie %}&catégorie={{ catégorie }}{% endif %}{% if CMS %}&CMS={{ CMS }}{% endif %}{% if langues %}&langues={{ langues }}{% endif %}{% if plan %}&plan={{ plan }}{% endif %}">{{ num }}</a>
+                      </li>
+                    {% endfor %}
+                  
+                    {% if page_obj.has_next %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if status %}&status={{ status }}{% endif %}{% if catégorie %}&catégorie={{ catégorie }}{% endif %}{% if CMS %}&CMS={{ CMS }}{% endif %}{% if langues %}&langues={{ langues }}{% endif %}{% if plan %}&plan={{ plan }}{% endif %}">Suivant</a>
+                      </li>
+                    {% else %}
+                      <li class="page-item disabled"><a class="page-link">Suivant</a></li>
+                    {% endif %}
+                  </ul>
+                  
+                <!-- Pagination -->
+
+            </div>
         </div>
-      {% endif %}
-    {% endfor %}
-  {% endif %}
-    <section class="section-products">
-		<div class="row justify-content-center text-center">
-			<div class="col-md-8 col-lg-6">
-				<div class="header">
-					{% comment %} <h3>Featured Product</h3> {% endcomment %}
-					<h2>Popular Services</h2>
-                    {% comment %} <h3><a href="{% url 'all_list_websites' %}"><button type="button" class="btn btn-primary btn-sm">All Websites</button></a></h3> {% endcomment %}
-				</div>
-			</div>
-		</div>
-	<div class="cards">
-	{% for support in supports %}
-	<article class="plan [ card ]">
-		<div class="inner">
+        <!-- End::app-content -->
 
-			<span class="pricing">
-				<span>
-					{{support.prix}} MAD 
-					{% comment %} <small>/ m</small> {% endcomment %}
-				</span>
-			</span>
-            <br>
-			<h2 class="title">{{support.name}}</h2>
-			<p class="info">{{support.description}}</p>
-			<ul class="features">
-				<li>
-					<span class="icon">
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-							<path fill="none" d="M0 0h24v24H0z" />
-							<path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z" fill="currentColor" />
-						</svg>
-					</span>
-					<span><strong>20</strong>Lorem ipsum dolor sit amet</span>
-				</li>
-				<li>
-					<span class="icon">
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-							<path fill="none" d="M0 0h24v24H0z" />
-							<path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z" fill="currentColor" />
-						</svg>
-					</span>
-					<span>Plan <strong>Lorem ipsum dolor sit amet</strong></span>
-				</li>
-				<li>
-					<span class="icon">
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-							<path fill="none" d="M0 0h24v24H0z" />
-							<path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z" fill="currentColor" />
-						</svg>
-					</span>
-					<span>Lorem ipsum dolor sit amet</span>
-				</li>
-			</ul>
-			<button class="button">
-				<a style="color: white;text-decoration: none;" href="#" onclick="showConfirmationModal('{{ support.id }}', '{{ support.name }}', '{{ support.prix }}')">Obtenir de service</a>
-			</button>
-		</div>
-	</article>
-	{% endfor %}
-
-<div id="confirmationModal" class="modal" >
-    <div class="modal-content">
-        <!-- Confirmation content will be inserted here -->
     </div>
-</div>
 
-<script>
-    // Function to show the confirmation popup
-    function showConfirmationModal(supportId, supportName, supportPrice) {
-        // Get the modal element
-        var modal = document.getElementById('confirmationModal');
-
-        // Set the support details in the modal
-        var modalContent = modal.querySelector('.modal-content');
-        modalContent.innerHTML = `
-            <div class="close" onclick="hideConfirmationModal()">&times;</div>
-            <h1>Confirm Purchase</h1>
-            <p>Please confirm your purchase of "${supportName}" for ${supportPrice} MAD.</p>
-            <form action="{% url 'confirm_Achat_support' %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="support_id" value="${supportId}">
-                <button class="btn btn-primary" type="submit">Confirm</button>
-            </form>
-        `;
-
-        // Show the modal
-        modal.style.display = 'block';
-    }
-
-    // Function to hide the confirmation popup
-    function hideConfirmationModal() {
-        var modal = document.getElementById('confirmationModal');
-        modal.style.display = 'none';
-    }
-</script>
-
-
-
-  <style>
-		/* Modal Styles */
-		.modal {
-		display: none; /* Hidden by default */
-		position: fixed; /* Stay in place */
-		{% comment %} z-index: 1; /* Sit on top */ {% endcomment %}
-		left: 0;
-		top: 0;
-		width: 100%; /* Full width */
-		height: 100%; /* Full height */
-		overflow: auto; /* Enable scroll if needed */
-		background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-		}
-
-		/* Modal Content */
-		.modal-content {
-		background-color: #fefefe;
-		margin: 15% auto; /* 15% from the top and centered */
-		padding: 20px;
-		border: 1px solid #888;
-		width: 37%; /* Could be more or less, depending on screen size */
-		}
-
-		/* Close Button */
-		.close {
-		color: #aaa;
-		float: right;
-		font-size: 28px;
-		font-weight: bold;
-		}
-
-		.close:hover,
-		.close:focus {
-		color: black;
-		text-decoration: none;
-		cursor: pointer;
-		}
-
-  </style>
-
-</div>
-</div>
-</section>
-</div>
-
-
-
-<style>
-    @import url("https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&display=swap");
-
-*,
-*:after,
-*:before {
-	box-sizing: border-box;
-}
-
-:root {
-	// Basic
-	--c-white: #fff;
-	--c-black: #000;
-
-	// Greys
-	--c-ash: #eaeef6;
-	--c-charcoal: #a0a0a0;
-	--c-void: #141b22;
-
-	// Beige/Browns
-	--c-fair-pink: #FFEDEC;
-	--c-apricot: #FBC8BE;
-	--c-coffee: #754D42;
-	--c-del-rio: #917072;
-
-	// Greens
-	--c-java: #1FCAC5;
-
-	// Purples
-	--c-titan-white: #f1eeff;
-	--c-cold-purple: #a69fd6;
-	--c-indigo: #6558d3;
-	--c-governor: #4133B7;
-}
-
-body {
-	font-family: "Spline Sans", sans-serif;
-	line-height: 1.5;
-	min-height: 100vh;
-	background-color: var(--c-ash);
-}
-
-.cards {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: flex-start;
-	flex-wrap: wrap;
-	justify-content: center;
-	gap: 1.5rem;
-	width: 90%;
-	max-width: 1000px;
-	margin: 10vh auto;
-}
-
-.card {
-	border-radius: 16px;
-	box-shadow: 0 30px 30px -25px rgba(#4133B7, .25);
-	max-width: 300px;
-}
-
-.information {
-	background-color: var(--c-white);
-	padding: 1.5rem;
-
-	.tag {
-		display: inline-block;
-		background-color: var(--c-titan-white);
-		color: var(--c-indigo);
-		font-weight: 600;
-		font-size: 0.875rem;
-		padding: 0.5em 0.75em;
-		line-height: 1;
-		border-radius: 6px;
-		& + * {
-			margin-top: 1rem;
-		}
-	}
-
-	.title {
-		font-size: 1.5rem;
-		color: var(--c-void);
-		line-height: 1.25;
-		& + * {
-			margin-top: 1rem;
-		}
-	}
-
-	.info {
-		color: var(--c-charcoal);
-		& + * {
-			margin-top: 1.25rem;
-		}
-	}
-
-	.button {
-		font: inherit;
-		line-height: 1;
-		background-color: var(--c-white);
-		border: 2px solid var(--c-indigo);
-		color: var(--c-indigo);
-		padding: 0.5em 1em;
-		border-radius: 6px;
-		font-weight: 500;
-		display: inline-flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 0.5rem;
-		&:hover,
-		&:focus {
-			background-color: var(--c-indigo);
-			color: var(--c-white);
-		}
-	}
-	
-	.details {
-		display: flex;
-		gap: 1rem;
-		div {
-			padding: .75em 1em;
-			background-color: var(--c-titan-white);
-			border-radius: 8px;
-			display: flex;
-			flex-direction: column-reverse;
-			gap: .125em;
-			flex-basis: 50%;
-		}
-		
-		dt {
-			font-size: .875rem;
-			color: var(--c-cold-purple);
-		}
-		
-		dd {
-			color: var(--c-indigo);
-			font-weight: 600;
-			font-size: 1.25rem;
-		}
-	}
-}
-
-
-.plan {
-	padding: 10px;
-	background-color: var(--c-white);
-	color: #080808;
-	
-	strong {
-		font-weight: 600;
-		color: #080808;
-	}
-	
-	.inner {
-		padding: 20px;
-		padding-top: 40px;
-		background-color: var(--c-fair-pink);
-		border-radius: 12px;
-	position: relative;
-		overflow: hidden;
-	}
-	
-	.pricing {
-		position: absolute;
-		top: 0;
-		right: 0;
-		background-color: var(--c-apricot);
-		border-radius: 99em 0 0 99em;
-		display: flex;
-		align-items: center;
-		padding: .625em .75em;
-		font-size: 1.25rem;
-		font-weight: 600;
-		color: #6c7383;
-		small {
-			color: var(--c-del-rio);
-			font-size: .75em;
-			margin-left: .25em;
-		}
-		
-	}
-	
-	.title {
-		font-weight: 600;
-		font-size: 1.25rem;
-		color: #080808;
-		& + * {
-			margin-top: .75rem;
-		}
-	}
-	
-	.info {
-		& + * {
-			margin-top: 1rem;
-		}
-	}
-	
-	.features {
-		display: flex;
-		flex-direction: column;
-		li {
-			display: flex;
-			align-items: center;
-			gap: .5rem;
-			& + * {
-				margin-top: .75rem;
-			}
-		}
-		
-		.icon {
-			background-color: var(--c-java);
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			color: var(--c-white);
-			border-radius: 50%;
-			width: 20px;
-			height: 20px;
-			svg {
-				width: 14px;
-				height: 14px;
-			}
-		}
-		
-		& + * {
-			margin-top: 1.25rem;
-		}
-	}
-	
-	button {
-		font: inherit;
-		background-color: var(--c-indigo);
-		border-radius: 6px;
-		color: var(--c-white);
-		font-weight: 500;
-		font-size: 1.125rem;
-		width: 100%;
-		border: 0;
-		padding: 1em;
-		&:hover,
-		&:focus {
-			background-color: var(--c-governor);
-		}
-	}
-	
-	
-}
-</style>
+    
+    <!-- Scroll To Top -->
+    <div class="scrollToTop">
+        <span class="arrow"><i class="ri-arrow-up-s-fill fs-20"></i></span>
+    </div>
+    <div id="responsive-overlay"></div>
 
 {% endblock %}

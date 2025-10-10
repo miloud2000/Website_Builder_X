@@ -43,18 +43,18 @@ from websitebuilder.tokens import account_activation_token
 #     return render(request, "websitebuilder/home2.html")
 
 
-# def home(request):  
-#     if request.user.is_authenticated:
-#         is_Cliente = request.user.groups.filter(name='Cliente').exists()
-#         is_SupportTechnique = request.user.groups.filter(name='SupportTechnique').exists()
-#         is_Administrateur = request.user.groups.filter(name='Administrateur').exists()
-#     else: 
-#         is_Cliente= False  
-#         is_SupportTechnique= False 
-#         is_Administrateur= False  
+def home(request):  
+    if request.user.is_authenticated:
+        is_Cliente = request.user.groups.filter(name='Cliente').exists()
+        is_SupportTechnique = request.user.groups.filter(name='SupportTechnique').exists()
+        is_Administrateur = request.user.groups.filter(name='Administrateur').exists()
+    else: 
+        is_Cliente= False  
+        is_SupportTechnique= False 
+        is_Administrateur= False  
            
-#     context = {"is_Cliente": is_Cliente,"is_SupportTechnique":is_SupportTechnique,"is_Administrateur":is_Administrateur}
-#     return render(request, "websitebuilder/home.html",context)
+    context = {"is_Cliente": is_Cliente,"is_SupportTechnique":is_SupportTechnique,"is_Administrateur":is_Administrateur}
+    return render(request, "websitebuilder/home.html",context)
 
 
 
@@ -319,12 +319,53 @@ def change_password(request):
 def list_websites(request): 
     cliente = request.user.cliente  
     websites = Websites.objects.all()
+
+    # 🔍 Récupération des filtres
+    status = request.GET.get('status')
+    catégorie = request.GET.get('catégorie')
+    CMS = request.GET.get('CMS')
+    langues = request.GET.get('langues')
+    plan = request.GET.get('plan')
+    per_page = int(request.GET.get('per_page', 10))
+
+    # 🧠 Application des filtres
+    if status and status != 'None':
+        websites = websites.filter(status=status)
+    if catégorie and catégorie != 'None':
+        websites = websites.filter(catégorie=catégorie)
+    if CMS and CMS != 'None':
+        websites = websites.filter(CMS=CMS)
+    if langues and langues != 'None':
+        websites = websites.filter(langues=langues)
+    if plan and plan != 'None':
+        websites = websites.filter(plan=plan)
+
+    websites = websites.order_by('-date_created')
+
+    # 📦 Pagination
+    paginator = Paginator(websites, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # 🔗 WebsiteBuilders (non paginés)
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
+
     context = {
-        'websites': websites,
+        'page_obj': page_obj,
         'WebsiteBuilders': WebsiteBuilders,
-        }  
-    return render(request, "clients/list_websites.html",context)
+        'status': status,
+        'catégorie': catégorie,
+        'CMS': CMS,
+        'langues': langues,
+        'plan': plan,
+        'per_page': per_page,
+        'catégories_list': ['Ecommerce','Blogs','Business','Portfolio','Educational','News'],
+        'cms_list': ['WordPress','Drupal'],
+        'langues_list': ['Français','Anglais'],
+        'plans_list': ['Free','Payant'],
+    }  
+    return render(request, "clients/list_websites.html", context)
+
 
 
 
@@ -342,13 +383,20 @@ def detail_website(request, slugWebsites):
         is_SupportTechnique= False 
         is_Administrateur= False  
         
-    website_info = get_object_or_404(Websites, slugWebsites=slugWebsites)
+    website_info = Websites.objects.filter(slugWebsites=slugWebsites).first()
+
+    similar_websites = Websites.objects.exclude(id=website_info.id)[:6]
+    same_websites = Websites.objects.exclude(id=website_info.id).filter(catégorie=website_info.catégorie)[:2]
+
+
     
     context = {
         'website_info': website_info,
         "is_Cliente": is_Cliente,
         "is_SupportTechnique":is_SupportTechnique,
-        "is_Administrateur":is_Administrateur
+        "is_Administrateur":is_Administrateur,
+        'similar_websites': similar_websites,
+        'same_websites': same_websites,
     }
     return render(request, "clients/detail_website.html", context)
 
@@ -406,14 +454,49 @@ def all_list_websites(request):
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['Cliente']) 
 def list_services(request):
-    cliente = request.user.cliente  
+    cliente = request.user.cliente
+    status = request.GET.get('status')
+
     supports = Supports.objects.all()
+    if status:
+        supports = supports.filter(status=status)
+
+    supports = supports.order_by('-date_created')
+
+    # ✅ Pagination
+    paginator = Paginator(supports, 10)  # 10 éléments par page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+ 
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
+
     context = {
-        'supports': supports,
+        'page_obj': page_obj,
+        'status': status,
+        'status_choices': ['Disponible', 'No Disponible'],
         'WebsiteBuilders': WebsiteBuilders,
-        } 
-    return render(request, "clients/list_services.html",context)
+    }
+    return render(request, "clients/list_services.html", context)
+
+
+
+
+from django.db.models import Count
+
+def detail_support(request, id):
+    support = get_object_or_404(Supports, id=id)
+
+    most_purchased_supports = Supports.objects.exclude(id=support.id).order_by('-date_created')[:6]
+    
+    return render(request, 'clients/detail_support.html', {
+        'support': support,
+        'most_purchased_supports': most_purchased_supports,
+    })
+
+
+
+
 
 
 from itertools import chain
@@ -770,13 +853,25 @@ def list_demande_recharger(request):
 @allowedUsers(allowedGroups=['Cliente']) 
 def list_Demande_Recharger_En_attente(request): 
     cliente = request.user.cliente
-    DemandeRechargers = DemandeRecharger.objects.filter(cliente=cliente,status='Not Done yet').order_by('-date_created')
+
+    # Paramètre per_page
+    per_page = int(request.GET.get('per_page', 10))  # Valeur par défaut = 10
+
+    # Rechargements en attente paginés
+    demande_list = DemandeRecharger.objects.filter(cliente=cliente, status='Not Done yet').order_by('-date_created')
+    paginator = Paginator(demande_list, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # WebsiteBuilders (non paginés)
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
+
     context = {
-        'DemandeRechargers': DemandeRechargers,
         'WebsiteBuilders': WebsiteBuilders,
-        } 
-    return render(request, "clients/list_Demande_Recharger_En_attente.html",context)
+        'page_obj': page_obj,
+        'per_page': per_page,
+    } 
+    return render(request, "clients/list_Demande_Recharger_En_attente.html", context)
 
 
 
@@ -786,13 +881,26 @@ def list_Demande_Recharger_En_attente(request):
 @allowedUsers(allowedGroups=['Cliente']) 
 def list_Demande_Recharger_Complete(request): 
     cliente = request.user.cliente
-    DemandeRechargers = DemandeRecharger.objects.filter(cliente=cliente,status='Done').order_by('-date_created')
+
+    # Paramètre per_page
+    per_page = int(request.GET.get('per_page', 10))  
+
+    # Rechargements paginés
+    demande_list = DemandeRecharger.objects.filter(cliente=cliente, status='Done').order_by('-date_created')
+    paginator = Paginator(demande_list, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # WebsiteBuilders (non paginés)
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
+
     context = {
-        'DemandeRechargers': DemandeRechargers,
         'WebsiteBuilders': WebsiteBuilders,
-        } 
-    return render(request, "clients/list_Demande_Recharger_Complete.html",context)
+        'page_obj': page_obj,
+        'per_page': per_page,
+    } 
+    return render(request, "clients/list_Demande_Recharger_Complete.html", context)
+
 
 
 
@@ -802,13 +910,26 @@ def list_Demande_Recharger_Complete(request):
 @allowedUsers(allowedGroups=['Cliente']) 
 def list_Demande_Recharger_Annule(request): 
     cliente = request.user.cliente
-    DemandeRechargers = DemandeRecharger.objects.filter(cliente=cliente,status='inacceptable').order_by('-date_created')
+
+    # Paramètre per_page
+    per_page = int(request.GET.get('per_page', 10))  # Valeur par défaut = 10
+
+    # Rechargements annulés paginés
+    demande_list = DemandeRecharger.objects.filter(cliente=cliente, status='inacceptable').order_by('-date_created')
+    paginator = Paginator(demande_list, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # WebsiteBuilders (non paginés)
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
+
     context = {
-        'DemandeRechargers': DemandeRechargers,
         'WebsiteBuilders': WebsiteBuilders,
-        } 
-    return render(request, "clients/list_Demande_Recharger_Annule.html",context)
+        'page_obj': page_obj,
+        'per_page': per_page,
+    } 
+    return render(request, "clients/list_Demande_Recharger_Annule.html", context)
+
 
 
 

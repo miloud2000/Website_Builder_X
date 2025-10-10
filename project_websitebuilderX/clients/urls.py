@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     
     # path('',views.home2, name="home2"), 
-    # path('home',views.home, name="home"), 
+    path('home',views.home, name="home"), 
     
     # path('ticket_list/',views.ticket_list, name="ticket_list"), 
     # path('get_priority_options/', views.get_priority_options, name='get_priority_options'),
@@ -15,7 +15,7 @@ urlpatterns = [
 
     #Client
     path('dashboard/',views.dashboard, name="dashboard"), 
-     path('',views.dashbordHome, name="dashbordHome"), 
+    path('',views.dashbordHome, name="dashbordHome"), 
     path('dashbordHome/',views.dashbordHome, name="dashbordHome"),
     path('editUser/',views.editUser, name="editUser"), 
     path('MesServices/',views.MesServices, name="MesServices"), 
@@ -30,6 +30,8 @@ urlpatterns = [
     path('list_websites/',views.list_websites, name="list_websites"), 
     path('all_list_websites/',views.all_list_websites, name="all_list_websites"), 
     path('detail_website/<str:slugWebsites>/', views.detail_website, name="detail_website"),
+    path('detail_support/<int:id>/', views.detail_support, name='detail_support'),
+
     path('list_services/',views.list_services, name="list_services"), 
     path('detailUser/',views.detailUser, name="detailUser"), 
     

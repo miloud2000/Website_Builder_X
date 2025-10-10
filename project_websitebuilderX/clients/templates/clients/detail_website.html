@@ -1,512 +1,1207 @@
-{% load static  %}
-<!doctype html>
-<html class="no-js" lang="zxx">
-    <head>
-        <!-- Meta Tags -->
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="keywords" content="Site keywords here">
-		<meta name="description" content="">
-		<meta name='copyright' content=''>
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        
-        <!-- Title -->
-        <title>WebSite Detail</title>
+{% extends "clients/dashboard2.html" %}
 
-        <link rel="stylesheet" href="{% static 'detail_website.css' %} ">
+{% load static %}
 
-        <!--detail website-->
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+{% block content %}
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
 
-        <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800&display=swap" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
-        <!-- Favicon -->
-        <link rel="icon" href="{% static 'img/websitebuilder-removebg-preview.png' %} ">
-    </head>
-    <body>
-		{%  include  'websitebuilder/navbar.html' %}
+                <!-- PAGE-HEADER -->
+                <div class="page-header">
+                  <h1 class="page-title my-auto">Détails du site Web</h1>
+                  <div>
+                    <ol class="breadcrumb mb-0">
+                      <li class="breadcrumb-item">
+                        <a href="{% url "list_websites" %}">Liste de sites Web</a>
+                      </li>
+                      <li class="breadcrumb-item active" aria-current="page">Détails du site Web</li>
+                    </ol>
+                  </div>
+                </div>
+                <!-- PAGE-HEADER END -->
 
-		{% if messages %}
-      <script>
-          setTimeout(function() {
-              $('.alert').alert('close');
-          }, 7000);
-      </script>
-      {% for message in messages %}
-          {% if message.tags == 'success' %}
-              <div class="alert alert-success alert-dismissible fade show" role="alert">
-                  {{ message }}
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
-          {% elif message.tags == 'error' %}
-              <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                  {{ message }}
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
-          {% endif %}
-      {% endfor %}
-  {% endif %}
-  
-        <div class="product-count">
-            {% comment %} <label for="size">Quantity</label>
-            <form action="#" class="display-flex">
-                <div class="qtyminus">-</div>
-                <input type="text" name="quantity" value="1" class="qty">
-                <div class="qtyplus">+</div>
-            </form> {% endcomment %}
-            {% comment %} <a href="#" class="round-black-btn">Retour</a>
-            <a href="#" class="round-black-btn">Voir</a> {% endcomment %}
-        </div>
- 
-		<div class="container">
-	        <div class="heading-section">
-	            <h2>Détails WebSite</h2>
-	        </div>
-	        <div class="row">
-	        	<div class="col-md-6">
-	        		<div id="slider" class="owl-carousel product-slider">
-						<div class="item">
-						  	<img style="height: 450px;"src="{% static 'img/jquerylightbox.jpg' %}" />
-						</div>
-						<div class="item">
-						  	<img src="{% static 'img/htmlimagegallery.jpg' %}" />
-						</div>
-						<div class="item">
-						  	<img src="{% static 'img/css-image-gallery.jpg' %}" />
-						</div>
-						<div class="item">
-						  	<img src="{% static 'img/jquerylightbox.jpg' %}" />
-						</div>
-						<div class="item">
-						  	<img src="{% static 'img/htmlimagegallery.jpg' %}" />
-						</div>
-						<div class="item">
-						  	<img src="{% static 'img/css-image-gallery.jpg' %}" />
-						</div>
-						<div class="item">
-						  	<img src="{% static 'img/jquerylightbox.jpg' %}" />
-						</div>
-					</div>
-					<div id="thumb" class="owl-carousel product-thumb" style="height: 104px;margin-top: -75px;">
-						<div class="item">
-						  	<img src="{% static 'img/jquerylightbox.jpg' %}" />
-						</div>
-						<div class="item">
-						  	<img src="{% static 'img/htmlimagegallery.jpg' %}" />
-						</div>
-						<div class="item">
-						  	<img src="{% static 'img/jquerylightbox.jpg' %}" />
-						</div>
-						<div class="item">
-						  	<img src="{% static 'img/css-image-gallery.jpg' %}" />
-						</div>
-						<div class="item">
-						  	<img src="{% static 'img/jquerylightbox.jpg' %}" />
-						</div>
-						<div class="item">
-						  	<img src="{% static 'img/htmlimagegallery.jpg' %}" />
-						</div>
-						<div class="item">
-						  	<img src="{% static 'img/css-image-gallery.jpg' %}" />
-						</div>
-					</div>
-	        	</div>
-	        	<div class="col-md-6">
-	        		<div class="product-dtl">
-        				<div class="product-info">
-		        			<div class="product-name">{{website_info.name}}</div>
-		        			{% comment %} <div class="reviews-counter">
-								<div class="rate">
-								    <input type="radio" id="star5" name="rate" value="5" checked />
-								    <label for="star5" title="text">5 stars</label>
-								    <input type="radio" id="star4" name="rate" value="4" checked />
-								    <label for="star4" title="text">4 stars</label>
-								    <input type="radio" id="star3" name="rate" value="3" checked />
-								    <label for="star3" title="text">3 stars</label>
-								    <input type="radio" id="star2" name="rate" value="2" />
-								    <label for="star2" title="text">2 stars</label>
-								    <input type="radio" id="star1" name="rate" value="1" />
-								    <label for="star1" title="text">1 star</label>
+
+
+                <!-- Start::row-1 -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card custom-card">
+                            <div class="card-body">
+                                <div class="row ">
+                                    <div class="col-xxl-4 col-xl-12">
+                                        <div class="row">
+                                            <div class="col-xxl-12 col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-md-5 mb-3">
+                                                <div class="product-details-wrapper">
+                                                  <!-- Swiper Preview -->
+                                                  <div class="swiper swiper-preview-details bd-gray-100 product-details-page">
+                                                    <div class="swiper-wrapper">
+                                                      {% for i in "1234" %}
+                                                        <div class="swiper-slide">
+                                                          <img class="img-fluid" src="{{ website_info.image.url }}" alt="img">
+                                                        </div>
+                                                      {% endfor %}
+                                                    </div>
+                                                    <div class="swiper-button-next"></div>
+                                                    <div class="swiper-button-prev"></div>
+                                                  </div>
+                                              
+                                                  <!-- Swiper Thumbnails -->
+                                                  <div class="swiper swiper-view-details mt-2">
+                                                    <div class="swiper-wrapper">
+                                                      {% for i in "1234" %}
+                                                        <div class="swiper-slide">
+                                                          <img class="img-fluid" src="{{ website_info.image.url }}" alt="img">
+                                                        </div>
+                                                      {% endfor %}
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+
+                                            <div class="col-xxl-12 col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-md-5 mb-3">
+                                          <div class="card custom-card bg-transparent shadow-none border rounded">
+                                                <div class="card-header flex-between justify-content-between">
+                                                    <div class="card-title">Produits similaires</div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-evenly mt-4">
+														{% for site in same_websites %}
+                                                        <div class="">
+                                                            <div class="text-center">
+                                                                <div class="avatar avatar-xxl bg-light p-1">
+																	<a href="{% url 'detail_website' slugWebsites=site.slugWebsites %}"><img src="{{ site.image.url }}" alt="{{ site.name }}" class="img-fluid rounded"></a>                                                        </div>
+                                                                <h5 class="mb-1 fs-12 fw-semibold   mt-1">{{ site.name }}</h5>
+                                                                <p class="mb-0 text-muted fs-12 px-3">{{ site.description|truncatechars:50 }}</p>
+                                                                <div class="flex-fill mb-1">
+                                                                    <span class="badge bg-success rounded-1">4.4<i class="ri-star-s-fill ms-1"></i></span>
+                                                                    {% comment %} <span class="text-muted ms-1">(256)</span> {% endcomment %}
+                                                                </div>
+                                                                <div class="d-flex  justify-content-center mb-1">
+                                                                    <h6 class="mb-0 fw-semibold">
+                                                                        {{ site.prix }} MAD
+                                                                    </h6>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+														{% endfor %}
+                                                    </div>
+
+                                                </div>
+                                                {% comment %} <div class="card-footer">
+                                                    <div class="d-flex mt-2">
+                                                        <div class="">
+                                                            <h6>Total Price</h6>
+															{% with total=0 %}
+															{% for site in similar_websites %}
+															  {% with total=total|add:site.prix %}
+															  {% endwith %}
+															{% endfor %}
+															{{ total }} MAD
+														  {% endwith %}
+                                                        </div>
+                                                        <div class="ms-auto">
+                                                            <div class="">
+                                                                <button type="button" class="btn btn-primary">Add to cart </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>  {% endcomment %}
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xxl-8 col-xl-12 ">
+                                        <div class="row product-scroll  rounded-3 border p-3">
+                                            <div class="col-xl-8 mt-xxl-0 mt-3">
+                                                <div>
+                                                    <p class="fs-18 fw-semibold mb-0">{{ website_info.name }}</p>
+                                                    <p class="fs-18 mb-4">
+                                                        <i class="ri-star-s-fill text-warning align-middle"></i>
+                                                        <i class="ri-star-s-fill text-warning align-middle"></i>
+                                                        <i class="ri-star-s-fill text-warning align-middle"></i>
+                                                        <i class="ri-star-s-fill text-warning align-middle"></i>
+                                                        <i class="ri-star-half-s-fill text-warning align-middle"></i>
+                                                        {% comment %} <span class="fw-semibold text-muted ms-1">4.3<a class="text-info" href="javascript:void(0);">(2.4k Reviews)</a></span> {% endcomment %}
+                                                    </p>
+                                                    <div class="row mb-4">
+														<div class="col-12">
+														  <div class="bg-white border rounded p-3 shadow-sm d-flex align-items-center justify-content-between flex-wrap gap-3">
+															{% if website_info.prix > 0 and website_info.prix_loyer > 0 %}
+
+															<!-- Prix Achat -->
+															<div class="d-flex align-items-center gap-2">
+															  <i class="fe fe-shopping-cart text-primary fs-5"></i>
+															  <span class="fw-bold fs-5 text-dark">{{ website_info.prix }} MAD</span>
+															  <small class="text-muted">Achat</small>
+															</div>
+													  
+															<!-- Prix Location -->
+															<div class="d-flex align-items-center gap-2">
+															  <i class="fe fe-calendar text-success fs-5"></i>
+															  <span class="fw-bold fs-5 text-dark">{{ website_info.prix_loyer }} MAD</span>
+															  <small class="text-muted">Location</small>
+															</div>
+													  
+															<!-- Prix barré -->
+															<div class="d-flex align-items-center gap-2">
+															  <i class="fe fe-x-circle text-danger fs-5"></i>
+															  <span class="text-decoration-line-through text-muted fs-6">{{ website_info.prix|add:"100" }} MAD</span>
+															  <small class="text-muted">Ancien prix</small>
+															</div>
+													  
+															<!-- Promo -->
+															<div>
+															  <span class="badge bg-danger text-white fs-11 px-3 py-1 rounded-pill">🔥 50% Off</span>
+															</div>
+															{% else %}
+															<!-- Gratuit -->
+															<div class="d-flex align-items-center gap-2">
+																<i class="fe fe-smile text-success fs-5"></i>
+																<span class="fw-bold fs-5 text-success">Gratuit</span>
+																<small class="text-muted">Offre spéciale</small>
+																<span class="badge bg-danger text-white fs-11 px-3 py-1 rounded-pill">🔥 100% Off</span>
+															</div>
+														{% endif %}
+
+														  </div>
+														</div>
+													</div>
+													  
+													
+													
+                                                    {% comment %}<div class="mb-4">
+                                                         <div class="row">
+                                                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                                                <p class="fs-15 fw-semibold mb-2">Colors :</p>
+                                                                <p class="mb-0 d-flex">
+                                                                    <a aria-label="anchor" class="color-1 product-colors selected" href="javascript:void(0)">
+                                                                        <i class="ri-checkbox-blank-circle-fill"></i>
+                                                                    </a>
+                                                                    <a aria-label="anchor" class="color-2 product-colors" href="javascript:void(0)">
+                                                                        <i class="ri-checkbox-blank-circle-fill"></i>
+                                                                    </a>
+                                                                    <a aria-label="anchor" class="color-3 product-colors" href="javascript:void(0)">
+                                                                        <i class="ri-checkbox-blank-circle-fill"></i>
+                                                                    </a>
+                                                                    <a aria-label="anchor" class="color-4 product-colors" href="javascript:void(0)">
+                                                                        <i class="ri-checkbox-blank-circle-fill"></i>
+                                                                    </a>
+                                                                    <a aria-label="anchor" class="color-5 product-colors" href="javascript:void(0)">
+                                                                        <i class="ri-checkbox-blank-circle-fill"></i>
+                                                                    </a>
+                                                                </p>
+                                                            </div>
+                                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mt-md-0 mt-3">
+                                                                <p class="fs-15 fw-semibold mb-2">Size(in inches) :</p>
+                                                                <p class="mb-0 d-flex">
+                                                                    <a class="color-1 product-sizes selected" href="javascript:void(0)">
+                                                                        44
+                                                                    </a>
+                                                                    <a class="color-2 product-sizes" href="javascript:void(0)">
+                                                                        40
+                                                                    </a>
+                                                                    <a class="color-3 product-sizes" href="javascript:void(0)">
+                                                                        38
+                                                                    </a>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div> {% endcomment %}
+													{% if website_info.prix > 0 and website_info.prix_loyer > 0  %}
+                                                    <div class="mb-4">
+                                                        <a href="#" 
+															class="btn btn-success me-2 mb-2" 
+															data-bs-toggle="modal" 
+															data-bs-target="#confirmationModal"
+															data-id="{{ website_info.id }}"
+															data-name="{{ website_info.name }}"
+															data-price="{{ website_info.prix }}">
+															Achat
+														</a>
+
+                                                        <a href="#" 
+															class="btn btn-secondary me-2 mb-2" 
+															data-bs-toggle="modal" 
+															data-bs-target="#loyerModal"
+															data-id="{{ website_info.id }}"
+															data-name="{{ website_info.name }}"
+															data-price="{{ website_info.prix_loyer }}">
+															Loyer
+														</a>
+
+                                                    </div>
+													{% else %}
+													<a href="#" 
+														class="btn btn-warning me-2 mb-2" 
+														data-bs-toggle="modal" 
+														data-bs-target="#freeModal"
+														data-id="{{ website_info.id }}"
+														data-name="{{ website_info.name }}"
+														data-price="{{ website_info.prix }}">
+														Gratuit
+													</a>
+													{% endif %}
+
+												  
+												  
+												  <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered">
+													  <div class="modal-content">
+														<div class="modal-header">
+														  <h5 class="modal-title" id="confirmationModalLabel">Confirmer l'achat</h5>
+														  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+														</div>
+														<div class="modal-body">
+														  <p id="modalText">Chargement...</p>
+														  <form method="post" action="{% url 'confirm_Achat_website' %}">
+															{% csrf_token %}
+															<input type="hidden" name="website_id" id="modalWebsiteId">
+															<button type="submit" class="btn btn-primary">Confirmer</button>
+														  </form>
+														</div>
+													  </div>
+													</div>
+												  </div>
+												  
+												  <script>
+													const confirmationModal = document.getElementById('confirmationModal');
+													confirmationModal.addEventListener('show.bs.modal', function (event) {
+													  const button = event.relatedTarget;
+													  const websiteId = button.getAttribute('data-id');
+													  const websiteName = button.getAttribute('data-name');
+													  const websitePrice = button.getAttribute('data-price');
+												  
+													  // Inject data into modal
+													  confirmationModal.querySelector('#modalText').textContent = 
+														`Veuillez confirmer l'achat de "${websiteName}" pour ${websitePrice} MAD.`;
+													  confirmationModal.querySelector('#modalWebsiteId').value = websiteId;
+													});
+												  </script>
+												  
+												  
+												  <div class="modal fade" id="loyerModal" tabindex="-1" aria-labelledby="loyerModalLabel" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered">
+													  <div class="modal-content">
+														<form method="post" action="{% url 'confirm_loyer_website' %}">
+														  {% csrf_token %}
+														  <div class="modal-header">
+															<h5 class="modal-title" id="loyerModalLabel">Confirmer la location</h5>
+															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+														  </div>
+														  <div class="modal-body">
+															<p id="loyerModalText">Chargement...</p>
+															<p><span class="badge bg-warning text-dark">⚠️ Attention :</span> La date de début est aujourd'hui.</p>
+												  
+															<input type="hidden" name="website_id" id="loyerWebsiteId">
+															<input type="hidden" name="rental_period" id="rentalPeriodInput" value="1">
+															<input type="hidden" name="total_price" id="totalPriceInput">
+												  
+															<p class="mt-3">Choisissez la durée :</p>
+															<div class="d-flex flex-wrap gap-2">
+															  {% for i in "123456" %}
+																<button type="button" class="btn btn-outline-primary" onclick="updateLoyerPrice({{ website_info.prix_loyer }}, {{ i }})">{{ i }} mois</button>
+															  {% endfor %}
+															</div>
+												  
+															<p class="mt-3 fw-bold" id="totalPriceDisplay">Total : {{ website_info.prix_loyer }} MAD</p>
+														  </div>
+														  <div class="modal-footer">
+															<button type="submit" class="btn btn-primary">Confirmer</button>
+														  </div>
+														</form>
+													  </div>
+													</div>
+												  </div>
+												  
+									  
+												  <script>
+													const loyerModal = document.getElementById('loyerModal');
+													loyerModal.addEventListener('show.bs.modal', function (event) {
+													  const button = event.relatedTarget;
+													  const websiteId = button.getAttribute('data-id');
+													  const websiteName = button.getAttribute('data-name');
+													  const websitePrice = parseFloat(button.getAttribute('data-price'));
+												  
+													  // Inject data
+													  loyerModal.querySelector('#loyerModalText').textContent = 
+														`Veuillez confirmer la location de "${websiteName}" pour ${websitePrice} MAD / mois.`;
+													  loyerModal.querySelector('#loyerWebsiteId').value = websiteId;
+													  loyerModal.querySelector('#rentalPeriodInput').value = 1;
+													  loyerModal.querySelector('#totalPriceInput').value = websitePrice;
+													  loyerModal.querySelector('#totalPriceDisplay').textContent = `Total : ${websitePrice} MAD`;
+													});
+												  
+													function updateLoyerPrice(basePrice, months) {
+													  const total = basePrice * months;
+													  document.getElementById('rentalPeriodInput').value = months;
+													  document.getElementById('totalPriceInput').value = total;
+													  document.getElementById('totalPriceDisplay').textContent = `Total : ${total} MAD pour ${months} mois`;
+													}
+												  </script>
+												  
+												  <div class="modal fade" id="freeModal" tabindex="-1" aria-labelledby="freeModalLabel" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered">
+													  <div class="modal-content">
+														<form method="post" action="{% url 'GetFree_website' %}">
+														  {% csrf_token %}
+														  <div class="modal-header">
+															<h5 class="modal-title" id="freeModalLabel">Confirmer l'obtention gratuite</h5>
+															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+														  </div>
+														  <div class="modal-body">
+															<p id="freeModalText">Chargement...</p>
+															<input type="hidden" name="website_id" id="freeWebsiteId">
+														  </div>
+														  <div class="modal-footer">
+															<button type="submit" class="btn btn-primary">Confirmer</button>
+														  </div>
+														</form>
+													  </div>
+													</div>
+												  </div>
+												  
+
+												  <script>
+													const freeModal = document.getElementById('freeModal');
+													freeModal.addEventListener('show.bs.modal', function (event) {
+													  const button = event.relatedTarget;
+													  const websiteId = button.getAttribute('data-id');
+													  const websiteName = button.getAttribute('data-name');
+													  const websitePrice = button.getAttribute('data-price');
+												  
+													  // Inject content
+													  freeModal.querySelector('#freeModalText').textContent = 
+														`Veuillez confirmer l'obtention gratuite de "${websiteName}" (valeur ${websitePrice} MAD).`;
+													  freeModal.querySelector('#freeWebsiteId').value = websiteId;
+													});
+												  </script>
+												  
+												 
+
+                                                    <div class="mb-4">
+                                                        <p class="fs-15 fw-semibold mb-1"><i class="ti ti-discount-2 fs-17 me-1 text-success"></i>Informations:</p>
+                                                        <p class="text-muted mb-0 ps-2 mt-2">
+                                                            <i class="ti ti-discount-2 fs-14 text-success d-inline-flex"></i>
+                                                            <span>
+                                                                {{ website_info.date_created|date:"d M Y" }}
+                                                            </span>
+                                                         </p>
+                                                         <p class="text-muted mb-0 ps-2 mt-2">
+                                                            <i class="ti ti-discount-2 fs-14 text-success d-inline-flex"></i>
+                                                            <span>
+                                                                {{ website_info.catégorie }}
+                                                            </span>
+                                                        </p>
+                                                        <p class="text-muted mb-0 ps-2 mt-2">
+                                                            <i class="ti ti-discount-2 fs-14 text-success d-inline-flex"></i>
+                                                            <span>
+                                                                {{ website_info.CMS }}
+                                                            </span>
+                                                        </p>
+                                                        <p class="text-muted mb-0 ps-2 mt-2">
+                                                            <i class="ti ti-discount-2 fs-14 text-success d-inline-flex"></i>
+                                                            <span>
+                                                                {{ website_info.langues }}
+                                                            </span>
+                                                        </p>
+                                                        <p class="text-muted mb-0 ps-2 mt-2">
+                                                            <i class="ti ti-discount-2 fs-14 text-success d-inline-flex"></i>
+                                                            <span>
+                                                                {{ website_info.plan }}
+                                                            </span>
+                                                        </p>
+                                                        {% comment %} <div class="collapse "  id="more-offers">
+                                                            <p class="text-muted mb-0 ps-2 mt-2">
+                                                                <i class="ti ti-discount-2 fs-14 text-success d-inline-flex"></i>
+                                                                <span>
+                                                                    Buy 4 and get 20% Off oN smart Travel bages
+                                                                </span>
+                                                            </p>
+                                                            <p class="text-muted mb-0 ps-2 mt-2">
+                                                                <i class="ti ti-discount-2 fs-14 text-success d-inline-flex"></i>
+                                                                <span>
+                                                                    No Cost EMI available.
+                                                                </span>
+                                                            </p>
+
+                                                        </div>
+                                                        <a class="text-success fs-12 ps-2" data-bs-toggle="collapse" href="#more-offers" aria-expanded="false"><u>View More</u></a> {% endcomment %}
+
+                                                    </div>
+                                                    <div class="mb-4">
+                                                        <p class="fs-15 fw-semibold mb-1">Description :</p>
+                                                        <p class="text-muted mb-0">
+                                                            {{ website_info.description }}
+                                                        </p>
+                                                    </div>
+                                                    {% comment %} <div class="border p-3 rounded-3 mb-0">
+                                                        <p class="fs-15 fw-semibold mb-3">Reviews &amp; Ratings :</p>
+                                                        <div class="row">
+                                                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                                <div class="d-flex align-items-top mb-3">
+                                                                    <div class="me-2 lh-1">
+                                                                        <i class="ri-star-fill fs-25 text-warning"></i>
+                                                                    </div>
+                                                                    <div class="lh-1">
+                                                                        <p class="mb-1 fw-semibold fs-18">4.5 out of 5</p>
+                                                                        <p class="mb-0 text-muted fs-11">Based on (23,435) ratings</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="d-flex align-items-center mb-3">
+                                                                    <div class="fs-12 me-2 fw-semibold">5 <i class="ri-star-fill fs-10"></i></div>
+                                                                    <div class="progress progress-xs flex-fill">
+                                                                        <div class="progress-bar bg-success" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="text-muted ms-2 fs-12">(10,893)</div>
+                                                                </div>
+                                                                <div class="d-flex align-items-center mb-3">
+                                                                    <div class="fs-12 me-2 fw-semibold">4 <i class="ri-star-fill fs-10"></i></div>
+                                                                    <div class="progress progress-xs flex-fill">
+                                                                        <div class="progress-bar bg-success" role="progressbar" style="width: 22%" aria-valuenow="22" aria-valuemin="0" aria-valuemax="100">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="text-muted ms-2 fs-12">(6,534)</div>
+                                                                </div>
+                                                                <div class="d-flex align-items-center mb-3">
+                                                                    <div class="fs-12 me-2 fw-semibold">3 <i class="ri-star-fill fs-10"></i></div>
+                                                                    <div class="progress progress-xs flex-fill">
+                                                                        <div class="progress-bar bg-success" role="progressbar" style="width: 8%" aria-valuenow="8" aria-valuemin="0" aria-valuemax="100">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="text-muted ms-2 fs-12">(4,342)</div>
+                                                                </div>
+                                                                <div class="d-flex align-items-center mb-3">
+                                                                    <div class="fs-12 me-2 fw-semibold">2 <i class="ri-star-fill fs-10"></i></div>
+                                                                    <div class="progress progress-xs flex-fill">
+                                                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 9%" aria-valuenow="9" aria-valuemin="0" aria-valuemax="100">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="text-muted ms-2 fs-12">(1,432)</div>
+                                                                </div>
+                                                                <div class="d-flex align-items-center">
+                                                                    <div class="fs-12 me-2 fw-semibold">1 <i class="ri-star-fill fs-10"></i></div>
+                                                                    <div class="progress progress-xs flex-fill">
+                                                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 6%" aria-valuenow="6" aria-valuemin="0" aria-valuemax="100">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="text-muted ms-2 fs-12">(1,453)</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="border-top my-3"></div>
+                                                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                                <div class="">
+                                                                    <div class="d-sm-flex d-block align-items-top">
+                                                                        <div class="d-flex flex-fill">
+                                                                            <div class="me-2">
+                                                                                <span class="avatar avatar-sm avatar-rounded">
+                                                                                    <img src="../assets/images/faces/15.jpg" alt="">
+                                                                                </span>
+                                                                            </div>
+                                                                            <div class="">
+                                                                                <h6 class="">Alex Carey
+                                                                                    <span class="badge bg-warning-transparent mb-0 rounded-1"><i class="ri-star-s-fill">4.5</i></span></h6>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="ps-sm-4 ps-0 mb-3">
+                                                                        <p class="fw-semibold mb-1 ps-2">Wonderful product&#128512;</p>
+                                                                        <p class="mb-0 fs-12 text-muted ps-2">Really this product is very good quality and best for daily use... It supports Spo2.. Very well.. </p>
+                                                                    </div>
+                                                                    <div class="product-images ps-sm-4 ps-0">
+                                                                        <div class="row">
+                                                                            <div class="col-xl-6">
+                                                                                <div class="products-review-images">
+                                                                                    <a aria-label="anchor" href="javascript:void(0);">
+                                                                                        <img src="../assets/images/ecommerce/11.png" alt="">
+                                                                                    </a>
+                                                                                    <a aria-label="anchor" href="javascript:void(0);">
+                                                                                        <img src="../assets/images/ecommerce/10.png" alt="">
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xl-6 d-flex align-items-end justify-content-sm-end mt-sm-0 mt-2">
+                                                                                <button aria-label="button" type="button" class="btn btn-sm btn-icon btn-primary-light me-2">
+                                                                                    <i class="ri-thumb-up-line"></i>
+                                                                                </button>
+                                                                                <button aria-label="button" type="button" class="btn btn-sm btn-icon btn-primary-light">
+                                                                                    <i class="ri-thumb-down-line"></i>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="border-top my-3"></div>
+                                                            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                                <div class="">
+                                                                    <div class="d-sm-flex d-block align-items-top">
+                                                                        <div class="d-flex flex-fill">
+                                                                            <div class="me-2">
+                                                                                <span class="avatar avatar-sm avatar-rounded">
+                                                                                    <img src="../assets/images/faces/3.jpg" alt="">
+                                                                                </span>
+                                                                            </div>
+                                                                            <div class="">
+                                                                                <h6 class="">Robin mathe
+                                                                                    <span class="badge bg-warning-transparent mb-0 rounded-1"><i class="ri-star-s-fill">4</i></span></h6>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="ps-sm-4 ps-0 mb-3">
+                                                                        <p class="fw-semibold mb-1 ps-2">Good product</p>
+                                                                        <p class="mb-0 fs-12 text-muted ps-2">Really this product is very good quality and best for daily use... It supports Spo2.. Very well.. </p>
+                                                                    </div>
+                                                                    <div class="product-images ps-sm-4 ps-0">
+                                                                        <div class="row justify-content-end">
+                                                                            <div class="col-xl-6 d-flex align-items-end justify-content-sm-end mt-sm-0 mt-2">
+                                                                                <button aria-label="button" type="button" class="btn btn-sm btn-icon btn-primary-light me-2">
+                                                                                    <i class="ri-thumb-up-line"></i>
+                                                                                </button>
+                                                                                <button aria-label="button" type="button" class="btn btn-sm btn-icon btn-primary-light">
+                                                                                    <i class="ri-thumb-down-line"></i>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div> {% endcomment %}
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-4 mt-xxl-0 mt-3">
+                                                {% comment %} <div class="mb-3 border p-3 rounded-3 ">
+                                                    <p class="fs-15 fw-semibold mb-2">Louer un site web :</p>
+                                                    <div class="row">
+                                                        <div class="col-xl-12">
+                                                            <ul class="ps-3 mb-0 list-unstyled">
+                                                                {% if website.prix_loyer %}
+                                                                <li class="text-muted mb-2">
+                                                                <i class="bx bxs-circle fs-7 me-2 op-5"></i>
+                                                                {{ website.prix_loyer }} MAD
+                                                                </li>
+                                                                {% endif %}
+                                                                {% if website.prix_hebergement %}
+                                                                <li class="text-muted mb-2">
+                                                                    <i class="bx bxs-circle fs-7 me-2 op-5"></i>
+                                                                    {{ website.prix_hebergement }} MAD
+                                                                </li>
+                                                                {% endif %}
+                                                                <li class="text-muted mb-2">
+                                                                    <i class="bx bxs-circle fs-7 me-2 op-5"></i>
+                                                                    Depth : 6.1 inch
+                                                                </li>
+                                                                <li class="text-muted mb-2">
+                                                                    <i class="bx bxs-circle fs-7 me-2 op-5"></i>
+                                                                    Other Dimensions :	15.5*15.5*24CM
+                                                                </li>
+                                                                <li class="text-muted mb-2">
+                                                                    <i class="bx bxs-circle fs-7 me-2 op-5"></i>
+                                                                    Care Instructions: Machine Wash
+                                                                </li>
+                                                                <li class="text-muted mb-2">
+                                                                    <i class="bx bxs-circle fs-7 me-2 op-5"></i>
+                                                                    Fit Type: Regular
+                                                                </li>
+                                                                <li class="text-muted mb-2">
+                                                                    <i class="bx bxs-circle fs-7 me-2 op-5"></i>
+                                                                    Country of origin: India
+                                                                </li>
+                                                                <li class="text-muted">
+                                                                    <i class="bx bxs-circle fs-7 me-2 op-5"></i>
+                                                                    1-year warranty
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div> {% endcomment %}
+
+                                            <div class="border p-3 rounded-3 mb-3">
+                                                <p class="fs-16 fw-semibold mb-2">Louer un site web :</p>
+                                                <div class="row">
+                                                    <div class="col-xl-12">
+                                                        <div class="row">
+                                                            {% if website_info.prix_loyer %}
+                                                            <div class="col-xl-5">
+                                                               <span class="fs-14 fw-semibold">Prix ​​Loyer</span>
+                                                            </div>
+                                                            <div class="col-xl-7">
+                                                                <p class="text-muted fs-14">{{ website_info.prix_loyer }} MAD</p>
+                                                            </div>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="row">
+                                                            {% if website_info.prix_hebergement %}
+                                                            <div class="col-xl-5">
+                                                               <span class="fs-14 fw-semibold">Prix Hébergementr</span>
+                                                            </div>
+                                                            <div class="col-xl-7">
+                                                                <p class="text-muted fs-14"> {{ website_info.prix_hebergement }} MAD</p>
+                                                            </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% comment %} <div class="border rounded-3 p-3 mb-3">
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <div class="avatar avatar-lg bg-light p-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="svg-primary" viewBox="0 0 64 64" id="free-shipping"><g data-name="21"><path fill="#546e7a" d="m61.79 32.39-7-9A1 1 0 0 0 54 23h-9v-4a5 5 0 0 0-5-5H7a5 5 0 0 0-5 5v21a5 5 0 0 0 5 5 1 1 0 0 0 0-2 3 3 0 0 1-3-3v-4h39v7H22.91a6 6 0 1 0 0 2h23.18a6 6 0 0 0 11.82 0H61a1 1 0 0 0 1-1V33a1 1 0 0 0-.21-.61Z"></path><path fill="#e7f5f3" d="M4 34V19a3 3 0 0 1 3-3h33a3 3 0 0 1 3 3v15Z"></path><circle cx="17" cy="44" r="4" fill="#09ad95"></circle><circle cx="52" cy="44" r="4" fill="#09ad95"></circle><path fill="#e7f5f3" d="M60 43h-2.09a6 6 0 0 0-11.82 0H45V25h8.51L60 33.34Z"></path><path fill="#546e7a" d="M52 27h-4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h9a1 1 0 0 0 .77-1.64l-5-6A1 1 0 0 0 52 27Z"></path><path fill="#09ad95" d="M49 33v-4h2.53l3.34 4H49z"></path><path fill="#546e7a" d="M23 23.5a3.5 3.5 0 0 0-3.5-3.5H17a1 1 0 0 0-1 1v8a1 1 0 0 0 2 0v-2h1.46l1.71 2.55A1 1 0 0 0 22 30a.94.94 0 0 0 .55-.17 1 1 0 0 0 .28-1.38l-1.37-2.06A3.49 3.49 0 0 0 23 23.5zM18 22h1.5a1.5 1.5 0 0 1 0 3H18zm-5 0a1 1 0 0 0 0-2H9a1 1 0 0 0-1 1v8a1 1 0 0 0 2 0v-3h3a1 1 0 0 0 0-2h-3v-2zm17 0a1 1 0 0 0 0-2h-4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4a1 1 0 0 0 0-2h-3v-2h3a1 1 0 0 0 0-2h-3v-2zm8 0a1 1 0 0 0 0-2h-4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4a1 1 0 0 0 0-2h-3v-2h3a1 1 0 0 0 0-2h-3v-2z"></path></g></svg>
+                                                    </div>
+                                                    <div class="ms-3">
+                                                        <span class="fs-14 fw-semibold mb-0">Free Shipping</span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <div class="avatar avatar-lg bg-light p-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"  class="svg-primary"  viewBox="0 0 64 64" id="guarantee"><g data-name="3"><path fill="#546e7a" d="M32 60a1 1 0 0 1-.45-.11l-9.15-4.57A27.86 27.86 0 0 1 7 30.4V8a1 1 0 0 1 .49-.86 1 1 0 0 1 1 0l.51.24a20.18 20.18 0 0 0 22.37-2.15 1 1 0 0 1 1.26 0A20.18 20.18 0 0 0 55 7.38l.49-.26A1 1 0 0 1 57 8v22.4a27.86 27.86 0 0 1-15.4 24.92l-9.15 4.57A1 1 0 0 1 32 60Z"></path><path fill="#e7f5f3" d="M9 9.64V30.4a25.88 25.88 0 0 0 14.3 23.13l8.7 4.35 8.7-4.35A25.88 25.88 0 0 0 55 30.4V9.64a22.13 22.13 0 0 1-23-2.37A22.13 22.13 0 0 1 9 9.64Z"></path><path fill="#546e7a" d="M28 40a1 1 0 0 1-.71-.29l-12-12a1 1 0 0 1 1.42-1.42l11.35 11.35 19.29-16.4a1 1 0 1 1 1.3 1.52l-20 17A1 1 0 0 1 28 40Z"></path></g></svg>
+                                                     </div>
+                                                    <div class="ms-3">
+                                                        <span class="fs-14 fw-semibold mb-0">3 Years warranty</span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <div class="avatar avatar-lg bg-light p-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="svg-primary"   viewBox="0 0 64 64" id="refund"><g data-name="7"><path fill="#546e7a" d="M59 5.94a.78.78 0 0 0 0-.16v-.19a.35.35 0 0 0 0-.08l-.07-.12-.11-.11-.1-.09-.15-.08-.08-.05h-.17L58 5H22a1 1 0 0 0-.71.29l-16 16a1.32 1.32 0 0 0-.19.29v.09a1.31 1.31 0 0 0-.06.27S5 22 5 22v32a5 5 0 0 0 5 5h30a5 5 0 0 0 5-5V22.38L57 8.66v29.47a7 7 0 0 1-1.6 4.45L47 52.85a1 1 0 0 0 1.54 1.27L57 43.85a9 9 0 0 0 2-5.72V5.94Z"></path><path fill="#09ad95" d="M38.34 7H55.8L43.55 21H27.18l11.1-13.88a.45.45 0 0 0 .06-.12zM22.41 7h13.41l-11.1 13.88a.45.45 0 0 0-.06.12H8.41z"></path><path fill="#e7f5f3" d="M43 54a3 3 0 0 1-3 3H10a3 3 0 0 1-3-3V23h36v31Z"></path><path fill="#546e7a" d="m50.21 25.21 4-4a1 1 0 0 0-1.42-1.42l-4 4a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0zM31 30H11a1 1 0 0 0 0 2h20a7 7 0 0 1 0 14H13.41l2.3-2.29a1 1 0 0 0-1.42-1.42l-4 4a1 1 0 0 0-.21.33 1 1 0 0 0 0 .76 1 1 0 0 0 .21.33l4 4a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42L13.41 48H31a9 9 0 0 0 0-18z"></path></g></svg>
+                                                    </div>
+                                                    <div class="ms-3">
+                                                        <span class="fs-14 fw-semibold mb-0">7 days  returnable</span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar avatar-lg bg-light p-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="svg-primary" viewBox="0 0 64 64" id="verified-payment"><g data-name="23"><rect width="58" height="32" x="3" y="22" fill="#e7f5f3" rx="1"></rect><path fill="#546e7a" d="M61 21h-3.29a16 16 0 1 0 .29 3v-1h2v30H4V23h18.76a1 1 0 1 0 0-2H3a1 1 0 0 0-1 1v32a1 1 0 0 0 1 1h58a1 1 0 0 0 1-1V22a1 1 0 0 0-1-1Z"></path><circle cx="42" cy="24" r="14" fill="#09ad95"></circle><path fill="#546e7a" d="m39.47 28.64-7.12-7.11a1 1 0 0 0-1.41 1.41l7.77 7.77a1 1 0 0 0 1.35.05l12.94-11a1 1 0 0 0 .11-1.41 1 1 0 0 0-1.4-.11zM21 30a1 1 0 0 0 0-2h-4v-2a1 1 0 0 0-2 0v2a5 5 0 0 0-5 5v1a5 5 0 0 0 5 5v7h-4a1 1 0 0 0 0 2h4v2a1 1 0 0 0 2 0v-2a5 5 0 0 0 5-5v-1a5 5 0 0 0-5-5v-7zm-1 12v1a3 3 0 0 1-3 3v-7a3 3 0 0 1 3 3zm-5-5a3 3 0 0 1-3-3v-1a3 3 0 0 1 3-3z"></path></g></svg>
+                                                    </div>
+                                                    <div class="ms-3">
+                                                        <span class="fs-14 fw-semibold mb-0">Cash on  Delivery</span>
+                                                    </div>
+                                                </div>
+                                            </div> {% endcomment %}
+                                            <div class="border rounded-3 p-3">
+                                                {% if website_info.video %}
+                                                <p class="fs-15 fw-semibold mb-2">Vidéo de Présentation:</p>
+                                                <p class="fs-12 text-muted"><iframe src="{{ website_info.video }}" title="Vidéo de présentation du site web" allowfullscreen class="rounded-3 shadow-sm"></iframe></p>
+                                                {% endif %}
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+					<div class="col-xl-12">
+						<div class="card custom-card">
+						  <div class="card-header">
+							<div class="card-title">La plupart des produits</div>
+						  </div>
+						  <div class="card-body">
+							<div class="row">
+							  {% for site in similar_websites %}
+							  <div class="col-xl-2 col-6 my-2">
+								<div class="text-center">
+								  <div class="similar-products-image me-2">
+									<a href="{% url 'detail_website' slugWebsites=site.slugWebsites %}"><img src="{{ site.image.url }}" alt="{{ site.name }}" class="img-fluid rounded"></a>
 								  </div>
-								<span>3 Reviews</span>
-							</div> {% endcomment %}
-							{% if website_info.prix > 0 and website_info.prix_loyer > 0 %}
-							<div class="product-price-discount" style="font-weight: 600;color: #050505;"><span>Prix achat : {{website_info.prix}} MAD</span><span class="line-through">{{ website_info.prix|add:100 }} MAD</span></div>
-							<div class="product-price-discount" style="font-weight: 600;color: #050505;"><span>Prix loyer : {{website_info.prix_loyer}} MAD</span><span class="line-through">{{ website_info.prix_loyer|add:100 }} MAD</span></div>
-							{% else %}
-							<div class="product-price-discount" style="font-weight: 600;color: #050505;"><span>Free : {{website_info.prix}} MAD</span><span class="line-through">{{ website_info.prix|add:100 }} MAD</span></div>
-							{% endif %}
-		        			
-		        		</div>
-	        			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-	        			{% comment %} <div class="row">
-	        				<div class="col-md-6">
-	        					<label for="size">Size</label>
-								<select id="size" name="size" class="form-control">
-									<option>S</option>
-									<option>M</option>
-									<option>L</option>
-									<option>XL</option>
-								</select>
-	        				</div>
-	        				<div class="col-md-6">
-	        					<label for="color">Color</label>
-								<select id="color" name="color" class="form-control">
-									<option>Blue</option>
-									<option>Green</option>
-									<option>Red</option>
-								</select>
-	        				</div>
-	        			</div> {% endcomment %}
-	        			<div class="product-count">
-	        				{% comment %} <label for="size">Quantity</label>
-	        				<form action="#" class="display-flex">
-							    <div class="qtyminus">-</div>
-							    <input type="text" name="quantity" value="1" class="qty">
-							    <div class="qtyplus">+</div>
-							</form> {% endcomment %}
-							{% if website_info.prix > 0 and website_info.prix_loyer > 0  %}
-								<a href="#" style="color: black;" onclick="showConfirmationModal('{{ website_info.id }}', '{{ website_info.name }}', '{{ website_info.prix }}')"><button type="button" style="padding: 5px;width: 126px;height: 40px;padding: 5px;" class="btn btn-inverse-info btn-icon">Achat</button></a>
-								<a href="#" style="color: black;" onclick="showLoyerModal('{{ website_info.id }}', '{{ website_info.name }}', '{{ website_info.prix_loyer }}')"><button type="button" style="padding: 5px;width: 126px;height: 40px;padding: 5px;" class="btn btn-inverse-info btn-icon">Loyer</button></a>
-							{% else %}
-							<a href="#" style="color: black;" onclick="showFreeModal('{{ website_info.id }}', '{{ website_info.name }}', '{{ website_info.prix }}')" ><button type="button" style="padding: 5px;width: 126px;height: 40px;padding: 5px;" class="btn btn-inverse-info btn-icon">Get Free</button></a>                              
-							{% endif %}
-							
-	        			</div>
-	        		</div>
-	        	</div>
-	        </div>
-			<script>
-				
-				function showConfirmationModal(websiteId, websiteName, websitePrice) {
-				  var modal = document.getElementById('confirmationModal');
-				  var modalContent = modal.querySelector('.modal-content');
-				  modalContent.innerHTML = `
-				  <div class="close" onclick="hideConfirmationModal()">&times;</div>
-				  <h1>Confirmer l'achat</h1>
-				  <p>Please Confirmer your purchase of "${websiteName}" for ${websitePrice} MAD.</p>
-				  <form action="{% url 'confirm_Achat_website' %}" method="post">
-					{% csrf_token %}
-					<input type="hidden" name="website_id" value="${websiteId}">
-					<button class="btn btn-primary" type="submit">Confirm</button>
-				  </form>
-				  `;
-				
-
-				  modal.style.display = 'block';
-				}
-			
-				function hideConfirmationModal() {
-				  var modal = document.getElementById('confirmationModal');
-				  modal.style.display = 'none';
-				}
-			  </script>
-
-			  <script>
-				function showFreeModal(websiteId, websiteName, websitePrice) {
-					var modal = document.getElementById('FreeModal');
-					var modalContent = modal.querySelector('.modal-content');
-					modalContent.innerHTML = `
-						<div class="close" onclick="hideConfirmationModal1()">&times;</div>
-						<h1>Confirmer l'achat For Free</h1>
-						<p>Please confirm your Get of "${websiteName}" for ${websitePrice} MAD.</p>
-						<form action="{% url 'GetFree_website' %}" method="post">
-							{% csrf_token %}
-							<input type="hidden" name="website_id" value="${websiteId}">
-							<button class="btn btn-primary" type="submit">Confirm</button>
-						</form>
-					`;
-					modal.style.display = 'block';
-				}
-			
-				function hideConfirmationModal1() {
-					var modal = document.getElementById('FreeModal');
-					modal.style.display = 'none';
-				}
-			
-				
-			</script>
-			
-			
-			  <div id="confirmationModal" class="modal" >
-				<div class="modal-content">
-				  <!-- Confirmation content -->
-				</div>
-			  </div>  
-			
-			<!-- Modal for "Loyer" action -->
-			  <div id="loyerModal" class="modal">
-				<div class="modal-content2">
-				  <!-- Loyer content  -->
-				</div>
-			  </div>
-
-			  <div id="FreeModal" class="modal">
-				<div class="modal-content">
-					<!-- Loyer content will be injected here -->
-				</div>
-			</div>
-			
-
-			  <script>
-				function showLoyerModal(websiteId, websiteName, websitePrice) {
-					var modal = document.getElementById('loyerModal');
-					var modalContent = modal.querySelector('.modal-content2');
-					modalContent.innerHTML = `
-						<div class="close" onclick="hideLoyerModal()">&times;</div>
-						<h1 class="modal-title">Confirmer location</h1>
-						<p>Please confirmer your location of "${websiteName}" for ${websitePrice} MAD per month.</p>
-						<p><span class="badge badge-warning"> Alert: </span> The Location start date is the date now, not the date builder.</p><br>
-						<form action="{% url 'confirm_loyer_website' %}" method="post">
-							{% csrf_token %}
-							<input type="hidden" name="website_id" value="${websiteId}">
-							<input type="hidden" name="rental_period" id="rental_period_input" value="1">
-							<input type="hidden" name="total_price" id="total_price_input" value="${websitePrice}">
-							<p>Choose rental period:</p>
-							{% comment %} <div class="btn-group" role="group"> {% endcomment %}
-								<button type="button" class="btn btn-primary" onclick="updatePrice(${websitePrice}, 1)">1 month</button>
-								<button type="button" class="btn btn-primary" onclick="updatePrice(${websitePrice}, 2)">2 months</button>
-								<button type="button" class="btn btn-primary" onclick="updatePrice(${websitePrice}, 3)">3 months</button><br><br>
-								<button type="button" class="btn btn-primary" onclick="updatePrice(${websitePrice}, 4)">4 months</button>
-								<button type="button" class="btn btn-primary" onclick="updatePrice(${websitePrice}, 5)">5 months</button>
-								<button type="button" class="btn btn-primary" onclick="updatePrice(${websitePrice}, 6)">6 months</button><br><br>
-							{% comment %} </div> {% endcomment %}
-							<p id="total_price_display">Total Price: ${websitePrice} MAD</p>
-							<button class="btn btn-primary" type="submit">Confirm</button>
-						</form>
-					`;
-					modal.style.display = 'block';
-				}
-			
-
-				function hideLoyerModal() {
-					var modal = document.getElementById('loyerModal');
-					modal.style.display = 'none';
-				}
-			
-
-				function updatePrice(basePrice, months) {
-					var totalPrice = basePrice * months;
-					var monthText = months === 1 ? "month" : "months";
-					document.getElementById('rental_period_input').value = months;
-					document.getElementById('total_price_input').value = totalPrice;
-					document.getElementById('total_price_display').innerText = `Total Price: ${totalPrice} MAD for ${months} ${monthText}`;
-				}
-				
-			</script>
-			
-
-			  <style>
-				.modal {
-					display: none; /* Hidden by default */
-					position: fixed; /* Stay in place */
-					{% comment %} z-index: 1; /* Sit on top */ {% endcomment %}
-					left: 0;
-					top: 0;
-					width: 100%; /* Full width */
-					height: 100%; /* Full height */
-					{% comment %} /*overflow: auto;  Enable scroll if needed */ {% endcomment %}
-					background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-					}
-				
-				.modal-content {
-					background-color: #fefefe;
-					margin: 15% auto; /* 15% from the top and centered */
-					padding: 20px;
-					border: 1px solid #888;
-					width: 47%; /* Could be more or less, depending on screen size */
-					}
-
-				.modal-content2 {
-					background-color: #fefefe;
-					margin: 7% auto; /* 15% from the top and centered */
-					padding: 20px;
-					border: 1px solid #888;
-					width: 54%; /* Could be more or less, depending on screen size */
-					height: 70%;
-					}
-			
-				.close {
-					color: #aaa;
-					float: right;
-					font-size: 28px;
-					font-weight: bold;
-					}
-			
-				.close:hover,
-				.close:focus {
-					color: black;
-					text-decoration: none;
-					cursor: pointer;
-					}
-
-
-				@media (max-width: 1200px) {
-					.modal-content, .modal-content2 {
-						width: 60%;
-					}
-				}
-
-				@media (max-width: 992px) {
-					.modal-content, .modal-content2 {
-						width: 70%;
-					}
-				}
-
-				@media (max-width: 768px) {
-					.modal-content, .modal-content2 {
-						width: 80%;
-						margin: 10% auto;
-					}
-				}
-
-				@media (max-width: 576px) {
-					.modal-content, .modal-content2 {
-						width: 90%;
-						margin: 15% auto;
-					}
-
-					.close {
-						font-size: 24px;
-					}
-				}
-
-				@media (max-width: 400px) {
-					.modal-content, .modal-content2 {
-						width: 95%;
-						margin: 20% auto;
-					}
-
-					.close {
-						font-size: 20px;
-					}
-				}
-			
-			</style>
-
-			<br><br>
-	        <div class="product-info-tabs">
-		        <ul class="nav nav-tabs" id="myTab" role="tablist">
-				  	<li class="nav-item">
-				    	<a class="nav-link active" id="description-tab" data-toggle="tab" href="#description" role="tab" aria-controls="description" aria-selected="true">Description</a>
-				  	</li>
-				  	<li class="nav-item">
-				    	<a class="nav-link" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review" aria-selected="false">Reviews (0)</a>
-				  	</li>
-				</ul>
-				<div class="tab-content" id="myTabContent">
-				  	<div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
-				  		Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.
-				  	</div>
-				  	<div class="tab-pane fade" id="review" role="tabpanel" aria-labelledby="review-tab">
-				  		<div class="review-heading">REVIEWS</div>
-				  		<p class="mb-20">There are no reviews yet.</p>
-				  		<form class="review-form">
-		        			<div class="form-group">
-			        			<label>Your rating</label>
-			        			<div class="reviews-counter">
-									<div class="rate">
-									    <input type="radio" id="star5" name="rate" value="5" />
-									    <label for="star5" title="text">5 stars</label>
-									    <input type="radio" id="star4" name="rate" value="4" />
-									    <label for="star4" title="text">4 stars</label>
-									    <input type="radio" id="star3" name="rate" value="3" />
-									    <label for="star3" title="text">3 stars</label>
-									    <input type="radio" id="star2" name="rate" value="2" />
-									    <label for="star2" title="text">2 stars</label>
-									    <input type="radio" id="star1" name="rate" value="1" />
-									    <label for="star1" title="text">1 star</label>
-									</div>
+								  <h5 class="my-2 fs-14 fw-semibold">{{ site.name }}</h5>
+								  <div class="d-flex align-items-center justify-content-center mb-2">
+									<h5 class="mb-0 fw-semibold">{{ site.prix }} MAD</h5>
+									<p class="mb-0 text-muted">
+									  <span class="text-success fs-11 ms-1">50% off</span>
+									</p>
+								  </div>
+								  <div class="flex-fill">
+									<span class="badge bg-success rounded-1">4.5<i class="ri-star-s-fill ms-1"></i></span>
+									{% comment %} <span class="text-muted ms-1">100</span> {% endcomment %}
+								  </div>
 								</div>
+							  </div>
+							  {% endfor %}
 							</div>
-		        			<div class="form-group">
-			        			<label>Your message</label>
-			        			<textarea class="form-control" rows="10"></textarea>
-			        		</div>
-			        		<div class="row">
-				        		<div class="col-md-6">
-				        			<div class="form-group">
-					        			<input type="text" name="" class="form-control" placeholder="Name*">
-					        		</div>
-					        	</div>
-				        		{% comment %} <div class="col-md-6">
-				        			<div class="form-group">
-					        			<input type="text" name="" class="form-control" placeholder="Email Id*">
-					        		</div>
-					        	</div> {% endcomment %}
-					        </div>
-					        <button class="round-black-btn">Submit Review</button>
-			        	</form>
-				  	</div>
-				</div>
-			</div>
-			
-			{% comment %} <div style="text-align:center;font-size:14px;padding-bottom:20px;">Get free icon packs for your next project at <a href="http://iiicons.in/" target="_blank" style="color:#ff5e63;font-weight:bold;">www.iiicons.in</a></div> {% endcomment %}
-		</div>
-	</div>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="	sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+						  </div>
+						</div>
+					  </div>
+					  
+                </div>
+                <!--End::row-1 -->
+              
+            </div>
+        </div>
+        <!-- End::app-content -->
 
+        {% comment %} <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModal" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <div class="input-group">
+                    <a href="javascript:void(0);" class="input-group-text" id="Search-Grid"><i class="fe fe-search header-link-icon fs-18"></i></a>
+                    <input type="search" class="form-control border-0 px-2" placeholder="Search" aria-label="Username">
+                    <a href="javascript:void(0);" class="input-group-text" id="voice-search"><i class="fe fe-mic header-link-icon"></i></a>
+                    <a href="javascript:void(0);" class="btn btn-light btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fe fe-more-vertical"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="#">Action</a></li>
+                      <li><a class="dropdown-item" href="#">Another action</a></li>
+                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="#">Separated link</a></li>
+                    </ul>
+                  </div>
+                  <div class="mt-4">
+                    <p class="font-weight-semibold text-muted mb-2">Are You Looking For...</p>
+                    <span class="search-tags"><i class="fe fe-user me-2"></i>People<a href="javascript:void(0)" class="tag-addon"><i class="fe fe-x"></i></a></span>
+                    <span class="search-tags"><i class="fe fe-file-text me-2"></i>Pages<a href="javascript:void(0)" class="tag-addon"><i class="fe fe-x"></i></a></span>
+                    <span class="search-tags"><i class="fe fe-align-left me-2"></i>Articles<a href="javascript:void(0)" class="tag-addon"><i class="fe fe-x"></i></a></span>
+                    <span class="search-tags"><i class="fe fe-server me-2"></i>Tags<a href="javascript:void(0)" class="tag-addon"><i class="fe fe-x"></i></a></span>
+                  </div>
+                  <div class="my-4">
+                    <p class="font-weight-semibold text-muted mb-2">Recent Search :</p>
+                    <div class="p-2 border br-5 d-flex align-items-center text-muted mb-2 alert">
+                      <a href="notifications.html"><span>Notifications</span></a>
+                      <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert" aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                    </div>
+                    <div class="p-2 border br-5 d-flex align-items-center text-muted mb-2 alert">
+                      <a href="alerts.html"><span>Alerts</span></a>
+                      <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert" aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                    </div>
+                    <div class="p-2 border br-5 d-flex align-items-center text-muted mb-0 alert">
+                      <a href="mail.html"><span>Mail</span></a>
+                      <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert" aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <div class="btn-group ms-auto">
+                    <button class="btn btn-sm btn-primary-light">Search</button>
+                    <button class="btn btn-sm btn-primary">Clear Recents</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div> {% endcomment %}
+        <!-- Start Switcher -->
+        {% comment %} <div class="offcanvas offcanvas-end" tabindex="-1" id="sidebar-right" aria-labelledby="offcanvasRightLabel2">
+            <div class="offcanvas-header border-bottom bg-primary text-fixed-white">
+                <h6 class="offcanvas-title d-inline-flex text-fixed-white" id="offcanvasRightLabel2">
+                    <span class=" me-2 d-inline-flex">
+                        <i class="fe fe-bell my-auto"></i> <span class=" pulse w-9 h-9 bg-success rounded-circle"></span>
+                    </span>
+                    Notifications
+                </h6>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body p-0">
+                <nav class="nav nav-tabs nav-justified" role="tablist">
+                    <button class="nav-link active" id="sidebar-side1" data-bs-toggle="tab" data-bs-target="#sidebar-slidepane-1"
+                        type="button" role="tab" aria-controls="sidebar-slidepane-1" aria-selected="true"><i class="d-inline-flex fe fe-settings me-1"></i> Feeds</button>
+                    <button class="nav-link" id="sidebar-side2" data-bs-toggle="tab" data-bs-target="#sidebar-slidepane-2"
+                        type="button" role="tab" aria-controls="sidebar-slidepane-2" aria-selected="false"><i class="d-inline-flex fe fe-message-circle me-1"></i>Chat</button>
+                    <button class="nav-link" id="sidebar-side3" data-bs-toggle="tab" data-bs-target="#sidebar-slidepane-3"
+                        type="button" role="tab" aria-controls="sidebar-slidepane-3" aria-selected="false"><i class="d-inline-flex fe fe-anchor me-1"></i>Timeline</button>
+                </nav>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active border-0 p-0" id="sidebar-slidepane-1" role="tabpanel" aria-labelledby="sidebar-side1" tabindex="0">
+                        <div class="p-3 fw-semibold">Feeds</div>
+                        <div class="py-3 px-4 pt-0">
+                            <div class="row mb-3">
+                                <div class="col-sm-2 mb-sm-0 mb-3">
+                                    <span class="feeds avatar avatar-sm avatar-rounded bg-primary-transparent"><i class="fe fe-user text-primary"></i></span>
+                                </div>
+                                <div class="col-sm-10 ps-sm-0 my-auto">
+                                    <div class="d-flex align-items-end justify-content-between ms-2">
+                                        <h6 class="mb-0 fw-normal fs-14">New user registered</h6>
+                                        <div>
+                                            <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings me-1"></i></a>
+                                            <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-x"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-2 mb-sm-0 mb-3">
+                                    <span class="feeds avatar avatar-sm avatar-rounded bg-secondary-transparent"><i class="fe fe-shopping-cart text-secondary"></i></span>
+                                </div>
+                                <div class="col-sm-10 ps-sm-0 my-auto">
+                                    <div class="d-flex align-items-end justify-content-between ms-2">
+                                        <h6 class="mb-0 fw-normal fs-14">New order delivered</h6>
+                                        <div>
+                                            <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings me-1"></i></a>
+                                            <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-x"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-2 mb-sm-0 mb-3">
+                                    <span class="feeds avatar avatar-sm avatar-rounded bg-danger-transparent"><i class="fe fe-bell text-danger"></i></span>
+                                </div>
+                                <div class="col-sm-10 ps-sm-0 my-auto">
+                                    <div class="d-flex align-items-end justify-content-between ms-2">
+                                        <h6 class="mb-0 fw-normal fs-14">You have pending tasks</h6>
+                                        <div>
+                                            <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings me-1"></i></a>
+                                            <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-x"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-2 mb-sm-0 mb-3">
+                                    <span class="feeds avatar avatar-sm avatar-rounded bg-warning-transparent"><i class="fe fe-gitlab text-warning"></i></span>
+                                </div>
+                                <div class="col-sm-10 ps-sm-0 my-auto">
+                                    <div class="d-flex align-items-end justify-content-between ms-2">
+                                        <h6 class="mb-0 fw-normal fs-14">New version arrived</h6>
+                                        <div>
+                                            <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings me-1"></i></a>
+                                            <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-x"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-2 mb-sm-0 mb-3">
+                                    <span class="feeds avatar avatar-sm avatar-rounded bg-pink-transparent"><i class="fe fe-database text-pink"></i></span>
+                                </div>
+                                <div class="col-sm-10 ps-sm-0 my-auto">
+                                    <div class="d-flex align-items-end justify-content-between ms-2">
+                                        <h6 class="mb-0 fw-normal fs-14">Server #1 overloaded</h6>
+                                        <div>
+                                            <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings me-1"></i></a>
+                                            <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-x"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-2 mb-sm-0 mb-3">
+                                    <span class="feeds avatar avatar-sm avatar-rounded bg-info-transparent"><i class="fe fe-check-circle text-info"></i></span>
+                                </div>
+                                <div class="col-sm-10 ps-sm-0 my-auto">
+                                    <div class="d-flex align-items-end justify-content-between ms-2">
+                                        <h6 class="mb-0 fw-normal fs-14">New project launched</h6>
+                                        <div>
+                                            <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings me-1"></i></a>
+                                            <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-x"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-3 fw-semibold">Settings</div>
+                        <div class="py-3 px-4 pt-0">
+                            <div class="row mb-3">
+                                <div class="col-sm-2 mb-sm-0 mb-3">
+                                    <span class="feeds avatar avatar-sm avatar-rounded bg-primary-transparent"><i class="fe fe-settings text-primary"></i></span>
+                                </div>
+                                <div class="col-sm-10 ps-sm-0 my-auto">
+                                    <div class="d-flex align-items-end justify-content-between ms-2">
+                                        <h6 class="mb-0 fw-normal fs-14">General Settings</h6>
+                                        <div>
+                                            <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-2 mb-sm-0 mb-3">
+                                    <span class="feeds avatar avatar-sm avatar-rounded bg-secondary-transparent"><i class="fe fe-map-pin text-secondary"></i></span>
+                                </div>
+                                <div class="col-sm-10 ps-sm-0 my-auto">
+                                    <div class="d-flex align-items-end justify-content-between ms-2">
+                                        <h6 class="mb-0 fw-normal fs-14">Map Settings</h6>
+                                        <div>
+                                            <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-2 mb-sm-0 mb-3">
+                                    <span class="feeds avatar avatar-sm avatar-rounded bg-danger-transparent"><i class="fe fe-headphones text-danger"></i></span>
+                                </div>
+                                <div class="col-sm-10 ps-sm-0 my-auto">
+                                    <div class="d-flex align-items-end justify-content-between ms-2">
+                                        <h6 class="mb-0 fw-normal fs-14">Support Settings</h6>
+                                        <div>
+                                            <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-2 mb-sm-0 mb-3">
+                                    <span class="feeds avatar avatar-sm avatar-rounded bg-warning-transparent"><i class="fe fe-credit-card text-warning"></i></span>
+                                </div>
+                                <div class="col-sm-10 ps-sm-0 my-auto">
+                                    <div class="d-flex align-items-end justify-content-between ms-2">
+                                        <h6 class="mb-0 fw-normal fs-14">Payment  Settings</h6>
+                                        <div>
+                                            <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-2 mb-sm-0 mb-3">
+                                    <span class="feeds avatar avatar-sm avatar-rounded bg-pink-transparent"><i class="fe fe-bell text-pink"></i></span>
+                                </div>
+                                <div class="col-sm-10 ps-sm-0 my-auto">
+                                    <div class="d-flex align-items-end justify-content-between ms-2">
+                                        <h6 class="mb-0 fw-normal fs-14">Notification Settings</h6>
+                                        <div>
+                                            <a aria-label="anchor" href="javascript:void(0)" class="text-primary"><i class="fe fe-settings"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade border-0 p-0" id="sidebar-slidepane-2" role="tabpanel" aria-labelledby="sidebar-side2" tabindex="0">
+                        <div class="p-3 fw-semibold">Today</div>
+                        <div class="d-flex align-items-center py-3 px-3 pt-0">
+                            <div class="me-2">
+                                <span class="avatar avatar-md avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/2.jpg"></span>
+                            </div>
+                            <div class="">
+                                <a href="chat.html">
+                                    <div class="fw-semibold text-dark" >Addie Minstra</div>
+                                    <p class="mb-0 fs-12 text-muted"> Hey! there I' am available.... </p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center py-3 px-3 pt-0">
+                            <div class="me-2">
+                                <span class="avatar avatar-md online avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/11.jpg"></span>
+                            </div>
+                            <div class="">
+                                <a href="chat.html">
+                                    <div class="fw-semibold text-dark">Rose Bush</div>
+                                    <p class="mb-0 fs-12 text-muted"> Okay...I will be waiting for you </p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center py-3 px-3 pt-0">
+                            <div class="me-2">
+                                <span class="avatar avatar-md avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/10.jpg"></span>
+                            </div>
+                            <div class="">
+                                <a href="chat.html">
+                                    <div class="fw-semibold text-dark">Claude Strophobia</div>
+                                    <p class="mb-0 fs-12 text-muted"> Hi we can explain our new project......</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center py-3 px-3 pt-0">
+                            <div class="me-2">
+                                <span class="avatar avatar-md avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/13.jpg"></span>
+                            </div>
+                            <div class="">
+                                <a href="chat.html">
+                                    <div class="fw-semibold text-dark">Eileen Dover</div>
+                                    <p class="mb-0 fs-12 text-muted"> New product Launching...</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center py-3 px-3 pt-0">
+                            <div class="me-2">
+                                <span class="avatar avatar-md online avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/12.jpg"></span>
+                            </div>
+                            <div class="">
+                                <a href="chat.html">
+                                    <div class="fw-semibold text-dark">Willie Findit</div>
+                                    <p class="mb-0 fs-12 text-muted"> Okay...I will be waiting for you </p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center py-3 px-3 pt-0">
+                            <div class="me-2">
+                                <span class="avatar avatar-md avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/15.jpg"></span>
+                            </div>
+                            <div class="">
+                                <a href="chat.html">
+                                    <div class="fw-semibold text-dark">Manny Jah</div>
+                                    <p class="mb-0 fs-12 text-muted">  Hi we can explain our new project......</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center py-0 px-3">
+                            <div class="me-2">
+                                <span class="avatar avatar-md avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/4.jpg"></span>
+                            </div>
+                            <div class="">
+                                <a href="chat.html">
+                                    <div class="fw-semibold text-dark">Cherry Blossom</div>
+                                    <p class="mb-0 fs-12 text-muted"> Hey! there I' am available....</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="p-3 fw-semibold">Yesterday</div>
+                        <div class="d-flex align-items-center py-3 px-3 pt-0">
+                            <div class="me-2">
+                                <span class="avatar avatar-md online avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/7.jpg"></span>
+                            </div>
+                            <div class="">
+                                <a href="chat.html">
+                                    <div class="fw-semibold text-dark">Simon Sais</div>
+                                    <p class="mb-0 fs-12 text-muted">Schedule Realease...... </p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center py-3 px-3 pt-0">
+                            <div class="me-2">
+                                <span class="avatar avatar-md avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/9.jpg"></span>
+                            </div>
+                            <div class="">
+                                <a href="chat.html">
+                                    <div class="fw-semibold text-dark">Laura Biding</div>
+                                    <p class="mb-0 fs-12 text-muted">Hi we can explain our new project...... </p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center py-3 px-3 pt-0">
+                            <div class="me-2">
+                                <span class="avatar avatar-md online avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/2.jpg"></span>
+                            </div>
+                            <div class="">
+                                <a href="chat.html">
+                                    <div class="fw-semibold text-dark">Addie Minstra</div>
+                                    <p class="mb-0 fs-12 text-muted">Contact me for details....</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center py-3 px-3 pt-0">
+                            <div class="me-2">
+                                <span class="avatar avatar-md avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/9.jpg"></span>
+                            </div>
+                            <div class="">
+                                <a href="chat.html">
+                                    <div class="fw-semibold text-dark">Ivan Notheridiya</div>
+                                    <p class="mb-0 fs-12 text-muted">Hi we can explain our new project......</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center py-3 px-3 pt-0">
+                            <div class="me-2">
+                                <span class="avatar avatar-md avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/14.jpg"></span>
+                            </div>
+                            <div class="">
+                                <a href="chat.html">
+                                    <div class="fw-semibold text-dark">Dulcie Veeta</div>
+                                    <p class="mb-0 fs-12 text-muted"> Okay...I will be waiting for you</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center py-3 px-3 pt-0">
+                            <div class="me-2">
+                                <span class="avatar avatar-md avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/11.jpg"></span>
+                            </div>
+                            <div class="">
+                                <a href="chat.html">
+                                    <div class="fw-semibold text-dark">Florinda Carasco</div>
+                                    <p class="mb-0 fs-12 text-muted">New product Launching...</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center py-3 px-3 pt-0">
+                            <div class="me-2">
+                                <span class="avatar avatar-md online avatar-rounded cover-image"  data-bs-image-src="../assets/images/faces/11.jpg"></span>
+                            </div>
+                            <div class="">
+                                <a href="chat.html">
+                                    <div class="fw-semibold text-dark">Cherry Blossom</div>
+                                    <p class="mb-0 fs-12 text-muted">cherryblossom@gmail.com</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade border-0 p-3" id="sidebar-slidepane-3" role="tabpanel" aria-labelledby="sidebar-side3" tabindex="0">
+                        <ul class="task-list timeline-task">
+                            <li class="d-sm-flex">
+                                <div>
+                                    <i class="task-icon1"></i>
+                                    <h6 class="fw-semibold fs-14">Task Finished<span
+                                            class="text-muted fs-11 mx-2 fw-normal">09 July 2021</span></h6>
+                                    <p class="text-muted fs-12 mb-0">Adam Berry finished task on<a href="javascript:void(0)" class="fw-semibold text-primary"> Project Management</a></p>
+                                </div>
+                                <div class="ms-auto d-md-flex task-icon-link">
+                                    <a aria-label="anchor" href="javascript:void(0)" class="text-muted me-2"><i class="fe fe-edit"></i></a>
+                                    <a aria-label="anchor" href="javascript:void(0)" class="text-muted"><i class="fe fe-trash-2 fs-12"></i></a>
+                                </div>
+                            </li>
+                            <li class="d-sm-flex">
+                                <div>
+                                    <i class="task-icon1"></i>
+                                    <h6 class="fw-semibold fs-14">New Comment<span
+                                            class="text-muted fs-11 mx-2 fw-normal">05 July 2021</span></h6>
+                                    <p class="text-muted fs-12 mb-0">Victoria commented on Project <a href="javascript:void(0)"
+                                            class="fw-semibold text-primary"> AngularJS Template</a></p>
+                                </div>
+                                <div class="ms-auto d-md-flex task-icon-link">
+                                    <a aria-label="anchor" href="javascript:void(0)" class="text-muted me-2"><i class="fe fe-edit"></i></a>
+                                    <a aria-label="anchor" href="javascript:void(0)" class="text-muted"><i class="fe fe-trash-2 fs-12"></i></a>
+                                </div>
+                            </li>
+                            <li class="d-sm-flex">
+                                <div>
+                                    <i class="task-icon1"></i>
+                                    <h6 class="fw-semibold fs-14">New Comment<span
+                                            class="text-muted fs-11 mx-2 fw-normal">25 June 2021</span></h6>
+                                    <p class="text-muted fs-12 mb-0">Victoria commented on Project <a href="javascript:void(0)"
+                                            class="fw-semibold text-primary"> AngularJS Template</a></p>
+                                </div>
+                                <div class="ms-auto d-md-flex task-icon-link">
+                                    <a aria-label="anchor" href="javascript:void(0)" class="text-muted me-2"><i class="fe fe-edit"></i></a>
+                                    <a aria-label="anchor" href="javascript:void(0)" class="text-muted"><i class="fe fe-trash-2 fs-12"></i></a>
+                                </div>
+                            </li>
+                            <li class="d-sm-flex">
+                                <div>
+                                    <i class="task-icon1"></i>
+                                    <h6 class="fw-semibold fs-14">Task Overdue<span
+                                            class="text-muted fs-11 mx-2 fw-normal">14 June 2021</span></h6>
+                                    <p class="text-muted mb-0 fs-12">Petey Cruiser finished task <a href="javascript:void(0)"
+                                            class="fw-semibold text-primary"> Integrated management</a></p>
+                                </div>
+                                <div class="ms-auto d-md-flex task-icon-link">
+                                    <a aria-label="anchor" href="javascript:void(0)" class="text-muted me-2"><i class="fe fe-edit"></i></a>
+                                    <a aria-label="anchor" href="javascript:void(0)" class="text-muted"><i class="fe fe-trash-2 fs-12"></i></a>
+                                </div>
+                            </li>
+                            <li class="d-sm-flex">
+                                <div>
+                                    <i class="task-icon1"></i>
+                                    <h6 class="fw-semibold fs-14">Task Overdue<span
+                                            class="text-muted fs-11 mx-2 fw-normal">29 June 2021</span></h6>
+                                    <p class="text-muted mb-0 fs-12">Petey Cruiser finished task <a href="javascript:void(0)"
+                                            class="fw-semibold text-primary"> Integrated management</a></p>
+                                </div>
+                                <div class="ms-auto d-md-flex task-icon-link">
+                                    <a aria-label="anchor" href="javascript:void(0)" class="text-muted me-2"><i class="fe fe-edit"></i></a>
+                                    <a aria-label="anchor" href="javascript:void(0)" class="text-muted"><i class="fe fe-trash-2 fs-12"></i></a>
+                                </div>
+                            </li>
+                            <li class="d-sm-flex">
+                                <div>
+                                    <i class="task-icon1"></i>
+                                    <h6 class="fw-semibold fs-14">Task Finished<span
+                                            class="text-muted fs-11 mx-2 fw-normal">09 July 2021</span></h6>
+                                    <p class="text-muted fs-12 mb-0">Adam Berry finished task on<a href="javascript:void(0)"
+                                            class="fw-semibold text-primary"> Project Management</a></p>
+                                </div>
+                                <div class="ms-auto d-md-flex task-icon-link">
+                                    <a aria-label="anchor" href="javascript:void(0)" class="text-muted me-2"><i class="fe fe-edit"></i></a>
+                                    <a aria-label="anchor" href="javascript:void(0)" class="text-muted"><i class="fe fe-trash-2 fs-12"></i></a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div> {% endcomment %}
+        <!-- End Switcher -->
 
-
-    <style>
-       
-    </style>
-    <script>
-       
-    </script>
-
-    <!-- detail_website -->
-        <script src="{% static 'detail_website.js' %} "></script>
-    <!-- jquery Min JS -->
-        <script src="{% static 'js/jquery.min.js' %} "></script>
-		<!-- jquery Migrate JS -->
-		<script src="{% static 'js/jquery-migrate-3.0.0.js' %} "></script>
-		<!-- jquery Ui JS -->
-		<script src="{% static 'js/jquery-ui.min.js' %} "></script>
-		<!-- Easing JS -->
-        <script src="{% static 'js/easing.js' %} "></script>
-		<!-- Color JS -->
-		<script src="{% static 'js/colors.js' %} "></script>
-		<!-- Popper JS -->
-		<script src="{% static 'js/popper.min.js' %} "></script>
-		<!-- Bootstrap Datepicker JS -->
-		<script src="{% static 'js/bootstrap-datepicker.js' %} "></script>
-		<!-- Jquery Nav JS -->
-        <script src="{% static 'js/jquery.nav.js' %} "></script>
-		<!-- Slicknav JS -->
-		<script src="{% static 'js/slicknav.min.js' %} "></script>
-		<!-- ScrollUp JS -->
-        <script src="{% static 'js/jquery.scrollUp.min.js' %} "></script>
-		<!-- Niceselect JS -->
-		<script src="{% static 'js/niceselect.js' %} "></script>
-		<!-- Tilt Jquery JS -->
-		<script src="{% static 'js/tilt.jquery.min.js' %} "></script>
-		<!-- Owl Carousel JS -->
-        <script src="{% static 'js/owl-carousel.js' %} "></script>
-		<!-- counterup JS -->
-		<script src="{% static 'js/jquery.counterup.min.js' %} "></script>
-		<!-- Steller JS -->
-		<script src="{% static 'js/steller.js' %} "></script>
-		<!-- Wow JS -->
-		<script src="{% static 'js/wow.min.js' %} "></script>
-		<!-- Magnific Popup JS -->
-		<script src="{% static 'js/jquery.magnific-popup.min.js' %} "></script>
-		<!-- Counter Up CDN JS -->
-		<script src="http://cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.3/waypoints.min.js"></script>
-		<!-- Bootstrap JS -->
-		<script src="{% static 'js/bootstrap.min.js' %} "></script>
-		<!-- Main JS -->
-		<script src="{% static 'js/main.js' %} "></script>
-        
-    </body>
- 
+    {% endblock %}

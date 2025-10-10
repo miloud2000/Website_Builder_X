@@ -36,6 +36,20 @@ from websitebuilder.models import (
     AchatWebsites, LocationWebsites, GetFreeWebsites
 )
 
+def home(request):  
+    if request.user.is_authenticated:
+        is_Cliente = request.user.groups.filter(name='Cliente').exists()
+        is_SupportTechnique = request.user.groups.filter(name='SupportTechnique').exists()
+        is_Administrateur = request.user.groups.filter(name='Administrateur').exists()
+    else: 
+        is_Cliente= False  
+        is_SupportTechnique= False 
+        is_Administrateur= False  
+           
+    context = {"is_Cliente": is_Cliente,"is_SupportTechnique":is_SupportTechnique,"is_Administrateur":is_Administrateur}
+    return render(request, "websitebuilder/home.html",context)
+
+
 
 
 from itertools import chain
