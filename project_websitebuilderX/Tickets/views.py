@@ -14,6 +14,97 @@ from websitebuilder.decorators import (
     anonymous_required,
 )
 
+
+
+
+
+from itertools import chain
+from django.utils.timezone import now
+from collections import Counter
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.utils.timesince import timesince
+from itertools import chain
+
+def get_user_notifications_and_messages(cliente):
+    achats = AchatWebsites.objects.filter(cliente=cliente)
+    locations = LocationWebsites.objects.filter(cliente=cliente)
+    free_webs = GetFreeWebsites.objects.filter(cliente=cliente)
+    supports = AchatSupport.objects.filter(cliente=cliente)
+
+    raw_notifications = []
+
+    for obj in achats:
+        raw_notifications.append({
+            'message': f"Achat du site {obj.websites.name}",
+            'time': timesince(obj.date_created) + " ago",
+            'icon': 'fe-shopping-cart',
+            'color': 'primary',
+            'date_created': obj.date_created
+        })
+
+    for obj in locations:
+        raw_notifications.append({
+            'message': f"Location du site {obj.websites.name}",
+            'time': timesince(obj.date_created) + " ago",
+            'icon': 'fe-home',
+            'color': 'secondary',
+            'date_created': obj.date_created
+        })
+
+    for obj in free_webs:
+        raw_notifications.append({
+            'message': f"Site gratuit : {obj.websites.name}",
+            'time': timesince(obj.date_created) + " ago",
+            'icon': 'fe-gift',
+            'color': 'success',
+            'date_created': obj.date_created
+        })
+
+    for obj in supports:
+        raw_notifications.append({
+            'message': f"Support acheté : {obj.support.name}",
+            'time': timesince(obj.date_created) + " ago",
+            'icon': 'fe-check-circle',
+            'color': 'info',
+            'date_created': obj.date_created
+        })
+
+    notifications = sorted(raw_notifications, key=lambda x: x['date_created'], reverse=True)[:6]
+
+   
+    recharges = DemandeRecharger.objects.filter(cliente=cliente).order_by('-date_created')[:5]
+    tickets = Ticket.objects.filter(cliente=cliente).order_by('-date_created')[:5]
+
+    messages_dropdown = []
+
+    for recharge in recharges:
+        messages_dropdown.append({
+            'type': 'Recharge',
+            'title': f"Demande de recharge : {recharge.solde} MAD",
+            'subtitle': f"Statut : {recharge.status}",
+            'time': timesince(recharge.date_created) + " ago",
+            'image': 'faces/1.jpg',
+            'date_created': recharge.date_created 
+        })
+
+    for ticket in tickets:
+        messages_dropdown.append({
+            'type': 'Ticket',
+            'title': f"Ticket : {ticket.typeTicket}",
+            'subtitle': f"Statut : {ticket.status}",
+            'time': timesince(ticket.date_created) + " ago",
+            'image': 'faces/2.jpg',
+            'date_created': ticket.date_created 
+        })
+
+
+    messages_dropdown = sorted(messages_dropdown, key=lambda x: x['date_created'], reverse=True)
+
+    return notifications, messages_dropdown
+
+
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
@@ -24,19 +115,22 @@ def ticket_list(request):
     cliente = request.user.cliente 
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
 
-    # ✅ Pagination
     all_tickets = Ticket.objects.filter(cliente=cliente).order_by('-date_created')
-    paginator = Paginator(all_tickets, 8)  # 6 tickets per page
+    paginator = Paginator(all_tickets, 8)  
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     ticket_count = all_tickets.count()
 
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+    
     context = {
         'cliente': cliente,
         'WebsiteBuilders': WebsiteBuilders,
-        'tickets': page_obj,  # paginated tickets
+        'tickets': page_obj,  
         'ticket_count': ticket_count,
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,
     }
     return render(request, "Tickets/ticket_list.html", context)
 
@@ -48,6 +142,9 @@ def ticket_list(request):
 def details_ticket(request, code_Ticket):
     ticket = get_object_or_404(Ticket, code_Ticket=code_Ticket)
     conversations = ticket.conversations.all().order_by('timestamp')
+    cliente = request.user.cliente
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+
 
     if request.method == 'POST':
         message = request.POST.get('message')
@@ -74,6 +171,8 @@ def details_ticket(request, code_Ticket):
     context = {
         'ticket': ticket,
         'conversations': conversations,
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,
     }
     return render(request, 'Tickets/details_ticket.html', context)
 

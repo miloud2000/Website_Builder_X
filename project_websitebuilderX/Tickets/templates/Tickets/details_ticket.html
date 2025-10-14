@@ -1017,64 +1017,75 @@
               </li>
             {% endif %}
           {% empty %}
-            <li class="text-muted">Aucune conversation pour ce ticket.</li>
-          {% endfor %}
+          <br><br>
+          <li class="list-group-item text-center text-muted">
+            <i class="ri-chat-off-line me-2 align-middle fs-16"></i>
+            Aucune conversation pour ce ticket.
+          </li>
+        {% endfor %}
         </ul>
         
       </div>
     <!-- Chat Footer avec formulaire -->
-<div class="chat-footer">
-    <form method="post" enctype="multipart/form-data" class="d-flex align-items-center w-100 gap-2">
-      {% csrf_token %}
-  
-      <!-- 😊 Emoji -->
-      {% comment %} <a aria-label="emoji" class="btn btn-icon btn-warning-light" href="javascript:void(0)">
-        <i class="ri-emotion-line"></i>
-      </a> {% endcomment %}
-  
-      <!-- ✏️ Message -->
-      <input name="message" class="form-control" placeholder="Tapez votre message ici..." type="text" >
-  
-      <!-- 📎 Pièce jointe -->
-      <label class="btn btn-icon btn-primary-light mb-0" for="image-upload">
-        <i class="ri-attachment-2"></i>
-      </label>
-      <input type="file" name="image" id="image-upload" class="d-none">
-  
-      <!-- 🎤 Micro (optionnel) -->
-      {% comment %} <a aria-label="mic" class="btn btn-icon btn-success-light" href="javascript:void(0)">
-        <i class="ri-mic-line"></i>
-      </a> {% endcomment %}
-  
-      <!-- 🚀 Envoyer -->
-      <button type="submit" class="btn btn-primary d-inline-flex">
-        <i class="ri-send-plane-2-line me-2"></i>Envoyer
-      </button>
-    </form>
-  </div>
-  
-  </div>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const chatContainer = document.getElementById("main-chat-content");
-      if (chatContainer) {
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      }
-    });
-  </script>
-  
-    <style>
-      #main-chat-content {
-        max-height: 500px; 
-        overflow-y: auto;
-        padding-right: 
-      }
-      .chat-content {
-        flex-grow: 1;
-        overflow-y: auto;
-      }
-          
-    </style>  
+    {% if ticket.status == "Ouvert" or ticket.status == "En Cours de traitement" %}
+    <div class="chat-footer">
+        <form method="post" enctype="multipart/form-data" class="d-flex align-items-center w-100 gap-2">
+        {% csrf_token %}
+    
+        <!-- 😊 Emoji -->
+        {% comment %} <a aria-label="emoji" class="btn btn-icon btn-warning-light" href="javascript:void(0)">
+            <i class="ri-emotion-line"></i>
+        </a> {% endcomment %}
+    
+        <!-- ✏️ Message -->
+        <input name="message" class="form-control" placeholder="Tapez votre message ici..." type="text" >
+    
+        <!-- 📎 Pièce jointe -->
+        <label class="btn btn-icon btn-primary-light mb-0" for="image-upload">
+            <i class="ri-attachment-2"></i>
+        </label>
+        <input type="file" name="image" id="image-upload" class="d-none">
+    
+        <!-- 🎤 Micro (optionnel) -->
+        {% comment %} <a aria-label="mic" class="btn btn-icon btn-success-light" href="javascript:void(0)">
+            <i class="ri-mic-line"></i>
+        </a> {% endcomment %}
+    
+        <!-- 🚀 Envoyer -->
+        <button type="submit" class="btn btn-primary d-inline-flex">
+            <i class="ri-send-plane-2-line me-2"></i>Envoyer
+        </button>
+        </form>
+    </div>
+    {% else %}
+    <div class="alert alert-warning text-center mb-0">
+        <i class="ri-lock-line me-2 align-middle"></i>
+        Ce ticket est <strong>{{ ticket.status }}</strong> — vous ne pouvez plus envoyer de messages.
+    </div>
+    {% endif %}
+    
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        const chatContainer = document.getElementById("main-chat-content");
+        if (chatContainer) {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        });
+    </script>
+    
+        <style>
+        #main-chat-content {
+            max-height: 500px; 
+            overflow-y: auto;
+            padding-right: 
+        }
+        .chat-content {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+            
+        </style>  
   <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
       <div class="offcanvas-header">
           <button type="button" class="btn-close ms-auto p-3" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -1277,7 +1288,7 @@
       </div>
   </div>
 </div>
-</div>
-</div>
+{% comment %} </div>
+</div> {% endcomment %}
 <!-- End::app-content -->
 {% endblock %}

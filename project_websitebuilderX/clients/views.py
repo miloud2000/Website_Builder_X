@@ -66,6 +66,94 @@ from django.utils.timezone import now
 from collections import Counter
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.utils.timesince import timesince
+from itertools import chain
+
+def get_user_notifications_and_messages(cliente):
+    achats = AchatWebsites.objects.filter(cliente=cliente)
+    locations = LocationWebsites.objects.filter(cliente=cliente)
+    free_webs = GetFreeWebsites.objects.filter(cliente=cliente)
+    supports = AchatSupport.objects.filter(cliente=cliente)
+
+    raw_notifications = []
+
+    for obj in achats:
+        raw_notifications.append({
+            'message': f"Achat du site {obj.websites.name}",
+            'time': timesince(obj.date_created) + " ago",
+            'icon': 'fe-shopping-cart',
+            'color': 'primary',
+            'date_created': obj.date_created
+        })
+
+    for obj in locations:
+        raw_notifications.append({
+            'message': f"Location du site {obj.websites.name}",
+            'time': timesince(obj.date_created) + " ago",
+            'icon': 'fe-home',
+            'color': 'secondary',
+            'date_created': obj.date_created
+        })
+
+    for obj in free_webs:
+        raw_notifications.append({
+            'message': f"Site gratuit : {obj.websites.name}",
+            'time': timesince(obj.date_created) + " ago",
+            'icon': 'fe-gift',
+            'color': 'success',
+            'date_created': obj.date_created
+        })
+
+    for obj in supports:
+        raw_notifications.append({
+            'message': f"Support acheté : {obj.support.name}",
+            'time': timesince(obj.date_created) + " ago",
+            'icon': 'fe-check-circle',
+            'color': 'info',
+            'date_created': obj.date_created
+        })
+
+    notifications = sorted(raw_notifications, key=lambda x: x['date_created'], reverse=True)[:6]
+
+   
+    recharges = DemandeRecharger.objects.filter(cliente=cliente).order_by('-date_created')[:5]
+    tickets = Ticket.objects.filter(cliente=cliente).order_by('-date_created')[:5]
+
+    messages_dropdown = []
+
+    for recharge in recharges:
+        messages_dropdown.append({
+            'type': 'Recharge',
+            'title': f"Demande de recharge : {recharge.solde} MAD",
+            'subtitle': f"Statut : {recharge.status}",
+            'time': timesince(recharge.date_created) + " ago",
+            'image': 'faces/1.jpg',
+            'date_created': recharge.date_created 
+        })
+
+    for ticket in tickets:
+        messages_dropdown.append({
+            'type': 'Ticket',
+            'title': f"Ticket : {ticket.typeTicket}",
+            'subtitle': f"Statut : {ticket.status}",
+            'time': timesince(ticket.date_created) + " ago",
+            'image': 'faces/2.jpg',
+            'date_created': ticket.date_created 
+        })
+
+
+    messages_dropdown = sorted(messages_dropdown, key=lambda x: x['date_created'], reverse=True)
+
+    return notifications, messages_dropdown
+
+
+
+
+
+
+
+
+
 #DashbordHome of Cliente
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['Cliente']) 
@@ -156,6 +244,9 @@ def dashbordHome(request):
     paginator = Paginator(demandes_queryset, per_page)
     page_obj = paginator.get_page(page_number)
     
+    
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+            
     context = {
         'WebsiteBuilders': WebsiteBuilders,
         'AchatSupports': AchatSupports,
@@ -173,6 +264,8 @@ def dashbordHome(request):
         'page_obj': page_obj,
         'search_query': search_query,
         'per_page': per_page,
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown
     }
     return render(request, "clients/dashbordHome.html", context)
 
@@ -236,12 +329,17 @@ def detailUser(request):
         reverse=True
     )[:10]
 
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+
+
     context = {
         'cliente': cliente,
         'AchatSupports': AchatSupports,
         'AchatWebsitess': AchatWebsitess,
         'WebsiteBuilders': WebsiteBuilders,
         'all_transactions': all_transactions,
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown 
     }
     return render(request, "clients/detailUser.html", context)
 
@@ -363,6 +461,9 @@ def list_websites(request):
     # 🔗 WebsiteBuilders (non paginés)
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
 
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+
+
     context = {
         'page_obj': page_obj,
         'WebsiteBuilders': WebsiteBuilders,
@@ -376,6 +477,8 @@ def list_websites(request):
         'cms_list': ['WordPress','Drupal'],
         'langues_list': ['Français','Anglais'],
         'plans_list': ['Free','Payant'],
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,
     }  
     return render(request, "clients/list_websites.html", context)
 
@@ -396,13 +499,17 @@ def detail_website(request, slugWebsites):
         is_SupportTechnique= False 
         is_Administrateur= False  
         
+    
     website_info = Websites.objects.filter(slugWebsites=slugWebsites).first()
+    
+    
+    cliente = request.user.cliente  
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+
 
     similar_websites = Websites.objects.exclude(id=website_info.id)[:6]
     same_websites = Websites.objects.exclude(id=website_info.id).filter(catégorie=website_info.catégorie)[:2]
 
-
-    
     context = {
         'website_info': website_info,
         "is_Cliente": is_Cliente,
@@ -410,6 +517,8 @@ def detail_website(request, slugWebsites):
         "is_Administrateur":is_Administrateur,
         'similar_websites': similar_websites,
         'same_websites': same_websites,
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,
     }
     return render(request, "clients/detail_website.html", context)
 
@@ -476,19 +585,22 @@ def list_services(request):
 
     supports = supports.order_by('-date_created')
 
-    # ✅ Pagination
-    paginator = Paginator(supports, 10)  # 10 éléments par page
+    paginator = Paginator(supports, 10) 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
  
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
+    
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
 
     context = {
         'page_obj': page_obj,
         'status': status,
         'status_choices': ['Disponible', 'No Disponible'],
         'WebsiteBuilders': WebsiteBuilders,
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,
     }
     return render(request, "clients/list_services.html", context)
 
@@ -498,13 +610,18 @@ def list_services(request):
 from django.db.models import Count
 
 def detail_support(request, id):
+    cliente = request.user.cliente
     support = get_object_or_404(Supports, id=id)
 
     most_purchased_supports = Supports.objects.exclude(id=support.id).order_by('-date_created')[:6]
     
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+    
     return render(request, 'clients/detail_support.html', {
         'support': support,
         'most_purchased_supports': most_purchased_supports,
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,
     })
 
 
@@ -536,6 +653,7 @@ def MesServices(request):
         reverse=True
     )
 
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
     context = {
         'achat_supports': achat_supports,
         'achat_websites': achat_websites,
@@ -543,6 +661,8 @@ def MesServices(request):
         'getfree_website': getfree_website,
         'combined_websites': combined_websites,
         'WebsiteBuilders': WebsiteBuilders,
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,
     }
     return render(request, "clients/MesServices.html", context)
 
@@ -563,7 +683,8 @@ def WebSites(request):
     location_website_builders = LocationWebsiteBuilder.objects.filter(cliente=cliente)
     free_website_builders = GetFreeWebsiteBuilder.objects.filter(cliente=cliente)
 
-
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+    
     context = {
         'achats': achats,
         'locations': locations,
@@ -572,6 +693,8 @@ def WebSites(request):
         'WebsiteBuilders': WebsiteBuilders,
         'free_website_builders' :free_website_builders,
         'frees': frees,
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,
     } 
     return render(request, "clients/WebSites.html", context)
 
@@ -602,12 +725,16 @@ def Services(request):
     # WebsiteBuilders (non paginés)
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
 
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+    
     context = {
         'page_obj': page_obj,
         'per_page': per_page,
         'WebsiteBuilders': WebsiteBuilders,
         'query': request.GET.get('q', ''),
         'status_filter': request.GET.get('status', ''),
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,
     }
     return render(request, "clients/Services.html", context)
 
@@ -630,10 +757,14 @@ def solde_et_facturation(request):
     # WebsiteBuilders (non paginés)
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
 
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+    
     context = {
         'WebsiteBuilders': WebsiteBuilders,
         'page_obj': page_obj,
         'per_page': per_page,
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,
     } 
     return render(request, "clients/solde_et_facturation.html", context)
 
@@ -812,8 +943,12 @@ def generate_facturation_pdf(request, facturation_id):
 def paiement(request):  
     cliente = request.user.cliente   
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+    
     context = {
         'WebsiteBuilders': WebsiteBuilders,
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,
     } 
     return render(request, "clients/paiement.html",context)
 
@@ -825,7 +960,9 @@ def paiement(request):
 @allowedUsers(allowedGroups=['Cliente'])
 def create_demande_recharger(request):
     cliente = request.user.cliente  
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
+    
     if request.method == 'POST':
         form = DemandeRechargerForm(request.POST, request.FILES)
         if form.is_valid():
@@ -838,8 +975,9 @@ def create_demande_recharger(request):
             messages.error(request, "There was an error with your form. Please check the details and try again.")
     else:
         form = DemandeRechargerForm()
-    
-    return render(request, 'clients/create_demande_recharger.html', {'form': form,'WebsiteBuilders':WebsiteBuilders})
+            
+    return render(request, 'clients/create_demande_recharger.html', {'form': form,'WebsiteBuilders':WebsiteBuilders,'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,})
 
 
 
@@ -850,9 +988,12 @@ def list_demande_recharger(request):
     cliente = request.user.cliente
     list_demande_rechargers = DemandeRecharger.objects.filter(cliente=cliente).order_by('-date_created')
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
     context = {
         'list_demande_rechargers': list_demande_rechargers,
         'WebsiteBuilders': WebsiteBuilders,
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,
     }
    
     return render(request, 'clients/list_demande_recharger.html',context)
@@ -878,11 +1019,15 @@ def list_Demande_Recharger_En_attente(request):
 
     # WebsiteBuilders (non paginés)
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
+    
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
 
     context = {
         'WebsiteBuilders': WebsiteBuilders,
         'page_obj': page_obj,
         'per_page': per_page,
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,
     } 
     return render(request, "clients/list_Demande_Recharger_En_attente.html", context)
 
@@ -907,10 +1052,14 @@ def list_Demande_Recharger_Complete(request):
     # WebsiteBuilders (non paginés)
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
 
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+    
     context = {
         'WebsiteBuilders': WebsiteBuilders,
         'page_obj': page_obj,
         'per_page': per_page,
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,
     } 
     return render(request, "clients/list_Demande_Recharger_Complete.html", context)
 
@@ -936,10 +1085,14 @@ def list_Demande_Recharger_Annule(request):
     # WebsiteBuilders (non paginés)
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
 
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+    
     context = {
         'WebsiteBuilders': WebsiteBuilders,
         'page_obj': page_obj,
         'per_page': per_page,
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,
     } 
     return render(request, "clients/list_Demande_Recharger_Annule.html", context)
 
@@ -1476,6 +1629,8 @@ def edite_website(request, website_name):
     delete_status = delete_exists.statut if delete_exists else None
     
     
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+    
     context = {
         'website_builder': website_builder,
         'merged_website_builder': merged_website_builder,
@@ -1486,7 +1641,9 @@ def edite_website(request, website_name):
         'delete_exists':delete_exists,
         'delete_status':delete_status,
         'WebsiteBuilders':WebsiteBuilders,  
-        'suspendre_request_status':suspendre_request_status,   
+        'suspendre_request_status':suspendre_request_status,  
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown, 
     }
     return render(request, "clients/EditeWebsite.html", context)
 
@@ -1512,6 +1669,10 @@ def edite_free_website(request, website_name):
     delete_exists = Websites_Need_Delete.objects.filter(getfree_website_builder=getfree_website_builder).first()
     delete_status = delete_exists.statut if delete_exists else None
     
+    
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+    
+    
     context = {
         'getfree_website_builder': getfree_website_builder,
         'merged_website_builder': merged_website_builder,
@@ -1522,6 +1683,8 @@ def edite_free_website(request, website_name):
         'delete_exists': delete_exists,
         'delete_status': delete_status,
         'WebsiteBuilders': WebsiteBuilders,     
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,
     }
     return render(request, "clients/EditeWebsiteGetFree.html", context)
 
@@ -1568,6 +1731,8 @@ def edite_website_Location(request, nameWebsite):
     delete_exists = Websites_Need_Delete.objects.filter(location_website_builder=website_builder_location).first()
     delete_status = delete_exists.statut if delete_exists else None
     
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+    
     context = {
         'website_builder_location': website_builder_location,
         'merged_website_builder': merged_website_builder,
@@ -1585,6 +1750,8 @@ def edite_website_Location(request, nameWebsite):
         'suspendre_request_status':suspendre_request_status, 
         'resiliation_request':resiliation_request,  
         'resiliation_request_status':resiliation_request_status,  
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,
     }
     return render(request, "clients/EditeWebsiteLocation.html", context)
 
