@@ -15,7 +15,7 @@ from websitebuilder.decorators import (
 )
 
 from django.contrib.auth.decorators import login_required
-
+from django.core.paginator import Paginator
 
 
 @login_required(login_url='login')
@@ -23,18 +23,22 @@ from django.contrib.auth.decorators import login_required
 def ticket_list(request):
     cliente = request.user.cliente 
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
-    tickets = Ticket.objects.filter(cliente=cliente).order_by('-date_created')
-    ticket_count = Ticket.objects.filter(cliente=cliente).count()
-    
+
+    # ✅ Pagination
+    all_tickets = Ticket.objects.filter(cliente=cliente).order_by('-date_created')
+    paginator = Paginator(all_tickets, 8)  # 6 tickets per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    ticket_count = all_tickets.count()
+
     context = {
         'cliente': cliente,
         'WebsiteBuilders': WebsiteBuilders,
-        'tickets' :tickets,
+        'tickets': page_obj,  # paginated tickets
         'ticket_count': ticket_count,
     }
-    return render(request, "Tickets/ticket_list.html",context)
-
-
+    return render(request, "Tickets/ticket_list.html", context)
 
 
 

@@ -1,162 +1,1283 @@
 {% extends "clients/dashboard2.html" %}
-
 {% load static %}
 
 {% block content %}
-<!-- partial -->
-<div class="main-panel">
-    <div class="content-wrapper">
-      <div class="row">
-        {% comment %} {% if messages %}
-          <script>
-              setTimeout(function() {
-                  $('.alert').alert('close');
-              }, 7000);
-          </script>
-          {% for message in messages %}
-              {% if message.tags == 'success' %}
-                  <div class="alert alert-success alert-dismissible fade show" role="alert">
-                      {{ message }}
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                      </button>
-                  </div>
-              {% elif message.tags == 'error' %}
-                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                      {{ message }}
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                      </button>
-                  </div>
-              {% endif %}
-          {% endfor %}
-      {% endif %} {% endcomment %}
-        <div class="col-md-12 grid-margin">
-          <div class="row">
-            <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-              <h3 class="font-weight-bold">Détails Ticket</h3>
-              {% comment %} <h6 class="font-weight-normal mb-0">Nom du site Web : <span class="font-weight-bold">{{website_builder.nameWebsite}}</span></h6> {% endcomment %}
-            </div>
-          </div>
+<!-- Start::app-content -->
+<div class="main-content app-content">
+  <div class="container-fluid">
+      
+      <!-- PAGE-HEADER -->
+      <div class="page-header">
+        <h1 class="page-title my-auto">Détails du ticket</h1>
+        <div>
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="{% url 'ticket_list' %}">Accueil</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Détails du ticket</li>
+          </ol>
         </div>
       </div>
-      {% comment %} <div class="row">
-      </div> {% endcomment %}
-
-      {% comment %} <div class="row">
-      </div> {% endcomment %}
-      
-      {% comment %} <div class="row">
-      </div> {% endcomment %}
-      
-      <div class="row">
-        <div class="col-md-7 grid-margin stretch-card">
-          <div class="card">
-            <div class="card-body">
-              <p class="mb-0 font-weight-bold" style="font-weight: bold;">les informations du Ticket</p>
-              <div class="table-responsive">
-                <br>
-                <p>Username Client :  <span class="font-weight-bold">{{ticket.cliente.user.username}}</span> </p>
-                <p>Numéro de téléphone :  <span class="font-weight-bold">{{ticket.cliente.phone}}</span> </p>
-                <p>Mail de client :  <span class="font-weight-bold">{{ticket.cliente.user.email}}</span> </p>
-                <p>Type de Ticket :  <span class="font-weight-bold">{{ticket.typeTicket}}</span> </p>
-                {% if ticket.Branche == 'Website' %}
-                    <p>Code de demande : <span class="font-weight-bold">{{ticket.code_Demande}}</span> </p>
-                    <p>Nom de Site Web : <span class="font-weight-bold">{{ticket.websiteName.name}}</span> </p>
-                {% endif %}
-                {% if ticket.Branche == 'Service' %}
-                    <p>Code de demande : <span class="font-weight-bold">{{ticket.code_Demande}}</span> </p>
-                    <p>Nom de Support : <span class="font-weight-bold">{{ticket.supportName.name}}</span> </p>
-                {% endif %}
-
-                {% if ticket.status == 'Ouvert' %}
-                        <p>Statu du Ticket : <span class="badge badge-success">Ouvert</span></p>
-                {% endif %}
-                {% if ticket.status == 'En Cours de traitement' %}
-                        <p>Statu du Ticket : <span class="badge badge-warning">En Cours de traitement</span></p>
-                {% endif %}
-                {% if ticket.status == 'Fermée' %}
-                        <p>Statu du Ticket : <span class="badge badge-danger">Fermée</span></p>
-                {% endif %}
-                <p>Date Création de Ticket:  <span class="font-weight-bold">{{ticket.date_created}}</span> </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="col-md-5 grid-margin stretch-card">
+    <div class="main-chart-wrapper gap-4 mb-5 d-xl-flex">
+      <div class="chat-info border">
+        <div class="col-md-7 grid-margin stretch-card" style="margin-bottom: 10px; margin-left: -1px; width: 100%;">
             <div class="card">
                 <div class="card-body">
-                  <p>Description de Ticket: <br>
-                    <span class="font-weight-bold">{{ticket.description}}</span> 
-                    <p>pièce de joint : </p>
-                    {% if ticket.pièce_joint %}
-                        {% comment %} <a href="" target="_blank"> {% endcomment %}
-                            <img src="{{ ticket.pièce_joint.url }}" style="width: 300px; height: 217px; border-radius: 0%;">
-                        {% comment %} </a> {% endcomment %}
-                    {% else %}
-                        Non pièce de joint
-                    {% endif %}
-                    {% comment %} <img style="width: 329px; height: 267px;" src="{% static "img/css-image-gallery.jpg" %}" alt="#"> {% endcomment %}
+                    {% comment %} <h4 class="font-weight-bold">Mettre à jour le statut du ticket</h4> {% endcomment %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="status">Statut</label>
+                            <select name="status" class="form-control" disabled>
+                                <option>{{ ticket.status }}</option>
+                            </select>
+                        </div>
+                        <br>
+                        {% comment %} <button type="submit" class="btn btn-primary" disabled>Mettre à jour le statut</button> {% endcomment %}
+                    </form>
                 </div>
+            </div>
+        </div>
+      {% comment %} <a aria-label="anchor" href="javascript:void(0)" class="btn btn-secondary btn-icon rounded-circle chat-add-icon">
+          <i class="ri-add-line"></i>
+      </a>
+      <div class="d-flex align-items-center justify-content-between w-100 p-3 border-bottom">
+          <h6 class="fw-semibold mb-0">Messages</h6>
+          <div class="dropdown">
+              <ul class="dropdown-menu" role="menu" data-bs-toggle="dropdown" aria-expanded="false">
+                  <li class="border-bottom"><a class="dropdown-item" href="javascript:void(0);">Today</a></li>
+                  <li class="border-bottom"><a class="dropdown-item" href="javascript:void(0);">This Week</a></li>
+                  <li><a class="dropdown-item" href="javascript:void(0);">Last Week</a></li>
+              </ul>
+          </div>
+      </div> 
+      <div class="chat-search p-3 border-bottom">
+          <div class="input-group">
+              <input type="text" class="form-control" placeholder="Search Chat"
+                  aria-describedby="button-addon2">
+              <button aria-label="button" type="button" class="btn btn-primary" id="button-addon2"><i
+                      class="ri-search-line"></i></button>
+          </div>
+      </div>
+
+      <div class="align-items-center justify-content-between w-100 p-3 border-bottom">
+          <div>
+              <h6 class="fw-semibold mb-0">Online</h6>
+          </div>
+          <div class="mt-3">
+              <span class="avatar avatar-md me-2 online avatar-rounded">
+                  <img src="../assets/images/faces/8.jpg" alt="img">
+              </span>
+              <span class="avatar avatar-md me-2 online avatar-rounded">
+                  <img src="../assets/images/faces/10.jpg" alt="img">
+              </span>
+              <span class="avatar avatar-md me-2 online avatar-rounded">
+                  <img src="../assets/images/faces/12.jpg" alt="img">
+              </span>
+              <span class="avatar avatar-md me-2 online avatar-rounded">
+                  <img src="../assets/images/faces/13.jpg" alt="img">
+              </span>
+              <span class="avatar avatar-md me-2 online avatar-rounded">
+                  <img src="../assets/images/faces/14.jpg" alt="img">
+              </span>
+              <span class="avatar avatar-md me-2 online avatar-rounded d-sm-inline-flex d-none">
+                  <img src="../assets/images/faces/15.jpg" alt="img">
+              </span>
+          </div>
+      </div>
+      <ul class="nav nav-tabs tab-style-6 p-0 nav-justified mb-0 border-bottom d-block d-sm-flex rounded-0"
+          id="myTab1" role="tablist">
+          <li class="nav-item border-end me-0" role="presentation">
+              <button class="nav-link fs-14 active" id="users-tab" data-bs-toggle="tab"
+                  data-bs-target="#users-tab-pane" type="button" role="tab"
+                  aria-controls="users-tab-pane" aria-selected="true"><i
+                      class="fe fe-mail me-1 align-middle d-inline-block"></i>Chats</button>
+          </li>
+          <li class="nav-item border-end me-0" role="presentation">
+              <button class="nav-link  fs-14" id="groups-tab" data-bs-toggle="tab"
+                  data-bs-target="#groups-tab-pane" type="button" role="tab"
+                  aria-controls="groups-tab-pane" aria-selected="false"><i
+                      class="fe fe-users me-1 align-middle d-inline-block"></i>Groups</button>
+          </li>
+          <li class="nav-item" role="presentation">
+              <button class="nav-link  fs-14" id="calls-tab" data-bs-toggle="tab"
+                  data-bs-target="#calls-tab-pane" type="button" role="tab"
+                  aria-controls="calls-tab-pane" aria-selected="false"><i
+                      class="fe fe-phone me-1 align-middle d-inline-block"></i>Calls</button>
+          </li>
+      </ul>{% endcomment %}
+      <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active border-0 chat-users-tab" id="users-tab-pane"
+              role="tabpanel" aria-labelledby="users-tab" tabindex="0">
+              {% comment %} <ul class="list-unstyled mb-0 mt-2 chat-users-tab" id="chat-msg-scroll">
+                  <li class="pb-0">
+                      <p class="text-muted fs-11 fw-semibold mb-2 op-7">ACTIVE CHATS</p>
+                  </li>
+                  <li class="checkforactive">
+                      <a href="javascript:void(0);" onclick="changeTheInfo(this,'Sujika','5','online')">
+                          <div class="d-flex align-items-top">
+                              <div class="me-1 lh-1">
+                                  <span class="avatar avatar-md online me-2 avatar-rounded">
+                                      <img  src="../assets/images/faces/5.jpg" alt="img">
+                                  </span>
+                              </div>
+                              <div class="flex-fill">
+                                  <p class="mb-0 fw-semibold">
+                                      Sujika <span
+                                          class="float-end text-muted fw-normal fs-11">1:32PM</span>
+                                  </p>
+                                  <p class="fs-12 mb-0">
+                                      <span class="chat-msg text-truncate">Need to go for lunch?</span>
+                                      <span class="chat-read-icon float-end align-middle"><i
+                                              class="ri-check-double-fill"></i></span>
+                                  </p>
+                              </div>
+                          </div>
+                      </a>
+                  </li>
+                  <li class="checkforactive">
+                      <a href="javascript:void(0);" onclick="changeTheInfo(this,'Emiley Jackson','2','online')">
+                          <div class="d-flex align-items-top">
+                              <div class="me-1 lh-1">
+                                  <span class="avatar avatar-md online me-2 avatar-rounded">
+                                      <img  src="../assets/images/faces/2.jpg" alt="img">
+                                  </span>
+                              </div>
+                              <div class="flex-fill">
+                                  <p class="mb-0 fw-semibold">
+                                      Emiley Jackson <span
+                                          class="float-end text-muted fw-normal fs-11">12:24PM</span>
+                                  </p>
+                                  <p class="fs-12 mb-0 chat-msg-typing ">
+                                      <span class="chat-msg text-truncate">Typing...</span>
+                                      <span class="chat-read-icon float-end align-middle"><i
+                                              class="ri-check-double-fill"></i></span>
+                                      <span
+                                          class="badge bg-success-transparent rounded-circle float-end">2</span>
+                                  </p>
+                              </div>
+                          </div>
+                      </a>
+                  </li>
+                  <li class="chat-msg-unread checkforactive" >
+                      <a href="javascript:void(0);" onclick="changeTheInfo(this,'McGreggor','10','online')">
+                          <div class="d-flex align-items-top">
+                              <div class="me-1 lh-1">
+                                  <span class="avatar avatar-md online me-2 avatar-rounded">
+                                      <img  src="../assets/images/faces/10.jpg" alt="img">
+                                  </span>
+                              </div>
+                              <div class="flex-fill">
+                                  <p class="mb-0 fw-semibold">
+                                      McGreggor <span
+                                          class="float-end text-muted fw-normal fs-11">1:16PM</span>
+                                  </p>
+                                  <p class="fs-12 mb-0">
+                                      <span class="chat-msg text-truncate">Nice to meet you &#128522;</span>
+                                      <span class="chat-read-icon float-end align-middle"><i
+                                              class="ri-check-double-fill"></i></span>
+                                  </p>
+                              </div>
+                          </div>
+                      </a>
+                  </li>
+                  <li class="checkforactive">
+                      <a href="javascript:void(0);" onclick="changeTheInfo(this,'Alissa','8','online')">
+                          <div class="d-flex align-items-top">
+                              <div class="me-1 lh-1">
+                                  <span class="avatar avatar-md online me-2 avatar-rounded">
+                                      <img src="../assets/images/faces/8.jpg" alt="img">
+                                  </span>
+                              </div>
+                              <div class="flex-fill">
+                                  <p class="mb-0 fw-semibold">
+                                      Alissa <span
+                                          class="float-end text-muted fw-normal fs-11">12:45PM</span>
+                                  </p>
+                                  <p class="fs-12 mb-0">
+                                      <span class="chat-msg text-truncate">Chat with you
+                                          later,bye</span>
+                                      <span class="chat-read-icon float-end align-middle"><i
+                                              class="ri-check-double-fill"></i></span>
+                                  </p>
+                              </div>
+                          </div>
+                      </a>
+                  </li>
+                  <li class="pb-0">
+                      <p class="text-muted fs-11 fw-semibold mb-2 op-7">ALL CHATS</p>
+                  </li>
+                  <li class="chat-inactive checkforactive" >
+                      <a href="javascript:void(0);" onclick="changeTheInfo(this,'Andreas','11','offline')">
+                          <div class="d-flex align-items-top">
+                              <div class="me-1 lh-1">
+                                  <span class="avatar avatar-md offline me-2 avatar-rounded" >
+                                      <img  src="../assets/images/faces/11.jpg" alt="img">
+                                  </span>
+                              </div>
+                              <div class="flex-fill">
+                                  <p class="mb-0 fw-semibold">
+                                      Andreas <span
+                                          class="float-end text-muted fw-normal fs-11">11:54AM</span>
+                                  </p>
+                                  <p class="fs-12 mb-0">
+                                      <span class="chat-msg text-truncate">Congratulations on your new
+                                          project</span>
+                                      <span class="chat-read-icon float-end align-middle"><i
+                                              class="ri-check-double-fill"></i></span>
+                                  </p>
+                              </div>
+                          </div>
+                      </a>
+                  </li>
+                  <li class="chat-inactive checkforactive" >
+                      <a href="javascript:void(0);" onclick="changeTheInfo(this,'Melissa Sean','3','offline')">
+                          <div class="d-flex align-items-top">
+                              <div class="me-1 lh-1">
+                                  <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                      <img  src="../assets/images/faces/3.jpg" alt="img">
+                                  </span>
+                              </div>
+                              <div class="flex-fill">
+                                  <p class="mb-0 fw-semibold">
+                                      Melissa Sean <span
+                                          class="float-end text-muted fw-normal fs-11">9:45AM</span>
+                                  </p>
+                                  <p class="fs-12 mb-0">
+                                      <span class="chat-msg text-truncate">Nice work,Congrats
+                                          &#128079;</span>
+                                      <span class="chat-read-icon float-end align-middle"><i
+                                              class="ri-check-double-fill"></i></span>
+                                  </p>
+                              </div>
+                          </div>
+                      </a>
+                  </li>
+                  <li class="chat-inactive checkforactive" >
+                      <a href="javascript:void(0);" onclick="changeTheInfo(this,'Samantha Paul','6','offline')">
+                          <div class="d-flex align-items-top">
+                              <div class="me-1 lh-1">
+                                  <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                      <img  src="../assets/images/faces/6.jpg" alt="img">
+                                  </span>
+                              </div>
+                              <div class="flex-fill">
+                                  <p class="mb-0 fw-semibold">
+                                      Samantha Paul <span
+                                          class="float-end text-muted fw-normal fs-11">8:31AM</span>
+                                  </p>
+                                  <p class="fs-12 mb-0">
+                                      <span class="chat-msg text-truncate">Great work keep it up
+                                          :-)</span>
+                                      <span class="chat-read-icon float-end align-middle"><i
+                                              class="ri-check-double-fill"></i></span>
+                                  </p>
+                              </div>
+                          </div>
+                      </a>
+                  </li>
+                  <li class="chat-inactive checkforactive" >
+                      <a href="javascript:void(0);" onclick="changeTheInfo(this,'Megan Fox','4','offline')">
+                          <div class="d-flex align-items-top">
+                              <div class="me-1 lh-1">
+                                  <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                      <img src="../assets/images/faces/4.jpg" alt="img">
+                                  </span>
+                              </div>
+                              <div class="flex-fill">
+                                  <p class="mb-0 fw-semibold">
+                                      Megan Fox <span
+                                          class="float-end text-muted fw-normal fs-11">7:23AM</span>
+                                  </p>
+                                  <p class="fs-12 mb-0">
+                                      <span class="chat-msg text-truncate">You are need to be
+                                          appreaciated for what you have done,congs</span>
+                                      <span class="chat-read-icon float-end align-middle"><i
+                                              class="ri-check-double-fill"></i></span>
+                                  </p>
+                              </div>
+                          </div>
+                      </a>
+                  </li>
+                  <li class="chat-inactive checkforactive" >
+                      <a href="javascript:void(0);" onclick="changeTheInfo(this,'Nicholas Sams','13','offline')">
+                          <div class="d-flex align-items-top">
+                              <div class="me-1 lh-1">
+                                  <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                      <img src="../assets/images/faces/13.jpg" alt="img">
+                                  </span>
+                              </div>
+                              <div class="flex-fill">
+                                  <p class="mb-0 fw-semibold">
+                                      Nicholas Sams <span
+                                          class="float-end text-muted fw-normal fs-11">10:22AM</span>
+                                  </p>
+                                  <p class="fs-12 mb-0">
+                                      <span class="chat-msg text-truncate">Great Project</span>
+                                      <span class="chat-read-icon float-end align-middle"><i
+                                              class="ri-check-double-fill"></i></span>
+                                  </p>
+                              </div>
+                          </div>
+                      </a>
+                  </li>
+                  <li class="chat-inactive checkforactive" >
+                      <a href="javascript:void(0);" onclick="changeTheInfo(this,'Pope Johnson','15','offline')">
+                          <div class="d-flex align-items-top">
+                              <div class="me-1 lh-1">
+                                  <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                      <img src="../assets/images/faces/15.jpg" alt="img">
+                                  </span>
+                              </div>
+                              <div class="flex-fill">
+                                  <p class="mb-0 fw-semibold">
+                                      Pope Johnson <span
+                                          class="float-end text-muted fw-normal fs-11">9:10AM</span>
+                                  </p>
+                                  <p class="fs-12 mb-0">
+                                      <span class="chat-msg text-truncate">Hike management
+                                          fixed</span>
+                                      <span class="chat-read-icon float-end align-middle"><i
+                                              class="ri-check-double-fill"></i></span>
+                                  </p>
+                              </div>
+                          </div>
+                      </a>
+                  </li>
+              </ul> {% endcomment %}
+          </div>
+          <div class="tab-pane fade border-0 chat-groups-tab" id="groups-tab-pane"
+              role="tabpanel" aria-labelledby="groups-tab" tabindex="0">
+
+              {% comment %} <ul class="list-unstyled mb-0 mt-2 ">
+                  <li class="pb-0">
+                      <p class="text-muted fs-11 fw-semibold mb-1 op-7">GROUP CHATS</p>
+                  </li>
+                  <li class="checkforactive">
+                      <a href="javascript:void(0);" onclick="changeTheInfo(this,'Family Together &#128525;','18','online')">
+                          <div class="d-flex align-items-top">
+                              <div class="me-1 lh-1">
+                                  <span class="avatar avatar-md online me-2 avatar-rounded">
+                                      <img src="../assets/images/faces/17.jpg" alt="img">
+                                  </span>
+                              </div>
+                              <div class="flex-fill">
+                                  <p class="mb-0 fw-semibold" >
+                                      Family Together &#128525; <span
+                                          class="float-end text-muted fw-normal fs-11">12:24PM</span>
+                                  </p>
+                                  <p class="fs-12 mb-0 chat-msg-typing ">
+                                      <span class="chat-msg text-truncate">Hira Typing...</span>
+                                      <span class="chat-read-icon float-end align-middle"><i
+                                              class="ri-check-double-fill"></i></span>
+                                      <span
+                                          class="badge bg-success-transparent rounded-circle float-end">2</span>
+                                  </p>
+                              </div>
+                          </div>
+                      </a>
+                  </li>
+                  <li class="chat-msg-unread checkforactive" >
+                      <a href="javascript:void(0);" onclick="changeTheInfo(this,'Work Buddies','19','online')">
+                          <div class="d-flex align-items-top">
+                              <div class="me-1 lh-1">
+                                  <span class="avatar avatar-md online me-2 avatar-rounded">
+                                      <img src="../assets/images/faces/18.jpg" alt="img">
+                                  </span>
+                              </div>
+                              <div class="flex-fill">
+                                  <p class="mb-0 fw-semibold" >
+                                      Work Buddies <span
+                                          class="float-end text-muted fw-normal fs-11">1:16PM</span>
+                                  </p>
+                                  <p class="fs-12 mb-0">
+                                      <span class="chat-msg text-truncate"><span
+                                              class="group-indivudial">Rams:</span>Happy to be part of
+                                          this group</span>
+                                      <span class="chat-read-icon float-end align-middle"><i
+                                              class="ri-check-double-fill"></i></span>
+                                  </p>
+                              </div>
+                          </div>
+                      </a>
+                  </li>
+                  <li class="chat-inactive checkforactive" >
+                      <a href="javascript:void(0);" onclick="changeTheInfo(this,'Friends Forever &#128526;','20','offline')">
+                          <div class="d-flex align-items-top">
+                              <div class="me-1 lh-1">
+                                  <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                      <img src="../assets/images/faces/19.jpg" alt="img">
+                                  </span>
+                              </div>
+                              <div class="flex-fill">
+                                  <p class="mb-0 fw-semibold">
+                                      Friends Forever &#128526; <span
+                                          class="float-end text-muted fw-normal fs-11">3 days
+                                          ago</span>
+                                  </p>
+                                  <p class="fs-12 mb-0">
+                                      <span
+                                          class="chat-msg text-truncate">Simon,Melissa,Amanda,Patrick,Siddique</span>
+                                      <span class="chat-read-icon float-end align-middle"><i
+                                              class="ri-check-double-fill"></i></span>
+                                  </p>
+                              </div>
+                          </div>
+                      </a>
+                  </li>
+                  <li class="chat-inactive checkforactive" >
+                      <a href="javascript:void(0);" onclick="changeTheInfo(this,'Social Media Deals','21','offline')">
+                          <div class="d-flex align-items-top">
+                              <div class="me-1 lh-1">
+                                  <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                      <img  src="../assets/images/faces/20.jpg" alt="img">
+                                  </span>
+                              </div>
+                              <div class="flex-fill">
+                                  <p class="mb-0 fw-semibold">
+                                      Social Media Deals <span
+                                          class="float-end text-muted fw-normal fs-11">5 days
+                                          ago</span>
+                                  </p>
+                                  <p class="fs-12 mb-0">
+                                      <span
+                                          class="chat-msg text-truncate">Kamalan,Subha,Ambrose,Kiara,Jackson</span>
+                                      <span class="chat-read-icon float-end align-middle"><i
+                                              class="ri-check-double-fill"></i></span>
+                                  </p>
+                              </div>
+                          </div>
+                      </a>
+                  </li>
+                  <li class="chat-inactive checkforactive" >
+                      <a href="javascript:void(0);" onclick="changeTheInfo(this,'Apartment Group','21','offline')">
+                          <div class="d-flex align-items-top">
+                              <div class="me-1 lh-1">
+                                  <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                      <img src="../assets/images/faces/21.jpg" alt="img">
+                                  </span>
+                              </div>
+                              <div class="flex-fill">
+                                  <p class="mb-0 fw-semibold">
+                                      Apartment Group <span
+                                          class="float-end text-muted fw-normal fs-11">12 days
+                                          ago</span>
+                                  </p>
+                                  <p class="fs-12 mb-0">
+                                      <span
+                                          class="chat-msg text-truncate">Subman,Rajen,Kairo,Dibasha,Alexa</span>
+                                      <span class="chat-read-icon float-end align-middle"><i
+                                              class="ri-check-double-fill"></i></span>
+                                  </p>
+                              </div>
+                          </div>
+                      </a>
+                  </li>
+              </ul>
+              <ul class="list-unstyled mb-0 mt-2 ">
+                  <li class="pb-0">
+                      <p class="text-muted fs-11 fw-semibold mb-1 op-7">MY CHAT GROUPS</p>
+                  </li>
+                  <li>
+                      <div class="d-flex align-items-center justify-content-between">
+                          <div>
+                              <p class="mb-0">1) Family Together</p>
+                              <p class="mb-0"><span class="badge bg-success-transparent">4
+                                      Online</span></p>
+                          </div>
+                          <div class="avatar-list-stacked my-auto">
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/2.jpg" alt="img">
+                              </span>
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/8.jpg" alt="img">
+                              </span>
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/2.jpg" alt="img">
+                              </span>
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/10.jpg" alt="img">
+                              </span>
+                              <a class="avatar avatar-sm bg-primary text-fixed-white avatar-rounded fs-10"
+                                  href="javascript:void(0);">
+                                  +19
+                              </a>
+                          </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div class="d-flex align-items-center justify-content-between">
+                          <div>
+                              <p class="mb-0">2) Work Buddies </p>
+                              <p class="mb-0"><span class="badge bg-secondary-transparent">32
+                                      Online</span></p>
+                          </div>
+                          <div class="avatar-list-stacked my-auto">
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/1.jpg" alt="img">
+                              </span>
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/7.jpg" alt="img">
+                              </span>
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/3.jpg" alt="img">
+                              </span>
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/9.jpg" alt="img">
+                              </span>
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/12.jpg" alt="img">
+                              </span>
+                              <a class="avatar avatar-sm bg-primary text-fixed-white avatar-rounded fs-10"
+                                  href="javascript:void(0);">
+                                  +12
+                              </a>
+                          </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div class="d-flex align-items-center justify-content-between">
+                          <div>
+                              <p class="mb-0">3) Friends Forever</p>
+                              <p class="mb-0"><span class="badge bg-warning-transparent">3
+                                      Online</span></p>
+                          </div>
+                          <div class="avatar-list-stacked my-auto">
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/4.jpg" alt="img">
+                              </span>
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/8.jpg" alt="img">
+                              </span>
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/13.jpg" alt="img">
+                              </span>
+                              <a class="avatar avatar-sm bg-primary text-fixed-white avatar-rounded fs-10"
+                                  href="javascript:void(0);">
+                                  +15
+                              </a>
+                          </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div class="d-flex align-items-center justify-content-between">
+                          <div>
+                              <p class="mb-0">4) Social Media Deals</p>
+                              <p class="mb-0"><span class="badge bg-danger-transparent">5
+                                      Online</span></p>
+                          </div>
+                          <div class="avatar-list-stacked my-auto">
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/1.jpg" alt="img">
+                              </span>
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/7.jpg" alt="img">
+                              </span>
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/14.jpg" alt="img">
+                              </span>
+                              <a class="avatar avatar-sm bg-primary text-fixed-white avatar-rounded fs-10"
+                                  href="javascript:void(0);">
+                                  +28
+                              </a>
+                          </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div class="d-flex align-items-center justify-content-between">
+                          <div>
+                              <p class="mb-0">4) Apartment Group</p>
+                              <p class="mb-0"><span class="badge bg-light text-dark">0 Online</span>
+                              </p>
+                          </div>
+                          <div class="avatar-list-stacked my-auto">
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/5.jpg" alt="img">
+                              </span>
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/6.jpg" alt="img">
+                              </span>
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/12.jpg" alt="img">
+                              </span>
+                              <span class="avatar avatar-sm avatar-rounded">
+                                  <img src="../assets/images/faces/3.jpg" alt="img">
+                              </span>
+                              <a class="avatar avatar-sm bg-primary text-fixed-white avatar-rounded fs-10"
+                                  href="javascript:void(0);">
+                                  +53
+                              </a>
+                          </div>
+                      </div>
+                  </li>
+              </ul> {% endcomment %}
+          </div>
+          <div class="tab-pane fade border-0 chat-calls-tab" id="calls-tab-pane" role="tabpanel"
+              aria-labelledby="calls-tab" tabindex="0">
+              {% comment %} <ul class="list-unstyled mb-0 mt-2 chat-calls-tab">
+                  <li>
+                      <div class="d-flex align-items-center">
+                          <div class="me-1 lh-1">
+                              <span class="avatar avatar-md online me-2 avatar-rounded">
+                                  <img src="../assets/images/faces/5.jpg" alt="img">
+                              </span>
+                          </div>
+                          <div class="flex-fill my-auto">
+                              <p class="mb-0 fw-semibold">
+                                  Sujika
+                                  <span class="ms-1 incoming-call-success"><i
+                                          class="ti ti-arrow-down-left"></i></span>
+                              </p>
+                              <p class="fs-12 mb-0">
+                                  <span class="text-muted text-truncate">Today,12:47PM</span>
+                              </p>
+                          </div>
+                          <div class="">
+                              <button aria-label="button" type="button" class="btn btn-sm btn-icon btn-success-light">
+                                  <i class="ti ti-phone"></i>
+                              </button>
+                          </div>
+                      </div>
+                  </li>
+                  <li >
+                      <div class="d-flex align-items-center">
+                          <div class="me-1 lh-1">
+                              <span class="avatar avatar-md online me-2 avatar-rounded">
+                                  <img src="../assets/images/faces/7.jpg" alt="img">
+                              </span>
+                          </div>
+                          <div class="flex-fill my-auto">
+                              <p class="mb-0 fw-semibold">
+                                  Melissa
+                                  <span class="ms-1 outgoing-call-failed"><i
+                                          class="ti ti-arrow-up-right"></i></span>
+                              </p>
+                              <p class="fs-12 mb-0">
+                                  <span class="text-muted text-truncate">Today,10:27AM</span>
+                              </p>
+                          </div>
+                          <div class="">
+                              <button aria-label="button" type="button" class="btn btn-sm btn-icon btn-danger-light">
+                                  <i class="ti ti-phone"></i>
+                              </button>
+                          </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div class="d-flex align-items-center">
+                          <div class="me-1 lh-1">
+                              <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                  <img src="../assets/images/faces/21.jpg" alt="img">
+                              </span>
+                          </div>
+                          <div class="flex-fill my-auto">
+                              <p class="mb-0 fw-semibold">
+                                  Sharukh Sam
+                                  <span class="ms-1 outgoing-call-success"><i
+                                          class="ti ti-arrow-up-right"></i></span>
+                              </p>
+                              <p class="fs-12 mb-0">
+                                  <span class="text-muted text-truncate">Yesterday,12:45PM</span>
+                              </p>
+                          </div>
+                          <div class="">
+                              <button aria-label="button" type="button" class="btn btn-sm btn-icon btn-success-light">
+                                  <i class="ti ti-video"></i>
+                              </button>
+                          </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div class="d-flex align-items-center">
+                          <div class="me-1 lh-1">
+                              <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                  <img src="../assets/images/faces/15.jpg" alt="img">
+                              </span>
+                          </div>
+                          <div class="flex-fill my-auto">
+                              <p class="mb-0 fw-semibold">
+                                  Kiram Kumal
+                                  <span class="ms-1 incoming-call-success"><i
+                                          class="ti ti-arrow-down-left"></i></span>
+                              </p>
+                              <p class="fs-12 mb-0">
+                                  <span class="text-muted text-truncate">3 Days ago</span>
+                              </p>
+                          </div>
+                          <div class="">
+                              <button aria-label="button" type="button" class="btn btn-sm btn-icon btn-success-light">
+                                  <i class="ti ti-phone"></i>
+                              </button>
+                          </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div class="d-flex align-items-center">
+                          <div class="me-1 lh-1">
+                              <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                  <img src="../assets/images/faces/4.jpg" alt="img">
+                              </span>
+                          </div>
+                          <div class="flex-fill my-auto">
+                              <p class="mb-0 fw-semibold">
+                                  Amanda Sams
+                                  <span class="ms-1 incoming-call-success"><i
+                                          class="ti ti-arrow-down-left"></i></span>
+                              </p>
+                              <p class="fs-12 mb-0">
+                                  <span class="text-muted text-truncate">22, Oct 2022</span>
+                              </p>
+                          </div>
+                          <div class="">
+                              <button aria-label="button" type="button" class="btn btn-sm btn-icon btn-success-light">
+                                  <i class="ti ti-video"></i>
+                              </button>
+                          </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div class="d-flex align-items-center">
+                          <div class="me-1 lh-1">
+                              <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                  <img src="../assets/images/faces/16.jpg" alt="img">
+                              </span>
+                          </div>
+                          <div class="flex-fill my-auto">
+                              <p class="mb-0 fw-semibold">
+                                  Azimo Peter
+                                  <span class="ms-1 incoming-call-failed"><i
+                                          class="ti ti-arrow-up-right"></i></span>
+                              </p>
+                              <p class="fs-12 mb-0">
+                                  <span class="text-muted text-truncate">24, Oct 2022</span>
+                              </p>
+                          </div>
+                          <div class="">
+                              <button aria-label="button" type="button" class="btn btn-sm btn-icon btn-danger-light">
+                                  <i class="ti ti-phone"></i>
+                              </button>
+                          </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div class="d-flex align-items-center">
+                          <div class="me-1 lh-1">
+                              <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                  <img src="../assets/images/faces/8.jpg" alt="img">
+                              </span>
+                          </div>
+                          <div class="flex-fill my-auto">
+                              <p class="mb-0 fw-semibold">
+                                  Sierra Adams
+                                  <span class="ms-1 incoming-call-success"><i
+                                          class="ti ti-arrow-down-left"></i></span>
+                              </p>
+                              <p class="fs-12 mb-0">
+                                  <span class="text-muted text-truncate">22, Oct 2022</span>
+                              </p>
+                          </div>
+                          <div class="">
+                              <button aria-label="button" type="button" class="btn btn-sm btn-icon btn-success-light">
+                                  <i class="ti ti-phone"></i>
+                              </button>
+                          </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div class="d-flex align-items-center">
+                          <div class="me-1 lh-1">
+                              <span class="avatar avatar-md online me-2 avatar-rounded">
+                                  <img src="../assets/images/faces/3.jpg" alt="img">
+                              </span>
+                          </div>
+                          <div class="flex-fill my-auto">
+                              <p class="mb-0 fw-semibold">
+                                  Dimple Kanns
+                                  <span class="ms-1 incoming-call-success"><i
+                                          class="ti ti-arrow-down-left"></i></span>
+                              </p>
+                              <p class="fs-12 mb-0">
+                                  <span class="text-muted text-truncate">13, Oct 2022</span>
+                              </p>
+                          </div>
+                          <div class="">
+                              <button aria-label="button" type="button" class="btn btn-sm btn-icon btn-success-light">
+                                  <i class="ti ti-video"></i>
+                              </button>
+                          </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div class="d-flex align-items-center">
+                          <div class="me-1 lh-1">
+                              <span class="avatar avatar-md online me-2 avatar-rounded">
+                                  <img src="../assets/images/faces/9.jpg" alt="img">
+                              </span>
+                          </div>
+                          <div class="flex-fill my-auto">
+                              <p class="mb-0 fw-semibold">
+                                  Adrea Jaremiah
+                                  <span class="ms-1 outgoing-call-failed"><i
+                                          class="ti ti-arrow-up-right"></i></span>
+                              </p>
+                              <p class="fs-12 mb-0">
+                                  <span class="text-muted text-truncate">13, Sep 2022</span>
+                              </p>
+                          </div>
+                          <div class="">
+                              <button aria-label="button" type="button" class="btn btn-sm btn-icon btn-danger-light">
+                                  <i class="ti ti-phone"></i>
+                              </button>
+                          </div>
+                          </div>
+                  </li>
+                  <li>
+                      <div class="d-flex align-items-center">
+                          <div class="me-1 lh-1">
+                              <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                  <img src="../assets/images/faces/21.jpg" alt="img">
+                              </span>
+                          </div>
+                          <div class="flex-fill my-auto">
+                              <p class="mb-0 fw-semibold">
+                                  Anjaneliyu
+                                  <span class="ms-1 outgoing-call-success"><i
+                                          class="ti ti-arrow-up-right"></i></span>
+                              </p>
+                              <p class="fs-12 mb-0">
+                                  <span class="text-muted text-truncate">10, July 2022</span>
+                              </p>
+                          </div>
+                          <div class="">
+                              <button aria-label="button" type="button" class="btn btn-sm btn-icon btn-success-light">
+                                  <i class="ti ti-phone"></i>
+                              </button>
+                          </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div class="d-flex align-items-center">
+                          <div class="me-1 lh-1">
+                              <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                  <img src="../assets/images/faces/14.jpg" alt="img">
+                              </span>
+                          </div>
+                          <div class="flex-fill my-auto">
+                              <p class="mb-0 fw-semibold">
+                                  Jason Steph
+                                  <span class="ms-1 incoming-call-success"><i
+                                          class="ti ti-arrow-down-left"></i></span>
+                              </p>
+                              <p class="fs-12 mb-0">
+                                  <span class="text-muted text-truncate">1, Apr 2022</span>
+                              </p>
+                          </div>
+                          <div class="">
+                              <button aria-label="button" type="button" class="btn btn-sm btn-icon btn-success-light">
+                                  <i class="ti ti-phone"></i>
+                              </button>
+                          </div>
+                      </div>
+                  </li>
+              </ul> {% endcomment %}
+          </div>
+      </div>
+  </div>
+  <div class="main-chat-area border">
+      <div class="d-flex align-items-center p-3 border-bottom">
+          {% comment %} <div class="me-2 lh-1">
+              <span class="avatar avatar-lg online me-2 avatar-rounded chatstatusperson">
+                  <img class="chatimageperson" src="../assets/images/faces/2.jpg" alt="img">
+              </span>
+          </div> {% endcomment %}
+          <div class="d-flex align-items-center gap-2">
+            <div class="avatar avatar-md avatar-rounded">
+              {% if ticket.cliente.image %}
+                <img src="{{ ticket.cliente.photo.url }}" alt="{{ ticket.cliente.user.username }}" class="img-fluid rounded-circle" />
+              {% else %}
+                <img src="{% static 'img/4042542.png' %}" alt="Default" class="img-fluid rounded-circle" />
+              {% endif %}
+            </div>
+            <div class="flex-fill">
+              <a href="javascript:void(0);" class="chatnameperson responsive-userinfo-open" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                {{ ticket.code_Ticket }}
+              </a>
+              <p class="text-muted mb-0 chatpersonstatus">{{ ticket.cliente.user.username }}</p>
             </div>
           </div>
           
-          
-  <!-- Conversation Form -->
-  <div class="row" style="width: 100%; margin-left: -1px;">
-    <div class="col-md-12 grid-margin stretch-card">
-        <div class="card">
-        <div class="card-body">
-            <h4 class="font-weight-bold">Ajouter plus de détails</h4>
-            <form method="post" enctype="multipart/form-data"> 
-                {% csrf_token %}
-                <div class="form-group">
-                    <textarea name="message" class="form-control" rows="4" placeholder="Tapez votre message ici..." required></textarea>
+          <div class="d-flex">
+               {% comment %} <button aria-label="button" type="button" class="btn btn-icon btn-light ms-2 d-none d-sm-block">
+                  <i class="bx bx-download"></i><a href="{% url 'ticket_pdf_superadmin' ticket.id %}" target="_blank">
+                  </a>
+              </button> {% endcomment %}
+              {% comment %} <div class="mb-3">
+                <a href="{% url 'ticket_pdf_superadmin' ticket.id %}" class="btn btn-outline-primary" target="_blank">
+                  🖨️ Télécharger en PDF
+                </a>
+              </div> {% endcomment %}
+            
+              {% comment %}<button aria-label="button" type="button" class="btn btn-icon btn-light ms-2 d-none d-sm-block">
+                  <i class="bx bx-video"></i>
+              </button>
+              <button aria-label="button" type="button" class="btn btn-icon btn-light ms-2 responsive-userinfo-open"  data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                  <i class="bx bx-user-circle" id="responsive-chat-close"></i>
+              </button>
+              <div class="dropdown ms-2">
+                  <button aria-label="button" type="button" class="btn btn-icon btn-light btn-wave waves-light"
+                      data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="ti ti-dots-vertical"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="javascript:void(0);">Profile</a></li>
+                      <li><a class="dropdown-item" href="javascript:void(0);">Clear Chat</a></li>
+                      <li><a class="dropdown-item" href="javascript:void(0);">Delete User</a></li>
+                      <li><a class="dropdown-item" href="javascript:void(0);">Block User</a></li>
+                      <li><a class="dropdown-item" href="javascript:void(0);">Report</a></li>
+                  </ul>
+              </div>
+              <button aria-label="button" type="button" class="btn btn-icon btn-outline-light ms-2 responsive-chat-close">
+                  <i class="ri-close-line"></i>
+              </button> {% endcomment %}
+          </div>
+      </div>
+      <div class="chat-content" id="main-chat-content">
+        <ul class="list-unstyled">
+            <li class="chat-day-label d-flex flex-wrap justify-content-center gap-2 py-2">
+                <span class="badge bg-primary text-white fw-bold">{{ ticket.typeTicket }}</span>
+                <span class="badge bg-info text-white fw-bold">{{ ticket.Branche }}</span>
+                <span class="badge bg-warning text-white fw-bold">{{ ticket.status }}</span>
+                <span class="badge bg-secondary text-white fw-bold">{{ ticket.date_created|date:"d/m/Y H:i" }}</span>
+            </li>
+            <div class="text-center bg-light p-3 rounded shadow-sm mx-auto" style="max-width: 600px;">
+                <strong>Description:</strong> {{ ticket.description }} <br>
+                {% if ticket.pièce_joint %}
+                <div class="text-center my-3">
+                  <img src="{{ ticket.pièce_joint.url }}" alt="Pièce jointe" class="img-fluid rounded shadow" style="max-width: 400px;">
                 </div>
-                <div class="form-group">
-                    <label for="image">Image</label>
-                    <input type="file" name="image" class="form-control-file">
-                </div>
-                <button type="submit" class="btn btn-primary">Envoyer</button>
-            </form>
-        </div>
-    </div>
-    </div>
-</div>
-
-<!-- Conversation Section -->
-<div class="row" style="width: 100%; margin-left: -1px;">
-    <div class="col-md-12 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="font-weight-bold">Conversations</h4>
-                <div class="chat-box" style="max-height: 400px; overflow-y: auto;">
-                    {% for conversation in conversations %}
-                        <div class="message">
-                            <strong>
-                                {% if conversation.sender_type == 'Cliente' %}
-                                    {{ conversation.sender }} : (Moi)
-                                {% elif conversation.sender_type == 'SupportTechnique' %}
-                                    {{ conversation.sender }} : (Support Technique)
-                                {% elif conversation.sender_type == 'GestionnaireComptes' %}
-                                    {{ conversation.sender }} : (Gestionnaire des Comptes)
-                                {% endif %}
-                            </strong>
-                            
-                            <span class="text-muted">{{ conversation.timestamp|date:"d M Y H:i" }}</span>
-                            <p>{{ conversation.message }}</p>
-                            {% if conversation.image %}
-                            <p>pièce de joint : </p>
-                                <img src="{{ conversation.image.url }}" alt="Conversation Image" style="max-width: 67%; height: auto; margin-top: -14px; width: 300px;">
-                            {% endif %}
-                        </div>
-                        <hr>
-                    {% endfor %}
-                </div>
+              {% endif %}
+              
             </div>
-        </div>
-    </div>
+          {% for conv in conversations %}
+            {% if conv.sender_type == 'Cliente' %}
+              <li class="chat-item-end">
+                <div class="chat-list-inner">
+                  <div class="me-3">
+                    <span class="chatting-user-info d-inline-flex align-items-center">
+                      <span class="msg-sent-time">
+                        <span class="chat-read-mark align-middle">
+                          <i class="ri-check-double-line"></i>
+                        </span>
+                        {{ conv.timestamp|date:"d M H:i" }}
+                      </span> {{conv.ticket.cliente.user.username}}
+                    </span>
+                    <div class="main-chat-msg">
+                      <div>
+                        <p class="mb-0">{{ conv.message }}</p>
+                        <div>
+                        {% if conv.image %}
+                        <p class="mb-0 d-sm-flex d-block">
+                          <img src="{{ conv.image.url }}" class="img-fluid rounded mt-2" style="max-width: 300px;">
+                        </p>
+                        {% endif %}
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="chat-user-profile">
+                    <span class="avatar avatar-md online avatar-rounded">
+                      <img src="{% static 'assets/images/faces/15.jpg' %}" alt="img">
+                    </span>
+                  </div>
+                </div>
+              </li>
+            {% else %}
+              <li class="chat-item-start">
+                <div class="chat-list-inner">
+                  <div class="chat-user-profile">
+                    <span class="avatar avatar-md online avatar-rounded chatstatusperson">
+                      <img class="chatimageperson" src="{% static 'assets/images/faces/2.jpg' %}" alt="img">
+                    </span>
+                  </div>
+                  <div class="ms-3">
+                    <span class="chatting-user-info d-inline-flex align-items-center">
+                      <span class="chatnameperson">{{ conv.sender }} </span>
+                      <span class="msg-sent-time">{{ conv.timestamp|date:"d M H:i" }}</span>
+                    </span>
+                    <div class="main-chat-msg">
+                      <div>
+                        <p class="mb-0">{{ conv.message }}</p>
+                        {% if conv.image %}
+                          <img src="{{ conv.image.url }}" class="img-fluid rounded mt-2" style="max-width: 300px;">
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            {% endif %}
+          {% empty %}
+            <li class="text-muted">Aucune conversation pour ce ticket.</li>
+          {% endfor %}
+        </ul>
+        
+      </div>
+    <!-- Chat Footer avec formulaire -->
+<div class="chat-footer">
+    <form method="post" enctype="multipart/form-data" class="d-flex align-items-center w-100 gap-2">
+      {% csrf_token %}
+  
+      <!-- 😊 Emoji -->
+      {% comment %} <a aria-label="emoji" class="btn btn-icon btn-warning-light" href="javascript:void(0)">
+        <i class="ri-emotion-line"></i>
+      </a> {% endcomment %}
+  
+      <!-- ✏️ Message -->
+      <input name="message" class="form-control" placeholder="Tapez votre message ici..." type="text" >
+  
+      <!-- 📎 Pièce jointe -->
+      <label class="btn btn-icon btn-primary-light mb-0" for="image-upload">
+        <i class="ri-attachment-2"></i>
+      </label>
+      <input type="file" name="image" id="image-upload" class="d-none">
+  
+      <!-- 🎤 Micro (optionnel) -->
+      {% comment %} <a aria-label="mic" class="btn btn-icon btn-success-light" href="javascript:void(0)">
+        <i class="ri-mic-line"></i>
+      </a> {% endcomment %}
+  
+      <!-- 🚀 Envoyer -->
+      <button type="submit" class="btn btn-primary d-inline-flex">
+        <i class="ri-send-plane-2-line me-2"></i>Envoyer
+      </button>
+    </form>
+  </div>
+  
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const chatContainer = document.getElementById("main-chat-content");
+      if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+    });
+  </script>
+  
+    <style>
+      #main-chat-content {
+        max-height: 500px; 
+        overflow-y: auto;
+        padding-right: 
+      }
+      .chat-content {
+        flex-grow: 1;
+        overflow-y: auto;
+      }
+          
+    </style>  
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+      <div class="offcanvas-header">
+          <button type="button" class="btn-close ms-auto p-3" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="chat-user-details pt-0" id="chat-user-details">
+          <div class="text-center mb-5">
+              <span class="avatar avatar-rounded online avatar-xxl me-2 mb-3 chatstatusperson">
+                  <img class="chatimageperson" src="../assets/images/faces/2.jpg" alt="img">
+              </span>
+              <p class="mb-1 fs-15 fw-semibold text-dark lh-1 chatnameperson">Emiley Jackson</p>
+              <p class="fs-12 text-muted  mb-0"><span class="chatnameperson">+12(987-987-670)</span></p>
+              <p class="fs-12 text-muted"><span class="chatnameperson">emaileyjackson2134</span>@gmail.com</p>
+              <p class="text-center mb-0">
+                  <button aria-label="button" type="button" class="btn btn-sm rounded-2 btn-primary-light fw-semibold"><i
+                          class="ri-phone-line"></i></button>
+                  <button aria-label="button" type="button" class="btn btn-sm rounded-2 btn-primary-light fw-semibold ms-2"><i
+                          class="ri-video-add-line"></i></button>
+                  <button aria-label="button" type="button" class="btn btn-sm rounded-2 btn-primary-light fw-semibold ms-2"><i
+                          class="ri-chat-1-line"></i></button>
+                  <button aria-label="button" type="button" class="btn btn-sm rounded-2 btn-primary-light fw-semibold ms-2"><i
+                          class="ri-search-line"></i></button>
+              </p>
+          </div>
+          <div class="mb-5">
+              <div class="fw-semibold mb-4">Shared Files
+                  <span class="badge bg-success-transparent rounded-circle ms-1">5</span>
+                  <span class="float-end fs-11"><a href="javascript:void(0);" class="link-primary text-underline"><u>View All</u></a></span>
+              </div>
+              <ul class="shared-files list-unstyled">
+                  <li>
+                      <div class="d-flex align-items-center">
+                          <div class="me-2">
+                              <span class="shared-file-icon">
+                                  <i class="ri-image-line bg-warning-transparent"></i>
+                              </span>
+                          </div>
+                          <div class="flex-fill">
+                              <p class="fs-12 fw-semibold mb-0">Img_15.Jpg</p>
+                              <p class="mb-0 text-muted fs-11">22,Oct 2022 - 10:18AM</p>
+                          </div>
+                          <div class="fs-18">
+                              <a aria-label="anchor" href="javascript:void(0)"><i class="ri-download-2-line text-muted"></i></a>
+                          </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div class="d-flex align-items-center">
+                          <div class="me-2">
+                              <span class="shared-file-icon">
+                                  <i class="ri-image-line bg-info-transparent"></i>
+                              </span>
+                          </div>
+                          <div class="flex-fill">
+                              <p class="fs-12 fw-semibold mb-0">Img_02.Jpg</p>
+                              <p class="mb-0 text-muted fs-11">22,Oct 2022 - 10:19AM</p>
+                          </div>
+                          <div class="fs-18">
+                              <a aria-label="anchor" href="javascript:void(0)"><i class="ri-download-2-line text-muted"></i></a>
+                          </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div class="d-flex align-items-center">
+                          <div class="me-2">
+                              <span class="shared-file-icon">
+                                  <i class="ri-video-line bg-danger-transparent"></i>
+                              </span>
+                          </div>
+                          <div class="flex-fill">
+                              <p class="fs-12 fw-semibold mb-0">Movie_13_02_2023.MP4</p>
+                              <p class="mb-0 text-muted fs-11">22,Oct 2022 - 10:18AM</p>
+                          </div>
+                          <div class="fs-18">
+                              <a aria-label="anchor" href="javascript:void(0)"><i class="ri-download-2-line text-muted"></i></a>
+                          </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div class="d-flex align-items-center">
+                          <div class="me-2">
+                              <span class="shared-file-icon">
+                                  <i class="ti ti-file-text bg-success-transparent"></i>
+                              </span>
+                          </div>
+                          <div class="flex-fill">
+                              <p class="fs-12 fw-semibold mb-0">Project Details.pdf</p>
+                              <p class="mb-0 text-muted fs-11">24,Oct 2022 - 14:24PM</p>
+                          </div>
+                          <div class="fs-18">
+                              <a aria-label="anchor" href="javascript:void(0)"><i class="ri-download-2-line text-muted"></i></a>
+                          </div>
+                      </div>
+                  </li>
+                  <li>
+                      <div class="d-flex align-items-center">
+                          <div class="me-2">
+                              <span class="shared-file-icon">
+                                  <i class="ri-video-line bg-pink-transparent"></i>
+                              </span>
+                          </div>
+                          <div class="flex-fill">
+                              <p class="fs-12 fw-semibold mb-0">Video_15_02_2022.MP4</p>
+                              <p class="mb-0 text-muted fs-11">22,Oct 2022 - 10:18AM</p>
+                          </div>
+                          <div class="fs-18">
+                              <a aria-label="anchor" href="javascript:void(0)"><i class="ri-download-2-line text-muted"></i></a>
+                          </div>
+                      </div>
+                  </li>
+              </ul>
+          </div>
+          <div class="mb-0">
+              <div class="fw-semibold mb-4">Photos &amp; Media
+                  <span class="badge bg-primary-transparent rounded-circle ms-1">22</span>
+                  <span class="float-end fs-11"><a href="javascript:void(0);" class="link-primary text-underline"><u>View All</u></a></span>
+              </div>
+              <div class="row">
+                  <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                      <a aria-label="anchor" href="gallery.html" class="chat-media">
+                          <img src="../assets/images/media/media-56.jpg" alt="">
+                      </a>
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                      <a aria-label="anchor" href="gallery.html" class="chat-media">
+                          <img src="../assets/images/media/media-52.jpg" alt="">
+                      </a>
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                      <a aria-label="anchor" href="gallery.html" class="chat-media">
+                          <img src="../assets/images/media/media-53.jpg" alt="">
+                      </a>
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                      <a aria-label="anchor" href="gallery.html" class="chat-media">
+                          <img src="../assets/images/media/media-62.jpg" alt="">
+                      </a>
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                      <a aria-label="anchor" href="gallery.html" class="chat-media">
+                          <img src="../assets/images/media/media-63.jpg" alt="">
+                      </a>
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                      <a aria-label="anchor" href="gallery.html" class="chat-media">
+                          <img src="../assets/images/media/media-64.jpg" alt="">
+                      </a>
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                      <a aria-label="anchor" href="gallery.html" class="chat-media">
+                          <img src="../assets/images/media/media-13.jpg" alt="">
+                      </a>
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                      <a aria-label="anchor" href="gallery.html" class="chat-media">
+                          <img src="../assets/images/media/media-19.jpg" alt="">
+                      </a>
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                      <a aria-label="anchor" href="gallery.html" class="chat-media">
+                          <img src="../assets/images/media/media-20.jpg" alt="">
+                      </a>
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                      <a aria-label="anchor" href="gallery.html" class="chat-media">
+                          <img src="../assets/images/media/media-56.jpg" alt="">
+                      </a>
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                      <a aria-label="anchor" href="gallery.html" class="chat-media">
+                          <img src="../assets/images/media/media-52.jpg" alt="">
+                      </a>
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                      <a aria-label="anchor" href="gallery.html" class="chat-media">
+                          <img src="../assets/images/media/media-53.jpg" alt="">
+                      </a>
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                      <a aria-label="anchor" href="gallery.html" class="chat-media">
+                          <img src="../assets/images/media/media-56.jpg" alt="">
+                      </a>
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                      <a aria-label="anchor" href="gallery.html" class="chat-media">
+                          <img src="../assets/images/media/media-52.jpg" alt="">
+                      </a>
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                      <a aria-label="anchor" href="gallery.html" class="chat-media">
+                          <img src="../assets/images/media/media-53.jpg" alt="">
+                      </a>
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4">
+                      <a aria-label="anchor" href="gallery.html" class="chat-media">
+                          <img src="../assets/images/media/media-20.jpg" alt="">
+                      </a>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
 </div>
-
+</div>
+</div>
+<!-- End::app-content -->
 {% endblock %}

@@ -1,120 +1,148 @@
-<!-- Tickets/add_ticket.html -->
 {% extends "clients/dashboard2.html" %}
+{% load static %}
+
+{% load widget_tweaks %}
 
 {% block content %}
-<div class="container-fluid p-5" style="background-color:#F2F3F4;">
-    <div class=" row">
-        <div class="col-lg-8 offset-lg-2">
-            <div class="shadow-sm wrapper p-4" style="background-color:#ffffff;">
-                <h3 class="h5 mb-4 fw-bold border-bottom pb-2">Create Ticket</h3>
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="row g-3 mb-3">
-                        <div class="col">
-                            <label for="type" class="form-label">Drop 1 <span class="text-danger">*</span></label>
-                            <select id="type" class="form-control" name="type" required>
-                                <option value="">Choose Type</option>
-                                <option value="Technique">Technique</option>
-                                <option value="Commercial">Commercial</option>
-                                <option value="Facturation">Facturation</option>
-                            </select>
-                        </div>
-                        <div class="col">
-                            <label for="branch" class="form-label">Drop 2 <span class="text-danger">*</span></label>
-                            <select id="branch" class="form-control" name="branch" required>
-                                <option value="">Choose Branch</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="message" class="form-label">Message <span class="text-danger">*</span></label>
-                        <textarea id="message" class="form-control" name="message" rows="4" required></textarea>
-                    </div>
-                    <div class="mb-3" id="codeDemandeDiv" style="display: none;">
-                        <label for="code_Demande" class="form-label">Code Demande</label>
-                        <input type="text" id="code_Demande" class="form-control" name="code_Demande">
-                    </div>
-                    <div class="mb-3" id="nameWebsiteDiv" style="display: none;">
-                        <label for="nameWebsite" class="form-label">Website Name</label>
-                        <select id="nameWebsite" class="form-control" name="nameWebsite">
-                            <option value="">Choose Website</option>
-                            {% for website in websites %}
-                                <option value="{{ website.id }}">{{ website.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="mb-3" id="nameSupportDiv" style="display: none;">
-                        <label for="nameSupport" class="form-label">Support Name</label>
-                        <select id="nameSupport" class="form-control" name="nameSupport"> 
-                            <option value="">Choose Support</option> 
-                            {% for support in supports %}
-                                <option value="{{ support.id }}">{{ support.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>                    
-                    <div class="mb-3">
-                        <label for="attachment" class="form-label">Attach File(s)</label>
-                        <input type="file" class="d-block" id="attachment" name="attachment" accept=".csv,image/jpeg,image/jpg,image/png,image/bmp,image/gif,application/pdf,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple>
-                        <small id="attachment-guide" class="form-text">Only JPEG, JPG, PNG, BMP, GIF, PDF, CSV, XLS, and XLSX formats are allowed.</small>
-                    </div>
-                    <div class="response-message"></div>
-                    <div class="border-top pt-3 clearfix">
-                        <button type="submit" class="btn btn-primary float-end">Submit</button>
-                    </div>
-                </form>
-            </div>
+ <!-- Start::app-content -->
+ <div class="main-content app-content">
+  <div class="container-fluid">
+
+      <!-- PAGE-HEADER -->
+      <div class="page-header">
+        <h1 class="page-title my-auto">Créer un ticket</h1>
+        <div>
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="{% url "ticket_list" %}">Ticket List</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Créer un ticket</li>
+          </ol>
         </div>
-    </div>
-</div>
+      </div>
+      <!-- PAGE-HEADER END -->
 
+
+      <!-- Start::row-1 -->
+      
+      <div class="row">
+          <div class="col-xl-12">
+              <div class="card custom-card">
+                  <div class="card-body add-products p-0">
+                      <div class="p-4">
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="row g-3 mb-3">
+                                <div class="col">
+                                    <label for="type" class="form-label">Type de demande <span class="text-danger">*</span></label>
+                                    <select id="type" class="form-control" name="type" required>
+                                        <option value="">Sélectionner un type</option>
+                                        <option value="Technique">Technique</option>
+                                        <option value="Commercial">Commercial</option>
+                                        <option value="Facturation">Facturation</option>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <label for="branch" class="form-label">Catégorie de demande <span class="text-danger">*</span></label>
+                                    <select id="branch" class="form-control" name="branch" required>
+                                        <option value="">Sélectionner une catégorie</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Message <span class="text-danger">*</span></label>
+                                <textarea id="message" class="form-control" name="message" rows="4" required></textarea>
+                            </div>
+                            <div class="mb-3" id="codeDemandeDiv" style="display: none;">
+                                <label for="code_Demande" class="form-label">Code de la demande</label>
+                                <input type="text" id="code_Demande" class="form-control" name="code_Demande">
+                            </div>
+                            <div class="mb-3" id="nameWebsiteDiv" style="display: none;">
+                                <label for="nameWebsite" class="form-label">Nom du site web</label>
+                                <select id="nameWebsite" class="form-control" name="nameWebsite">
+                                    <option value="">Sélectionnez un site Web</option>
+                                    {% for website in websites %}
+                                        <option value="{{ website.id }}">{{ website.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3" id="nameSupportDiv" style="display: none;">
+                                <label for="nameSupport" class="form-label">Nom du support</label>
+                                <select id="nameSupport" class="form-control" name="nameSupport"> 
+                                    <option value="">Sélectionnez un support</option> 
+                                    {% for support in supports %}
+                                        <option value="{{ support.id }}">{{ support.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>                    
+                            <div class="mb-3">
+                                <label for="attachment" class="form-label">Joindre des fichiers</label>
+                                <input type="file" class="d-block" id="attachment" name="attachment" accept=".csv,image/jpeg,image/jpg,image/png,image/bmp,image/gif,application/pdf,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple>
+                                <small id="attachment-guide" class="form-text">Formats autorisés : JPEG, JPG, PNG, BMP, GIF, PDF, CSV, XLS, XLSX.</small>
+                            </div>
+                            <div class="response-message"></div>
+                            <div class="border-top pt-3 clearfix">
+                                <button type="submit" class="btn btn-primary float-end">Envoyer</button>
+                            </div>
+                        </form>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const typeSelect = document.getElementById('type');
-    const branchSelect = document.getElementById('branch');
-    const codeDemandeDiv = document.getElementById('codeDemandeDiv');
-    const nameWebsiteDiv = document.getElementById('nameWebsiteDiv');
-    const nameSupportDiv = document.getElementById('nameSupportDiv');
-
-    const branchOptions = {
-        'Technique': ['Website', 'Application', 'Service', 'Autre'],
-        'Commercial': ["Demande d'information", 'Demande de devis', 'Autre'],
-        'Facturation': ['Probleme de paiement', 'Probleme de solde', 'Autre']
-    };
-
-    function updateBranchOptions() {
-        const selectedType = typeSelect.value;
-        const options = branchOptions[selectedType] || [];
-
-        branchSelect.innerHTML = '<option value="">Choose Branch</option>';  // Reset options and include default placeholder
-        options.forEach(option => {
-            const optionElement = document.createElement('option');
-            optionElement.value = option;
-            optionElement.textContent = option;
-            branchSelect.appendChild(optionElement);
-        });
-    }
-
-    function toggleFields() {
-        const selectedBranch = branchSelect.value;
-        if (selectedBranch === 'Website') {
-            codeDemandeDiv.style.display = 'block';
-            nameWebsiteDiv.style.display = 'block';
-            nameSupportDiv.style.display = 'none';
-        } else if (selectedBranch === 'Service') {
-            codeDemandeDiv.style.display = 'block';
-            nameWebsiteDiv.style.display = 'none';
-            nameSupportDiv.style.display = 'block';
-        } else {
-            codeDemandeDiv.style.display = 'none';
-            nameWebsiteDiv.style.display = 'none';
-            nameSupportDiv.style.display = 'none';
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeSelect = document.getElementById('type');
+        const branchSelect = document.getElementById('branch');
+        const codeDemandeDiv = document.getElementById('codeDemandeDiv');
+        const nameWebsiteDiv = document.getElementById('nameWebsiteDiv');
+        const nameSupportDiv = document.getElementById('nameSupportDiv');
+    
+        const branchOptions = {
+            'Technique': ['Website', 'Application', 'Service', 'Autre'],
+            'Commercial': ["Demande d'information", 'Demande de devis', 'Autre'],
+            'Facturation': ['Probleme de paiement', 'Probleme de solde', 'Autre']
+        };
+    
+        function updateBranchOptions() {
+            const selectedType = typeSelect.value;
+            const options = branchOptions[selectedType] || [];
+    
+            branchSelect.innerHTML = '<option value="">Sélectionner une catégorie</option>';  // Reset options and include default placeholder
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                optionElement.textContent = option;
+                branchSelect.appendChild(optionElement);
+            });
         }
-    }
-
-    typeSelect.addEventListener('change', updateBranchOptions);
-    branchSelect.addEventListener('change', toggleFields);
-    updateBranchOptions();  // Initial call to set up the options
-    toggleFields();  // Initial call to set up the visibility of fields
-});
-</script>
+    
+        function toggleFields() {
+            const selectedBranch = branchSelect.value;
+            if (selectedBranch === 'Website') {
+                codeDemandeDiv.style.display = 'block';
+                nameWebsiteDiv.style.display = 'block';
+                nameSupportDiv.style.display = 'none';
+            } else if (selectedBranch === 'Service') {
+                codeDemandeDiv.style.display = 'block';
+                nameWebsiteDiv.style.display = 'none';
+                nameSupportDiv.style.display = 'block';
+            } else {
+                codeDemandeDiv.style.display = 'none';
+                nameWebsiteDiv.style.display = 'none';
+                nameSupportDiv.style.display = 'none';
+            }
+        }
+    
+        typeSelect.addEventListener('change', updateBranchOptions);
+        branchSelect.addEventListener('change', toggleFields);
+        updateBranchOptions();  // Initial call to set up the options
+        toggleFields();  // Initial call to set up the visibility of fields
+    });
+    </script>
+      <!--End::row-1 -->
+  </form>
+  </div>
+</div>
 {% endblock %}

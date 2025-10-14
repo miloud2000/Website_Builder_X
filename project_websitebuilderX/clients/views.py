@@ -214,21 +214,34 @@ def dashboard(request):
 def editUser(request):  
     return render(request, "clients/editUser.html")
 
+from itertools import chain
 
 #Edit and display client information
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['Cliente']) 
 def detailUser(request):  
     cliente = request.user.cliente 
+
     AchatSupports = AchatSupport.objects.filter(cliente=cliente).order_by('-date_created')[:2]
     AchatWebsitess = AchatWebsites.objects.filter(cliente=cliente).order_by('-date_created')[:2]
     WebsiteBuilders = MergedWebsiteBuilder.objects.filter(cliente=cliente).order_by('-date_created')[:6]
+
+    GetFreeWebs = GetFreeWebsites.objects.filter(cliente=cliente).order_by('-date_created')[:10]
+    LocationWebs = LocationWebsites.objects.filter(cliente=cliente).order_by('-date_created')[:10]
+
+    # ✅ Fusionner toutes les transactions
+    all_transactions = sorted(
+        chain(AchatSupports, AchatWebsitess, GetFreeWebs, LocationWebs),
+        key=lambda x: x.date_created,
+        reverse=True
+    )[:10]
 
     context = {
         'cliente': cliente,
         'AchatSupports': AchatSupports,
         'AchatWebsitess': AchatWebsitess,
         'WebsiteBuilders': WebsiteBuilders,
+        'all_transactions': all_transactions,
     }
     return render(request, "clients/detailUser.html", context)
 

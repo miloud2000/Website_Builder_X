@@ -3,34 +3,23 @@
 {% load static %}
 
 {% block content %}
+ <!-- Start::app-content -->
+ <div class="main-content app-content">
+  <div class="container-fluid">
 
-{% load static %}
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="{% static 'form/fonts/icomoon/style.css' %}">
-
-    <link rel="stylesheet" href="{% static 'form/css/owl.carousel.min.css' %}">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{% static 'form/css/bootstrap.min.css' %}">
-    
-    <!-- Style -->
-    <link rel="stylesheet" href="{% static 'form/css/style.css' %}">
-
-    <title>Add Gestionnaire des Comptes</title>
-  </head>
-  <body>
-  
-
-  
-  <div class="content">
-    <div class="container">
+      <!-- PAGE-HEADER -->
+      <div class="page-header">
+        <h1 class="page-title my-auto">Ajouter demande Recharger</h1>
+        <div>
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a href="{% url "list_demande_recharger" %}">Liste demande Recharger</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Ajouter un nouveau demande Recharger</li>
+          </ol>
+        </div>
+      </div>
+      <!-- PAGE-HEADER END -->
       {% if messages %}
       {% for message in messages %}
         {% if message.tags == 'error' %}
@@ -41,51 +30,36 @@
       {% endfor %}
       {% endif %}
 
+      <!-- Start::row-1 -->
+      
       <div class="row">
-        <div class="col-md-6">
-          <img src="{% static 'form/images/undraw_remotely_2j6y.svg' %}" alt="Image" class="img-fluid">
-        </div>
-        <div class="col-md-6 contents">
-          <div class="row justify-content-center">
-            <div class="col-md-8">
-              <div class="mb-4">
-              <h3>Ajouter Demande Recharger</h3>
-              <p class="mb-4">Lorem ipsum dolor sit amet elit. Sapiente sit aut eos consectetur adipisicing.</p>
-            </div>
-            <form action="" method="POST" enctype="multipart/form-data">
-              {% csrf_token %}
-              <div class="form-group first">
-                <label >Solde</label>
-                <input type="text" class="form-control" id="solde" name="solde">
+          <div class="col-xl-12">
+              <div class="card custom-card">
+                  <div class="card-body add-products p-0">
+                      <div class="p-4">
+                        <form action="" method="POST" enctype="multipart/form-data">
+                          {% csrf_token %}
+                          <div class="form-group first">
+                            <label >Solde</label>
+                            <input type="text" class="form-control" id="solde" name="solde">
+                          </div>
+                          <br>
+                          <div class="form-group">
+                            <label >Image la trac</label>
+                            <input type="file" class="form-control" id="image" name="image">
+                          </div>
+                          <br>
+                          <button type="submit" class="btn btn-primary">Submit</button>
+            
+                        </form>
+                            
+                      </div>
+                  </div>
               </div>
-              <div class="form-group">
-                <label >Image la trac</label>
-                <input type="file" class="form-control" id="image" name="image">
-              </div>
-              
-              <button type="submit" class="btn btn-primary">Submit</button>
-
-            </form>
-            </div>
           </div>
-          
-        </div>
-        
       </div>
-    </div>
+      <!--End::row-1 -->
+  </form>
   </div>
-
-  
-    <script src="{% static 'form/js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'form/js/popper.min.js' %}"></script>
-    <script src="{% static 'form/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'form/js/main.js' %}"></script>
-  </body>
-</html>
-
-
-
-
-
-
+</div>
 {% endblock %}

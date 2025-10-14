@@ -2,750 +2,594 @@
 
 {% load static %}
 {% block content %}
-<div class="container">
+  <!--APP-CONTENT START-->
+  <div class="main-content app-content">
+	<div class="container-fluid">
 
-{% if messages %}
-    {% for message in messages %}
-        {% if message.tags == 'success' %}
-            <div class="alert alert-success" role="alert">
-                {{ message }}
-            </div>
-        {% elif message.tags == 'error' %}
-            <div class="alert alert-danger" role="alert">
-                {{ message }}
-            </div>
+		<!-- PAGE-HEADER -->
+		<div class="page-header">
+		  <h1 class="page-title my-auto">Profile</h1>
+		  <div>
+			<ol class="breadcrumb mb-0">
+			  <li class="breadcrumb-item">
+				<a href="javascript:void(0)">Pages</a>
+			  </li>
+			  <li class="breadcrumb-item active" aria-current="page">Profile</li>
+			</ol>
+		  </div>
+		</div>
+		<!-- PAGE-HEADER END -->
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <div class="alert alert-success" role="alert">
+                        {{ message }}
+                    </div>
+                {% elif message.tags == 'error' %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <script>
+                setTimeout(function() {
+                    document.querySelectorAll('.alert').forEach(function(alert) {
+                        alert.style.display = 'none';
+                    });
+                }, 5000);
+            </script>
         {% endif %}
-    {% endfor %}
-    <script>
-        setTimeout(function() {
-            document.querySelectorAll('.alert').forEach(function(alert) {
-                alert.style.display = 'none';
-            });
-        }, 5000);
-    </script>
-{% endif %}
+
+		<!-- Start::row-1 -->
+		<div class="row">
+			<div class="col-xxl-3">
+				<div class="card custom-card overflow-hidden">
+					<div class="card-body border-bottom">
+						<div class="d-sm-flex  main-profile-cover">
+							<span class="avatar avatar-xxl online me-3">
+                                {% if cliente.photo %}
+                                    <img src="{{ cliente.photo.url }}" alt="{{ cliente.nom }}" class="rounded-circle img-fluid" />
+                                {% else %}
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Default avatar" class="rounded-circle img-fluid" />
+                                {% endif %}							
+                            </span>
+							<div class="flex-fill main-profile-info my-auto">
+								<h5 class="fw-semibold mb-1 ">{{cliente.nom}} {{cliente.prenom}}</h5>
+								<div>
+									<p class="mb-1 text-muted">{{cliente.user.username}}</p>
+									<p class="fs-12 op-7 mb-0">  
+										<span class="me-3 d-inline-flex align-items-center"><i class="ri-phone-line me-1 align-middle"></i>{{cliente.phone}}</span> 
+										<span class="d-inline-flex align-items-center"><i class="ri-map-pin-line me-1 align-middle"></i>{{cliente.address}}</span> 
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					{% comment %} <div class="card-body p-0 main-profile-info">
+						<div class="d-flex align-items-center justify-content-between w-100">
+							<div class="py-3 border-end w-100 text-center">
+								<p class="fw-bold fs-20  text-shadow mb-0">113</p>
+								<p class="mb-0 fs-12 text-muted ">Projects</p>
+							</div>
+							<div class="py-3 border-end w-100 text-center">
+								<p class="fw-bold fs-20  text-shadow mb-0">12.2k</p>
+								<p class="mb-0 fs-12 text-muted ">Followers</p>
+							</div>
+							<div class="py-3 w-100 text-center">
+								<p class="fw-bold fs-20  text-shadow mb-0">128</p>
+								<p class="mb-0 fs-12 text-muted ">Following</p>
+							</div>
+						</div>
+					</div> {% endcomment %}
+				</div>
+				<div class="card custom-card">
+					<div class="p-4  border-bottom border-block-end-dashed">
+						<p class="fs-15 mb-2 me-4 fw-semibold">Informations personnelles :</p> 
+						<ul class="list-group">
+							<li class="list-group-item border-0">
+								<div class="d-flex flex-wrap align-items-center">
+									<div class="me-2 fw-semibold">
+										Nom :
+									</div>
+									<span class="fs-12 text-muted">{{cliente.nom}} {{cliente.prenom}}</span>
+								</div>
+							</li>
+							<li class="list-group-item border-0">
+								<div class="d-flex flex-wrap align-items-center">
+									<div class="me-2 fw-semibold">
+										Email :
+									</div>
+									<span class="fs-12 text-muted">{{cliente.email}}</span>
+								</div>
+							</li>
+							<li class="list-group-item border-0">
+								<div class="d-flex flex-wrap align-items-center">
+									<div class="me-2 fw-semibold">
+										Téléphone :
+									</div>
+									<span class="fs-12 text-muted">{{cliente.phone}}</span>
+								</div>
+							</li>
+							<li class="list-group-item border-0">
+								<div class="d-flex flex-wrap align-items-center">
+									<div class="me-2 fw-semibold">
+										Code :
+									</div>
+									<span class="fs-12 text-muted">{{cliente.code_client}}</span>
+								</div>
+							</li>
+							<li class="list-group-item border-0">
+								<div class="d-flex flex-wrap align-items-center">
+									<div class="me-2 fw-semibold">
+										Date Rejoindre :
+									</div>
+									<span class="fs-12 text-muted">{{cliente.date_created}}</span>
+								</div>
+							</li>
+                            <li class="list-group-item border-0">
+								<div class="d-flex flex-wrap align-items-center">
+									<div class="me-2 fw-semibold">
+										Address :
+									</div>
+									<span class="fs-12 text-muted">{{cliente.address}}</span>
+								</div>
+							</li>
+                            <li class="list-group-item border-0">
+								<div class="d-flex flex-wrap align-items-center">
+									<div class="me-2 fw-semibold">
+										Nom Entreprise :
+									</div>
+									<span class="fs-12 text-muted">{{cliente.nom_entreprise}}</span>
+								</div>
+							</li>
+                            <li class="list-group-item border-0">
+								<div class="d-flex flex-wrap align-items-center">
+									<div class="me-2 fw-semibold">
+										Numéro ICE :
+									</div>
+									<span class="fs-12 text-muted">{{cliente.numero_ice}}</span>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="p-4 border-bottom border-block-end-dashed">
+						<p class="fs-15 mb-2 me-4 fw-semibold">Coordonnées :</p>
+						<div class="text-muted">
+							<p class="mb-3">
+								<span class="avatar avatar-sm avatar-rounded me-2 bg-info-transparent">
+									<i class="ri-mail-line align-middle fs-14"></i>
+								</span>
+								{{cliente.email}}
+							</p>
+							<p class="mb-3">
+								<span class="avatar avatar-sm avatar-rounded me-2 bg-warning-transparent">
+									<i class="ri-phone-line align-middle fs-14"></i>
+								</span>
+								{{cliente.phone}}
+							</p>
+							<div class="d-flex">
+								<p class="mb-0">
+									<span class="avatar avatar-sm avatar-rounded me-2 bg-success-transparent">
+										<i class="ri-map-pin-line align-middle fs-14"></i>
+									</span>
+								</p>
+								<p class="mb-0">
+                                    {{cliente.address}}
+                                </p>
+							</div>
+						</div>
+					</div>
+					{% comment %} <div class="p-4 border-bottom border-block-end-dashed">
+						<p class="fs-15 mb-2 me-4 fw-semibold">Skills :</p>
+						<div>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">Cloud computing</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">Data analysis</span>
+							</a>    
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">DevOps</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">Machine learning</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">Programming</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">Security</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">Python</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">JavaScript</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">Ruby</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">PowerShell</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">Statistics</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">SQL</span>
+							</a>
+						</div>
+					</div> {% endcomment %}
+					{% comment %} <div class="p-4 border-bottom border-block-end-dashed d-flex align-items-center">
+						<p class="fs-15 mb-2 me-4 fw-semibold">Social Networks :</p>
+						<div class="btn-list mb-0">
+							<button class="btn btn-sm btn-icon btn-info-light btn-wave waves-effect waves-light">
+								<i class="ri-facebook-line"></i>
+							</button>
+							<button class="btn btn-sm btn-icon btn-secondary-light btn-wave waves-effect waves-light">
+								<i class="ri-twitter-line"></i>
+							</button>
+							<button class="btn btn-sm btn-icon btn-warning-light btn-wave waves-effect waves-light">
+								<i class="ri-instagram-line"></i>
+							</button>
+							<button class="btn btn-sm btn-icon btn-success-light btn-wave waves-effect waves-light">
+								<i class="ri-github-line"></i>
+							</button>
+							<button class="btn btn-sm btn-icon btn-danger-light btn-wave waves-effect waves-light">
+								<i class="ri-youtube-line"></i>
+							</button>
+						</div>
+					</div> {% endcomment %}
+				</div>
+			</div>
+			<div class="col-xxl-6">
+				<div class="row">
+					<div class="col-xl-12">
+						<div class=" custom-card">
+							<div class="card-body p-0">
+								<div class="border-block-end-dashed  bg-white rounded-2 p-2">
+									<div>
+										<ul class="nav nav-pills nav-justified gx-3 tab-style-6 d-sm-flex d-block " id="myTab" role="tablist">
+											<li class="nav-item rounded" role="presentation">
+												<button class="nav-link active" id="activity-tab" data-bs-toggle="tab"
+													data-bs-target="#activity-tab-pane" type="button" role="tab"
+													aria-controls="activity-tab-pane" aria-selected="true"><i class="ri-task-line me-1 align-middle fs-16"></i> Opération bien effectuée
+                                                </button>
+											</li>
+											<li class="nav-item rounded" role="presentation">
+												<button class="nav-link" id="gallery-tab" data-bs-toggle="tab"
+													data-bs-target="#gallery-tab-pane" type="button" role="tab"
+													aria-controls="gallery-tab-pane" aria-selected="false"> <i class="ri-edit-line me-1 align-middle fs-16"></i>Ajouter des informations</button>
+											</li>
+											<li class="nav-item rounded" role="presentation">
+												<button class="nav-link" id="posts-tab" data-bs-toggle="tab"
+													data-bs-target="#posts-tab-pane" type="button" role="tab"
+													aria-controls="posts-tab-pane" aria-selected="false"> <i class="ri-lock-password-line me-1 align-middle fs-16"></i>Modifier le mot de passe</button>
+											</li>
+											<li class="nav-item rounded" role="presentation">
+												<button class="nav-link" id="followers-tab" data-bs-toggle="tab"
+													data-bs-target="#followers-tab-pane" type="button" role="tab"
+													aria-controls="followers-tab-pane" aria-selected="false">  <i class="ri-edit-line me-1 align-middle fs-16"></i> Modifier les informations</button>
+											</li>
+										</ul>
+									</div>   
+								</div>
+								<div class="py-4">
+									<div class="tab-content" id="myTabContent">
+										<div class="tab-pane show active fade p-0 border-0 bg-white p-4 rounded-3" id="activity-tab-pane"
+											role="tabpanel" aria-labelledby="activity-tab" tabindex="0">
+											<ul class="list-unstyled profile-timeline">
+                                                {% for item in all_transactions %}
+                                                <li>
+                                                  <span class="fs-12 text-muted fw-semibold profile-timeline-time">
+                                                    {{ item.date_created|date:"d M Y H:i" }}
+                                                  </span>
+                                                  <div>
+                                                    <span class="avatar avatar-sm avatar-rounded profile-timeline-avatar">
+                                                      {% if item.support %}
+                                                        <img src="{% static 'img/423157.png' %}" alt="Support">
+                                                      {% elif item.websites %}
+                                                        <img src="{% static 'img/website-icon-8.png' %}" alt="Website">
+                                                      {% else %}
+                                                        <img src="{% static 'img/default-icon.png' %}" alt="Transaction">
+                                                      {% endif %}
+                                                    </span>
+                                          
+                                                    {% if item.transaction_type == 'GetFreeWebsite' %}
+                                                      <p class="text-muted mb-2">
+                                                        <b>Site Web gratuit :</b> {{ item.websites.name }}
+                                                        <span class="badge bg-success ms-2">Gratuit</span>
+                                                      </p>
+                                                    {% elif item.transaction_type == 'LocationWebsites' %}
+                                                      <p class="text-muted mb-2">
+                                                        <b>Location de site :</b> {{ item.websites.name }}
+                                                        <span class="badge bg-info ms-2">Location</span>
+                                                      </p>
+                                                    {% elif item.support %}
+                                                      <p class="text-muted mb-2">
+                                                        <b>Service acheté :</b> {{ item.support.name }}
+                                                        <span class="badge bg-primary ms-2">Support</span>
+                                                      </p>
+                                                    {% elif item.websites %}
+                                                      <p class="text-muted mb-2">
+                                                        <b>Site Web acheté :</b> {{ item.websites.name }}
+                                                        <span class="badge bg-dark ms-2">Achat</span>
+                                                      </p>
+                                                    {% endif %}
+                                          
+                                                    {% if item.websites.location %}
+                                                      <p class="text-muted fs-12 mb-0">
+                                                        <i class="ri-map-pin-line me-1"></i> {{ item.websites.location }}
+                                                      </p>
+                                                    {% endif %}
+                                                  </div>
+                                                </li>
+                                                {% empty %}
+                                                <li><p class="text-muted">Aucune transaction récente.</p></li>
+                                                {% endfor %}
+                                              </ul>
+										</div>
+										<div class="tab-pane fade p-0 border-0" id="gallery-tab-pane"
+											role="tabpanel" aria-labelledby="gallery-tab" tabindex="0">
+											<div class="row">
+												<form method="POST" action="{% url 'add_additional_info' %}">
+                                                    {% csrf_token %}
+                                                    <div class="form-group row">
+                                                        <label class="col-lg-3 col-form-label form-control-label">Address</label>
+                                                        <div class="col-lg-9">
+                                                            <input class="form-control" type="text" name="address" required value="{% if cliente.address %}{{ cliente.address }}{% endif %}" {% if cliente.address is None %}placeholder="Enter your address"{% endif %}>
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                    <div class="form-group row">
+                                                        <label class="col-lg-3 col-form-label form-control-label">Nom Entreprise</label>
+                                                        <div class="col-lg-9">
+                                                            <input class="form-control" type="text" name="nom_entreprise" required  value="{% if cliente.nom_entreprise %}{{ cliente.nom_entreprise }}{% endif %}" {% if cliente.nom_entreprise is None %}placeholder="Enter your Nom Entreprise"{% endif %}>
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                    <div class="form-group row">
+                                                        <label class="col-lg-3 col-form-label form-control-label">Numéro ICE</label>
+                                                        <div class="col-lg-9">
+                                                            <input class="form-control" type="text" name="numero_ice" required  value="{% if cliente.numero_ice %}{{ cliente.numero_ice }}{% endif %}" {% if cliente.numero_ice is None %}placeholder="Enter your Numero Ice"{% endif %}>
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                    <div class="form-group row">
+                                                        <label class="col-lg-3 col-form-label form-control-label"></label>
+                                                        {% comment %} {% if not cliente.address or cliente.nom_entreprise or cliente.numero_ice %} {% endcomment %}
+                                                        <div class="col-lg-9">
+                                                            <input type="reset" class="btn btn-secondary" value="Cancel">
+                                                            <input type="submit" class="btn btn-primary" value="Save Changes">
+                                                        </div>
+                                                    {% comment %} {% endif %} {% endcomment %}
+                                                    </div>
+                                                </form>
+											</div>
+										</div>
+										<div class="tab-pane fade p-0 border-0" id="posts-tab-pane"
+											role="tabpanel" aria-labelledby="posts-tab" tabindex="0">
+										<div class="row">
+												<div class=" col-md-12 task-card">
+													<div class="card custom-card task-pending-card">
+														<div class="card-body">
+                                                            <form method="post" action="{% url 'change_password' %}">
+                                                                {% csrf_token %}
+                                                                <div class="form-group row">
+                                                                    <label class="col-lg-3 col-form-label form-control-label">Ancien mot de passe</label>
+                                                                    <div class="col-lg-9">
+                                                                        <input class="form-control" type="password" name="old_password" required>
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                                <div class="form-group row">
+                                                                    <label class="col-lg-3 col-form-label form-control-label">Mot de passe</label>
+                                                                    <div class="col-lg-9">
+                                                                        <input class="form-control" type="password" name="new_password1" required>
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                                <div class="form-group row">
+                                                                    <label class="col-lg-3 col-form-label form-control-label">Confirmez le mot de passe</label>
+                                                                    <div class="col-lg-9">
+                                                                        <input class="form-control" type="password" name="new_password2" required>
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                                <div class="form-group row">
+                                                                    <label class="col-lg-3 col-form-label form-control-label"></label>
+                                                                    <div class="col-lg-9">
+                                                                        <input type="reset" class="btn btn-secondary" value="Annuler">
+                                                                        <input type="submit" class="btn btn-primary" value="Enregistrer les modifications">
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+														</div>
+													</div>
+												</div>
+												
+											</div>
+										</div>
+										<div class="tab-pane fade p-0 border-0" id="followers-tab-pane"
+											role="tabpanel" aria-labelledby="followers-tab" tabindex="0">
+											<div class="row">
+												<div class="col-xxl-12 col-xl-8 col-lg-6 col-md-6 col-sm-12">
+													<div class="card custom-card shadow-none border">
+														<div class="card-body p-4">
+															<form method="post" action="{% url 'update_cliente' %}" >
+                                                                {% csrf_token %}
+                                                                <div class="form-group row">
+                                                                    <label class="col-lg-3 col-form-label form-control-label">Nom</label>
+                                                                    <div class="col-lg-9">
+                                                                        <input class="form-control" type="text" name="nom" required value="{% if cliente.nom %}{{ cliente.nom }}{% endif %}" {% if cliente.nom is None %}placeholder="Enter your nom"{% endif %}>
+                                    
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                                <div class="form-group row">
+                                                                    <label class="col-lg-3 col-form-label form-control-label">Prenom</label>
+                                                                    <div class="col-lg-9">
+                                                                        <input class="form-control" type="text" name="prenom" required value="{% if cliente.prenom %}{{ cliente.prenom }}{% endif %}" {% if cliente.prenom is None %}placeholder="Enter your prenom"{% endif %}>
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                                <div class="form-group row">
+                                                                    <label class="col-lg-3 col-form-label form-control-label">E-mail</label>
+                                                                    <div class="col-lg-9">
+                                                                        <input class="form-control" type="text" name="email" required value="{% if cliente.email %}{{ cliente.email }}{% endif %}" {% if cliente.email is None %}placeholder="Enter your email"{% endif %}>
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                                <div class="form-group row">
+                                                                    <label class="col-lg-3 col-form-label form-control-label">Téléphone</label>
+                                                                    <div class="col-lg-9">
+                                                                        <input class="form-control" type="text" name="phone" required value="{% if cliente.phone %}{{ cliente.phone }}{% endif %}" {% if cliente.phone is None %}placeholder="Enter your phone"{% endif %}>
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                                <div class="form-group row">
+                                                                    <label class="col-lg-3 col-form-label form-control-label"></label>
+                                                                    <div class="col-lg-9">
+                                                                        <input type="reset" class="btn btn-secondary" value="Annuler">
+                                                                        <input type="submit" class="btn btn-primary" value="Enregistrer les modifications">
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>    
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xxl-3">
+				<div class="card custom-card">
+					<div class="p-4 border-bottom border-block-end-dashed">
+						<p class="fs-15 mb-2 fw-semibold">Profile Status :</p>
+						<p class="fw-semibold mb-2">Profile 60% completed - <a href="javscript:void(0);" class="text-primary fs-12">Finish now</a></p>
+						<div class="progress progress-sm progress-animate ">
+							<div class="progress-bar bg-primary  ronded-1" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%"></div>
+						</div>
+					</div>
+				</div>
+				<div class="card custom-card">
+					<div class="card-header">
+						<div class="card-title">Followers</div>
+					</div>
+					<div class="card-body">
+						<ul class="list-group followers-list">
+							<li class="list-group-item">
+								<div class="d-sm-flex align-items-top">
+									<span class="avatar avatar-sm">
+										<img src="../assets/images/faces/1.jpg" alt="img">
+									</span>
+									<div class="ms-sm-2 ms-0 mt-sm-0 mt-1 fw-semibold flex-fill">
+										<p class="mb-0 lh-1">Alicia Sierra</p>
+										<span class="fs-11 text-muted op-7">aliciasierra389@gmail.com</span>
+									</div>
+									<button class="btn btn-light btn-wave btn-sm ms-auto">Follow</button>
+								</div>
+							</li>
+							<li class="list-group-item">
+								<div class="d-sm-flex align-items-top">
+									<span class="avatar avatar-sm">
+										<img src="../assets/images/faces/3.jpg" alt="img">
+									</span>
+									<div class="ms-sm-2 ms-0 mt-sm-0 mt-1 fw-semibold flex-fill">
+										<p class="mb-0 lh-1">Samantha Mery</p>
+										<span class="fs-11 text-muted op-7">samanthamery@gmail.com</span>
+									</div>
+									<button class="btn btn-light btn-wave btn-sm ms-auto">Follow</button>
+								</div>
+							</li>
+							<li class="list-group-item">
+								<div class="d-sm-flex align-items-top">
+									<span class="avatar avatar-sm">
+										<img src="../assets/images/faces/6.jpg" alt="img">
+									</span>
+									<div class="ms-sm-2 ms-0 mt-sm-0 mt-1 fw-semibold flex-fill">
+										<p class="mb-0 lh-1">Juliana Pena</p>
+										<span class="fs-11 text-muted op-7">juliapena555@gmail.com</span>
+									</div>
+									<button class="btn btn-light btn-wave btn-sm ms-auto">Follow</button>
+								</div>
+							</li>
+							<li class="list-group-item">
+								<div class="d-sm-flex align-items-top">
+									<span class="avatar avatar-sm">
+										<img src="../assets/images/faces/15.jpg" alt="img">
+									</span>
+									<div class="ms-sm-2 ms-0 mt-sm-0 mt-1 fw-semibold flex-fill">
+										<p class="mb-0 lh-1">Adam Smith</p>
+										<span class="fs-11 text-muted op-7">adamsmith99@gmail.com</span>
+									</div>
+									<button class="btn btn-light btn-wave btn-sm ms-auto">Follow</button>
+								</div>
+							</li>
+							<li class="list-group-item">
+								<div class="d-sm-flex align-items-top">
+									<span class="avatar avatar-sm">
+										<img src="../assets/images/faces/13.jpg" alt="img">
+									</span>
+									<div class="ms-sm-2 ms-0 mt-sm-0 mt-1 fw-semibold flex-fill">
+										<p class="mb-0 lh-1">Farhaan Amhed</p>
+										<span class="fs-11 text-muted op-7">farhaanahmed989@gmail.com</span>
+									</div>
+									<button class="btn btn-light btn-wave btn-sm ms-auto">Follow</button>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="card custom-card">
+					<div class="card-header">
+						<div class="card-title">Our Latest New</div>
+					</div>
+					<div class="card-body">
+						<div class="media media-xs overflow-visible">
+							<img class="avatar bradius avatar-xl me-3" src="../assets/images/faces/12.jpg" alt="avatar-img">
+							<div class="media-body valign-middle">
+								<a href="javascript:void(0)" class="fw-semibold text-dark">John Paige</a>
+								<p class="text-muted mb-0">There are many variations of passages of Lorem Ipsum available ...</p>
+							</div>
+						</div>
+						<div class="media media-xs overflow-visible mt-4">
+							<img class="avatar bradius avatar-xl me-3" src="../assets/images/faces/2.jpg" alt="avatar-img">
+							<div class="media-body valign-middle">
+								<a href="javascript:void(0)" class="fw-semibold text-dark">Peter Hill</a>
+								<p class="text-muted mb-0">There are many variations of passages of Lorem Ipsum available ...</p>
+							</div>
+						</div>
+						<div class="media media-xs overflow-visible mt-4">
+							<img class="avatar bradius avatar-xl me-3" src="../assets/images/faces/9.jpg" alt="avatar-img">
+							<div class="media-body valign-middle">
+								<a href="javascript:void(0)" class="fw-semibold text-dark">Irene Harris</a>
+								<p class="text-muted mb-0">There are many variations of passages of Lorem Ipsum available ...</p>
+							</div>
+						</div>
+						<div class="media media-xs overflow-visible mt-4">
+							<img class="avatar bradius avatar-xl me-3" src="../assets/images/faces/4.jpg" alt="avatar-img">
+							<div class="media-body valign-middle">
+								<a href="javascript:void(0)" class="fw-semibold text-dark">Harry Fisher</a>
+								<p class="text-muted mb-0">There are many variations of passages of Lorem Ipsum available ...</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--End::row-1 -->
+
+	</div>
+</div>
+<!--APP-CONTENT CLOSE-->
 
 
-    <div class="row">
-            <div class="col-lg-4">
-               <div class="profile-card-4 z-depth-3">
-                <div class="card">
-                  <div class="card-body text-center bg-primary rounded-top">
-                   <div class="user-box">
-                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="user avatar">
-                  </div>
-                  <h5 class="mb-1 text-white">{{cliente.nom}} {{cliente.prenom}}</h5>
-                  {% comment %} <h6 class="text-light">UI/UX Engineer</h6> {% endcomment %}
-                 </div>
-                  <div class="card-body">
-                    <ul class="list-group shadow-none">
-                    <li class="list-group-item">
-                      <div class="list-icon">
-                        <i class="fa fa-phone-square"></i>
-                      </div>
-                      <div class="list-details">
-                        <span style="font-size: 12.5px;font-weight: bold;">{{cliente.phone}}</span>
-                        <small>Numéro de portable</small>
-                      </div>
-                    </li>
-                    <li class="list-group-item">
-                      <div class="list-icon">
-                        <i class="fa fa-envelope"></i>
-                      </div>
-                      <div class="list-details">
-                        <span style="font-size: 12.5px;font-weight: bold;">{{cliente.email}}</span>
-                        <small>Adresse e-mail</small>
-                      </div>
-                    </li>
-                    {% comment %} <li class="list-group-item">
-                      <div class="list-icon">
-                        <i class="fa fa-globe"></i>
-                      </div>
-                      <div class="list-details">
-                        <span>www.example.com</span>
-                        <small>Website Address</small>
-                      </div>
-                    </li> {% endcomment %}
-                    </ul>
-                    {% comment %} <div class="row text-center mt-4">
-                      <div class="col p-2">
-                       <h4 class="mb-1 line-height-5">154</h4>
-                        <small class="mb-0 font-weight-bold">Projects</small>
-                       </div>
-                        <div class="col p-2">
-                          <h4 class="mb-1 line-height-5">2.2k</h4>
-                         <small class="mb-0 font-weight-bold">Followers</small>
-                        </div>
-                        <div class="col p-2">
-                         <h4 class="mb-1 line-height-5">9.1k</h4>
-                         <small class="mb-0 font-weight-bold">Views</small>
-                        </div>
-                     </div> {% endcomment %}
-                   </div>
-                   {% comment %} <div class="card-footer text-center">
-                     <a href="javascript:void()" class="btn-social btn-facebook waves-effect waves-light m-1"><i class="fa fa-facebook"></i></a>
-                     <a href="javascript:void()" class="btn-social btn-google-plus waves-effect waves-light m-1"><i class="fa fa-google-plus"></i></a>
-                     <a href="javascript:void()" class="list-inline-item btn-social btn-behance waves-effect waves-light"><i class="fa fa-behance"></i></a>
-                     <a href="javascript:void()" class="list-inline-item btn-social btn-dribbble waves-effect waves-light"><i class="fa fa-dribbble"></i></a>
-                   </div> {% endcomment %}
-                 </div>
-               </div>
-            </div>
-            <div class="col-lg-8">
-               <div class="card z-depth-3">
-                <div class="card-body">
-                <ul class="nav nav-pills nav-pills-primary nav-justified">
-                    <li class="nav-item">
-                        <a href="javascript:void();" data-target="#profile" data-toggle="pill" class="nav-link active show"><i class="icon-user"></i> <span class="hidden-xs">Voir le Profile</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="javascript:void();" data-target="#add" data-toggle="pill" class="nav-link show"><i class="icon-user"></i> <span class="hidden-xs">Ajouter des informations</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="javascript:void();" data-target="#passe" data-toggle="pill" class="nav-link"><i class="icon-envelope-open"></i> <span class="hidden-xs">Modifier le mot de passe</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="javascript:void();" data-target="#edit" data-toggle="pill" class="nav-link"><i class="icon-note"></i> <span class="hidden-xs">Modifier les information</span></a>
-                    </li>
-                </ul>
-                <div class="tab-content p-3">
-                    <div class="tab-pane active show" id="profile">
-                        <h5 class="mb-3">Profil de l'utilisateur</h5>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6>Username</h6>
-                                <p>
-                                    {{cliente.user.username}}
-                                </p>
-                                <h6>Nom</h6>
-                                <p>
-                                    {{cliente.nom}} {{cliente.prenom}}
-                                </p>
-                                <h6>Address</h6>
-                                <p>
-                                    {% if cliente.address %}
-                                    {{ cliente.address }}
-                                    {% endif %}
-                                    {% if not cliente.address %}
-                                    Vous ne l'avez pas encore ajouté
-                                    {% endif %}
-                                </p>
-                                <h6>Nom Entreprise</h6>
-                                <p>
-                                    {% if cliente.nom_entreprise %}
-                                    {{ cliente.nom_entreprise }}
-                                    {% endif %}
-                                    {% if not cliente.nom_entreprise %}
-                                    Vous ne l'avez pas encore ajouté
-                                    {% endif %}
-                                </p>
-                                
-                            </div>
-                            <div class="col-md-6">
-                                <h6>Email</h6>
-                                <p>
-                                    {{cliente.email}}
-                                </p>
-                                <h6>Phone</h6>
-                                <p>
-                                    {{cliente.phone}}
-                                </p>
-                                <h6>Date Rejoindre Le WebsiteBuilder</h6>
-                                <p>
-                                    {{cliente.date_created}}
-                                </p>
-                                <h6>Numéro ICE</h6>
-                                <p>
-                                    {% if cliente.numero_ice %}
-                                    {{ cliente.numero_ice }}
-                                    {% endif %}
-                                    {% if not cliente.numero_ice %}
-                                    Vous ne l'avez pas encore ajouté
-                                    {% endif %}
-                                </p>
-
-                                {% comment %} <h6>Recent badges</h6>
-                                <a href="javascript:void();" class="badge badge-dark badge-pill">html5</a>
-                                <a href="javascript:void();" class="badge badge-dark badge-pill">react</a>
-                                <a href="javascript:void();" class="badge badge-dark badge-pill">codeply</a>
-                                <a href="javascript:void();" class="badge badge-dark badge-pill">angularjs</a>
-                                <a href="javascript:void();" class="badge badge-dark badge-pill">css3</a>
-                                <a href="javascript:void();" class="badge badge-dark badge-pill">jquery</a>
-                                <a href="javascript:void();" class="badge badge-dark badge-pill">bootstrap</a>
-                                <a href="javascript:void();" class="badge badge-dark badge-pill">responsive-design</a>
-                                <hr>
-                                <span class="badge badge-primary"><i class="fa fa-user"></i> 900 Followers</span>
-                                <span class="badge badge-success"><i class="fa fa-cog"></i> 43 Forks</span>
-                                <span class="badge badge-danger"><i class="fa fa-eye"></i> 245 Views</span>
-                            {% endcomment %}
-                            </div> 
-                            <div class="col-md-12">
-                                <h5 class="mt-2 mb-3"><span class="fa fa-clock-o ion-clock float-right"></span>Mes sites Web et services</h5>
-                                <table class="table table-hover table-striped">
-                                    <tbody> 
-                                        {% if AchatWebsitess %}
-                                        {% for AchatWebsite in AchatWebsitess %}                                   
-                                        <tr>
-                                            <td>
-                                                <strong>WebSite</strong> {{AchatWebsite.websites.name}} 
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                        {% else %}
-                                        <tr>
-                                            <td colspan="4" class="text-center">There is no Achat Website yet.</td>
-                                        </tr>
-                                         {% endif %}
-
-                                        {% if AchatSupports %}
-                                        {% for AchatSupport in AchatSupports %}
-                                        <tr>
-                                            <td>
-                                                <strong>Services</strong> {{AchatSupport.support.name}} 
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                        {% else %}
-                                        <tr>
-                                            <td colspan="4" class="text-center">There is no Achat Support yet.</td>
-                                        </tr>
-                                         {% endif %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <!--/row-->
-                    </div>
-                    <div class="tab-pane" id="add">
-                        <form method="POST" action="{% url 'add_additional_info' %}">
-                            {% csrf_token %}
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Address</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="text" name="address" required value="{% if cliente.address %}{{ cliente.address }}{% endif %}" {% if cliente.address is None %}placeholder="Enter your address"{% endif %}>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Nom Entreprise</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="text" name="nom_entreprise" required  value="{% if cliente.nom_entreprise %}{{ cliente.nom_entreprise }}{% endif %}" {% if cliente.nom_entreprise is None %}placeholder="Enter your Nom Entreprise"{% endif %}>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Numéro ICE</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="text" name="numero_ice" required  value="{% if cliente.numero_ice %}{{ cliente.numero_ice }}{% endif %}" {% if cliente.numero_ice is None %}placeholder="Enter your Numero Ice"{% endif %}>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label"></label>
-                                {% comment %} {% if not cliente.address or cliente.nom_entreprise or cliente.numero_ice %} {% endcomment %}
-                                <div class="col-lg-9">
-                                    <input type="reset" class="btn btn-secondary" value="Cancel">
-                                    <input type="submit" class="btn btn-primary" value="Save Changes">
-                                </div>
-                            {% comment %} {% endif %} {% endcomment %}
-                            </div>
-                        </form>
-                    </div>
-                    <!-- detailUser.html -->
-                    <div class="tab-pane" id="passe">
-                        <form method="post" action="{% url 'change_password' %}">
-                            {% csrf_token %}
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Old password</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="password" name="old_password" required>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Password</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="password" name="new_password1" required>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Confirm password</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="password" name="new_password2" required>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label"></label>
-                                <div class="col-lg-9">
-                                    <input type="reset" class="btn btn-secondary" value="Cancel">
-                                    <input type="submit" class="btn btn-primary" value="Save Changes">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="tab-pane" id="edit">
-                        <form method="post" action="{% url 'update_cliente' %}" >
-                            {% csrf_token %}
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Nom</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="text" name="nom" required value="{% if cliente.nom %}{{ cliente.nom }}{% endif %}" {% if cliente.nom is None %}placeholder="Enter your nom"{% endif %}>
-
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Prenom</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="text" name="prenom" required value="{% if cliente.prenom %}{{ cliente.prenom }}{% endif %}" {% if cliente.prenom is None %}placeholder="Enter your prenom"{% endif %}>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">E-mail</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="text" name="email" required value="{% if cliente.email %}{{ cliente.email }}{% endif %}" {% if cliente.email is None %}placeholder="Enter your email"{% endif %}>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Téléphone</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="text" name="phone" required value="{% if cliente.phone %}{{ cliente.phone }}{% endif %}" {% if cliente.phone is None %}placeholder="Enter your phone"{% endif %}>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label"></label>
-                                <div class="col-lg-9">
-                                    <input type="reset" class="btn btn-secondary" value="Cancel">
-                                    <input type="submit" class="btn btn-primary" value="Save Changes">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-          </div>
-          </div>
-            
-        </div>
-    </div>
-
-    <style>
-        body{
-            margin-top:20px;
-        }
-        /* User Cards */
-        .user-box {
-            width: 110px;
-            margin: auto;
-            margin-bottom: 20px;
-            
-        }
-        
-        .user-box img {
-            width: 100%;
-            border-radius: 50%;
-            padding: 3px;
-            background: #fff;
-            -webkit-box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, 0.2);
-            -moz-box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, 0.2);
-            -ms-box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, 0.2);
-            box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, 0.2);
-        }
-        
-        .profile-card-2 .card {
-            position:relative;
-        }
-        
-        .profile-card-2 .card .card-body {
-            z-index:1;
-        }
-        
-        .profile-card-2 .card::before {
-            content: "";
-            position: absolute;
-            top: 0px;
-            right: 0px;
-            left: 0px;
-            border-top-left-radius: .25rem;
-            border-top-right-radius: .25rem;
-            height: 112px;
-            background-color: #e6e6e6;
-        }
-        
-        .profile-card-2 .card.profile-primary::before {
-            background-color: #008cff;
-        }
-        .profile-card-2 .card.profile-success::before {
-            background-color: #15ca20;
-        }
-        .profile-card-2 .card.profile-danger::before {
-            background-color: #fd3550;
-        }
-        .profile-card-2 .card.profile-warning::before {
-            background-color: #ff9700;
-        }
-        .profile-card-2 .user-box {
-            margin-top: 30px;
-        }
-        
-        .profile-card-3 .user-fullimage {
-            position:relative;
-        }
-        
-        .profile-card-3 .user-fullimage .details{
-            position: absolute;
-            bottom: 0;
-            left: 0px;
-            width:100%;
-        }
-        
-        .profile-card-4 .user-box {
-            width: 110px;
-            margin: auto;
-            margin-bottom: 10px;
-            margin-top: 15px;
-        }
-        
-        .profile-card-4 .list-icon {
-            display: table-cell;
-            font-size: 30px;
-            padding-right: 20px;
-            vertical-align: middle;
-            color: #223035;
-        }
-        
-        .profile-card-4 .list-details {
-            display: table-cell;
-            vertical-align: middle;
-            font-weight: 600;
-            color: #223035;
-            font-size: 15px;
-            line-height: 15px;
-        }
-        
-        .profile-card-4 .list-details small{
-            display: table-cell;
-            vertical-align: middle;
-            font-size: 12px;
-            font-weight: 400;
-            color: #808080;
-        }
-        
-        /*Nav Tabs & Pills */
-        .nav-tabs .nav-link {
-            color: #223035;
-            font-size: 12px;
-            text-align: center;
-            letter-spacing: 1px;
-            font-weight: 600;
-            margin: 2px;
-            margin-bottom: 0;
-            padding: 12px 20px;
-            text-transform: uppercase;
-            border: 1px solid transparent;
-            border-top-left-radius: .25rem;
-            border-top-right-radius: .25rem;
-            
-        }
-        .nav-tabs .nav-link:hover{
-            border: 1px solid transparent;
-        }
-        .nav-tabs .nav-link i {
-            margin-right: 2px;
-            font-weight: 600;
-        }
-        
-        .top-icon.nav-tabs .nav-link i{
-            margin: 0px;
-            font-weight: 500;
-            display: block;
-            font-size: 20px;
-            padding: 5px 0;
-        }
-        
-        .nav-tabs-primary.nav-tabs{
-            border-bottom: 1px solid #008cff;
-        }
-        
-        .nav-tabs-primary .nav-link.active, .nav-tabs-primary .nav-item.show>.nav-link {
-            color: #008cff;
-            background-color: #fff;
-            border-color: #008cff #008cff #fff;
-            border-top: 3px solid #008cff;
-        }
-        
-        .nav-tabs-success.nav-tabs{
-            border-bottom: 1px solid #15ca20;
-        }
-        
-        .nav-tabs-success .nav-link.active, .nav-tabs-success .nav-item.show>.nav-link {
-            color: #15ca20;
-            background-color: #fff;
-            border-color: #15ca20 #15ca20 #fff;
-            border-top: 3px solid #15ca20;
-        }
-        
-        .nav-tabs-info.nav-tabs{
-            border-bottom: 1px solid #0dceec;
-        }
-        
-        .nav-tabs-info .nav-link.active, .nav-tabs-info .nav-item.show>.nav-link {
-            color: #0dceec;
-            background-color: #fff;
-            border-color: #0dceec #0dceec #fff;
-            border-top: 3px solid #0dceec;
-        }
-        
-        .nav-tabs-danger.nav-tabs{
-            border-bottom: 1px solid #fd3550;
-        }
-        
-        .nav-tabs-danger .nav-link.active, .nav-tabs-danger .nav-item.show>.nav-link {
-            color: #fd3550;
-            background-color: #fff;
-            border-color: #fd3550 #fd3550 #fff;
-            border-top: 3px solid #fd3550;
-        }
-        
-        .nav-tabs-warning.nav-tabs{
-            border-bottom: 1px solid #ff9700;
-        }
-        
-        .nav-tabs-warning .nav-link.active, .nav-tabs-warning .nav-item.show>.nav-link {
-            color: #ff9700;
-            background-color: #fff;
-            border-color: #ff9700 #ff9700 #fff;
-            border-top: 3px solid #ff9700;
-        }
-        
-        .nav-tabs-dark.nav-tabs{
-            border-bottom: 1px solid #223035;
-        }
-        
-        .nav-tabs-dark .nav-link.active, .nav-tabs-dark .nav-item.show>.nav-link {
-            color: #223035;
-            background-color: #fff;
-            border-color: #223035 #223035 #fff;
-            border-top: 3px solid #223035;
-        }
-        
-        .nav-tabs-secondary.nav-tabs{
-            border-bottom: 1px solid #75808a;
-        }
-        .nav-tabs-secondary .nav-link.active, .nav-tabs-secondary .nav-item.show>.nav-link {
-            color: #75808a;
-            background-color: #fff;
-            border-color: #75808a #75808a #fff;
-            border-top: 3px solid #75808a;
-        }
-        
-        .tabs-vertical .nav-tabs .nav-link {
-            color: #223035;
-            font-size: 12px;
-            text-align: center;
-            letter-spacing: 1px;
-            font-weight: 600;
-            margin: 2px;
-            margin-right: -1px;
-            padding: 12px 1px;
-            text-transform: uppercase;
-            border: 1px solid transparent;
-            border-radius: 0;
-            border-top-left-radius: .25rem;
-            border-bottom-left-radius: .25rem;
-        }
-        
-        .tabs-vertical .nav-tabs{
-            border:0;
-            border-right: 1px solid #dee2e6;
-        }
-        
-        .tabs-vertical .nav-tabs .nav-item.show .nav-link, .tabs-vertical .nav-tabs .nav-link.active {
-            color: #495057;
-            background-color: #fff;
-            border-color: #dee2e6 #dee2e6 #fff;
-            border-bottom: 1px solid #dee2e6;
-            border-right: 0;
-            border-left: 1px solid #dee2e6;
-        }
-        
-        .tabs-vertical-primary.tabs-vertical .nav-tabs{
-            border:0;
-            border-right: 1px solid #008cff;
-        }
-        
-        .tabs-vertical-primary.tabs-vertical .nav-tabs .nav-item.show .nav-link, .tabs-vertical-primary.tabs-vertical .nav-tabs .nav-link.active {
-            color: #008cff;
-            background-color: #fff;
-            border-color: #008cff #008cff #fff;
-            border-bottom: 1px solid #008cff;
-            border-right: 0;
-            border-left: 3px solid #008cff;
-        }
-        
-        .tabs-vertical-success.tabs-vertical .nav-tabs{
-            border:0;
-            border-right: 1px solid #15ca20;
-        }
-        
-        .tabs-vertical-success.tabs-vertical .nav-tabs .nav-item.show .nav-link, .tabs-vertical-success.tabs-vertical .nav-tabs .nav-link.active {
-            color: #15ca20;
-            background-color: #fff;
-            border-color: #15ca20 #15ca20 #fff;
-            border-bottom: 1px solid #15ca20;
-            border-right: 0;
-            border-left: 3px solid #15ca20;
-        }
-        
-        .tabs-vertical-info.tabs-vertical .nav-tabs{
-            border:0;
-            border-right: 1px solid #0dceec;
-        }
-        
-        .tabs-vertical-info.tabs-vertical .nav-tabs .nav-item.show .nav-link, .tabs-vertical-info.tabs-vertical .nav-tabs .nav-link.active {
-            color: #0dceec;
-            background-color: #fff;
-            border-color: #0dceec #0dceec #fff;
-            border-bottom: 1px solid #0dceec;
-            border-right: 0;
-            border-left: 3px solid #0dceec;
-        }
-        
-        .tabs-vertical-danger.tabs-vertical .nav-tabs{
-            border:0;
-            border-right: 1px solid #fd3550;
-        }
-        
-        .tabs-vertical-danger.tabs-vertical .nav-tabs .nav-item.show .nav-link, .tabs-vertical-danger.tabs-vertical .nav-tabs .nav-link.active {
-            color: #fd3550;
-            background-color: #fff;
-            border-color: #fd3550 #fd3550 #fff;
-            border-bottom: 1px solid #fd3550;
-            border-right: 0;
-            border-left: 3px solid #fd3550;
-        }
-        
-        .tabs-vertical-warning.tabs-vertical .nav-tabs{
-            border:0;
-            border-right: 1px solid #ff9700;
-        }
-        
-        .tabs-vertical-warning.tabs-vertical .nav-tabs .nav-item.show .nav-link, .tabs-vertical-warning.tabs-vertical .nav-tabs .nav-link.active {
-            color: #ff9700;
-            background-color: #fff;
-            border-color: #ff9700 #ff9700 #fff;
-            border-bottom: 1px solid #ff9700;
-            border-right: 0;
-            border-left: 3px solid #ff9700;
-        }
-        
-        .tabs-vertical-dark.tabs-vertical .nav-tabs{
-            border:0;
-            border-right: 1px solid #223035;
-        }
-        
-        .tabs-vertical-dark.tabs-vertical .nav-tabs .nav-item.show .nav-link, .tabs-vertical-dark.tabs-vertical .nav-tabs .nav-link.active {
-            color: #223035;
-            background-color: #fff;
-            border-color: #223035 #223035 #fff;
-            border-bottom: 1px solid #223035;
-            border-right: 0;
-            border-left: 3px solid #223035;
-        }
-        
-        .tabs-vertical-secondary.tabs-vertical .nav-tabs{
-            border:0;
-            border-right: 1px solid #75808a;
-        }
-        
-        .tabs-vertical-secondary.tabs-vertical .nav-tabs .nav-item.show .nav-link, .tabs-vertical-secondary.tabs-vertical .nav-tabs .nav-link.active {
-            color: #75808a;
-            background-color: #fff;
-            border-color: #75808a #75808a #fff;
-            border-bottom: 1px solid #75808a;
-            border-right: 0;
-            border-left: 3px solid #75808a;
-        }
-        
-        .nav-pills .nav-link {
-            border-radius: .25rem;
-            color: #223035;
-            font-size: 12px;
-            text-align: center;
-            letter-spacing: 1px;
-            font-weight: 600;
-            text-transform: uppercase;
-            margin: 3px;
-            padding: 12px 20px;
-            -webkit-transition: all 0.3s ease;
-            -moz-transition: all 0.3s ease;
-            -o-transition: all 0.3s ease;
-            transition: all 0.3s ease; 
-        
-        }
-        
-        .nav-pills .nav-link:hover {
-            background-color:#f4f5fa;
-        }
-        
-        .nav-pills .nav-link i{
-            margin-right:2px;
-            font-weight: 600;
-        }
-        
-        .top-icon.nav-pills .nav-link i{
-            margin: 0px;
-            font-weight: 500;
-            display: block;
-            font-size: 20px;
-            padding: 5px 0;
-        }
-        
-        .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-            color: #fff;
-            background-color: #008cff;
-            box-shadow: 0 4px 20px 0 rgba(0,0,0,.14), 0 7px 10px -5px rgba(0, 140, 255, 0.5);
-        }
-        
-        .nav-pills-success .nav-link.active, .nav-pills-success .show>.nav-link {
-            color: #fff;
-            background-color: #15ca20;
-            box-shadow: 0 4px 20px 0 rgba(0,0,0,.14), 0 7px 10px -5px rgba(21, 202, 32, .5);
-        }
-        
-        .nav-pills-info .nav-link.active, .nav-pills-info .show>.nav-link {
-            color: #fff;
-            background-color: #0dceec;
-            box-shadow: 0 4px 20px 0 rgba(0,0,0,.14), 0 7px 10px -5px rgba(13, 206, 236, 0.5);
-        }
-        
-        .nav-pills-danger .nav-link.active, .nav-pills-danger .show>.nav-link{
-            color: #fff;
-            background-color: #fd3550;
-            box-shadow: 0 4px 20px 0 rgba(0,0,0,.14), 0 7px 10px -5px rgba(253, 53, 80, .5);
-        }
-        
-        .nav-pills-warning .nav-link.active, .nav-pills-warning .show>.nav-link {
-            color: #fff;
-            background-color: #ff9700;
-            box-shadow: 0 4px 20px 0 rgba(0,0,0,.14), 0 7px 10px -5px rgba(255, 151, 0, .5);
-        }
-        
-        .nav-pills-dark .nav-link.active, .nav-pills-dark .show>.nav-link {
-            color: #fff;
-            background-color: #223035;
-            box-shadow: 0 4px 20px 0 rgba(0,0,0,.14), 0 7px 10px -5px rgba(34, 48, 53, .5);
-        }
-        
-        .nav-pills-secondary .nav-link.active, .nav-pills-secondary .show>.nav-link {
-            color: #fff;
-            background-color: #75808a;
-            box-shadow: 0 4px 20px 0 rgba(0,0,0,.14), 0 7px 10px -5px rgba(117, 128, 138, .5);
-        }
-        .card .tab-content{
-            padding: 1rem 0 0 0;
-        }
-        
-        .z-depth-3 {
-            -webkit-box-shadow: 0 11px 7px 0 rgba(0,0,0,0.19),0 13px 25px 0 rgba(0,0,0,0.3);
-            box-shadow: 0 11px 7px 0 rgba(0,0,0,0.19),0 13px 25px 0 rgba(0,0,0,0.3);
-        }
-    </style>
 
 {% endblock %}
 
