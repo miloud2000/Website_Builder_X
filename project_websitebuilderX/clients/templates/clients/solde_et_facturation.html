@@ -45,7 +45,7 @@
                                 </ul> {% endcomment %}
                               
                              <div class="d-flex justify-content-end mb-3 gap-2">
-                                  <a href="{% url 'paiement' %}" class="btn btn-success">
+                                  <a href="{% url 'client:paiement' %}" class="btn btn-success">
                                     <i class="mdi mdi-account-plus"></i> Recharger votre compte
                                   </a>&nbsp;
                                     {% comment %}  <a href="{% url 'export_admins_csv' %}" class="btn btn-outline-secondary">
@@ -158,7 +158,7 @@
                                                     N/A
                                                 {% endif %}
                                                 <td><h6 class="mb-0 fs-14 fw-semibold">{{ facturation.date_created|date:"d M Y" }}</h6></td>
-                                                <td><a href="{% url 'generate_facturation_pdf' facturation.id %}" class="btn btn-sm btn-primary">PDF</a></td>
+                                                <td><a href="{% url 'client:generate_facturation_pdf' facturation.id %}" class="btn btn-sm btn-primary">PDF</a></td>
 
                                                
                                             </tr>
@@ -184,7 +184,7 @@
                                           <!-- Body -->
                                           <div class="modal-body">
                                             <p id="confirmationText" class="mb-3">Êtes-vous sûr de vouloir activer ce service ?</p>
-                                            <form id="confirmConsumptionForm" method="post" action="{% url 'confirm_consome_demande_support' %}">
+                                            <form id="confirmConsumptionForm" method="post" action="{% url 'client:confirm_consome_demande_support' %}">
                                               {% csrf_token %}
                                               <input type="hidden" name="support_id" id="supportIdInput">
                                               <div class="text-end">

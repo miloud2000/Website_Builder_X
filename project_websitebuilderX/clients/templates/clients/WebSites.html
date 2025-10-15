@@ -116,7 +116,7 @@
                                                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
                                                       </div>
                                                       <div class="modal-body">
-                                                        <form method="post" action="{% url 'add_websiteBuilder' %}">
+                                                        <form method="post" action="{% url 'client:add_websiteBuilder' %}">
                                                           {% csrf_token %}
                                                           <input type="hidden" name="cliente_id" value="{{ achat.cliente_id }}">
                                                           <input type="hidden" name="website_id" value="{{ achat.id }}">
@@ -139,7 +139,7 @@
                                                       {% if achat.BuilderStatus == 'Builder' %} 
                                                       {% if achat.websitebuilder_set.exists %}
                                                       {% with website_builder=achat.websitebuilder_set.first %}
-                                                          <a href="{% url 'edite_website' website_builder.nameWebsite %}" class="btn btn-sm btn-primary">Editer</a>
+                                                          <a href="{% url 'client:edite_website' website_builder.nameWebsite %}" class="btn btn-sm btn-primary">Editer</a>
                                                       {% endwith %}
                                                       {% endif %}
                                                     {% endif %}
@@ -258,7 +258,7 @@
                                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
                                                   </div>
                                                   <div class="modal-body">
-                                                    <form method="post" action="{% url 'add_GetFreeWebsiteBuilder' %}">
+                                                    <form method="post" action="{% url 'client:add_GetFreeWebsiteBuilder' %}">
                                                       {% csrf_token %}
                                                       <input type="hidden" name="cliente_id" value="{{ free.cliente_id }}">
                                                       <input type="hidden" name="website_id" value="{{ free.id }}">
@@ -282,7 +282,7 @@
                                                   {% if free.BuilderStatus == 'Builder' %}
                                                   {% if free.getfreewebsitebuilder_set.exists %}
                                                       {% with getfree_website_builder=free.getfreewebsitebuilder_set.first %}
-                                                          <a href="{% url 'edite_free_website' getfree_website_builder.nameWebsite %}" class="btn btn-sm btn-primary">Editer</a>
+                                                          <a href="{% url 'client:edite_free_website' getfree_website_builder.nameWebsite %}" class="btn btn-sm btn-primary">Editer</a>
                                                       {% endwith %}
                                                   {% endif %}
                                               {% endif %}
@@ -409,7 +409,7 @@
                                                 </button>
                                               </div>
                                               <div class="modal-body">
-                                                <form method="post" action="{% url 'add_locationWebsiteBuilder' %}">
+                                                <form method="post" action="{% url 'client:add_locationWebsiteBuilder' %}">
                                                   {% csrf_token %}
                                                   <input type="hidden" name="cliente_id" value="{{ location.cliente_id }}">
                                                   <input type="hidden" name="website_id" value="{{ location.id }}">
@@ -433,7 +433,7 @@
                                               {% if location.BuilderStatus == 'Builder' %} 
                                               {% if location.locationwebsitebuilder_set.exists %}
                                               {% with location_website_builder=location.locationwebsitebuilder_set.first %}
-                                              <a href="{% url 'edite_website_Location' location_website_builder.nameWebsite %}" class="btn btn-sm btn-primary">Editer</a>
+                                              <a href="{% url 'client:edite_website_Location' location_website_builder.nameWebsite %}" class="btn btn-sm btn-primary">Editer</a>
                                               {% comment %} <a href="{% url 'edite_website_Location' location_website_builder.id %}" class="btn btn-sm btn-primary">Editer</a> {% endcomment %}
                                               {% endwith %}
                                               {% endif %}

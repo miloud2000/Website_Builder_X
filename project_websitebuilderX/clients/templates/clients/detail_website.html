@@ -13,7 +13,7 @@
                   <div>
                     <ol class="breadcrumb mb-0">
                       <li class="breadcrumb-item">
-                        <a href="{% url "list_websites" %}">Liste de sites Web</a>
+                        <a href="{% url "client:list_websites" %}">Liste de sites Web</a>
                       </li>
                       <li class="breadcrumb-item active" aria-current="page">Détails du site Web</li>
                     </ol>
@@ -70,7 +70,7 @@
                                                         <div class="">
                                                             <div class="text-center">
                                                                 <div class="avatar avatar-xxl bg-light p-1">
-																	<a href="{% url 'detail_website' slugWebsites=site.slugWebsites %}"><img src="{{ site.image.url }}" alt="{{ site.name }}" class="img-fluid rounded"></a>                                                        </div>
+																	<a href="{% url 'client:detail_website' slugWebsites=site.slugWebsites %}"><img src="{{ site.image.url }}" alt="{{ site.name }}" class="img-fluid rounded"></a>                                                        </div>
                                                                 <h5 class="mb-1 fs-12 fw-semibold   mt-1">{{ site.name }}</h5>
                                                                 <p class="mb-0 text-muted fs-12 px-3">{{ site.description|truncatechars:50 }}</p>
                                                                 <div class="flex-fill mb-1">
@@ -254,7 +254,7 @@
 														</div>
 														<div class="modal-body">
 														  <p id="modalText">Chargement...</p>
-														  <form method="post" action="{% url 'confirm_Achat_website' %}">
+														  <form method="post" action="{% url 'client:confirm_Achat_website' %}">
 															{% csrf_token %}
 															<input type="hidden" name="website_id" id="modalWebsiteId">
 															<button type="submit" class="btn btn-primary">Confirmer</button>
@@ -283,7 +283,7 @@
 												  <div class="modal fade" id="loyerModal" tabindex="-1" aria-labelledby="loyerModalLabel" aria-hidden="true">
 													<div class="modal-dialog modal-dialog-centered">
 													  <div class="modal-content">
-														<form method="post" action="{% url 'confirm_loyer_website' %}">
+														<form method="post" action="{% url 'client:confirm_loyer_website' %}">
 														  {% csrf_token %}
 														  <div class="modal-header">
 															<h5 class="modal-title" id="loyerModalLabel">Confirmer la location</h5>
@@ -343,7 +343,7 @@
 												  <div class="modal fade" id="freeModal" tabindex="-1" aria-labelledby="freeModalLabel" aria-hidden="true">
 													<div class="modal-dialog modal-dialog-centered">
 													  <div class="modal-content">
-														<form method="post" action="{% url 'GetFree_website' %}">
+														<form method="post" action="{% url 'client:GetFree_website' %}">
 														  {% csrf_token %}
 														  <div class="modal-header">
 															<h5 class="modal-title" id="freeModalLabel">Confirmer l'obtention gratuite</h5>
@@ -703,7 +703,7 @@
 							  <div class="col-xl-2 col-6 my-2">
 								<div class="text-center">
 								  <div class="similar-products-image me-2">
-									<a href="{% url 'detail_website' slugWebsites=site.slugWebsites %}"><img src="{{ site.image.url }}" alt="{{ site.name }}" class="img-fluid rounded"></a>
+									<a href="{% url 'client:detail_website' slugWebsites=site.slugWebsites %}"><img src="{{ site.image.url }}" alt="{{ site.name }}" class="img-fluid rounded"></a>
 								  </div>
 								  <h5 class="my-2 fs-14 fw-semibold">{{ site.name }}</h5>
 								  <div class="d-flex align-items-center justify-content-center mb-2">

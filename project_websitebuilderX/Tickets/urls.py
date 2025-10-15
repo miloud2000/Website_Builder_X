@@ -3,6 +3,8 @@ from . import views
 from django.conf import settings
 from django.conf.urls.static import static
 
+app_name = 'ticket'  
+
 urlpatterns = [
     path('ticket_list/',views.ticket_list, name="ticket_list"), 
     path('get_branch_options/',views.get_branch_options, name='get_branch_options'),

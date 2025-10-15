@@ -30,7 +30,7 @@
 											<li><a class="dropdown-item" href="#">Move To</a></li>
 										</ul>
 									</div> {% endcomment %}
-                  <a href="{% url "add_ticket" %}"><button class="btn btn-icon btn-secondary-light ms-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Ajouter Ticket"><i class="ri-add-line"></i></button></a>
+                  <a href="{% url "ticket:add_ticket" %}"><button class="btn btn-icon btn-secondary-light ms-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Ajouter Ticket"><i class="ri-add-line"></i></button></a>
 								</div>
 							</div>
 						</div> 
@@ -49,7 +49,7 @@
                 </div>
                 <div>
                   <h6 class="mb-1 fw-semibold">
-                    <a href="{% url 'details_ticket' ticket.code_Ticket %}" class="text-dark">{{ ticket.typeTicket }}</a>
+                    <a href="{% url 'ticket:details_ticket' ticket.code_Ticket %}" class="text-dark">{{ ticket.typeTicket }}</a>
                   </h6>
                   <p class="mb-1 text-muted contact-mail text-truncate">
                     {{ ticket.date_created|date:"d M Y H:i" }}
@@ -85,7 +85,7 @@
             </div>
 
             <div class="d-flex gap-2 pt-4 justify-content-center">
-              <a href="{% url 'details_ticket' ticket.code_Ticket %}" class="btn btn-primary btn-sm w-100">
+              <a href="{% url 'ticket:details_ticket' ticket.code_Ticket %}" class="btn btn-primary btn-sm w-100">
                 <i class="mdi mdi-receipt me-1"></i> Plus d'information
               </a>
             </div>

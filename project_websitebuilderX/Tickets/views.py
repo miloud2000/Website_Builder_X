@@ -73,30 +73,43 @@ def get_user_notifications_and_messages(cliente):
     notifications = sorted(raw_notifications, key=lambda x: x['date_created'], reverse=True)[:6]
 
    
-    recharges = DemandeRecharger.objects.filter(cliente=cliente).order_by('-date_created')[:5]
-    tickets = Ticket.objects.filter(cliente=cliente).order_by('-date_created')[:5]
+    recharges = DemandeRecharger.objects.filter(
+        cliente=cliente,
+        status__in=['done', 'inacceptable']
+    ).order_by('-date_created')[:5]
+    
+
+    
+    tickets = Ticket.objects.filter(
+        Q(cliente=cliente) &
+        (Q(updated_by_ts__isnull=False) | Q(updated_by_gc__isnull=False)) &
+        Q(conversations__isnull=False)
+    ).distinct().order_by('-date_updated')[:5]
 
     messages_dropdown = []
 
     for recharge in recharges:
         messages_dropdown.append({
-            'type': 'Recharge',
-            'title': f"Demande de recharge : {recharge.solde} MAD",
-            'subtitle': f"Statut : {recharge.status}",
-            'time': timesince(recharge.date_created) + " ago",
-            'image': 'faces/1.jpg',
-            'date_created': recharge.date_created 
-        })
+        'type': 'Recharge',
+        'title': f"Demande de recharge : {recharge.solde} MAD",
+        'subtitle': f"Statut : {recharge.status}",
+        'time': timesince(recharge.date_created) + " ago",
+        'image': 'faces/1.jpg',
+        'date_created': recharge.date_created,
+    })
+
 
     for ticket in tickets:
         messages_dropdown.append({
-            'type': 'Ticket',
-            'title': f"Ticket : {ticket.typeTicket}",
-            'subtitle': f"Statut : {ticket.status}",
-            'time': timesince(ticket.date_created) + " ago",
-            'image': 'faces/2.jpg',
-            'date_created': ticket.date_created 
-        })
+        'type': 'Ticket',
+        'title': f"Ticket mis à jour : {ticket.typeTicket}",
+        'subtitle': f"Statut : {ticket.status}",
+        'time': timesince(ticket.date_updated) + " ago",
+        'image': 'faces/2.jpg',
+        'date_created': ticket.date_updated,
+        'code_Ticket': ticket.code_Ticket  
+    })
+
 
 
     messages_dropdown = sorted(messages_dropdown, key=lambda x: x['date_created'], reverse=True)
@@ -166,7 +179,7 @@ def details_ticket(request, code_Ticket):
                 message=message,
                 image=image  # Add image if provided
             )
-            return redirect('details_ticket', code_Ticket=code_Ticket)
+            return redirect('ticket:details_ticket', code_Ticket=code_Ticket)
 
     context = {
         'ticket': ticket,
@@ -223,7 +236,7 @@ def add_ticket(request):
                 pièce_joint=attachment
             )
             ticket.save()
-            return redirect('ticket_list')  
+            return redirect('ticket:ticket_list')  
 
     context = {
         'cliente': cliente,
@@ -401,7 +414,7 @@ def details_ticket_ST(request, code_Ticket):
             else:
                 messages.error(request, 'Statut invalide sélectionné')
 
-        return redirect('details_ticket_ST', code_Ticket=code_Ticket)
+        return redirect('ticket:details_ticket_ST', code_Ticket=code_Ticket)
 
     context = {
         'ticket': ticket,
@@ -485,7 +498,7 @@ def details_ticket_GC(request, code_Ticket):
             else:
                 messages.error(request, 'Statut sélectionné invalide.')
 
-        return redirect('details_ticket_GC', code_Ticket=code_Ticket)
+        return redirect('ticket:details_ticket_GC', code_Ticket=code_Ticket)
 
     context = {
         'ticket': ticket,
@@ -537,7 +550,7 @@ def update_ticket_st(request, ticket_id):
         
         ticket.updated_by_ts = support_technique
         ticket.save()
-        return redirect('details_ticket_ST', code_Ticket=ticket.code_Ticket)
+        return redirect('ticket:details_ticket_ST', code_Ticket=ticket.code_Ticket)
     
     return render(request, 'details_ticket_ST.html', {'ticket': ticket})
 
@@ -566,6 +579,6 @@ def update_ticket_gc(request, ticket_id):
         
         ticket.updated_by_gc = gestionnaire_comptes
         ticket.save()
-        return redirect('details_ticket_GC', code_Ticket=ticket.code_Ticket)
+        return redirect('ticket:details_ticket_GC', code_Ticket=ticket.code_Ticket)
     
     return render(request, 'details_ticket_GC.html', {'ticket': ticket})

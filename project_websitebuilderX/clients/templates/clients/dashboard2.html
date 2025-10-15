@@ -905,19 +905,26 @@
                                   <div class="d-flex align-items-start">
                                     <div class="pe-2">
                                         {% if msg.type == "Ticket" %}
-                                          <span class="avatar avatar-md bg-secondary avatar-rounded">
-                                            <i class="fe fe-alert-circle fs-18"></i>
-                                          </span>
+                                          <a href="{% url 'ticket:details_ticket' msg.code_Ticket %}">
+                                            <span class="avatar avatar-md bg-secondary avatar-rounded">
+                                              <i class="fe fe-alert-circle fs-18"></i>
+                                            </span>
+                                          </a>
                                         {% elif msg.type == "Recharge" %}
-                                          <span class="avatar avatar-md bg-success avatar-rounded">
-                                            <i class="fe fe-dollar-sign fs-18"></i>
-                                          </span>
+                                          <a href="{% url 'client:list_demande_recharger'%}">
+                                            <span class="avatar avatar-md bg-success avatar-rounded">
+                                              <i class="fe fe-dollar-sign fs-18"></i>
+                                            </span>
+                                          </a>
                                         {% else %}
-                                          <span class="avatar avatar-md bg-muted avatar-rounded">
-                                            <i class="fe fe-info fs-18"></i>
-                                          </span>
+                                          <a href="{% url 'messages' %}">
+                                            <span class="avatar avatar-md bg-muted avatar-rounded">
+                                              <i class="fe fe-info fs-18"></i>
+                                            </span>
+                                          </a>
                                         {% endif %}
                                       </div>
+                                      
                                       
                                     <div class="w-100">
                                       <div class="d-flex justify-content-between align-items-center">
@@ -999,7 +1006,7 @@
                                     <span class="op-7 fw-normal d-block fs-11 text-muted">{{ request.user.username }}</span>
                                 </div>
                             </li>
-                            <li class="dropdown-item"><a class="d-flex w-100" href="{% url "detailUser" %}"><i class="fe fe-user fs-18 me-2 text-primary"></i>Profil</a></li>
+                            <li class="dropdown-item"><a class="d-flex w-100" href="{% url "client:detailUser" %}"><i class="fe fe-user fs-18 me-2 text-primary"></i>Profil</a></li>
                             <li class="dropdown-item"><a class="d-flex w-100" href="{% url "userLogout" %}"><i class="fe fe-info fs-18 me-2 text-primary"></i>Se déconnecter</a></li>
                         </ul>
                     </div>
@@ -1054,7 +1061,7 @@
 
                         <!-- Start::slide -->
                         <li class="slide">
-                            <a href="{% url "dashbordHome" %}" class="side-menu__item">
+                            <a href="{% url "client:dashbordHome" %}" class="side-menu__item">
                                 <i class="fe fe-home side-menu__icon"></i>
                                 <span class="side-menu__label">Dashboard</span>
                             </a>
@@ -1077,13 +1084,13 @@
                                     <a href="javascript:void(0)">Apps</a>
                                 </li>
                                 <li class="slide">
-                                    <a href="{% url 'MesServices' %}"  class="side-menu__item">Tous les services</a>
+                                    <a href="{% url 'client:MesServices' %}"  class="side-menu__item">Tous les services</a>
                                 </li>
                                 <li class="slide">
-                                    <a href="{% url 'WebSites' %}" class="side-menu__item">Tous les sites Web</a>
+                                    <a href="{% url 'client:WebSites' %}" class="side-menu__item">Tous les sites Web</a>
                                 </li>
                                 <li class="slide">
-                                  <a href="{% url 'Services' %}" class="side-menu__item">Tous les supports</a>
+                                  <a href="{% url 'client:Services' %}" class="side-menu__item">Tous les supports</a>
                               </li>
                             </ul>
                         </li>
@@ -1101,23 +1108,23 @@
                                     <a href="javascript:void(0)">Solde et facturation</a>
                                 </li>
                                 <li class="slide">  
-                                    <a href="{% url 'solde_et_facturation' %}" class="side-menu__item">Solde et facturation</a>
+                                    <a href="{% url 'client:solde_et_facturation' %}" class="side-menu__item">Solde et facturation</a>
                                 </li>
                                 <li class="slide has-sub">
                                   <a href="javascript:void(0);" class="side-menu__item">List Demande Recharger
                                       <i class="fe fe-chevron-right side-menu__angle"></i></a>
                                   <ul class="slide-menu child2">
                                       <li class="slide">
-                                          <a href="{% url 'list_demande_recharger' %}" class="side-menu__item">Toutes les Demandes</a>
+                                          <a href="{% url 'client:list_demande_recharger' %}" class="side-menu__item">Toutes les Demandes</a>
                                       </li>
                                       <li class="slide">
-                                          <a href="{% url 'list_Demande_Recharger_Complete' %}" class="side-menu__item">Demandes Complété</a>
+                                          <a href="{% url 'client:list_Demande_Recharger_Complete' %}" class="side-menu__item">Demandes Complété</a>
                                       </li>
                                       <li class="slide">
-                                          <a href="{% url 'list_Demande_Recharger_En_attente' %}" class="side-menu__item">Demandes En attente</a>
+                                          <a href="{% url 'client:list_Demande_Recharger_En_attente' %}" class="side-menu__item">Demandes En attente</a>
                                       </li>
                                       <li class="slide">
-                                        <a href="{% url 'list_Demande_Recharger_Annule' %}" class="side-menu__item">Demandes Annulé</a>
+                                        <a href="{% url 'client:list_Demande_Recharger_Annule' %}" class="side-menu__item">Demandes Annulé</a>
                                     </li>
                                   </ul>
                               </li>
@@ -1127,7 +1134,7 @@
                         <!-- End::slide -->
                          <!-- Start::slide -->
                          <li class="slide">
-                            <a href="{% url 'list_websites' %}" class="side-menu__item">
+                            <a href="{% url 'client:list_websites' %}" class="side-menu__item">
                                 <i class="fe fe-aperture side-menu__icon"></i>
                                 <span class="side-menu__label">Catalogue Websites</span>
                             </a>
@@ -1135,7 +1142,7 @@
                         <!-- Start::slide -->
                         <!-- Start::slide -->
                         <li class="slide">
-                            <a href="{% url "list_services" %}" class="side-menu__item">
+                            <a href="{% url "client:list_services" %}" class="side-menu__item">
                                 <i class="fe fe-aperture side-menu__icon"></i>
                                 <span class="side-menu__label">Catalogue Services</span>
                             </a>
@@ -1144,7 +1151,7 @@
                         
                         <!-- Start::slide -->
                         <li class="slide">
-                            <a href="{% url "ticket_list" %}" class="side-menu__item">
+                            <a href="{% url "ticket:ticket_list" %}" class="side-menu__item">
                                 <i class="fe fe-layers side-menu__icon"></i>
                                 <span class="side-menu__label">Ticket</span>
                             </a>

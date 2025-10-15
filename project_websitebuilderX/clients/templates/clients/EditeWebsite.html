@@ -155,7 +155,7 @@
                        <!-- Suspendre -->
                        {% if not suspendre_exists and not reprendre_suspendre_exists and not delete_exists and website_builder.Statu_du_website == '1' %}
                            <button type="button" class="btn btn-sm badge bg-warning rounded-pill text-white" style="width: 131px; height: 26px;" data-toggle="modal" data-target="#confirmSuspendreModal">Suspendre</button>
-                           <form id="suspendreForm" method="POST" action="{% url 'add_website_suspendre' %}" style="display: none;">
+                           <form id="suspendreForm" method="POST" action="{% url 'client:add_website_suspendre' %}" style="display: none;">
                                {% csrf_token %}
                                <input type="hidden" name="cliente_id" value="{{ request.user.cliente.id }}">
                                <input type="hidden" name="location_website_builder_id" value="{{ website_builder_location.id }}">
@@ -194,7 +194,7 @@
                         <!-- Reprendre Suspendre -->
                         {% if not reprendre_suspendre_exists and suspendre_exists and not delete_exists %}
                             <button type="button" class="btn btn-sm badge bg-warning rounded-pill text-white" style="width: 158px; height: 26px;" data-toggle="modal" data-target="#confirmSuspendreModal2">Reprendre Suspendre</button>
-                            <form id="suspendreForm2" method="POST" action="{% url 'add_website_suspendre_reprendre' %}" style="display: none;">
+                            <form id="suspendreForm2" method="POST" action="{% url 'client:add_website_suspendre_reprendre' %}" style="display: none;">
                                 {% csrf_token %}
                                 <input type="hidden" name="cliente_id" value="{{ request.user.cliente.id }}">
                                 <input type="hidden" name="location_website_builder_id" value="{{ website_builder_location.id }}">
@@ -233,7 +233,7 @@
                         <!-- Reset -->
                         {% if not reset_request and not delete_exists %}
                             <button type="button" class="btn btn-sm badge bg-info rounded-pill text-white" style="width: 131px; height: 26px;" data-toggle="modal" data-target="#confirmResetModal">Réinitialiser</button>
-                            <form id="resetForm" method="POST" action="{% url 'add_website_reset' %}" style="display: none;">
+                            <form id="resetForm" method="POST" action="{% url 'client:add_website_reset' %}" style="display: none;">
                                 {% csrf_token %}
                                 <input type="hidden" name="cliente_id" value="{{ request.user.cliente.id }}">
                                 <input type="hidden" name="location_website_builder_id" value="{{ website_builder_location.id }}">
@@ -283,7 +283,7 @@
                                         data-dismiss="modal" aria-label="Fermer" style="width: 36px; height: 36px;"><i class="fe fe-x text-danger"></i></button>                                
                                     </div>
                                     <div class="modal-body">
-                                      <form id="addPeriodForm" method="POST" action="{% url 'add_period_hebergement' achat_id=website_builder.achat_website.id %}">
+                                      <form id="addPeriodForm" method="POST" action="{% url 'client:add_period_hebergement' achat_id=website_builder.achat_website.id %}">
                                           {% csrf_token %}
                                             <input type="hidden" name="website_builder_id" value="{{ website_builder.nameWebsite }}">
                                             <input type="hidden" name="achat_id" value="{{ achat_id }}">

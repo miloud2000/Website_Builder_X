@@ -13,7 +13,7 @@
                   <div>
                     <ol class="breadcrumb mb-0">
                       <li class="breadcrumb-item">
-                        <a href="{% url "list_services" %}">Accueil</a>
+                        <a href="{% url "client:list_services" %}">Accueil</a>
                       </li>
                       <li class="breadcrumb-item active" aria-current="page">Liste du support</li>
                     </ol>
@@ -62,12 +62,12 @@
                             <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
                                 <div class="card custom-card product-card">
                                     <div class="card-body">
-                                        <a href="{% url 'detail_support' support.id %}" class="product-image">
+                                        <a href="{% url 'client:detail_support' support.id %}" class="product-image">
                                             <img src="{% static 'img/websitebuilder-removebg-preview.png' %}" class="card-img mb-3" alt="No image">
                                         </a>
                     
                                         <div class="product-icons">
-                                            <a href="{% url 'detail_support' support.id %}" class="wishlist"><i class="ri-eye-line"></i></a>
+                                            <a href="{% url 'client:detail_support' support.id %}" class="wishlist"><i class="ri-eye-line"></i></a>
                                         </div>
                     
                                         <p class="product-name fw-semibold mb-0 d-flex align-items-center justify-content-between">

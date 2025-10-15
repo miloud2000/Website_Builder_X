@@ -190,7 +190,7 @@
                                           <!-- Body -->
                                           <div class="modal-body">
                                             <p id="confirmationText" class="mb-3">Êtes-vous sûr de vouloir activer ce service ?</p>
-                                            <form id="confirmConsumptionForm" method="post" action="{% url 'confirm_consome_demande_support' %}">
+                                            <form id="confirmConsumptionForm" method="post" action="{% url 'client:confirm_consome_demande_support' %}">
                                               {% csrf_token %}
                                               <input type="hidden" name="support_id" id="supportIdInput">
                                               <div class="text-end">

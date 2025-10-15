@@ -13,7 +13,7 @@
                   <div>
                     <ol class="breadcrumb mb-0">
                       <li class="breadcrumb-item">
-                        <a href="{% url "list_services" %}">Liste de support</a>
+                        <a href="{% url "client:list_services" %}">Liste de support</a>
                       </li>
                       <li class="breadcrumb-item active" aria-current="page">Détails du support</li>
                     </ol>
@@ -71,7 +71,7 @@
                                                               <div class="">
                                                                   <div class="text-center">
                                                                       <div class="avatar avatar-xxl bg-light p-1">
-                                                                      <a href="{% url 'detail_support' item.id %}"><img src="{% static 'img/websitebuilder-removebg-preview.png' %}" alt="{{ item.name }}" class="img-fluid rounded"></a>
+                                                                      <a href="{% url 'client:detail_support' item.id %}"><img src="{% static 'img/websitebuilder-removebg-preview.png' %}" alt="{{ item.name }}" class="img-fluid rounded"></a>
                                                                   </div>
                                                                       <h5 class="mb-1 fs-12 fw-semibold   mt-1">{{ item.name }}</h5>
                                                                       <p class="mb-0 text-muted fs-12 px-3">{{ item.description|truncatechars:50 }}</p>
@@ -168,7 +168,7 @@
                                             <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
                                               <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content">
-                                                  <form method="post" action="{% url 'confirm_Achat_support' %}">
+                                                  <form method="post" action="{% url 'client:confirm_Achat_support' %}">
                                                     {% csrf_token %}
                                                     <div class="modal-header">
                                                       <h5 class="modal-title" id="confirmationModalLabel">Confirmer l'achat du service</h5>
@@ -255,7 +255,7 @@
                                 <div class="col-xl-2 col-6 my-2">
                                   <div class="text-center">
                                     <div class="similar-products-image me-2">
-                                      <a href="{% url 'detail_support' item.id %}">
+                                      <a href="{% url 'client:detail_support' item.id %}">
                                         <img src="{% static 'img/websitebuilder-removebg-preview.png' %}" alt="{{ item.name }}" class="img-fluid rounded">
                                       </a>
                                     </div>

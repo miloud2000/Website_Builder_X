@@ -60,7 +60,6 @@ def home(request):
 
 
 #Cliente
-
 from itertools import chain
 from django.utils.timezone import now
 from collections import Counter
@@ -116,36 +115,48 @@ def get_user_notifications_and_messages(cliente):
     notifications = sorted(raw_notifications, key=lambda x: x['date_created'], reverse=True)[:6]
 
    
-    recharges = DemandeRecharger.objects.filter(cliente=cliente).order_by('-date_created')[:5]
-    tickets = Ticket.objects.filter(cliente=cliente).order_by('-date_created')[:5]
+    recharges = DemandeRecharger.objects.filter(
+        cliente=cliente,
+        status__in=['done', 'inacceptable']
+    ).order_by('-date_created')[:5]
+    
+
+    
+    tickets = Ticket.objects.filter(
+        Q(cliente=cliente) &
+        (Q(updated_by_ts__isnull=False) | Q(updated_by_gc__isnull=False)) &
+        Q(conversations__isnull=False)
+    ).distinct().order_by('-date_updated')[:5]
 
     messages_dropdown = []
 
     for recharge in recharges:
         messages_dropdown.append({
-            'type': 'Recharge',
-            'title': f"Demande de recharge : {recharge.solde} MAD",
-            'subtitle': f"Statut : {recharge.status}",
-            'time': timesince(recharge.date_created) + " ago",
-            'image': 'faces/1.jpg',
-            'date_created': recharge.date_created 
-        })
+        'type': 'Recharge',
+        'title': f"Demande de recharge : {recharge.solde} MAD",
+        'subtitle': f"Statut : {recharge.status}",
+        'time': timesince(recharge.date_created) + " ago",
+        'image': 'faces/1.jpg',
+        'date_created': recharge.date_created,
+    })
+
 
     for ticket in tickets:
         messages_dropdown.append({
-            'type': 'Ticket',
-            'title': f"Ticket : {ticket.typeTicket}",
-            'subtitle': f"Statut : {ticket.status}",
-            'time': timesince(ticket.date_created) + " ago",
-            'image': 'faces/2.jpg',
-            'date_created': ticket.date_created 
-        })
+        'type': 'Ticket',
+        'title': f"Ticket mis à jour : {ticket.typeTicket}",
+        'subtitle': f"Statut : {ticket.status}",
+        'time': timesince(ticket.date_updated) + " ago",
+        'image': 'faces/2.jpg',
+        'date_created': ticket.date_updated,
+        'code_Ticket': ticket.code_Ticket  
+    })
+
 
 
     messages_dropdown = sorted(messages_dropdown, key=lambda x: x['date_created'], reverse=True)
 
     return notifications, messages_dropdown
-
 
 
 
@@ -361,7 +372,7 @@ def add_additional_info(request):
         cliente.save()
 
         messages.success(request, "Additional information added successfully!")
-        return redirect('detailUser')
+        return redirect('client:detailUser')
     else:
         form = AdditionalInfoForm()
 
@@ -389,7 +400,7 @@ def update_cliente(request):
         cliente.save()
         
         messages.success(request, "Client updated successfully!")
-        return redirect('detailUser')
+        return redirect('client:detailUser')
     else:
         cliente_form = ClienteUpdateForm()
 
@@ -412,10 +423,10 @@ def change_password(request):
             form.save()
             update_session_auth_hash(request, request.user)  
             messages.success(request, 'Your password was successfully updated!')
-            return redirect('detailUser')  
+            return redirect('client:detailUser')  
         else:
             messages.error(request, 'Please rewrite old password is not correct.')
-            return redirect('detailUser')  
+            return redirect('client:detailUser')  
     else:
         form = ClientePasswordChangeForm(request.user)  
     
@@ -970,7 +981,7 @@ def create_demande_recharger(request):
             demande_recharger.cliente = request.user.cliente
             demande_recharger.save()
             messages.success(request, "Demande Recharger in progress, please wait ...")
-            return redirect('list_demande_recharger')
+            return redirect('client:list_demande_recharger')
         else:
             messages.error(request, "There was an error with your form. Please check the details and try again.")
     else:
@@ -1125,7 +1136,7 @@ def Achat_website(request, website_id):
         messages.error(request, "Website does not exist.")
     except Cliente.DoesNotExist:
         messages.error(request, "Client does not exist.")
-    return redirect('WebSites')
+    return redirect('client:WebSites')
 
 
 
@@ -1181,12 +1192,12 @@ def confirm_Achat_website(request):
                 # messages.success(request, f"Website {website.name} purchased successfully!")
             else:
                 messages.error(request, "Insufficient balance to purchase this website.")
-                return redirect('list_websites')
+                return redirect('client:list_websites')
         except Cliente.DoesNotExist:
             messages.error(request, "Client does not exist.")
         except Websites.DoesNotExist:
             messages.error(request, "Website does not exist.")
-    return redirect('WebSites')
+    return redirect('client:WebSites')
 
 
 
@@ -1243,12 +1254,12 @@ def GetFree_website(request):
                     messages.error(request, error_message)
             else:
                 messages.error(request, "Insufficient balance to purchase this website.")
-                return redirect('list_websites')
+                return redirect('client:list_websites')
         except Cliente.DoesNotExist:
             messages.error(request, "Client does not exist.")
         except Websites.DoesNotExist:
             messages.error(request, "Website does not exist.")
-    return redirect('WebSites')
+    return redirect('client:WebSites')
 
 
 
@@ -1301,7 +1312,7 @@ def confirm_loyer_website(request):
         # Check if the cliente has enough solde
         if cliente.solde < total_price:
             messages.error(request, "You do not have enough solde to rent this website.")
-            return redirect('list_websites')  
+            return redirect('client:list_websites')  
         
         # Create the LocationWebsites
         date_debut = timezone.now()
@@ -1320,10 +1331,10 @@ def confirm_loyer_website(request):
         # Send email
         send_email_loyer_website(request, cliente, website.name, date_debut, date_fin, total_price)
         messages.success(request, "Website rented successfully.")
-        return redirect('WebSites')  
+        return redirect('client:WebSites')  
     else:
         messages.error(request, "Invalid request.")
-        return redirect('list_websites')
+        return redirect('client:list_websites')
 
 
 
@@ -1370,14 +1381,14 @@ def confirm_Achat_support(request):
                 # Create a table in the AchatSupport model
                 AchatSupport.objects.create(cliente=cliente, support=support, prix=support.prix)
                 messages.success(request, f"Support {support.name} purchased successfully!")
-                return redirect('Services')
+                return redirect('client:Services')
             else:
                 messages.error(request, "Insufficient balance to purchase this support.")
         except Cliente.DoesNotExist:
             messages.error(request, "Client does not exist.")
         except Supports.DoesNotExist:
             messages.error(request, "Support does not exist.")
-    return redirect('Services')
+    return redirect('client:Services')
 
 
 
@@ -1479,7 +1490,7 @@ def confirm_consome_demande_support(request):
         except Cliente.DoesNotExist:
             messages.error(request, "Cliente with the specified ID does not exist.")
 
-    return redirect('Services')
+    return redirect('client:Services')
 
 
 
@@ -1518,7 +1529,7 @@ def add_websiteBuilder(request):
         
         
         messages.success(request, 'Website in the progress of builder please wait 1 minute and your website will be built.')
-        return redirect('WebSites') 
+        return redirect('client:WebSites') 
     else:
         return render(request, 'WebSites.html')
 
@@ -1557,7 +1568,7 @@ def add_GetFreeWebsiteBuilder(request):
         getfree_website.save()
 
         messages.success(request, 'Website in the progress of builder please wait 1 minute and your website will be built.')
-        return redirect('WebSites') 
+        return redirect('client:WebSites') 
     else:
         return render(request, 'WebSites.html')
 
@@ -1575,7 +1586,7 @@ def add_locationWebsiteBuilder(request):
         # Check if the nameWebsite already exists
         if LocationWebsiteBuilder.objects.filter(nameWebsite=name_website).exists() or WebsiteBuilder.objects.filter(nameWebsite=name_website).exists() or GetFreeWebsiteBuilder.objects.filter(nameWebsite=name_website).exists():
             messages.error(request, 'A website with this name already exists, please choose another name.')
-            return redirect('WebSites')
+            return redirect('client:WebSites')
         
         location_website = get_object_or_404(LocationWebsites, pk=location_website_id)
         
@@ -1597,7 +1608,7 @@ def add_locationWebsiteBuilder(request):
         location_website.save()
     
         messages.success(request, 'Website building is in progress, please wait a minute for your website to be built.')
-        return redirect('WebSites')
+        return redirect('client:WebSites')
     else:
         return render(request, 'WebSites.html')
 
@@ -1787,7 +1798,7 @@ def add_website_resiliation(request):
         messages.success(request, 'La demande de Résiliation a été envoyée.')
         
         if location_website_builder_id:
-            return redirect('edite_website_Location', nameWebsite=location_website_builder.nameWebsite)
+            return redirect('client:edite_website_Location', nameWebsite=location_website_builder.nameWebsite)
           
         # return redirect('WebSites')  
     else:
@@ -1824,7 +1835,7 @@ def add_website_reprendre(request):
         messages.success(request, 'La demande de Reprendre a été envoyée.')
         
         if location_website_builder_id:
-            return redirect('edite_website_Location', nameWebsite=location_website_builder.nameWebsite)
+            return redirect('client:edite_website_Location', nameWebsite=location_website_builder.nameWebsite)
           
         # return redirect('WebSites')  
     else:
@@ -1890,13 +1901,13 @@ def add_website_suspendre(request):
         messages.success(request, 'La demande de suspendre a été envoyée.')
         
         if location_website_builder_id:
-            return redirect('edite_website_Location', nameWebsite=location_website_builder.nameWebsite)
+            return redirect('client:edite_website_Location', nameWebsite=location_website_builder.nameWebsite)
             
         if website_builder_id:
-            return redirect('edite_website', website_name=website_builder.nameWebsite)
+            return redirect('client:edite_website', website_name=website_builder.nameWebsite)
         
         if getfree_website_builder_id:
-            return redirect('edite_free_website', website_name=getfree_website_builder.nameWebsite)
+            return redirect('client:edite_free_website', website_name=getfree_website_builder.nameWebsite)
         
     # return redirect('WebSites')  # Redirect to WebSites if none of the conditions are met
     # else:
@@ -1974,13 +1985,13 @@ def add_website_suspendre_reprendre(request):
             messages.error(request, 'Required fields are missing.')
             
         if location_website_builder_id:
-            return redirect('edite_website_Location', nameWebsite=location_website_builder.nameWebsite)
+            return redirect('client:edite_website_Location', nameWebsite=location_website_builder.nameWebsite)
             
         if website_builder_id:
-            return redirect('edite_website', website_name=website_builder.nameWebsite)
+            return redirect('client:edite_website', website_name=website_builder.nameWebsite)
 
         if getfree_website_builder_id:
-            return redirect('edite_free_website', website_name=getfree_website_builder.nameWebsite)
+            return redirect('client:edite_free_website', website_name=getfree_website_builder.nameWebsite)
 
         # return redirect('WebSites')
     else:
@@ -2035,13 +2046,13 @@ def add_website_reset(request):
 
         messages.success(request, 'La demande de Reset a été envoyée.')
         if location_website_builder_id:
-            return redirect('edite_website_Location', nameWebsite=location_website_builder.nameWebsite)
+            return redirect('client:edite_website_Location', nameWebsite=location_website_builder.nameWebsite)
             
         if website_builder_id:
-            return redirect('edite_website', website_name=website_builder.nameWebsite) 
+            return redirect('client:edite_website', website_name=website_builder.nameWebsite) 
         
         if getfree_website_builder_id:
-            return redirect('edite_free_website', website_name=getfree_website_builder.nameWebsite)
+            return redirect('client:edite_free_website', website_name=getfree_website_builder.nameWebsite)
     else:
         return render(request, 'EditeWebsiteLocation.html')
 
@@ -2060,14 +2071,14 @@ def add_period_location(request, location_id):
             rental_period = int(rental_period)
         except ValueError:
             messages.error(request, "Invalid rental period.")
-            return redirect('list_websites')
+            return redirect('client:list_websites')
         
         cliente = request.user.cliente
         total_price = location.websites.prix_loyer * rental_period
 
         if cliente.solde < total_price:
             messages.error(request, "You do not have enough solde to extend this rental period.")
-            return redirect('edite_website_Location', nameWebsite=website_builder_location)
+            return redirect('client:edite_website_Location', nameWebsite=website_builder_location)
         
         # new_end_date = timezone.now() + timedelta(days=30 * rental_period)
         new_end_date = location.date_fin + timedelta(days=30 * rental_period)
@@ -2079,10 +2090,10 @@ def add_period_location(request, location_id):
         cliente.save()
 
         messages.success(request, f"Rental period extended by {rental_period} months.")
-        return redirect('edite_website_Location', nameWebsite=website_builder_location)
+        return redirect('client:edite_website_Location', nameWebsite=website_builder_location)
     else:
         messages.error(request, "Invalid request.")
-        return redirect('WebSites')
+        return redirect('client:WebSites')
 
 
 
@@ -2099,7 +2110,7 @@ def add_period_hebergement(request, achat_id):
             hebergement_period = int(hebergement_period)
         except ValueError:
             messages.error(request, "Invalid hebergement_period period.")
-            return redirect('list_websites')
+            return redirect('client:list_websites')
         
         website_builder = get_object_or_404(WebsiteBuilder, nameWebsite=website_builder_id)
 
@@ -2108,7 +2119,7 @@ def add_period_hebergement(request, achat_id):
 
         if cliente.solde < total_price:
             messages.error(request, "You do not have enough solde to extend this hebergement_period period.")
-            return redirect('edit_website_location', nameWebsite=website_builder_id)
+            return redirect('client:edit_website_location', nameWebsite=website_builder_id)
         
         new_end_date = website_builder.date_fin_hebergement + timedelta(days=30 * hebergement_period)
 
@@ -2119,11 +2130,11 @@ def add_period_hebergement(request, achat_id):
         cliente.save()
 
         messages.success(request, f"Hebergement period extended by {hebergement_period} months.")
-        return redirect('edite_website', website_name=website_builder.nameWebsite) 
+        return redirect('client:edite_website', website_name=website_builder.nameWebsite) 
         
     else:
         messages.error(request, "Invalid request.")
-        return redirect('WebSites')
+        return redirect('client:WebSites')
  
  
  
@@ -2141,7 +2152,7 @@ def add_period_free_hebergement(request, free_id):
             hebergement_period = int(hebergement_period)
         except ValueError:
             messages.error(request, "Invalid hebergement_period period.")
-            return redirect('list_websites')
+            return redirect('client:list_websites')
         
         getfree_website_builder = get_object_or_404(GetFreeWebsiteBuilder, pk=getfree_website_builder_id)
 
@@ -2150,7 +2161,7 @@ def add_period_free_hebergement(request, free_id):
 
         if cliente.solde < total_price:
             messages.error(request, "You do not have enough solde to extend this hebergement period.")
-            return redirect('edite_free_website', website_name=getfree_website_builder.nameWebsite)
+            return redirect('client:edite_free_website', website_name=getfree_website_builder.nameWebsite)
         
         new_end_date = getfree_website_builder.date_fin_hebergement + timedelta(days=30 * hebergement_period)
 
@@ -2161,10 +2172,10 @@ def add_period_free_hebergement(request, free_id):
         cliente.save()
 
         messages.success(request, f"Hebergement period extended by {hebergement_period} months.")
-        return redirect('edite_free_website', website_name=getfree_website_builder.nameWebsite)
+        return redirect('client:edite_free_website', website_name=getfree_website_builder.nameWebsite)
         
     else:
         messages.error(request, "Invalid request.")
-        return redirect('WebSites')
+        return redirect('client:WebSites')
 
     

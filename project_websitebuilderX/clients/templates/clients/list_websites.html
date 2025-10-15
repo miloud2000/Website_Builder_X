@@ -13,7 +13,7 @@
                   <div>
                     <ol class="breadcrumb mb-0">
                       <li class="breadcrumb-item">
-                        <a href="{% url "list_websites" %}">Accueil</a>
+                        <a href="{% url "client:list_websites" %}">Accueil</a>
                       </li>
                       <li class="breadcrumb-item active" aria-current="page">liste de sites Web</li>
                     </ol>
@@ -137,7 +137,7 @@
                             <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-6 col-sm-12">
                                 <div class="card custom-card product-card">
                                     <div class="card-body">
-                                        <a href="{% url 'detail_website' slugWebsites=website.slugWebsites %}" class="product-image">
+                                        <a href="{% url 'client:detail_website' slugWebsites=website.slugWebsites %}" class="product-image">
                                             {% if website.image %}
                                                 <img src="{{ website.image.url }}" class="card-img mb-3" alt="{{ website.name }}">
                                             {% else %}
@@ -148,7 +148,7 @@
                                         <div class="product-icons">
                                             {% comment %} <a href="{% url 'hide_website' slugWebsites=website.slugWebsites %}" onclick="return confirm('Êtes-vous sûr de vouloir masquer {{ website.name }} ?')" class="wishlist"><i class="ri-delete-bin-fill"></i></a>
                                             <a href="{% url 'edit_website' slugWebsites=website.slugWebsites %}" class="cart"><i class="ri-edit-2-fill"></i></a> {% endcomment %}
-                                            <a href="{% url 'detail_website' slugWebsites=website.slugWebsites %}" class="wishlist"><i class="ri-eye-line"></i></a>
+                                            <a href="{% url 'client:detail_website' slugWebsites=website.slugWebsites %}" class="wishlist"><i class="ri-eye-line"></i></a>
                                         </div>
                     
                                         <p class="product-name fw-semibold mb-0 d-flex align-items-center justify-content-between">
