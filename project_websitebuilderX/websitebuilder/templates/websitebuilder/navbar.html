@@ -81,7 +81,7 @@
                   <li><a href="">{{request.user}}</a></li>
                   {% if is_Cliente %}
                   <li><a href="{% url 'dashbordHome' %}">Dashbord</a></li>
-                  <li><a href="{% url 'MesServices' %}">Mes Services </a></li>
+                  <li><a href="{% url 'client:MesServices' %}">Mes Services </a></li>
                   {% comment %} <li><a href="#">Solde et facturation </a></li> {% endcomment %}
                   {% endif %}
                   <li class="scrollspy-link nav-item">

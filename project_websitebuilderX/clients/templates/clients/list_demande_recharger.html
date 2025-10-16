@@ -122,6 +122,7 @@
                                                 <th scope="col" class="text-center align-middle">Status</th>
                                                 <th scope="col" class="text-center align-middle">Date</th>
                                                 <th scope="col" class="text-center align-middle">Code Demande</th>
+                                                <th scope="col" class="text-center align-middle">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -130,20 +131,20 @@
                                             <tr>
                                                 <td><h6 class="mb-0 fs-14 fw-semibold text-center align-middle">{{ forloop.counter }}</h6></td>
                                                 <td>
-                                                    <div class="d-flex">
+                                                      <div class="g-2">
                                                         <span class="avatar cover-image avatar-sm" data-bs-image-src="../assets/images/ecommerce/orders/9.jpg"></span>
                                                         <h6 class="ms-3 my-auto fs-14 fw-semibold">{{list_demande_recharger.solde}}</h6>
-                                                    </div>
+                                                      </div>
                                                 </td>
                                                
                                                 <td class="text-center align-middle">
-                                                  <h6 class="mb-0 fs-14 fw-semibold">
+                                                  <div class="g-2">
                                                     {% if list_demande_recharger.image %}
                                                       <img src="{{ list_demande_recharger.image.url }}" style="width: 152px; height: 107px; border-radius: 0%;">
                                                     {% else %}
                                                       No Image
                                                     {% endif %}
-                                                  </h6>
+                                                  </div>
                                                 </td>
                                                 
                                                 {% if list_demande_recharger.status == 'Not Done yet' %}  
@@ -178,7 +179,10 @@
                                                 <h6 class="my-auto fs-14 fw-semibold">{{ list_demande_recharger.code_DemandeRecharger }}</h6>
                                               </td>
                                               
-                                               
+                                              <td class="text-center align-middle">
+                                                <a href="{% url 'client:demande_recharger_detail' list_demande_recharger.code_DemandeRecharger %}" class="btn btn-sm btn-primary">Voir</a>
+                                              </td>
+                                              
                                             </tr>
                                             {% empty %}
                                             <tr>

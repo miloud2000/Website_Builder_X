@@ -1,0 +1,62 @@
+{% extends "clients/dashboard2.html" %}
+
+{% load static %}
+
+{% block content %}
+<br><br><br>
+<div class="container-fluid py-4" style="padding-left: 181px;">
+  <div class="row justify-content-center">
+    <div class="col-xl-6 col-lg-8 col-md-10">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-light border-bottom">
+          <h4 class="mb-0 fw-bold text-center">🧾 Détails du Service</h4>
+        </div>
+        <div class="card-body">
+          <table class="table table-hover table-bordered mb-0">
+            <tbody>
+              <tr>
+                <th class="w-50">Nom du Service</th>
+                <td>{{ achat.support.name }}</td>
+              </tr>
+              <tr>
+                <th>Prix</th>
+                <td>{{ achat.support.prix }} MAD</td>
+              </tr>
+              <tr>
+                <th>Status</th>
+                <td>
+                  {% if achat.Status == 'Active' %}
+                    <span class="badge bg-success-transparent text-success">{{ achat.Status }}</span>
+                  {% else %}
+                    <span class="badge bg-danger-transparent text-danger">{{ achat.Status }}</span>
+                  {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <th>Status Consomé</th>
+                <td>
+                  {% if achat.StatusConsomé == 'Consomé' %}
+                    <span class="badge bg-success-transparent text-success">{{ achat.StatusConsomé }}</span>
+                  {% else %}
+                    <span class="badge bg-warning-transparent text-warning">{{ achat.StatusConsomé }}</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% if achat.demandesupport_set.exists %}
+              <tr>
+                <th>Code Demande</th>
+                <td>{{ achat.demandesupport_set.first.code_DemandeSupport }}</td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer text-end bg-light">
+          <a href="{% url 'client:Services' %}" class="btn btn-outline-primary">← Retour</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

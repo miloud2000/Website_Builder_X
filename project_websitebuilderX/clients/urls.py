@@ -25,6 +25,9 @@ urlpatterns = [
     path('WebSites/',views.WebSites, name="WebSites"), 
     path('Services/',views.Services, name="Services"), 
     
+    path('achatSupport_detail/<int:id>/', views.achatSupport_detail, name='achatSupport_detail'),
+    path('demande-recharger/<str:code>/', views.demande_recharger_detail, name='demande_recharger_detail'),
+    
     path('solde_et_facturation/',views.solde_et_facturation, name="solde_et_facturation"), 
     path('facturation_pdf/<int:facturation_id>/', views.generate_facturation_pdf, name='generate_facturation_pdf'),
 

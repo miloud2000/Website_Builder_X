@@ -164,7 +164,7 @@
                                                       <button class="btn btn-sm btn-primary" onclick="showConfirmationModal('{{ achatSupport.id }}', '{{ achatSupport.support.name }}')">Confirm Active</button>
                                                   {% else %}
                                                   {% endif %}
-                                                  <a href="#" class="btn btn-sm btn-primary">Voir</a>
+                                                  <a href="{% url 'client:achatSupport_detail' achatSupport.id %}" class="btn btn-sm btn-primary">Voir</a>
                                                   </div>
                                               </td>
                                             </tr>

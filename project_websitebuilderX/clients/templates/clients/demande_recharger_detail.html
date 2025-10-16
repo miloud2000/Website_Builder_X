@@ -1,0 +1,53 @@
+{% extends "clients/dashboard2.html" %}
+{% block content %}
+<div class="container-fluid" style="padding-left: 181px;padding-top: 7.25rem !important;">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card p-4 shadow-sm">
+        <h4 class="mb-4 text-center">🔁 Détails de la Demande de Recharge</h4>
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <th>Solde</th>
+              <td>{{ demande.solde }} MAD</td>
+            </tr>
+            <tr>
+              <th>Status</th>
+              <td>
+                {% if demande.status == 'Done' %}
+                  <span class="badge bg-success-transparent text-success">{{ demande.status }}</span>
+                {% elif demande.status == 'inacceptable' %}
+                  <span class="badge bg-danger-transparent text-danger">{{ demande.status }}</span>
+                {% else %}
+                  <span class="badge bg-warning-transparent text-warning">{{ demande.status }}</span>
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <th>Date</th>
+              <td>{{ demande.date_created|date:"d M Y" }}</td>
+            </tr>
+            <tr>
+              <th>Code Demande</th>
+              <td>{{ demande.code_DemandeRecharger }}</td>
+            </tr>
+            <tr>
+              <th>Image de transfert</th>
+              <td>
+                {% if demande.image %}
+                  <img src="{{ demande.image.url }}" class="img-fluid rounded" style="max-height: 200px;">
+                {% else %}
+                  <span class="text-muted">Aucune image disponible</span>
+                {% endif %}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="text-end mt-3">
+          <a href="{% url 'client:list_demande_recharger' %}" class="btn btn-secondary">← Retour</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

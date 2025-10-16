@@ -109,7 +109,8 @@ def get_user_notifications_and_messages(cliente):
             'time': timesince(obj.date_created) + " ago",
             'icon': 'fe-check-circle',
             'color': 'info',
-            'date_created': obj.date_created
+            'date_created': obj.date_created,
+            'achat_id': obj.id, 
         })
 
     notifications = sorted(raw_notifications, key=lambda x: x['date_created'], reverse=True)[:6]
@@ -138,6 +139,7 @@ def get_user_notifications_and_messages(cliente):
         'time': timesince(recharge.date_created) + " ago",
         'image': 'faces/1.jpg',
         'date_created': recharge.date_created,
+        'code_DemandeRecharger': recharge.code_DemandeRecharger if recharge.code_DemandeRecharger else '',
     })
 
 
@@ -149,8 +151,8 @@ def get_user_notifications_and_messages(cliente):
         'time': timesince(ticket.date_updated) + " ago",
         'image': 'faces/2.jpg',
         'date_created': ticket.date_updated,
-        'code_Ticket': ticket.code_Ticket  
-    })
+        'code_Ticket': ticket.code_Ticket if ticket.code_Ticket else '',
+})
 
 
 
@@ -751,6 +753,25 @@ def Services(request):
 
 
 
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['Cliente']) 
+def achatSupport_detail(request, id):
+    cliente = request.user.cliente
+    achat = get_object_or_404(AchatSupport, id=id, cliente=cliente)
+    
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+
+    context = {
+        'achat': achat,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
+    }
+    return render(request, 'clients/achatSupport_detail.html', context)
+
+
+
+
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['Cliente']) 
 def solde_et_facturation(request): 
@@ -1009,6 +1030,21 @@ def list_demande_recharger(request):
    
     return render(request, 'clients/list_demande_recharger.html',context)
 
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['Cliente']) 
+def demande_recharger_detail(request, code):
+    cliente = request.user.cliente
+    demande = get_object_or_404(DemandeRecharger, code_DemandeRecharger=code, cliente=cliente)
+
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+
+    context = {
+        'demande': demande,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
+    }
+    return render(request, 'clients/demande_recharger_detail.html', context)
 
 
 

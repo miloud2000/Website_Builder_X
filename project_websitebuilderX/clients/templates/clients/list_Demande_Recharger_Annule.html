@@ -123,6 +123,7 @@
                                                 <th scope="col" class="text-center align-middle">Motif</th>
                                                 <th scope="col" class="text-center align-middle">Date</th>
                                                 <th scope="col" class="text-center align-middle">Code Demande</th>
+                                                <th scope="col" class="text-center align-middle">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -180,7 +181,9 @@
                                               <td class="text-center align-middle">
                                                 <h6 class="my-auto fs-14 fw-semibold">{{ DemandeRecharger.code_DemandeRecharger }}</h6>
                                               </td>
-                                              
+                                              <td class="text-center align-middle">
+                                                <a href="{% url 'client:demande_recharger_detail' DemandeRecharger.id %}" class="btn btn-sm btn-primary">Voir</a>
+                                              </td>
                                                
                                             </tr>
                                             {% empty %}

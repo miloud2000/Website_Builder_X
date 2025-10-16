@@ -826,25 +826,32 @@
                             <ul class="list-unstyled mb-0" id="header-notification-scroll">
                                 {% for notif in notifications %}
                                 <li class="dropdown-item">
-                                  <div class="d-flex align-items-start">
-                                    <div class="pe-2">
-                                      <span class="avatar avatar-md bg-{{ notif.color }} avatar-rounded">
-                                        <i class="fe {{ notif.icon }} fs-18"></i>
-                                      </span>
-                                    </div>
-                                    <div class="flex-grow-1 d-flex align-items-center my-auto">
-                                      <div>
-                                        <p class="mb-0 fw-semibold">{{ notif.message }}</p>
-                                        <span class="text-muted fw-normal fs-12 header-notification-text">{{ notif.time }}</span>
+                                    {% if notif.achat_id %}
+                                      <a href="{% url 'client:achatSupport_detail' notif.achat_id %}" class="text-reset d-block">
+                                    {% endif %}
+                                      <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                          <span class="avatar avatar-md bg-{{ notif.color }} avatar-rounded">
+                                            <i class="fe {{ notif.icon }} fs-18"></i>
+                                          </span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center my-auto">
+                                          <div>
+                                            <p class="mb-0 fw-semibold">{{ notif.message }}</p>
+                                            <span class="text-muted fw-normal fs-12 header-notification-text">{{ notif.time }}</span>
+                                          </div>
+                                          <div class="ms-auto my-auto">
+                                            <a href="javascript:void(0);" class="min-w-fit-content text-muted me-1 dropdown-item-close1">
+                                              <i class="ti ti-x fs-16"></i>
+                                            </a>
+                                          </div>
+                                        </div>
                                       </div>
-                                      <div class="ms-auto my-auto">
-                                        <a href="javascript:void(0);" class="min-w-fit-content text-muted me-1 dropdown-item-close1">
-                                          <i class="ti ti-x fs-16"></i>
-                                        </a>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </li>
+                                    {% if notif.achat_id %}
+                                      </a>
+                                    {% endif %}
+                                  </li>
+                                  
                                 {% empty %}
                                 <li class="dropdown-item text-center text-muted">Aucune notification disponible.</li>
                                 {% endfor %}
@@ -901,17 +908,29 @@
                             <div class="dropdown-divider"></div>
                             <ul class="list-unstyled mb-0" id="header-message-scroll">
                                 {% for msg in messages_dropdown %}
-                                <li class="dropdown-item message-item">
-                                  <div class="d-flex align-items-start">
-                                    <div class="pe-2">
-                                        {% if msg.type == "Ticket" %}
+                                  <li class="dropdown-item message-item">
+                                    <div class="d-flex align-items-start">
+                                      <div class="pe-2">
+                                        {% if msg.type == "Ticket" and msg.code_Ticket %}
                                           <a href="{% url 'ticket:details_ticket' msg.code_Ticket %}">
                                             <span class="avatar avatar-md bg-secondary avatar-rounded">
                                               <i class="fe fe-alert-circle fs-18"></i>
                                             </span>
                                           </a>
+                                        {% elif msg.type == "Ticket" %}
+                                          <a href="{% url 'ticket:list_ticket' %}">
+                                            <span class="avatar avatar-md bg-secondary avatar-rounded">
+                                              <i class="fe fe-alert-circle fs-18"></i>
+                                            </span>
+                                          </a>
+                                        {% elif msg.type == "Recharge" and msg.code_DemandeRecharger %}
+                                          <a href="{% url 'client:demande_recharger_detail' msg.code_DemandeRecharger %}">
+                                            <span class="avatar avatar-md bg-success avatar-rounded">
+                                              <i class="fe fe-dollar-sign fs-18"></i>
+                                            </span>
+                                          </a>
                                         {% elif msg.type == "Recharge" %}
-                                          <a href="{% url 'client:list_demande_recharger'%}">
+                                          <a href="{% url 'client:list_demande_recharger' %}">
                                             <span class="avatar avatar-md bg-success avatar-rounded">
                                               <i class="fe fe-dollar-sign fs-18"></i>
                                             </span>
@@ -924,26 +943,26 @@
                                           </a>
                                         {% endif %}
                                       </div>
-                                      
-                                      
-                                    <div class="w-100">
-                                      <div class="d-flex justify-content-between align-items-center">
-                                        <h6 class="mb-0 fw-semibold fs-14">{{ msg.title }}</h6>
-                                        <p class="text-muted mb-0 fs-12">{{ msg.time }}</p>
-                                      </div>
-                                      <div class="d-flex justify-content-between align-items-center">
-                                        <span class="text-muted fw-normal fs-12">{{ msg.subtitle }}</span>
-                                        <a href="javascript:void(0);" class="text-muted dropdown-item-close2">
-                                          <i class="ti ti-x fs-16"></i>
-                                        </a>
+                              
+                                      <div class="w-100">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                          <h6 class="mb-0 fw-semibold fs-14">{{ msg.title }}</h6>
+                                          <p class="text-muted mb-0 fs-12">{{ msg.time }}</p>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                          <span class="text-muted fw-normal fs-12">{{ msg.subtitle }}</span>
+                                          <a href="javascript:void(0);" class="text-muted dropdown-item-close2">
+                                            <i class="ti ti-x fs-16"></i>
+                                          </a>
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                </li>
+                                  </li>
                                 {% empty %}
-                                <li class="dropdown-item text-center text-muted">Aucun message disponible.</li>
+                                  <li class="dropdown-item text-center text-muted">Aucun message disponible.</li>
                                 {% endfor %}
                               </ul>
+                              
                               <script>
                                 document.addEventListener("DOMContentLoaded", function () {
                                   document.querySelectorAll(".dropdown-item-close2").forEach(btn => {

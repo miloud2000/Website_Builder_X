@@ -50,7 +50,7 @@
                           </div>
                         </div>
                         <div class="card-body product-table">
-                            <form method="get" action="{% url 'list_ticket_GC' %}" class="row g-3 mb-4">
+                            <form method="get" action="{% url 'ticket:list_ticket_GC' %}" class="row g-3 mb-4">
                           
                               <!-- 🔢 Code Ticket -->
                               <div class="col-md-6">
@@ -98,7 +98,7 @@
                                 <button type="submit" class="btn btn-primary w-100">
                                   <i class="fa fa-search"></i> Rechercher
                                 </button>
-                                <button type="reset" class="btn btn-outline-secondary w-100" onclick="window.location.href='{% url 'list_ticket_GC' %}'">
+                                <button type="reset" class="btn btn-outline-secondary w-100" onclick="window.location.href='{% url 'ticket:list_ticket_GC' %}'">
                                   <i class="fa fa-refresh"></i> Réinitialiser
                                 </button>
                               </div>
@@ -170,7 +170,7 @@
                                               </td>
                                               <td><h6 class="mb-0 fs-14 fw-semibold">{{ticket.date_created}}</h6></td>
                                               <td>
-                                                <a href="{% url 'details_ticket_GC' ticket.code_Ticket %}" class="btn btn-primary">View</a>
+                                                <a href="{% url 'ticket:details_ticket_GC' ticket.code_Ticket %}" class="btn btn-primary">View</a>
                                               </td>
 
                                             </tr>
