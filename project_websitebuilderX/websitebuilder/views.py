@@ -21,12 +21,113 @@ from django.utils.html import strip_tags
 
 
 
+from django.utils.timezone import now
+from collections import Counter
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.utils.timesince import timesince
+from itertools import chain
+
+def get_user_notifications_and_messages(cliente):
+    achats = AchatWebsites.objects.filter(cliente=cliente)
+    locations = LocationWebsites.objects.filter(cliente=cliente)
+    free_webs = GetFreeWebsites.objects.filter(cliente=cliente)
+    supports = AchatSupport.objects.filter(cliente=cliente)
+
+    raw_notifications = []
+
+    for obj in achats:
+        raw_notifications.append({
+            'message': f"Achat du site {obj.websites.name}",
+            'time': timesince(obj.date_created) + " ago",
+            'icon': 'fe-shopping-cart',
+            'color': 'primary',
+            'date_created': obj.date_created
+        })
+
+    for obj in locations:
+        raw_notifications.append({
+            'message': f"Location du site {obj.websites.name}",
+            'time': timesince(obj.date_created) + " ago",
+            'icon': 'fe-home',
+            'color': 'secondary',
+            'date_created': obj.date_created
+        })
+
+    for obj in free_webs:
+        raw_notifications.append({
+            'message': f"Site gratuit : {obj.websites.name}",
+            'time': timesince(obj.date_created) + " ago",
+            'icon': 'fe-gift',
+            'color': 'success',
+            'date_created': obj.date_created
+        })
+
+    for obj in supports:
+        raw_notifications.append({
+            'message': f"Support acheté : {obj.support.name}",
+            'time': timesince(obj.date_created) + " ago",
+            'icon': 'fe-check-circle',
+            'color': 'info',
+            'date_created': obj.date_created,
+            'achat_id': obj.id, 
+        })
+
+    notifications = sorted(raw_notifications, key=lambda x: x['date_created'], reverse=True)[:6]
+
+   
+    recharges = DemandeRecharger.objects.filter(
+        cliente=cliente,
+        status__in=['done', 'inacceptable']
+    ).order_by('-date_created')[:5]
+    
+
+    
+    tickets = Ticket.objects.filter(
+        Q(cliente=cliente) &
+        (Q(updated_by_ts__isnull=False) | Q(updated_by_gc__isnull=False)) &
+        Q(conversations__isnull=False)
+    ).distinct().order_by('-date_updated')[:5]
+
+    messages_dropdown = []
+
+    for recharge in recharges:
+        messages_dropdown.append({
+        'type': 'Recharge',
+        'title': f"Demande de recharge : {recharge.solde} MAD",
+        'subtitle': f"Statut : {recharge.status}",
+        'time': timesince(recharge.date_created) + " ago",
+        'image': 'faces/1.jpg',
+        'date_created': recharge.date_created,
+        'code_DemandeRecharger': recharge.code_DemandeRecharger if recharge.code_DemandeRecharger else '',
+    })
+
+
+    for ticket in tickets:
+        messages_dropdown.append({
+        'type': 'Ticket',
+        'title': f"Ticket mis à jour : {ticket.typeTicket}",
+        'subtitle': f"Statut : {ticket.status}",
+        'time': timesince(ticket.date_updated) + " ago",
+        'image': 'faces/2.jpg',
+        'date_created': ticket.date_updated,
+        'code_Ticket': ticket.code_Ticket if ticket.code_Ticket else '',
+})
+
+
+
+    messages_dropdown = sorted(messages_dropdown, key=lambda x: x['date_created'], reverse=True)
+
+    return notifications, messages_dropdown
+
 
 
 
 @anonymous_required
 def home2(request):
     return render(request, "websitebuilder/home2.html")
+
+
 
 
 
@@ -147,6 +248,9 @@ def dashbordHome(request):
     paginator = Paginator(demandes_queryset, per_page)
     page_obj = paginator.get_page(page_number)
     
+    
+    notifications, messages_dropdown = get_user_notifications_and_messages(cliente)
+
     context = {
         'WebsiteBuilders': WebsiteBuilders,
         'AchatSupports': AchatSupports,
@@ -164,6 +268,8 @@ def dashbordHome(request):
         'page_obj': page_obj,
         'search_query': search_query,
         'per_page': per_page,
+        'notifications' : notifications,
+        'messages_dropdown':messages_dropdown,
     }
     return render(request, "clients/dashbordHome.html", context)
 

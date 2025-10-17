@@ -24,7 +24,6 @@ from collections import Counter
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.utils.timesince import timesince
-from itertools import chain
 
 def get_user_notifications_and_messages(cliente):
     achats = AchatWebsites.objects.filter(cliente=cliente)
@@ -67,7 +66,8 @@ def get_user_notifications_and_messages(cliente):
             'time': timesince(obj.date_created) + " ago",
             'icon': 'fe-check-circle',
             'color': 'info',
-            'date_created': obj.date_created
+            'date_created': obj.date_created,
+            'achat_id': obj.id, 
         })
 
     notifications = sorted(raw_notifications, key=lambda x: x['date_created'], reverse=True)[:6]
@@ -96,6 +96,7 @@ def get_user_notifications_and_messages(cliente):
         'time': timesince(recharge.date_created) + " ago",
         'image': 'faces/1.jpg',
         'date_created': recharge.date_created,
+        'code_DemandeRecharger': recharge.code_DemandeRecharger if recharge.code_DemandeRecharger else '',
     })
 
 
@@ -107,14 +108,16 @@ def get_user_notifications_and_messages(cliente):
         'time': timesince(ticket.date_updated) + " ago",
         'image': 'faces/2.jpg',
         'date_created': ticket.date_updated,
-        'code_Ticket': ticket.code_Ticket  
-    })
+        'code_Ticket': ticket.code_Ticket if ticket.code_Ticket else '',
+})
 
 
 
     messages_dropdown = sorted(messages_dropdown, key=lambda x: x['date_created'], reverse=True)
 
     return notifications, messages_dropdown
+
+
 
 
 

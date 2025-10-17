@@ -81,10 +81,16 @@ def AllWebsites_client_status(request):
     paginator = Paginator(all_status, per_page)
     page_obj = paginator.get_page(page_number)
 
+    
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
     context = {
         "page_obj": page_obj,
         "AllWebsites_client_status": page_obj.object_list,
         "per_page": per_page,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     }
     return render(request, "SuperAdmin/AllMergedWebsiteBuilder.html", context)
 
@@ -122,6 +128,64 @@ from websitebuilder.models import Websites, Supports, Cliente, AchatWebsites
 from django.contrib.auth.models import User
 import json
 from django.core.paginator import Paginator
+
+
+from django.utils.timesince import timesince
+from django.utils.translation import activate
+def get_superadmin_notifications():
+    from django.utils.translation import activate
+    activate('fr')
+
+    actions = HistoriqueAction.objects.select_related('utilisateur').order_by('-date')[:10]
+
+    notifications = []
+    for action in actions:
+        notifications.append({
+            'message': f"{action.action} sur {action.objet}",
+            'details': f"Par {action.utilisateur.username}" if action.utilisateur else "Par Utilisateur inconnu",
+            'time': timesince(action.date) + " il y a",
+            'icon': 'fe-activity',
+            'color': 'warning',
+        })
+
+    return notifications
+
+
+
+def get_all_ticket_messages():
+    tickets = Ticket.objects.filter(
+        conversations__isnull=False
+    ).distinct().order_by('-date_updated')[:10]
+
+    messages = []
+
+    for ticket in tickets:
+        last_convo = ticket.conversations.order_by('-timestamp').first()
+        if last_convo:
+            if last_convo.sender_type == 'Cliente':
+                image_path = 'assets/images/faces/1.jpg'
+            elif last_convo.sender_type == 'SupportTechnique':
+                image_path = 'assets/images/faces/2.jpg'
+            elif last_convo.sender_type == 'GestionnaireComptes':
+                image_path = 'assets/images/faces/3.jpg'
+            else:
+                image_path = 'assets/images/faces/default.jpg'
+
+            messages.append({
+            'sender': last_convo.sender,
+            'title': f"Ticket : {ticket.typeTicket}",
+            'subtitle': f"Statut : {ticket.status}",
+            'time': timesince(ticket.date_updated),
+            'image': image_path,
+            'ticket_id': ticket.id, 
+        })
+
+
+    return messages
+
+
+
+
 
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SuperAdmin']) 
@@ -219,7 +283,10 @@ def dashbordHomeSuperAdmin(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
-    
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+        
+        
     context = {
     'clients_this_week': clients_this_week,
     'client_growth': round(client_growth, 2),
@@ -241,6 +308,9 @@ def dashbordHomeSuperAdmin(request):
     'page_obj': page_obj,
     'search_query': search_query,
     'per_page': int(per_page),
+    
+    'notifications': notifications,
+    'messages_dropdown': messages_dropdown,
 }
 
     return render(request, "SuperAdmin/dashbordHomeSuperAdmin.html", context)
@@ -273,8 +343,14 @@ def addAdministrateur(request):
             messages.error(request, "Formulaire invalide. Veuillez corriger les erreurs.")
     else:
         form = AdministrateurForm()
+        
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
 
-    context = {'form': form}
+    context = {'form': form,
+               'notifications': notifications,
+            'messages_dropdown': messages_dropdown,
+        }
     return render(request, 'SuperAdmin/addAdministrateur.html', context)
 
 
@@ -307,6 +383,8 @@ def AdministrateurSuperAdmin(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
     
     context = {
         'Administrateurs': Administrateurs,
@@ -314,6 +392,8 @@ def AdministrateurSuperAdmin(request):
         'query': query,
         'status_filter': status_filter,
         'per_page': int(per_page),
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
         }
     return render(request, "SuperAdmin/AdministrateurSuperAdmin.html", context)
 
@@ -360,6 +440,9 @@ def historique_administrateur(request, admin_id):
     action_choices = HistoriqueAction.objects.values_list('action', flat=True).distinct()
     objet_choices = HistoriqueAction.objects.values_list('objet', flat=True).distinct()
 
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
     context = {
         'administrateur': administrateur,
         'page_obj': page_obj,
@@ -372,6 +455,8 @@ def historique_administrateur(request, admin_id):
         'objet_filter': objet_filter,
         'date_min': date_min,
         'date_max': date_max,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     }
     return render(request, 'SuperAdmin/historique_administrateur.html', context)
 
@@ -581,8 +666,15 @@ def updateAdministrateur(request, pk):
             return redirect('AdministrateurSuperAdmin')
         else:
             messages.error(request, "Formulaire invalide. Veuillez corriger les erreurs.")
-
-    context = {'form': form}
+            
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
+    context = {
+            'form': form,
+            'notifications': notifications,
+            'messages_dropdown': messages_dropdown,
+        }
     return render(request, 'SuperAdmin/updateAdministrateur.html', context)
 
 
@@ -599,7 +691,14 @@ def deleteAdministrateur(request, pk):
         messages.success(request, "Administrateur supprimé avec succès.")
         return redirect('AdministrateurSuperAdmin')
 
-    context = {'administrateur': administrateur}
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
+    context = {
+        'administrateur': administrateur,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
+    }
     return render(request, 'SuperAdmin/deleteAdministrateur.html', context)
 
 
@@ -631,8 +730,15 @@ def addSupportTechnique(request):
             return redirect('SupportTechniqueSuperAdmin')
         else:
             messages.error(request, "Invalid form submission. Please correct the errors below.")  
+    
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
         
-    context = {'form': form}
+    context = {
+        'form': form,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
+        }
     return render(request, 'SuperAdmin/addSupportTechnique.html', context)
 
 
@@ -651,8 +757,15 @@ def updateSupportTechnique(request, pk):
             form.save()
             messages.success(request, "✅ Support Technique mis à jour avec succès.")
             return redirect('SupportTechniqueSuperAdmin')
+        
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
 
-    context = {'form': form}
+    context = {
+        'form': form,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
+        }
     return render(request, 'SuperAdmin/updateSupportTechnique.html', context)
 
 
@@ -667,8 +780,15 @@ def deleteSupportTechnique(request, pk):
         user.delete()
         messages.success(request, "🗑️ Support Technique supprimé avec succès.")
         return redirect('SupportTechniqueSuperAdmin')
+    
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
 
-    context = {'support': support}
+    context = {
+        'support': support,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
+        }
     return render(request, 'SuperAdmin/deleteSupportTechnique.html', context)
 
 
@@ -730,6 +850,10 @@ def SupportTechniqueSuperAdmin(request):
     if history_id:
         history_actions = HistoriqueAction.objects.filter(utilisateur__supporttechnique__id=history_id).order_by('-date')
 
+    
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
     context = {
         'page_obj': page_obj,
         'supportTechniques': page_obj.object_list,
@@ -738,6 +862,8 @@ def SupportTechniqueSuperAdmin(request):
         'per_page': per_page,
         'query': query,
         'status_filter': status_filter,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     }
     return render(request, "SuperAdmin/SupportTechniqueSuperAdmin.html", context)
 
@@ -783,6 +909,9 @@ def support_technique_history(request, pk):
     action_choices = HistoriqueAction.objects.values_list('action', flat=True).distinct()
     objet_choices = HistoriqueAction.objects.values_list('objet', flat=True).distinct()
 
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
     context = {
         'support': support,
         'page_obj': page_obj,
@@ -795,6 +924,8 @@ def support_technique_history(request, pk):
         'objet_filter': objet_filter,
         'date_min': date_min,
         'date_max': date_max,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     }
     return render(request, 'SuperAdmin/support_technique_history.html', context)
 
@@ -893,8 +1024,15 @@ def addGestionnaireComptes(request):
             return redirect('GestionnaireComptesSuperAdmin')
         else:
             messages.error(request, "Invalid form submission. Please correct the errors below.")  
-        
-    context = {'form': form}
+    
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
+    context = {
+        'form': form,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
+    }
     return render(request, 'SuperAdmin/addGestionnaireComptes.html', context)
 
 
@@ -912,7 +1050,14 @@ def updateGestionnaireComptes(request, pk):
             messages.success(request, "✅ Gestionnaire mis à jour avec succès.")
             return redirect('GestionnaireComptesSuperAdmin')
 
-    context = {'form': form}
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
+    context = {
+        'form': form,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
+    }
     return render(request, 'SuperAdmin/updateGestionnaireComptes.html', context)
 
 
@@ -930,7 +1075,14 @@ def deleteGestionnaireComptes(request, pk):
         messages.success(request, "✅ Le gestionnaire a été supprimé avec succès.")
         return redirect('GestionnaireComptesSuperAdmin')
 
-    context = {'gestionnaire': gestionnaire}
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
+    context = {
+        'gestionnaire': gestionnaire,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
+    }
     return render(request, 'SuperAdmin/deleteGestionnaireComptes.html', context)
 
 
@@ -959,12 +1111,18 @@ def GestionnaireComptesSuperAdmin(request):
     paginator = Paginator(gestionnaires.order_by('-id'), per_page)
     page_obj = paginator.get_page(page_number)
 
+    
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
     context = {
         'GestionnairesComptes': page_obj.object_list,
         'page_obj': page_obj,
         'query': query,
         'status_filter': status,
         'per_page': per_page,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     }
     return render(request, "SuperAdmin/GestionnaireComptesSuperAdmin.html", context)
 
@@ -1004,6 +1162,10 @@ def gestionnaire_comptes_history(request, pk):
     action_choices = HistoriqueAction.objects.values_list('action', flat=True).distinct()
     objet_choices = HistoriqueAction.objects.values_list('objet', flat=True).distinct()
 
+    
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
     context = {
         'gestionnaire': gestionnaire,
         'actions': page_obj.object_list,
@@ -1015,6 +1177,8 @@ def gestionnaire_comptes_history(request, pk):
         'objet_filter': objet_filter,
         'date_min': date_min,
         'date_max': date_max,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     }
     return render(request, "SuperAdmin/gestionnaire_comptes_history.html", context)
 
@@ -1128,11 +1292,16 @@ def ClienteSuperAdmin(request):
     paginator = Paginator(clientes.order_by('-id'), per_page)
     page_obj = paginator.get_page(page_number)
 
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
     context = {
         'clientes': page_obj.object_list,
         'page_obj': page_obj,
         'query': query,
         'per_page': per_page,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     }
     return render(request, "SuperAdmin/ClienteSuperAdmin.html", context)
 
@@ -1173,7 +1342,14 @@ def addCliente(request):
     else:
         form = ClienteForm()
         
-    context = {'form': form}
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
+    context = {
+        'form': form,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
+    }
     return render(request, 'SuperAdmin/addCliente.html', context)
 
 
@@ -1195,7 +1371,15 @@ def updateCliente(request, pk):
     else:
         form = ClienteUpdateFormSuperAdmin(instance=cliente)
 
-    context = {'form': form, 'cliente': cliente}
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
+    context = {
+        'form': form,
+        'cliente': cliente,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
+    }
     return render(request, 'SuperAdmin/updateCliente.html', context)
 
 
@@ -1211,8 +1395,15 @@ def deleteCliente(request, pk):
         cliente.delete()
         messages.success(request, "✅ Client supprimé avec succès.")
         return redirect('ClienteSuperAdmin')
-
-    context = {'cliente': cliente}
+    
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
+    context = {
+        'cliente': cliente,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
+    }
     return render(request, 'SuperAdmin/deleteCliente.html', context)
 
 
@@ -1279,7 +1470,8 @@ from .utils.exports import (
     export_tickets_excel, export_tickets_pdf,export_achat_supports_excel, export_achat_supports_pdf
 )
 
-@login_required
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
 def cliente_activity_dashboard(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
 
@@ -1308,6 +1500,9 @@ def cliente_activity_dashboard(request, cliente_id):
     if support_export == 'pdf':
         return export_achat_supports_pdf(achat_supports, cliente)
 
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
     context = {
         'cliente': cliente,
         'demandes': demandes,
@@ -1330,6 +1525,9 @@ def cliente_activity_dashboard(request, cliente_id):
         'ticket_date_max': request.GET.get('ticket_date_max'),
         'support_status': request.GET.get('support_status'),
         'support_conso': request.GET.get('support_conso'),
+        
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     }
     return render(request, 'SuperAdmin/cliente_activity_dashboard.html', context)
 
@@ -1362,12 +1560,18 @@ def CommercialSuperAdmin(request):
     paginator = Paginator(commercials.order_by('-id'), per_page)
     page_obj = paginator.get_page(page_number)
 
+
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
     context = {
         'commercials': page_obj.object_list,
         'page_obj': page_obj,
         'query': query,
         'status_filter': status_filter,
         'per_page': per_page,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     }
     return render(request, "SuperAdmin/CommercialSuperAdmin.html", context)
 
@@ -1451,6 +1655,9 @@ def historique_commercial(request, commercial_id):
     paginator = Paginator(actions, per_page)
     page_obj = paginator.get_page(page_number)
 
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
     # Choix fixes
     action_choices = [
         "Ajout d'un nouveau client",
@@ -1472,6 +1679,8 @@ def historique_commercial(request, commercial_id):
         'selected_objet': objet_filter,
         'action_choices': action_choices,
         'objet_choices': objet_choices,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     }
     return render(request, 'SuperAdmin/historique_commercial.html', context)
 
@@ -1535,7 +1744,14 @@ def addCommercial(request):
     else:
         form = CommercialForm()
         
-    context = {'form': form}
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
+    context = {
+        'form': form,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
+    }
     return render(request, 'SuperAdmin/addCommercial.html', context)
 
 
@@ -1556,7 +1772,15 @@ def updateCommercial(request, pk):
     else:
         form = CommercialUpdateForm(instance=commercial)
 
-    context = {'form': form, 'commercial': commercial}
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
+    context = {
+        'form': form, 
+        'commercial': commercial,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
+    }
     return render(request, 'SuperAdmin/updateCommercial.html', context)
 
 
@@ -1573,7 +1797,14 @@ def deleteCommercial(request, pk):
         messages.success(request, "✅ Commercial supprimé avec succès.")
         return redirect('CommercialSuperAdmin')
 
-    context = {'commercial': commercial}
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
+    context = {
+        'commercial': commercial,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
+    }
     return render(request, 'SuperAdmin/deleteCommercial.html', context)
 
 
@@ -1653,7 +1884,8 @@ def full_size_image_Super_Admin(request, traceDemandeRecharger_id):
     return render(request, 'SuperAdmin/full_size_image_Super_Admin.html', {'image': image, 'cliente': cliente, 'solde': solde,'updated_by':updated_by,'status':status,'motif':motif})
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
 def all_demandes_recharger(request):
     # Filtres
     status = request.GET.get('status')
@@ -1682,6 +1914,9 @@ def all_demandes_recharger(request):
 
     gestionnaires = GestionnaireComptes.objects.all()
 
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
     context = {
         'demandes': page_obj.object_list,
         'page_obj': page_obj,
@@ -1692,11 +1927,14 @@ def all_demandes_recharger(request):
         'code': code,
         'updated_by': updated_by,
         'gestionnaires': gestionnaires,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     }
     return render(request, 'SuperAdmin/all_demandes_recharger.html', context)
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
 def detail_demande_recharge_superadmin(request, id):
     demande = get_object_or_404(
         DemandeRecharger.objects
@@ -1717,6 +1955,9 @@ def detail_demande_recharge_superadmin(request, id):
         for t in traces_qs
     ]
 
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
     contexte = {
         'demande': {
             'code': demande.code_DemandeRecharger,
@@ -1732,7 +1973,10 @@ def detail_demande_recharge_superadmin(request, id):
             'image_url': demande.image.url if demande.image else None,
         },
         'traces': traces,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     }
+    
     return render(request, 'SuperAdmin/detail_demande_recharge_superadmin.html', contexte)
 
 
@@ -1827,7 +2071,14 @@ def export_demandes_excel(request):
 @allowedUsers(allowedGroups=['SuperAdmin']) 
 def gestionnaire_detail(request, gestionnaire_id):
     gestionnaire = get_object_or_404(GestionnaireComptes, id=gestionnaire_id)
-    context = {'gestionnaire': gestionnaire}
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
+    context = {
+        'gestionnaire': gestionnaire,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
+    }
     return render(request, 'SuperAdmin/gestionnaire_detail.html', context)
 
 
@@ -1885,7 +2136,8 @@ def DemandeRechargerNotDone(request):
 
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
 def DemandeSupportAll(request): 
     DemandeSupports = DemandeSupport.objects.select_related('achat_support', 'updated_by', 'cliente')
 
@@ -1917,6 +2169,9 @@ def DemandeSupportAll(request):
     techniciens = SupportTechnique.objects.filter(Status='Active')
     clients = User.objects.filter(groups__name='Client')  
 
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
     context = {
         'DemandeSupports': page_obj.object_list,
         'page_obj': page_obj,
@@ -1928,12 +2183,15 @@ def DemandeSupportAll(request):
         'cliente_username': cliente_username,
         'techniciens': techniciens,
         'clients': clients,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     }
     return render(request, "SuperAdmin/DemandeSupportAll.html", context)
 
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
 def detail_demande_support_superadmin(request, pk):
     demande = get_object_or_404(
         DemandeSupport.objects
@@ -1942,8 +2200,13 @@ def detail_demande_support_superadmin(request, pk):
                             'updated_by__user'),
         pk=pk
     )
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
     return render(request, "SuperAdmin/detail_demande_support_superadmin.html", {
-        'demande': demande
+        'demande': demande,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     })
 
 
@@ -1953,7 +2216,15 @@ def detail_demande_support_superadmin(request, pk):
 @allowedUsers(allowedGroups=['SuperAdmin']) 
 def supportTechnique_detail(request, supportTechnique_id):
     supportTechnique = get_object_or_404(SupportTechnique, id=supportTechnique_id)
-    context = {'supportTechnique': supportTechnique}
+    
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
+    context = {
+        'supportTechnique': supportTechnique,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
+    }
     return render(request, 'SuperAdmin/supportTechnique_detail.html', context)
 
 
@@ -2085,6 +2356,8 @@ def DemandeSupportNotDoneyetSA(request):
 
 from django.utils.dateparse import parse_date
 
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
 def history(request):
     model_name = request.GET.get('model_name')
     cliente_id = request.GET.get('cliente')
@@ -2108,7 +2381,10 @@ def history(request):
     page_obj = paginator.get_page(page_number)
 
     clientes = Cliente.objects.all()
-
+    
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
     return render(request, 'SuperAdmin/history.html', {
         'history_entries': page_obj.object_list,
         'page_obj': page_obj,
@@ -2119,6 +2395,8 @@ def history(request):
         'selected_cliente': cliente_id,
         'date_start': date_start,
         'date_end': date_end,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     })
 
 
@@ -2187,7 +2465,8 @@ def export_history_excel(request):
 
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
 def WebsitesListSuperAdmin(request):
     websites = Websites.objects.all()
 
@@ -2215,6 +2494,10 @@ def WebsitesListSuperAdmin(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
+    
     context = {
         'page_obj': page_obj,
         'status': status,
@@ -2226,6 +2509,8 @@ def WebsitesListSuperAdmin(request):
         'cms_list': ['WordPress','Drupal'],
         'langues_list': ['Français','Anglais'],
         'plans_list': ['Free','Payant'],
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     }
     return render(request, "SuperAdmin/websites_list.html", context)
 
@@ -2320,7 +2605,8 @@ def export_websites_excel(request):
 
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
 def add_website(request):
     if request.method == 'POST':
         form = WebsiteForm(request.POST, request.FILES)
@@ -2329,18 +2615,27 @@ def add_website(request):
             return redirect('websites_list_superadmin')
     else:
         form = WebsiteForm()
-    return render(request, 'SuperAdmin/add_website.html', {'form': form})
+        
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    return render(request, 'SuperAdmin/add_website.html', {'form': form,'notifications': notifications,
+        'messages_dropdown': messages_dropdown,})
 
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
 def website_details(request, id):
     website = get_object_or_404(Websites, id=id)
-    return render(request, 'SuperAdmin/website_details.html', {'website': website})
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    return render(request, 'SuperAdmin/website_details.html', {'website': website,'notifications': notifications,
+        'messages_dropdown': messages_dropdown,})
 
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
 def edit_website(request, id):
     website = get_object_or_404(Websites, id=id)
     if request.method == 'POST':
@@ -2350,7 +2645,12 @@ def edit_website(request, id):
             return redirect('websites_list_superadmin')
     else:
         form = WebsiteForm(instance=website)
-    return render(request, 'SuperAdmin/edit_website.html', {'form': form, 'website': website})
+        
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
+    return render(request, 'SuperAdmin/edit_website.html', {'form': form, 'website': website,'notifications': notifications,
+        'messages_dropdown': messages_dropdown,})
 
 
 
@@ -2363,6 +2663,9 @@ def hide_website(request, id):
 
 from django.core.paginator import Paginator
 
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
 def supports_list_superadmin(request):
     status = request.GET.get('status')
 
@@ -2377,12 +2680,19 @@ def supports_list_superadmin(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
     context = {
-        'page_obj': page_obj,  # utilisé dans le template
+        'page_obj': page_obj,  
         'status': status,
         'status_choices': ['Disponible', 'No Disponible'],
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     }
     return render(request, 'SuperAdmin/supports_list.html', context)
+
 
 
 def get_filtered_supports(request):
@@ -2445,7 +2755,8 @@ def export_supports_excel(request):
     return response
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
 def add_support(request):
     if request.method == 'POST':
         form = SupportForm(request.POST)
@@ -2454,18 +2765,28 @@ def add_support(request):
             return redirect('supports_list_superadmin')  
     else:
         form = SupportForm()
-    return render(request, 'SuperAdmin/add_support.html', {'form': form})
+        
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
+    return render(request, 'SuperAdmin/add_support.html', {'form': form,'notifications': notifications,
+        'messages_dropdown': messages_dropdown,})
 
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
 def support_details(request, id):
     support = get_object_or_404(Supports, id=id)
-    return render(request, 'SuperAdmin/support_details.html', {'support': support})
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    return render(request, 'SuperAdmin/support_details.html', {'support': support,'notifications': notifications,
+        'messages_dropdown': messages_dropdown,})
 
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
 def edit_support(request, id):
     support = get_object_or_404(Supports, id=id)
     if request.method == 'POST':
@@ -2475,12 +2796,18 @@ def edit_support(request, id):
             return redirect('supports_list_superadmin')  
     else:
         form = SupportForm(instance=support)
-    return render(request, 'SuperAdmin/edit_support.html', {'form': form, 'support': support})
+        
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
+    return render(request, 'SuperAdmin/edit_support.html', {'form': form, 'support': support,'notifications': notifications,
+        'messages_dropdown': messages_dropdown,})
 
 
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
 def hide_support(request, id):
     support = get_object_or_404(Supports, id=id)
     support.status = 'No Disponible'
@@ -2491,7 +2818,8 @@ def hide_support(request, id):
 
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
 def tickets_list(request):
     tickets = Ticket.objects.all()
 
@@ -2551,6 +2879,9 @@ def tickets_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+    
     context = {
         'page_obj': page_obj,
         'per_page': per_page,
@@ -2566,6 +2897,8 @@ def tickets_list(request):
         'date_end': date_end,
         'search_query': search_query,
         'sort_by': sort_by,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     }
     return render(request, 'SuperAdmin/tickets_list.html', context)
 
@@ -2574,7 +2907,8 @@ def tickets_list(request):
 
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
 def ticket_detail(request, ticket_id):
     ticket = get_object_or_404(Ticket, id=ticket_id)
     conversations = ticket.conversations.order_by('timestamp')
@@ -2597,13 +2931,18 @@ def ticket_detail(request, ticket_id):
                 user_type = 'GestionnaireComptes'
                 user_id = gestionnaire.id
             except GestionnaireComptes.DoesNotExist:
-                pass 
-
+                pass
+             
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()            
+    
     context = {
         'ticket': ticket,
         'conversations': conversations,
         'user_type': user_type,
         'user_id': user_id,
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
     }
     return render(request, 'SuperAdmin/ticket_detail.html', context)
 
