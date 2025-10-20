@@ -689,10 +689,10 @@
                     <!-- Start::header-element -->
                     <div class="header-element cart-dropdown">
                         <!-- Start::header-link|dropdown-toggle -->
-                        <a href="javascript:void(0);" class="header-link dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown">
+                        {% comment %} <a href="javascript:void(0);" class="header-link dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown">
                             <i class="fe fe-shopping-cart header-link-icon"></i>
                             <span class="badge bg-secondary rounded-pill header-icon-badge" id="cart-icon-badge">4</span>
-                        </a>
+                        </a> {% endcomment %}
                         <!-- End::header-link|dropdown-toggle -->
                         <!-- Start::main-header-dropdown -->
                         <div class="main-header-dropdown dropdown-menu dropdown-menu-end" data-popper-placement="none">
@@ -809,7 +809,7 @@
                         <!-- Start::header-link|dropdown-toggle -->
                         <a aria-label="anchor" href="javascript:void(0);" class="header-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="messageDropdown" aria-expanded="false">
                           <i class="fe fe-bell header-link-icon"></i>
-                          {% if messages %}
+                          {% if demande_notifications  %}
                             <span class="w-9 h-9 p-0 bg-success rounded-pill header-icon-badge pulse pulse-success" id="notification-icon-badge"></span>
                           {% endif %}
                         </a>
@@ -820,27 +820,26 @@
                           <div class="p-3">
                             <div class="d-flex align-items-center justify-content-between">
                               <p class="mb-0 fs-17 fw-semibold">Notifications</p>
-                              <span class="badge bg-secondary-transparent" id="notifiation-data">{{ messages|length }} Unread</span>
+                              {% comment %} <span class="badge bg-secondary-transparent" id="notifiation-data">{{ messages|length }} Unread</span> {% endcomment %}
                             </div>
                           </div>
                           
                             <div class="dropdown-divider"></div>
                             <ul class="list-unstyled mb-0" id="header-notification-scroll">
-                              {% for message in messages %}
-                                {% if message.tags == 'info' %}
+                                {% for notif in demande_notifications %}
                                   <li class="dropdown-item">
                                     <div class="d-flex align-items-start">
                                       <div class="pe-2">
-                                        <span class="avatar avatar-md bg-primary avatar-rounded">
-                                          <i class="fe fe-mail fs-18"></i>
+                                        <span class="avatar avatar-md bg-{{ notif.color }} avatar-rounded">
+                                          <i class="fe {{ notif.icon }} fs-18"></i>
                                         </span>
                                       </div>
                                       <div class="flex-grow-1 d-flex align-items-center my-auto">
                                         <div>
                                           <p class="mb-0 fw-semibold">
-                                            <a href="{% url 'DemandeRechargerNotDoneyet' %}">{{ message }}</a>
+                                            <a href="{% url notif.url %}">{{ notif.message }}</a>
                                           </p>
-                                          <span class="text-muted fw-normal fs-12 header-notification-text">{% now "H:i" %}</span>
+                                          <span class="text-muted fw-normal fs-12 header-notification-text">{{ notif.time }}</span>
                                         </div>
                                         <div class="ms-auto my-auto">
                                           <a aria-label="anchor" href="javascript:void(0);" class="min-w-fit-content text-muted me-1 dropdown-item-close1">
@@ -850,11 +849,11 @@
                                       </div>
                                     </div>
                                   </li>
-                                {% endif %}
-                              {% empty %}
-                                <li class="dropdown-item text-center text-muted">Aucune notificationn</li>
-                              {% endfor %}
-                            </ul>
+                                {% empty %}
+                                  <li class="dropdown-item text-center text-muted">Aucune notification</li>
+                                {% endfor %}
+                              </ul>
+                              
                             
                             <div class="p-3 empty-header-item1 border-top text-center">
                                 <a href="{% url "DemandeRechargerNotDoneyet" %}" class="">Afficher toutes les notifications</a>
@@ -877,7 +876,9 @@
                         <!-- Start::header-link|dropdown-toggle -->
                         <a aria-label="anchor" href="javascript:void(0);" class="header-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="messageDropdown2" aria-expanded="false">
                             <i class="fe fe-message-square header-link-icon"></i>
+                            {% if ticket_messages %}
                             <span class="w-9 h-9 p-0 bg-danger rounded-pill header-icon-badge pulse pulse-danger" id="message-icon-badge"></span>
+                            {% endif %}
                         </a>
                         <!-- End::header-link|dropdown-toggle -->
                         <!-- Start::main-header-dropdown -->
@@ -885,141 +886,45 @@
                             <div class="p-3">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <p class="mb-0 fs-17 fw-semibold">Messages</p>
-                                    <span class="badge bg-secondary-transparent" id="message-data">5 Unread</span>
+                                    {% comment %} <span class="badge bg-secondary-transparent" id="message-data">5 Unread</span> {% endcomment %}
                                 </div>
                             </div>
                             <div class="dropdown-divider"></div>
                             <ul class="list-unstyled mb-0" id="header-message-scroll">
-                                <li class="dropdown-item">
-                                    <div class="d-flex align-items-start">
-                                         <div class="pe-2">
-                                            <img src="../assets/images/faces/1.jpg" alt="img" class="avatar avatar-md avatar-rounded">
-                                         </div>
-                                         <div class="w-100">
-                                            <div class="flex-grow-1 d-flex align-items-centermy-auto">
-                                                <div>
-                                                    <h6 class="mb-0 fw-semibold fs-14"><a href="chat.html">Peter Theil</a></h6>
-                                                </div>
-                                                <div class="ms-auto text-end">
-                                                    <p class="text-muted mb-0">
-                                                        6:45am
-                                                    </p>
-                                                </div>
-                                             </div>
-                                             <div class="flex-grow-1 d-flex align-items-centermy-auto">
-                                                <div>
-                                                    <span class="text-muted fw-normal fs-12">Commented on file Guest list....</span>
-                                                </div>
-                                                <div class="ms-auto text-end">
-                                                    <a aria-label="anchor" href="javascript:void(0);" class="min-w-fit-content text-muted me-1 dropdown-item-close2"><i class="ti ti-x fs-16"></i></a>
-                                                </div>
-                                             </div>
-                                         </div>
-                                    </div>
-                                </li>
-                                <li class="dropdown-item">
-                                    <div class="d-flex align-items-start">
-                                         <div class="pe-2">
-                                            <img src="../assets/images/faces/15.jpg" alt="img" class="avatar avatar-md avatar-rounded">
-                                         </div>
-                                         <div class="w-100">
-                                            <div class="flex-grow-1 d-flex align-items-centermy-auto">
-                                                <div>
-                                                    <h6 class="mb-0 fw-semibold fs-14"><a href="chat.html">Abagael Luth</a></h6>
-                                                </div>
-                                                <div class="ms-auto text-end">
-                                                    <p class="text-muted mb-0">10:35am</p>
-                                                </div>
-                                             </div>
-                                             <div class="flex-grow-1 d-flex align-items-centermy-auto">
-                                                <div>
-                                                    <span class="text-muted fw-normal fs-12">New Meetup Started......</span>
-                                                </div>
-                                                <div class="ms-auto text-end">
-                                                    <a aria-label="anchor" href="javascript:void(0);" class="min-w-fit-content text-muted me-1 dropdown-item-close2"><i class="ti ti-x fs-16"></i></a>
-                                                </div>
-                                             </div>
-                                         </div>
-                                    </div>
-                                </li>
-                                <li class="dropdown-item">
-                                    <div class="d-flex align-items-start">
-                                         <div class="pe-2">
-                                            <img src="../assets/images/faces/12.jpg" alt="img" class="avatar avatar-md avatar-rounded">
-                                         </div>
-                                         <div class="w-100">
-                                            <div class="flex-grow-1 d-flex align-items-centermy-auto">
-                                                <div>
-                                                    <h6 class="mb-0 fw-semibold fs-14"><a href="chat.html">Brizid Dawson</a></h6>
-                                                </div>
-                                                <div class="ms-auto text-end">
-                                                    <p class="text-muted mb-0">02:17am</p>
-                                                </div>
-                                             </div>
-                                             <div class="flex-grow-1 d-flex align-items-centermy-auto">
-                                                <div>
-                                                    <span class="text-muted fw-normal fs-12">Brizid is in the Warehouse...</span>
-                                                </div>
-                                                <div class="ms-auto text-end">
-                                                    <a aria-label="anchor" href="javascript:void(0);" class="min-w-fit-content text-muted me-1 dropdown-item-close2"><i class="ti ti-x fs-16"></i></a>
-                                                </div>
-                                             </div>
-                                         </div>
-                                    </div>
-                                </li>
-                                <li class="dropdown-item">
-                                    <div class="d-flex align-items-start">
-                                         <div class="pe-2">
-                                            <img src="../assets/images/faces/4.jpg" alt="img" class="avatar avatar-md avatar-rounded">
-                                         </div>
-                                         <div class="w-100">
-                                            <div class="flex-grow-1 d-flex align-items-centermy-auto">
-                                                <div>
-                                                    <h6 class="mb-0 fw-semibold fs-14"><a href="chat.html">Shannon Shaw</a></h6>
-                                                </div>
-                                                <div class="ms-auto text-end">
-                                                    <p class="text-muted mb-0">7:55pm</p>
-                                                </div>
-                                             </div>
-                                             <div class="flex-grow-1 d-flex align-items-centermy-auto">
-                                                <div>
-                                                    <span class="text-muted fw-normal fs-12">New Product Realease......</span>
-                                                </div>
-                                                <div class="ms-auto text-end">
-                                                    <a aria-label="anchor" href="javascript:void(0);" class="min-w-fit-content text-muted me-1 dropdown-item-close2"><i class="ti ti-x fs-16"></i></a>
-                                                </div>
-                                             </div>
-                                         </div>
-                                    </div>
-                                </li>
-                                <li class="dropdown-item">
-                                    <div class="d-flex align-items-start">
-                                         <div class="pe-2">
-                                            <img src="../assets/images/faces/3.jpg" alt="img" class="avatar avatar-md avatar-rounded">
-                                         </div>
-                                         <div class="w-100">
-                                            <div class="flex-grow-1 d-flex align-items-centermy-auto">
-                                                <div>
-                                                    <h6 class="mb-0 fw-semibold fs-14"><a href="chat.html">Cherry Blossom</a></h6>
-                                                </div>
-                                                <div class="ms-auto text-end">
-                                                    <p class="text-muted mb-0">7:55pm</p>
-                                                </div>
-                                             </div>
-                                             <div class="flex-grow-1 d-flex align-items-centermy-auto">
-                                                <div>
-                                                    <span class="text-muted fw-normal fs-12">You have appointment on......</span>
-                                                </div>
-                                                <div class="ms-auto text-end">
-                                                    <a aria-label="anchor" href="javascript:void(0);" class="min-w-fit-content text-muted me-1 dropdown-item-close2"><i class="ti ti-x fs-16"></i></a>
-                                                </div>
-                                             </div>
-                                         </div>
-                                    </div>
-                                </li>
-                            </ul>
+                                {% for msg in ticket_messages %}
+                                  <li class="dropdown-item p-0">
+                                    <a href="{{ msg.url }}" class="d-block text-reset text-decoration-none">
+                                      <div class="d-flex align-items-start p-2">
+                                        <div class="pe-2">
+                                          <img src="{% static 'assets/images/R.png' %}" alt="img" class="avatar avatar-md avatar-rounded">
+                                        </div>
+                                        <div class="w-100">
+                                          <div class="d-flex justify-content-between">
+                                            <h6 class="mb-0 fw-semibold fs-14">{{ msg.sender }}</h6>
+                                            <p class="text-muted mb-0">{{ msg.time }}</p>
+                                          </div>
+                                          <div class="d-flex justify-content-between">
+                                            <span class="text-muted fw-normal fs-12">
+                                              {{ msg.message }}
+                                            </span>
+                                            {% if msg.status == 'non_traité' %}
+                                              <span class="badge bg-warning">Non traité</span>
+                                            {% else %}
+                                              <span class="badge bg-success">Traité</span>
+                                            {% endif %}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </a>
+                                  </li>
+                                {% empty %}
+                                  <li class="dropdown-item text-center text-muted">Aucun ticket</li>
+                                {% endfor %}
+                              </ul>
+                              
+                              
                             <div class="p-3 empty-header-item2 border-top text-center">
-                                <a href="chat.html" class="">View All Messages</a>
+                                <a href="{% url "ticket:list_ticket_GC" %}" class="">View All Messages</a>
                             </div>
                             <div class="p-5 empty-item2 d-none">
                                 <div class="text-center">

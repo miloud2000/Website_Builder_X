@@ -1239,7 +1239,7 @@
                         
                         <!-- Start::slide -->
                         <li class="slide">
-                            <a href="{% url 'list_ticket_ST' %}" class="side-menu__item">
+                            <a href="{% url 'ticket:list_ticket_ST' %}" class="side-menu__item">
                                 <i class="fe fe-layers side-menu__icon"></i>
                                 <span class="side-menu__label">Ticket</span>
                             </a>
@@ -1247,11 +1247,11 @@
                         <!-- Start::slide -->
 
                         <!-- Start::slide__category -->
-                        <li class="slide__category"><span class="category-name">PRE-BUILD PAGES</span></li>
+                        {% comment %} <li class="slide__category"><span class="category-name">PRE-BUILD PAGES</span></li> {% endcomment %}
                         <!-- End::slide__category -->
 
                         <!-- Start::slide -->
-                        <li class="slide has-sub">
+                        {% comment %} <li class="slide has-sub">
                             <a href="javascript:void(0);" class="side-menu__item">
                                 <i class="fe fe-layers side-menu__icon"></i>
                                 <span class="side-menu__label">Pages</span>
@@ -1409,11 +1409,11 @@
                                     <a href="to-do-list.html" class="side-menu__item">To Do List</a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> {% endcomment %}
                         <!-- End::slide -->
 
                         <!-- Start::slide -->
-                        <li class="slide has-sub">
+                        {% comment %} <li class="slide has-sub">
                             <a href="javascript:void(0);" class="side-menu__item">
                                 <i class="fe fe-users side-menu__icon"></i>
                                 <span class="side-menu__label">Authentication</span>
@@ -1448,11 +1448,11 @@
                                     <a href="under-maintenance.html" class="side-menu__item">Under Maintenance</a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> {% endcomment %}
                         <!-- End::slide -->
 
                         <!-- Start::slide -->
-                        <li class="slide has-sub">
+                        {% comment %} <li class="slide has-sub">
                             <a href="javascript:void(0);" class="side-menu__item">
                                 <i class="fe fe-alert-triangle side-menu__icon"></i>
                                 <span class="side-menu__label">Error Pages</span>
@@ -1481,15 +1481,15 @@
                                     <a href="503.html" class="side-menu__item">503</a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> {% endcomment %}
                         <!-- End::slide -->
 
                         <!-- Start::slide__category -->
-                        <li class="slide__category"><span class="category-name">General</span></li>
+                        {% comment %} <li class="slide__category"><span class="category-name">General</span></li> {% endcomment %}
                         <!-- End::slide__category -->
 
                         <!-- Start::slide -->
-                        <li class="slide has-sub">
+                        {% comment %} <li class="slide has-sub">
                             <a href="javascript:void(0);" class="side-menu__item">
                                 <i class="fe fe-file-text side-menu__icon"></i>
                                 <span class="side-menu__label">Forms</span>
@@ -1554,11 +1554,11 @@
                                     <a href="form_select2.html" class="side-menu__item">Select2</a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> {% endcomment %}
                         <!-- End::slide -->
 
                         <!-- Start::slide -->
-                        <li class="slide has-sub">
+                        {% comment %} <li class="slide has-sub">
                             <a href="javascript:void(0);" class="side-menu__item">
                                 <i class="fe fe-cpu side-menu__icon"></i>
                                 <span class="side-menu__label">Advanced Ui</span>
@@ -1605,24 +1605,24 @@
                                     <a href="ribbons.html" class="side-menu__item">Ribbons</a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> {% endcomment %}
                         <!-- End::slide -->
 
                         <!-- Start::slide -->
-                        <li class="slide">
+                        {% comment %} <li class="slide">
                             <a href="widgets.html" class="side-menu__item">
                                 <i class="fe fe-aperture side-menu__icon"></i>
                                 <span class="side-menu__label">Widgets<span class="badge bg-danger-transparent ms-2">Hot</span></span>
                             </a>
-                        </li>
+                        </li> {% endcomment %}
                         <!-- End::slide -->
 
                         <!-- Start::slide__category -->
-                        <li class="slide__category"><span class="category-name">Web Apps</span></li>
+                        {% comment %} <li class="slide__category"><span class="category-name">Web Apps</span></li> {% endcomment %}
                         <!-- End::slide__category -->
 
                         <!-- Start::slide -->
-                        <li class="slide has-sub">
+                        {% comment %} <li class="slide has-sub">
                             <a href="javascript:void(0);" class="side-menu__item">
                                 <i class="fe fe-grid side-menu__icon"></i>
                                 <span class="side-menu__label">Nested Menu</span>
@@ -1657,15 +1657,15 @@
                                     </ul>
                                 </li>
                             </ul>
-                        </li>
+                        </li> {% endcomment %}
                         <!-- End::slide -->
 
                         <!-- Start::slide__category -->
-                        <li class="slide__category"><span class="category-name">Tables &amp; Charts</span></li>
+                        {% comment %} <li class="slide__category"><span class="category-name">Tables &amp; Charts</span></li> {% endcomment %}
                         <!-- End::slide__category -->
 
                         <!-- Start::slide -->
-                        <li class="slide has-sub">
+                        {% comment %} <li class="slide has-sub">
                             <a href="javascript:void(0);" class="side-menu__item">
                                 <i class="fe fe-layout side-menu__icon"></i>
                                 <span class="side-menu__label">Tables</span>
@@ -1685,11 +1685,11 @@
                                     <a href="data-tables.html" class="side-menu__item">Data Tables</a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> {% endcomment %}
                         <!-- End::slide -->
 
                         <!-- Start::slide -->
-                        <li class="slide has-sub">
+                        {% comment %} <li class="slide has-sub">
                             <a href="javascript:void(0);" class="side-menu__item">
                                 <i class="fe fe-bar-chart-2 side-menu__icon"></i>
                                 <span class="side-menu__label">Charts</span>
@@ -1764,15 +1764,15 @@
                                     <a href="echarts.html" class="side-menu__item">Echart Charts</a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> {% endcomment %}
                         <!-- End::slide -->
 
                         <!-- Start::slide__category -->
-                        <li class="slide__category"><span class="category-name">Maps &amp; Icons</span></li>
+                        {% comment %} <li class="slide__category"><span class="category-name">Maps &amp; Icons</span></li> {% endcomment %}
                         <!-- End::slide__category -->
 
                         <!-- Start::slide -->
-                        <li class="slide has-sub">
+                        {% comment %} <li class="slide has-sub">
                             <a href="javascript:void(0);" class="side-menu__item">
                                 <i class="fe fe-map-pin side-menu__icon"></i>
                                 <span class="side-menu__label">Maps</span>
@@ -1792,16 +1792,16 @@
                                     <a href="vector-maps.html" class="side-menu__item">Vector Maps</a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> {% endcomment %}
                         <!-- End::slide -->
 
-                        <!-- Start::slide -->
+                        {% comment %} <!-- Start::slide -->
                         <li class="slide">
                             <a href="icons.html" class="side-menu__item">
                                 <i class="fe fe-wind side-menu__icon"></i>
                                 <span class="side-menu__label">Icons</span>
                             </a>
-                        </li>
+                        </li> {% endcomment %}
                         <!-- End::slide -->
                     </ul>
                     <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24"> <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path> </svg></div>

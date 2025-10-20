@@ -132,23 +132,49 @@ from django.core.paginator import Paginator
 
 from django.utils.timesince import timesince
 from django.utils.translation import activate
+from django.urls import reverse
+import re
+
 def get_superadmin_notifications():
-    from django.utils.translation import activate
     activate('fr')
 
     actions = HistoriqueAction.objects.select_related('utilisateur').order_by('-date')[:10]
 
     notifications = []
     for action in actions:
-        notifications.append({
+        notif = {
             'message': f"{action.action} sur {action.objet}",
             'details': f"Par {action.utilisateur.username}" if action.utilisateur else "Par Utilisateur inconnu",
             'time': timesince(action.date) + " il y a",
             'icon': 'fe-activity',
             'color': 'warning',
-        })
+        }
+
+        match = re.search(r'Demande ID\s+#(\d+)', action.details or '')
+        if match:
+            demande_id = match.group(1)
+            try:
+                demande = DemandeRecharger.objects.get(id=demande_id)
+                notif['url'] = reverse('detail_demande_recharge_superadmin', args=[demande.id])
+            except DemandeRecharger.DoesNotExist:
+                pass
+            
+        
+        match_support = re.search(r'«\s*(.*?)\s*»', action.details or '')
+        if match_support and 'DemandeSupport' in action.objet:
+            code_support = match_support.group(1)
+            try:
+                demande = DemandeSupport.objects.get(code_DemandeSupport=code_support)
+                notif['url'] = reverse('detail_demande_support_superadmin', args=[demande.id])
+            except DemandeSupport.DoesNotExist:
+                pass
+
+        notifications.append(notif)
 
     return notifications
+
+
+
 
 
 
@@ -163,13 +189,13 @@ def get_all_ticket_messages():
         last_convo = ticket.conversations.order_by('-timestamp').first()
         if last_convo:
             if last_convo.sender_type == 'Cliente':
-                image_path = 'assets/images/faces/1.jpg'
+                image_path = 'assets/images/R.png'
             elif last_convo.sender_type == 'SupportTechnique':
-                image_path = 'assets/images/faces/2.jpg'
+                image_path = 'assets/images/R.png'
             elif last_convo.sender_type == 'GestionnaireComptes':
-                image_path = 'assets/images/faces/3.jpg'
+                image_path = 'assets/images/R.png'
             else:
-                image_path = 'assets/images/faces/default.jpg'
+                image_path = 'assets/images/faces/R.png'
 
             messages.append({
             'sender': last_convo.sender,
@@ -314,6 +340,30 @@ def dashbordHomeSuperAdmin(request):
 }
 
     return render(request, "SuperAdmin/dashbordHomeSuperAdmin.html", context)
+
+
+
+
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SuperAdmin']) 
+def detail_SuperAdmin(request):  
+    notifications = get_superadmin_notifications()
+    messages_dropdown = get_all_ticket_messages()
+
+    historique_actions = HistoriqueAction.objects.select_related('utilisateur').order_by('-date')[:10]
+
+    context = {
+        'notifications': notifications,
+        'messages_dropdown': messages_dropdown,
+        'historique_actions': historique_actions,
+    }
+    return render(request, "SuperAdmin/detail_SuperAdmin.html", context)
+
+
+
+
 
 
 

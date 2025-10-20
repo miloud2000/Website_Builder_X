@@ -140,6 +140,7 @@ urlpatterns = [
     path('tickets/<int:ticket_id>/pdf/', views.ticket_pdf, name='ticket_pdf_superadmin'),
 
 
+    path('detail_SuperAdmin/',views.detail_SuperAdmin, name="detail_SuperAdmin"), 
 
 
 

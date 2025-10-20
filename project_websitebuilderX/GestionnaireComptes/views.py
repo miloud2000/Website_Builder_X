@@ -67,18 +67,112 @@ from django.utils import timezone
 from django.utils.timezone import localtime
 from itertools import chain
 from operator import attrgetter
+from django.urls import reverse
+
+def get_dashboard_notifications_and_messages(request):
+    demande_notifications = []
+    ticket_messages = []
+
+    # ✅ demandes à traiter
+    new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    for demande in new_demandes:
+        time_str = localtime(demande.date_created).strftime("%H:%M")
+        demande_notifications.append({
+            'message': f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}.",
+            'url': 'DemandeRechargerNotDoneyet',
+            'time': time_str,
+            'icon': 'fe-mail',
+            'color': 'primary',
+        })
+
+    # ✅ tickets non traités : créés par le client, sans modification ni conversation
+    tickets_non_traitées = Ticket.objects.filter(
+        updated_by_gc__isnull=True,
+        conversations__isnull=True
+    ).distinct().order_by('-date_created')[:6]
+
+    for ticket in tickets_non_traitées:
+        time_str = localtime(ticket.date_created).strftime("%H:%M")
+        code = ticket.code_Ticket or f"ID {ticket.id}"
+        type_label = ticket.typeTicket or "Type inconnu"
+        client_name = ticket.cliente.user.username if ticket.cliente and ticket.cliente.user else "Client inconnu"
+
+        ticket_messages.append({
+        'sender': client_name,
+        'message': f"🕒 Nouveau ticket {code} — {type_label} sans réponse",
+        'time': time_str,
+        'avatar': 'img/default-icon.png',
+        'status': 'non_traité',
+        'url': reverse('ticket:details_ticket_GC', args=[ticket.code_Ticket]),    })
+
+    # ✅ tickets traités par ce gestionnaire avec conversation
+    gestionnaire = getattr(request.user, 'gestionnairecomptes', None)
+    if gestionnaire:
+        tickets_traitées_par_moi = Ticket.objects.filter(
+            updated_by_gc=gestionnaire,
+            conversations__isnull=False
+        ).distinct().order_by('-date_created')[:6]
+
+        for ticket in tickets_traitées_par_moi:
+            time_str = localtime(ticket.date_created).strftime("%H:%M")
+            code = ticket.code_Ticket or f"ID {ticket.id}"
+            type_label = ticket.typeTicket or "Type inconnu"
+            client_name = ticket.cliente.user.username if ticket.cliente and ticket.cliente.user else "Client inconnu"
+
+            ticket_messages.append({
+            'sender': client_name,
+            'message': f"✅ Ticket {code} — {type_label} traité par vous",
+            'time': time_str,
+            'avatar': 'img/default-icon.png',
+            'status': 'traité',
+            'url': reverse('ticket:details_ticket_GC', args=[ticket.code_Ticket]),
+            })
+
+
+    return {
+        'demande_notifications': demande_notifications,
+        'ticket_messages': ticket_messages,
+        'today': now(),
+    }
+
+
+
+
 #DashbordHome of GestionnaireComptes
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes']) 
 def dashbordHomeGestionnaireComptes(request):  
-    if request.user.is_authenticated:
-        new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
-        for demande in new_demandes:
-            time_str = localtime(demande.date_created).strftime("%H:%M")
-            messages.info(
-                request,
-                f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
-            )
+    now = timezone.now()
+    new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    demande_notifications = []
+    for demande in new_demandes:
+        time_str = localtime(demande.date_created).strftime("%H:%M")
+        demande_notifications.append({
+            'message': f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}.",
+            'url': 'DemandeRechargerNotDoneyet',
+            'time': time_str,
+            'icon': 'fe-mail',
+            'color': 'primary',
+        })
+
+    # ✅ tickets modifiés par ce gestionnaire
+    latest_tickets = Ticket.objects.filter(
+        updated_by_gc__user=request.user
+    ).order_by('-date_created')[:6]
+
+    ticket_messages = []
+    for ticket in latest_tickets:
+        time_str = localtime(ticket.date_created).strftime("%H:%M")
+        code = ticket.code_Ticket or f"ID {ticket.id}"
+        type_label = ticket.typeTicket or "Type inconnu"
+        client_name = ticket.cliente.user.username if ticket.cliente and ticket.cliente.user else "Client inconnu"
+
+        ticket_messages.append({
+            'sender': client_name,
+            'message': f"🎫 Ticket {code} — {type_label}",
+            'time': time_str,
+            'avatar': 'img/default-icon.png',
+        })
 
     # Comptage des demandes modifiées par le gestionnaire
     demandes_modifiees_count = DemandeRecharger.objects.filter(
@@ -117,7 +211,7 @@ def dashbordHomeGestionnaireComptes(request):
     updated_by_gc__user=request.user
     ).order_by('-date_created')[:6]
 
-
+    dashboard_data = get_dashboard_notifications_and_messages(request)
 
     context = {
         'demandes_modifiees_count': demandes_modifiees_count,
@@ -128,6 +222,10 @@ def dashbordHomeGestionnaireComptes(request):
         'latest_demande_supports': latest_demande_supports,
         'latest_web_transactions': latest_web_transactions,
         'latest_tickets_by_me': latest_tickets_by_me,
+        'demande_notifications': demande_notifications,
+        'ticket_messages': ticket_messages,
+        'today': now,
+        **dashboard_data,
     }
 
     return render(request, "GestionnaireComptes/dashbordHomeGestionnaireComptes.html", context)
@@ -162,7 +260,12 @@ def details_DemandeRecharger(request, demande_recharger_id):
         request,
         f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
     )
-    return render(request, 'GestionnaireComptes/details_DemandeRecharger.html', {'demande_recharger': demande_recharger})
+        
+    dashboard_data = get_dashboard_notifications_and_messages(request)
+
+    return render(request, 'GestionnaireComptes/details_DemandeRecharger.html', {'demande_recharger': demande_recharger,
+        'today': now,
+        **dashboard_data,})
 
 
 
@@ -181,8 +284,12 @@ def view_full_size_image(request, DemandeRecharger_id):
     image = get_object_or_404(DemandeRecharger, pk=DemandeRecharger_id).image
     cliente = get_object_or_404(DemandeRecharger, pk=DemandeRecharger_id).cliente.user.username
     solde = get_object_or_404(DemandeRecharger, pk=DemandeRecharger_id).solde
+    
+    dashboard_data = get_dashboard_notifications_and_messages(request)
 
-    return render(request, 'GestionnaireComptes/full_size_image.html', {'image': image,'cliente': cliente,'solde': solde})
+
+    return render(request, 'GestionnaireComptes/full_size_image.html', {'image': image,'cliente': cliente,'solde': solde,'today': now,
+        **dashboard_data,})
 
 
 
@@ -312,9 +419,14 @@ def DemandeRechargerNotDoneyet(request):
     paginator = Paginator(demandes_queryset, per_page)
     page_obj = paginator.get_page(page_number)
 
+    
+    dashboard_data = get_dashboard_notifications_and_messages(request)
+
     context = {
         'page_obj': page_obj,
         'per_page': per_page,
+        'today': now,
+        **dashboard_data,
     }
 
     return render(request, "GestionnaireComptes/DemandeRechargerNotDoneyet.html", context)
@@ -346,11 +458,16 @@ def DemandeRechargerDone(request):
     paginator = Paginator(demandes_queryset, per_page)
     page_obj = paginator.get_page(page_number)
 
+    
+    dashboard_data = get_dashboard_notifications_and_messages(request)
+
     context = {
         'page_obj': page_obj,
         'per_page': per_page,
         'query': '', 
         'status_filter': 'Done',
+        'today': now,
+        **dashboard_data,
     }
 
     return render(request, "GestionnaireComptes/DemandeRechargerDone.html", context)
@@ -381,11 +498,15 @@ def DemandeRechargerInacceptable(request):
     paginator = Paginator(demandes_queryset, per_page)
     page_obj = paginator.get_page(page_number)
 
+    dashboard_data = get_dashboard_notifications_and_messages(request)
+
     context = {
         'page_obj': page_obj,
         'per_page': per_page,
         'query': '',  
         'status_filter': 'inacceptable',
+        'today': now,
+        **dashboard_data,
     }
 
     return render(request, "GestionnaireComptes/DemandeRechargerInacceptable.html", context)
@@ -395,7 +516,8 @@ def DemandeRechargerInacceptable(request):
 
 
 
-@login_required
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['GestionnaireComptes']) 
 def websites_liste_GestionnaireComptes(request):
     new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
     for demande in new_demandes:
@@ -435,6 +557,9 @@ def websites_liste_GestionnaireComptes(request):
     langues_list    = Websites.objects.values_list('langues', flat=True).distinct()
     plans_list      = Websites.objects.values_list('plan', flat=True).distinct()
 
+    
+    dashboard_data = get_dashboard_notifications_and_messages(request)
+
     return render(request, "GestionnaireComptes/websites_liste_GestionnaireComptes.html", {
         'websites': page_obj.object_list,
         'page_obj': page_obj,
@@ -447,10 +572,13 @@ def websites_liste_GestionnaireComptes(request):
         'cms_list': cms_list,
         'langues_list': langues_list,
         'plans_list': plans_list,
+        'today': now,
+        **dashboard_data,
     })
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['GestionnaireComptes']) 
 def details_website_GestionnaireComptes(request, id):
     new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
     for demande in new_demandes:
@@ -460,11 +588,16 @@ def details_website_GestionnaireComptes(request, id):
         f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
     )
     website = get_object_or_404(Websites, id=id)
-    return render(request, 'GestionnaireComptes/details_website_GestionnaireComptes.html', {'website': website})
+    
+    dashboard_data = get_dashboard_notifications_and_messages(request)
+
+    return render(request, 'GestionnaireComptes/details_website_GestionnaireComptes.html', {'website': website,'today': now,
+        **dashboard_data,})
 
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['GestionnaireComptes']) 
 def supports_list_GestionnaireComptes(request):
     new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
     for demande in new_demandes:
@@ -486,15 +619,23 @@ def supports_list_GestionnaireComptes(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    
+    dashboard_data = get_dashboard_notifications_and_messages(request)
+
     context = {
         'page_obj': page_obj,  # utilisé dans le template
         'status': status,
         'status_choices': ['Disponible', 'No Disponible'],
+        'today': now,
+        **dashboard_data,
     }
     return render(request, 'GestionnaireComptes/supports_list_GestionnaireComptes.html', context)
 
 
 
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['GestionnaireComptes']) 
 def details_support_GestionnaireComptes(request, id):
     new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
     for demande in new_demandes:
@@ -504,4 +645,8 @@ def details_support_GestionnaireComptes(request, id):
         f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
     )
     support = get_object_or_404(Supports, id=id)
-    return render(request, 'GestionnaireComptes/details_support_GestionnaireComptes.html', {'support': support})
+    
+    dashboard_data = get_dashboard_notifications_and_messages(request)
+
+    return render(request, 'GestionnaireComptes/details_support_GestionnaireComptes.html', {'support': support,'today': now,
+        **dashboard_data,})

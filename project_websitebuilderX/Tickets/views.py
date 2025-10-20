@@ -121,6 +121,84 @@ def get_user_notifications_and_messages(cliente):
 
 
 
+
+from django.utils import timezone
+from django.utils.timezone import localtime
+from itertools import chain
+from operator import attrgetter
+from django.urls import reverse
+
+def get_dashboard_notifications_and_messages(request):
+    demande_notifications = []
+    ticket_messages = []
+
+    # ✅ demandes à traiter
+    new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    for demande in new_demandes:
+        time_str = localtime(demande.date_created).strftime("%H:%M")
+        demande_notifications.append({
+            'message': f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}.",
+            'url': 'DemandeRechargerNotDoneyet',
+            'time': time_str,
+            'icon': 'fe-mail',
+            'color': 'primary',
+        })
+
+    # ✅ tickets non traités : créés par le client, sans modification ni conversation
+    tickets_non_traitées = Ticket.objects.filter(
+        updated_by_gc__isnull=True,
+        conversations__isnull=True
+    ).distinct().order_by('-date_created')[:6]
+
+    for ticket in tickets_non_traitées:
+        time_str = localtime(ticket.date_created).strftime("%H:%M")
+        code = ticket.code_Ticket or f"ID {ticket.id}"
+        type_label = ticket.typeTicket or "Type inconnu"
+        client_name = ticket.cliente.user.username if ticket.cliente and ticket.cliente.user else "Client inconnu"
+
+        ticket_messages.append({
+        'sender': client_name,
+        'message': f"🕒 Nouveau ticket {code} — {type_label} sans réponse",
+        'time': time_str,
+        'avatar': 'img/default-icon.png',
+        'status': 'non_traité',
+        'url': reverse('ticket:details_ticket_GC', args=[ticket.code_Ticket]),    })
+
+    # ✅ tickets traités par ce gestionnaire avec conversation
+    gestionnaire = getattr(request.user, 'gestionnairecomptes', None)
+    if gestionnaire:
+        tickets_traitées_par_moi = Ticket.objects.filter(
+            updated_by_gc=gestionnaire,
+            conversations__isnull=False
+        ).distinct().order_by('-date_created')[:6]
+
+        for ticket in tickets_traitées_par_moi:
+            time_str = localtime(ticket.date_created).strftime("%H:%M")
+            code = ticket.code_Ticket or f"ID {ticket.id}"
+            type_label = ticket.typeTicket or "Type inconnu"
+            client_name = ticket.cliente.user.username if ticket.cliente and ticket.cliente.user else "Client inconnu"
+
+            ticket_messages.append({
+            'sender': client_name,
+            'message': f"✅ Ticket {code} — {type_label} traité par vous",
+            'time': time_str,
+            'avatar': 'img/default-icon.png',
+            'status': 'traité',
+            'url': reverse('ticket:details_ticket_GC', args=[ticket.code_Ticket]),
+            })
+
+
+    return {
+        'demande_notifications': demande_notifications,
+        'ticket_messages': ticket_messages,
+        'today': now(),
+    }
+
+
+
+
+
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
@@ -351,6 +429,9 @@ def list_ticket_GC(request):
     paginator = Paginator(tickets, per_page)
     page_obj = paginator.get_page(page_number)
 
+    
+    dashboard_data = get_dashboard_notifications_and_messages(request)
+
     context = {
         'page_obj': page_obj,
         'per_page': per_page,
@@ -359,6 +440,8 @@ def list_ticket_GC(request):
         'username_client': username_client,
         'branche': branche,
         'status_filter': status_filter,
+        'today': now,
+        **dashboard_data,
     }
 
     return render(request, "Tickets/list_ticket_GC.html", context)
@@ -418,7 +501,7 @@ def details_ticket_ST(request, code_Ticket):
                 messages.error(request, 'Statut invalide sélectionné')
 
         return redirect('ticket:details_ticket_ST', code_Ticket=code_Ticket)
-
+    
     context = {
         'ticket': ticket,
         'conversations': conversations,
@@ -503,10 +586,14 @@ def details_ticket_GC(request, code_Ticket):
 
         return redirect('ticket:details_ticket_GC', code_Ticket=code_Ticket)
 
+    dashboard_data = get_dashboard_notifications_and_messages(request)
+
     context = {
         'ticket': ticket,
         'conversations': conversations,
         'status_choices': Ticket.STATUS_CHOICES,
+        'today': now,
+        **dashboard_data,
     }
     return render(request, 'Tickets/details_ticket_GC.html', context)
 

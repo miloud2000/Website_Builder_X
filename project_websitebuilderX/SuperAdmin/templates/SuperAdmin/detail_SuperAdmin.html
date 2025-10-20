@@ -1,0 +1,455 @@
+{% extends "SuperAdmin/dashbordSuperAdmin.html" %}
+{% load static %}
+{% block content %}
+  <!--APP-CONTENT START-->
+  <div class="main-content app-content">
+	<div class="container-fluid">
+
+		<!-- PAGE-HEADER -->
+		<div class="page-header">
+		  <h1 class="page-title my-auto">Profile</h1>
+		  <div>
+			<ol class="breadcrumb mb-0">
+			  <li class="breadcrumb-item">
+				<a href="javascript:void(0)">Home</a>
+			  </li>
+			  <li class="breadcrumb-item active" aria-current="page">Profile</li>
+			</ol>
+		  </div>
+		</div>
+		<!-- PAGE-HEADER END -->
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <div class="alert alert-success" role="alert">
+                        {{ message }}
+                    </div>
+                {% elif message.tags == 'error' %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <script>
+                setTimeout(function() {
+                    document.querySelectorAll('.alert').forEach(function(alert) {
+                        alert.style.display = 'none';
+                    });
+                }, 5000);
+            </script>
+        {% endif %}
+
+		<!-- Start::row-1 -->
+		<div class="row">
+			<div class="col-xxl-3">
+				<div class="card custom-card overflow-hidden">
+					<div class="card-body border-bottom">
+						<div class="d-sm-flex  main-profile-cover">
+							<span class="avatar avatar-xxl online me-3">
+                                {% if request.user.photo %}
+                                    <img src="{{ request.user.photo.url }}" alt="{{ request.user.nom }}" class="rounded-circle img-fluid" />
+                                {% else %}
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Default avatar" class="rounded-circle img-fluid" />
+                                {% endif %}							
+                            </span>
+							<div class="flex-fill main-profile-info my-auto">
+								<h5 class="fw-semibold mb-1 ">Mohamed Guessoum</h5>
+								<div>
+									<p class="mb-1 text-muted">{{request.user.username}}</p>
+									{% comment %} <p class="fs-12 op-7 mb-0">  
+										<span class="me-3 d-inline-flex align-items-center"><i class="ri-phone-line me-1 align-middle"></i>{{user.phone}}</span> 
+										<span class="d-inline-flex align-items-center"><i class="ri-map-pin-line me-1 align-middle"></i>{{cliente.address}}</span> 
+									</p> {% endcomment %}
+								</div>
+							</div>
+						</div>
+					</div>
+					{% comment %} <div class="card-body p-0 main-profile-info">
+						<div class="d-flex align-items-center justify-content-between w-100">
+							<div class="py-3 border-end w-100 text-center">
+								<p class="fw-bold fs-20  text-shadow mb-0">113</p>
+								<p class="mb-0 fs-12 text-muted ">Projects</p>
+							</div>
+							<div class="py-3 border-end w-100 text-center">
+								<p class="fw-bold fs-20  text-shadow mb-0">12.2k</p>
+								<p class="mb-0 fs-12 text-muted ">Followers</p>
+							</div>
+							<div class="py-3 w-100 text-center">
+								<p class="fw-bold fs-20  text-shadow mb-0">128</p>
+								<p class="mb-0 fs-12 text-muted ">Following</p>
+							</div>
+						</div>
+					</div> {% endcomment %}
+				</div>
+				<div class="card custom-card">
+					<div class="p-4  border-bottom border-block-end-dashed">
+						<p class="fs-15 mb-2 me-4 fw-semibold">Informations personnelles :</p> 
+						<ul class="list-group">
+							<li class="list-group-item border-0">
+								<div class="d-flex flex-wrap align-items-center">
+									<div class="me-2 fw-semibold">
+										Nom :
+									</div>
+									<span class="fs-12 text-muted">Mohamed Guessoum</span>
+								</div>
+							</li>
+							{% comment %} <li class="list-group-item border-0">
+								<div class="d-flex flex-wrap align-items-center">
+									<div class="me-2 fw-semibold">
+										Email :
+									</div>
+									<span class="fs-12 text-muted">{{cliente.email}}</span>
+								</div>
+							</li>
+							<li class="list-group-item border-0">
+								<div class="d-flex flex-wrap align-items-center">
+									<div class="me-2 fw-semibold">
+										Téléphone :
+									</div>
+									<span class="fs-12 text-muted">{{cliente.phone}}</span>
+								</div>
+							</li>
+							<li class="list-group-item border-0">
+								<div class="d-flex flex-wrap align-items-center">
+									<div class="me-2 fw-semibold">
+										Code :
+									</div>
+									<span class="fs-12 text-muted">{{cliente.code_client}}</span>
+								</div>
+							</li>
+							<li class="list-group-item border-0">
+								<div class="d-flex flex-wrap align-items-center">
+									<div class="me-2 fw-semibold">
+										Date Rejoindre :
+									</div>
+									<span class="fs-12 text-muted">{{cliente.date_created}}</span>
+								</div>
+							</li>
+                            <li class="list-group-item border-0">
+								<div class="d-flex flex-wrap align-items-center">
+									<div class="me-2 fw-semibold">
+										Address :
+									</div>
+									<span class="fs-12 text-muted">{{cliente.address}}</span>
+								</div>
+							</li>
+                            <li class="list-group-item border-0">
+								<div class="d-flex flex-wrap align-items-center">
+									<div class="me-2 fw-semibold">
+										Nom Entreprise :
+									</div>
+									<span class="fs-12 text-muted">{{cliente.nom_entreprise}}</span>
+								</div>
+							</li>
+                            <li class="list-group-item border-0">
+								<div class="d-flex flex-wrap align-items-center">
+									<div class="me-2 fw-semibold">
+										Numéro ICE :
+									</div>
+									<span class="fs-12 text-muted">{{cliente.numero_ice}}</span>
+								</div>
+							</li> {% endcomment %}
+						</ul>
+					</div>
+					{% comment %} <div class="p-4 border-bottom border-block-end-dashed">
+						<p class="fs-15 mb-2 me-4 fw-semibold">Coordonnées :</p>
+						<div class="text-muted">
+							<p class="mb-3">
+								<span class="avatar avatar-sm avatar-rounded me-2 bg-info-transparent">
+									<i class="ri-mail-line align-middle fs-14"></i>
+								</span>
+								{{cliente.email}}
+							</p>
+							<p class="mb-3">
+								<span class="avatar avatar-sm avatar-rounded me-2 bg-warning-transparent">
+									<i class="ri-phone-line align-middle fs-14"></i>
+								</span>
+								{{cliente.phone}}
+							</p>
+							<div class="d-flex">
+								<p class="mb-0">
+									<span class="avatar avatar-sm avatar-rounded me-2 bg-success-transparent">
+										<i class="ri-map-pin-line align-middle fs-14"></i>
+									</span>
+								</p>
+								<p class="mb-0">
+                                    {{cliente.address}}
+                                </p>
+							</div>
+						</div>
+					</div> {% endcomment %}
+					{% comment %} <div class="p-4 border-bottom border-block-end-dashed">
+						<p class="fs-15 mb-2 me-4 fw-semibold">Skills :</p>
+						<div>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">Cloud computing</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">Data analysis</span>
+							</a>    
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">DevOps</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">Machine learning</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">Programming</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">Security</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">Python</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">JavaScript</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">Ruby</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">PowerShell</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">Statistics</span>
+							</a>
+							<a href="javascript:void(0);">
+								<span class="badge bg-light text-muted m-1">SQL</span>
+							</a>
+						</div>
+					</div> {% endcomment %}
+					{% comment %} <div class="p-4 border-bottom border-block-end-dashed d-flex align-items-center">
+						<p class="fs-15 mb-2 me-4 fw-semibold">Social Networks :</p>
+						<div class="btn-list mb-0">
+							<button class="btn btn-sm btn-icon btn-info-light btn-wave waves-effect waves-light">
+								<i class="ri-facebook-line"></i>
+							</button>
+							<button class="btn btn-sm btn-icon btn-secondary-light btn-wave waves-effect waves-light">
+								<i class="ri-twitter-line"></i>
+							</button>
+							<button class="btn btn-sm btn-icon btn-warning-light btn-wave waves-effect waves-light">
+								<i class="ri-instagram-line"></i>
+							</button>
+							<button class="btn btn-sm btn-icon btn-success-light btn-wave waves-effect waves-light">
+								<i class="ri-github-line"></i>
+							</button>
+							<button class="btn btn-sm btn-icon btn-danger-light btn-wave waves-effect waves-light">
+								<i class="ri-youtube-line"></i>
+							</button>
+						</div>
+					</div> {% endcomment %}
+				</div>
+			</div>
+			<div class="col-xxl-8">
+				<div class="row">
+					<div class="col-xl-12">
+						<div class=" custom-card">
+							<div class="card-body p-0">
+								<div class="border-block-end-dashed  bg-white rounded-2 p-2">
+									<div>
+										<ul class="nav nav-pills nav-justified gx-3 tab-style-6 d-sm-flex d-block " id="myTab" role="tablist">
+											<li class="nav-item rounded" role="presentation">
+												<button class="nav-link active" id="activity-tab" data-bs-toggle="tab"
+													data-bs-target="#activity-tab-pane" type="button" role="tab"
+													aria-controls="activity-tab-pane" aria-selected="true"><i class="ri-task-line me-1 align-middle fs-16"></i> Dernière opération d'Historique
+                                                </button>
+											</li>
+											{% comment %} <li class="nav-item rounded" role="presentation">
+												<button class="nav-link" id="gallery-tab" data-bs-toggle="tab"
+													data-bs-target="#gallery-tab-pane" type="button" role="tab"
+													aria-controls="gallery-tab-pane" aria-selected="false"> <i class="ri-edit-line me-1 align-middle fs-16"></i>Ajouter des informations</button>
+											</li>
+											<li class="nav-item rounded" role="presentation">
+												<button class="nav-link" id="posts-tab" data-bs-toggle="tab"
+													data-bs-target="#posts-tab-pane" type="button" role="tab"
+													aria-controls="posts-tab-pane" aria-selected="false"> <i class="ri-lock-password-line me-1 align-middle fs-16"></i>Modifier le mot de passe</button>
+											</li>
+											<li class="nav-item rounded" role="presentation">
+												<button class="nav-link" id="followers-tab" data-bs-toggle="tab"
+													data-bs-target="#followers-tab-pane" type="button" role="tab"
+													aria-controls="followers-tab-pane" aria-selected="false">  <i class="ri-edit-line me-1 align-middle fs-16"></i> Modifier les informations</button>
+											</li> {% endcomment %}
+										</ul>
+									</div>   
+								</div>
+								<div class="py-4">
+									<div class="tab-content" id="myTabContent">
+										<div class="tab-pane show active fade p-0 border-0 bg-white p-4 rounded-3" id="activity-tab-pane"
+											role="tabpanel" aria-labelledby="activity-tab" tabindex="0">
+											<ul class="list-unstyled profile-timeline">
+                                                {% for action in historique_actions %}
+                                                <li>
+                                                  <span class="fs-12 text-muted fw-semibold profile-timeline-time">
+                                                    {{ action.date|date:"d M Y H:i" }}
+                                                  </span>
+                                                  <div>
+                                                    <span class="avatar avatar-sm avatar-rounded profile-timeline-avatar">
+                                                      <img src="{% static 'img/678-6786685_transaction-history-icon-png-transparent-png.png' %}" alt="Historique">
+                                                    </span>
+                                                    <p class="text-muted mb-2">
+                                                      <b>{{ action.action }}</b> sur <span class="text-dark">{{ action.objet }}</span>
+                                                      <span class="badge bg-secondary ms-2">Historique</span>
+                                                    </p>
+                                                    {% if action.details %}
+                                                      <p class="text-muted fs-12 mb-0">
+                                                        {{ action.details }}
+                                                      </p>
+                                                    {% endif %}
+                                                  </div>
+                                                </li>
+                                              {% empty %}
+                                                <li><p class="text-muted">Aucune action historique récente.</p></li>
+                                              {% endfor %}
+                                              
+                                              </ul>
+										{% comment %} </div>
+										<div class="tab-pane fade p-0 border-0" id="gallery-tab-pane"
+											role="tabpanel" aria-labelledby="gallery-tab" tabindex="0">
+											<div class="row">
+												<form method="POST" action="{% url 'client:add_additional_info' %}">
+                                                    {% csrf_token %}
+                                                    <div class="form-group row">
+                                                        <label class="col-lg-3 col-form-label form-control-label">Address</label>
+                                                        <div class="col-lg-9">
+                                                            <input class="form-control" type="text" name="address" required value="{% if cliente.address %}{{ cliente.address }}{% endif %}" {% if cliente.address is None %}placeholder="Enter your address"{% endif %}>
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                    <div class="form-group row">
+                                                        <label class="col-lg-3 col-form-label form-control-label">Nom Entreprise</label>
+                                                        <div class="col-lg-9">
+                                                            <input class="form-control" type="text" name="nom_entreprise" required  value="{% if cliente.nom_entreprise %}{{ cliente.nom_entreprise }}{% endif %}" {% if cliente.nom_entreprise is None %}placeholder="Enter your Nom Entreprise"{% endif %}>
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                    <div class="form-group row">
+                                                        <label class="col-lg-3 col-form-label form-control-label">Numéro ICE</label>
+                                                        <div class="col-lg-9">
+                                                            <input class="form-control" type="text" name="numero_ice" required  value="{% if cliente.numero_ice %}{{ cliente.numero_ice }}{% endif %}" {% if cliente.numero_ice is None %}placeholder="Enter your Numero Ice"{% endif %}>
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                    <div class="form-group row">
+                                                        <label class="col-lg-3 col-form-label form-control-label"></label>
+                                                        {% comment %} {% if not cliente.address or cliente.nom_entreprise or cliente.numero_ice %} {% endcomment %}
+                                                        {% comment %} <div class="col-lg-9">
+                                                            <input type="reset" class="btn btn-secondary" value="Cancel">
+                                                            <input type="submit" class="btn btn-primary" value="Save Changes">
+                                                        </div> {% endcomment %}
+                                                    {% comment %} {% endif %} 
+                                                    </div>
+                                                </form>
+											</div>
+										</div> {% endcomment %}
+										{% comment %} <div class="tab-pane fade p-0 border-0" id="posts-tab-pane"
+											role="tabpanel" aria-labelledby="posts-tab" tabindex="0">
+										<div class="row">
+												<div class=" col-md-12 task-card">
+													<div class="card custom-card task-pending-card">
+														<div class="card-body">
+                                                            <form method="post" action="{% url 'client:change_password' %}">
+                                                                {% csrf_token %}
+                                                                <div class="form-group row">
+                                                                    <label class="col-lg-3 col-form-label form-control-label">Ancien mot de passe</label>
+                                                                    <div class="col-lg-9">
+                                                                        <input class="form-control" type="password" name="old_password" required>
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                                <div class="form-group row">
+                                                                    <label class="col-lg-3 col-form-label form-control-label">Mot de passe</label>
+                                                                    <div class="col-lg-9">
+                                                                        <input class="form-control" type="password" name="new_password1" required>
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                                <div class="form-group row">
+                                                                    <label class="col-lg-3 col-form-label form-control-label">Confirmez le mot de passe</label>
+                                                                    <div class="col-lg-9">
+                                                                        <input class="form-control" type="password" name="new_password2" required>
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                                <div class="form-group row">
+                                                                    <label class="col-lg-3 col-form-label form-control-label"></label>
+                                                                    <div class="col-lg-9">
+                                                                        <input type="reset" class="btn btn-secondary" value="Annuler">
+                                                                        <input type="submit" class="btn btn-primary" value="Enregistrer les modifications">
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+														</div>
+													</div>
+												</div>
+												
+											</div>
+										</div> {% endcomment %}
+										{% comment %} <div class="tab-pane fade p-0 border-0" id="followers-tab-pane"
+											role="tabpanel" aria-labelledby="followers-tab" tabindex="0">
+											<div class="row">
+												<div class="col-xxl-12 col-xl-8 col-lg-6 col-md-6 col-sm-12">
+													<div class="card custom-card shadow-none border">
+														<div class="card-body p-4">
+															<form method="post" action="{% url 'client:update_cliente' %}" >
+                                                                {% csrf_token %}
+                                                                <div class="form-group row">
+                                                                    <label class="col-lg-3 col-form-label form-control-label">Nom</label>
+                                                                    <div class="col-lg-9">
+                                                                        <input class="form-control" type="text" name="nom" required value="{% if cliente.nom %}{{ cliente.nom }}{% endif %}" {% if cliente.nom is None %}placeholder="Enter your nom"{% endif %}>
+                                    
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                                <div class="form-group row">
+                                                                    <label class="col-lg-3 col-form-label form-control-label">Prenom</label>
+                                                                    <div class="col-lg-9">
+                                                                        <input class="form-control" type="text" name="prenom" required value="{% if cliente.prenom %}{{ cliente.prenom }}{% endif %}" {% if cliente.prenom is None %}placeholder="Enter your prenom"{% endif %}>
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                                <div class="form-group row">
+                                                                    <label class="col-lg-3 col-form-label form-control-label">E-mail</label>
+                                                                    <div class="col-lg-9">
+                                                                        <input class="form-control" type="text" name="email" required value="{% if cliente.email %}{{ cliente.email }}{% endif %}" {% if cliente.email is None %}placeholder="Enter your email"{% endif %}>
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                                <div class="form-group row">
+                                                                    <label class="col-lg-3 col-form-label form-control-label">Téléphone</label>
+                                                                    <div class="col-lg-9">
+                                                                        <input class="form-control" type="text" name="phone" required value="{% if cliente.phone %}{{ cliente.phone }}{% endif %}" {% if cliente.phone is None %}placeholder="Enter your phone"{% endif %}>
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                                <div class="form-group row">
+                                                                    <label class="col-lg-3 col-form-label form-control-label"></label>
+                                                                    <div class="col-lg-9">
+                                                                        <input type="reset" class="btn btn-secondary" value="Annuler">
+                                                                        <input type="submit" class="btn btn-primary" value="Enregistrer les modifications">
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div> {% endcomment %}
+									</div>    
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--End::row-1 -->
+
+	</div>
+</div>
+<!--APP-CONTENT CLOSE-->
+
+
+
+{% endblock %}
+
