@@ -390,6 +390,7 @@ from django.utils.timezone import localtime
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes'])
 def list_ticket_GC(request):
+    gestionnaire = getattr(request.user, 'gestionnairecomptes', None)
     new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
     for demande in new_demandes:
         time_str = localtime(demande.date_created).strftime("%H:%M")
@@ -442,6 +443,7 @@ def list_ticket_GC(request):
         'status_filter': status_filter,
         'today': now,
         **dashboard_data,
+        'gestionnaire': gestionnaire,
     }
 
     return render(request, "Tickets/list_ticket_GC.html", context)
@@ -520,6 +522,7 @@ from django.utils.timezone import now
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes'])
 def details_ticket_GC(request, code_Ticket):
+    gestionnaire = getattr(request.user, 'gestionnairecomptes', None)
     new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
     for demande in new_demandes:
         time_str = localtime(demande.date_created).strftime("%H:%M")
@@ -594,6 +597,7 @@ def details_ticket_GC(request, code_Ticket):
         'status_choices': Ticket.STATUS_CHOICES,
         'today': now,
         **dashboard_data,
+        'gestionnaire': gestionnaire,
     }
     return render(request, 'Tickets/details_ticket_GC.html', context)
 

@@ -29,6 +29,7 @@ urlpatterns = [
     
     # path('done_demande_recharger/<int:demande_recharger_id>/', views.done_demande_recharger, name='done_demande_recharger'),
     
-    
+    path('detailGestionnaire/',views.detailGestionnaire, name="detailGestionnaire"), 
+
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

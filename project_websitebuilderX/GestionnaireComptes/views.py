@@ -23,6 +23,7 @@ from websitebuilder.forms import (
     AdditionalInfoForm,
     ClienteUpdateForm,
     ClientePasswordChangeForm,
+    GestionnaireForm,
 )
 
 from websitebuilder.decorators import (  
@@ -143,6 +144,8 @@ def get_dashboard_notifications_and_messages(request):
 @allowedUsers(allowedGroups=['GestionnaireComptes']) 
 def dashbordHomeGestionnaireComptes(request):  
     now = timezone.now()
+    gestionnaire = getattr(request.user, 'gestionnairecomptes', None)
+    
     new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
     demande_notifications = []
     for demande in new_demandes:
@@ -152,7 +155,7 @@ def dashbordHomeGestionnaireComptes(request):
             'url': 'DemandeRechargerNotDoneyet',
             'time': time_str,
             'icon': 'fe-mail',
-            'color': 'primary',
+            'color': 'primary', 
         })
 
     # ✅ tickets modifiés par ce gestionnaire
@@ -222,10 +225,11 @@ def dashbordHomeGestionnaireComptes(request):
         'latest_demande_supports': latest_demande_supports,
         'latest_web_transactions': latest_web_transactions,
         'latest_tickets_by_me': latest_tickets_by_me,
-        'demande_notifications': demande_notifications,
-        'ticket_messages': ticket_messages,
+        # 'demande_notifications': demande_notifications,
+        # 'ticket_messages': ticket_messages,
         'today': now,
         **dashboard_data,
+        'gestionnaire': gestionnaire,
     }
 
     return render(request, "GestionnaireComptes/dashbordHomeGestionnaireComptes.html", context)
@@ -247,25 +251,83 @@ def dashbordGestionnaireComptes(request):
 
 
 
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['GestionnaireComptes']) 
+def detailGestionnaire(request):  
+    gestionnaire = getattr(request.user, 'gestionnairecomptes', None)
+    if not gestionnaire:
+        messages.error(request, "Profil Gestionnaire introuvable.")
+        return redirect('login')
+
+    # ✅ Formulaire de modification des infos
+    form = GestionnaireForm(instance=gestionnaire)
+
+    # ✅ Formulaire de changement de mot de passe
+    password_form = PasswordChangeForm(user=request.user)
+
+    if request.method == 'POST':
+        if 'update_info' in request.POST:
+            form = GestionnaireForm(request.POST, instance=gestionnaire)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Informations mises à jour avec succès.")
+                return redirect('detailGestionnaire')
+            else:
+                messages.error(request, "Erreur lors de la mise à jour des informations.")
+        
+        elif 'change_password' in request.POST:
+            password_form = PasswordChangeForm(user=request.user, data=request.POST)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, "Mot de passe modifié avec succès.")
+                return redirect('detailGestionnaire')
+            else:
+                messages.error(request, "Erreur lors de la modification du mot de passe.")
+
+    historique_actions = HistoriqueAction.objects.filter(
+        utilisateur=request.user
+    ).order_by('-date')[:20]
+
+    
+    dashboard_data = get_dashboard_notifications_and_messages(request)
+
+    context = {
+        'gestionnaire': gestionnaire,
+        'form': form,
+        'password_form': password_form,
+        'historique_actions': historique_actions,
+        **dashboard_data,
+        'gestionnaire': gestionnaire,
+    }
+
+    return render(request, "GestionnaireComptes/detailGestionnaire.html", context)
+
+
+
 
 #GestionnaireComptes can show all details of DemandeRecharger
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes'])
 def details_DemandeRecharger(request, demande_recharger_id):
+    gestionnaire = getattr(request.user, 'gestionnairecomptes', None)
     demande_recharger = get_object_or_404(DemandeRecharger, pk=demande_recharger_id)
-    new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
-    for demande in new_demandes:
-        time_str = localtime(demande.date_created).strftime("%H:%M")
-        messages.info(
-        request,
-        f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
-    )
+    # new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    # for demande in new_demandes:
+    #     time_str = localtime(demande.date_created).strftime("%H:%M")
+    #     messages.info(
+    #     request,
+    #     f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
+    # )
         
     dashboard_data = get_dashboard_notifications_and_messages(request)
 
     return render(request, 'GestionnaireComptes/details_DemandeRecharger.html', {'demande_recharger': demande_recharger,
         'today': now,
-        **dashboard_data,})
+        **dashboard_data,'gestionnaire': gestionnaire,})
 
 
 
@@ -274,13 +336,14 @@ def details_DemandeRecharger(request, demande_recharger_id):
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes'])
 def view_full_size_image(request, DemandeRecharger_id):
-    new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
-    for demande in new_demandes:
-        time_str = localtime(demande.date_created).strftime("%H:%M")
-        messages.info(
-        request,
-        f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
-    )
+    gestionnaire = getattr(request.user, 'gestionnairecomptes', None)
+    # new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    # for demande in new_demandes:
+    #     time_str = localtime(demande.date_created).strftime("%H:%M")
+    #     messages.info(
+    #     request,
+    #     f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
+    # )
     image = get_object_or_404(DemandeRecharger, pk=DemandeRecharger_id).image
     cliente = get_object_or_404(DemandeRecharger, pk=DemandeRecharger_id).cliente.user.username
     solde = get_object_or_404(DemandeRecharger, pk=DemandeRecharger_id).solde
@@ -289,7 +352,7 @@ def view_full_size_image(request, DemandeRecharger_id):
 
 
     return render(request, 'GestionnaireComptes/full_size_image.html', {'image': image,'cliente': cliente,'solde': solde,'today': now,
-        **dashboard_data,})
+        **dashboard_data,'gestionnaire': gestionnaire,})
 
 
 
@@ -401,13 +464,14 @@ from django.db.models import Q
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes']) 
 def DemandeRechargerNotDoneyet(request):
-    new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
-    for demande in new_demandes:
-        time_str = localtime(demande.date_created).strftime("%H:%M")
-        messages.info(
-        request,
-        f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
-    )
+    gestionnaire = getattr(request.user, 'gestionnairecomptes', None)
+    # new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    # for demande in new_demandes:
+    #     time_str = localtime(demande.date_created).strftime("%H:%M")
+    #     messages.info(
+    #     request,
+    #     f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
+    # )
         
     per_page = int(request.GET.get('per_page', 10))
     page_number = request.GET.get('page', 1)
@@ -427,6 +491,7 @@ def DemandeRechargerNotDoneyet(request):
         'per_page': per_page,
         'today': now,
         **dashboard_data,
+        'gestionnaire': gestionnaire,
     }
 
     return render(request, "GestionnaireComptes/DemandeRechargerNotDoneyet.html", context)
@@ -439,13 +504,14 @@ def DemandeRechargerNotDoneyet(request):
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes']) 
 def DemandeRechargerDone(request):
-    new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
-    for demande in new_demandes:
-        time_str = localtime(demande.date_created).strftime("%H:%M")
-        messages.info(
-        request,
-        f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
-    )
+    gestionnaire = getattr(request.user, 'gestionnairecomptes', None)
+    # new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    # for demande in new_demandes:
+    #     time_str = localtime(demande.date_created).strftime("%H:%M")
+    #     messages.info(
+    #     request,
+    #     f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
+    # )
     per_page = int(request.GET.get('per_page', 10))
     page_number = request.GET.get('page', 1)
 
@@ -468,6 +534,7 @@ def DemandeRechargerDone(request):
         'status_filter': 'Done',
         'today': now,
         **dashboard_data,
+        'gestionnaire': gestionnaire,
     }
 
     return render(request, "GestionnaireComptes/DemandeRechargerDone.html", context)
@@ -480,13 +547,14 @@ def DemandeRechargerDone(request):
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes']) 
 def DemandeRechargerInacceptable(request): 
-    new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
-    for demande in new_demandes:
-        time_str = localtime(demande.date_created).strftime("%H:%M")
-        messages.info(
-        request,
-        f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
-    )
+    gestionnaire = getattr(request.user, 'gestionnairecomptes', None)
+    # new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    # for demande in new_demandes:
+    #     time_str = localtime(demande.date_created).strftime("%H:%M")
+    #     messages.info(
+    #     request,
+    #     f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
+    # )
     per_page = int(request.GET.get('per_page', 10))
     page_number = request.GET.get('page', 1)
 
@@ -507,6 +575,7 @@ def DemandeRechargerInacceptable(request):
         'status_filter': 'inacceptable',
         'today': now,
         **dashboard_data,
+        'gestionnaire': gestionnaire,
     }
 
     return render(request, "GestionnaireComptes/DemandeRechargerInacceptable.html", context)
@@ -519,13 +588,14 @@ def DemandeRechargerInacceptable(request):
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes']) 
 def websites_liste_GestionnaireComptes(request):
-    new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
-    for demande in new_demandes:
-        time_str = localtime(demande.date_created).strftime("%H:%M")
-        messages.info(
-        request,
-        f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
-    )
+    gestionnaire = getattr(request.user, 'gestionnairecomptes', None)
+    # new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    # for demande in new_demandes:
+    #     time_str = localtime(demande.date_created).strftime("%H:%M")
+    #     messages.info(
+    #     request,
+    #     f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
+    # )
     status     = request.GET.get('status', '').strip()
     catégorie  = request.GET.get('catégorie', '').strip()
     CMS        = request.GET.get('CMS', '').strip()
@@ -574,38 +644,41 @@ def websites_liste_GestionnaireComptes(request):
         'plans_list': plans_list,
         'today': now,
         **dashboard_data,
+        'gestionnaire': gestionnaire,
     })
 
 
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes']) 
 def details_website_GestionnaireComptes(request, id):
-    new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
-    for demande in new_demandes:
-        time_str = localtime(demande.date_created).strftime("%H:%M")
-        messages.info(
-        request,
-        f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
-    )
+    gestionnaire = getattr(request.user, 'gestionnairecomptes', None)
+    # new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    # for demande in new_demandes:
+    #     time_str = localtime(demande.date_created).strftime("%H:%M")
+    #     messages.info(
+    #     request,
+    #     f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
+    # )
     website = get_object_or_404(Websites, id=id)
     
     dashboard_data = get_dashboard_notifications_and_messages(request)
 
     return render(request, 'GestionnaireComptes/details_website_GestionnaireComptes.html', {'website': website,'today': now,
-        **dashboard_data,})
+        **dashboard_data,'gestionnaire': gestionnaire,})
 
 
 
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes']) 
 def supports_list_GestionnaireComptes(request):
-    new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
-    for demande in new_demandes:
-        time_str = localtime(demande.date_created).strftime("%H:%M")
-        messages.info(
-        request,
-        f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
-    )
+    gestionnaire = getattr(request.user, 'gestionnairecomptes', None)
+    # new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    # for demande in new_demandes:
+    #     time_str = localtime(demande.date_created).strftime("%H:%M")
+    #     messages.info(
+    #     request,
+    #     f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
+    # )
     status = request.GET.get('status')
 
     supports = Supports.objects.all()
@@ -628,6 +701,7 @@ def supports_list_GestionnaireComptes(request):
         'status_choices': ['Disponible', 'No Disponible'],
         'today': now,
         **dashboard_data,
+        'gestionnaire': gestionnaire,
     }
     return render(request, 'GestionnaireComptes/supports_list_GestionnaireComptes.html', context)
 
@@ -637,16 +711,17 @@ def supports_list_GestionnaireComptes(request):
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['GestionnaireComptes']) 
 def details_support_GestionnaireComptes(request, id):
-    new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
-    for demande in new_demandes:
-        time_str = localtime(demande.date_created).strftime("%H:%M")
-        messages.info(
-        request,
-        f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
-    )
+    gestionnaire = getattr(request.user, 'gestionnairecomptes', None)
+    # new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    # for demande in new_demandes:
+    #     time_str = localtime(demande.date_created).strftime("%H:%M")
+    #     messages.info(
+    #     request,
+    #     f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}."
+    # )
     support = get_object_or_404(Supports, id=id)
     
     dashboard_data = get_dashboard_notifications_and_messages(request)
 
     return render(request, 'GestionnaireComptes/details_support_GestionnaireComptes.html', {'support': support,'today': now,
-        **dashboard_data,})
+        **dashboard_data,'gestionnaire': gestionnaire,})
