@@ -1,0 +1,187 @@
+{% extends "SupportTechnique/dashbordSupportTechnique.html" %}
+{% load static %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="main-content app-content">
+  <div class="container-fluid">
+    <div class="page-header">
+      <h1 class="page-title my-auto">Profil Support Technique</h1>
+      <div>
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="#">Accueil</a></li>
+          <li class="breadcrumb-item active">Profil</li>
+        </ol>
+      </div>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+      <script>
+        setTimeout(() => {
+          document.querySelectorAll('.alert').forEach(el => el.style.display = 'none');
+        }, 5000);
+      </script>
+    {% endif %}
+
+    <div class="row">
+      <div class="col-xxl-3">
+        <div class="card custom-card overflow-hidden">
+          <div class="card-body border-bottom">
+            <div class="d-sm-flex main-profile-cover">
+              <span class="avatar avatar-xxl online me-3">
+                {% if support.photo %}
+                  <img src="{{ support.photo.url }}" alt="{{ support.name }}" class="rounded-circle img-fluid" />
+                {% else %}
+                  <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Default avatar" class="rounded-circle img-fluid" />
+                {% endif %}
+              </span>
+              <div class="flex-fill main-profile-info my-auto">
+                <h5 class="fw-semibold mb-1">{{ support.name }}</h5>
+                <p class="mb-1 text-muted">{{ support.user.username }}</p>
+                <p class="fs-12 op-7 mb-0">
+                  <span class="me-3 d-inline-flex align-items-center"><i class="ri-phone-line me-1"></i>{{ support.phone }}</span>
+                  <span class="d-inline-flex align-items-center"><i class="ri-mail-line me-1"></i>{{ support.email }}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card custom-card">
+          <div class="p-4 border-bottom border-block-end-dashed">
+            <p class="fs-15 mb-2 fw-semibold">Informations personnelles :</p>
+            <ul class="list-group">
+              <li class="list-group-item border-0"><strong>Nom :</strong> <span class="text-muted">{{ support.name }}</span></li>
+              <li class="list-group-item border-0"><strong>Email :</strong> <span class="text-muted">{{ support.email }}</span></li>
+              <li class="list-group-item border-0"><strong>Téléphone :</strong> <span class="text-muted">{{ support.phone }}</span></li>
+              <li class="list-group-item border-0"><strong>Statut :</strong> <span class="text-muted">{{ support.Status }}</span></li>
+              <li class="list-group-item border-0"><strong>Date de création :</strong> <span class="text-muted">{{ support.date_created|date:"d M Y" }}</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xxl-9">
+        <div class="card custom-card">
+          <div class="card-body p-0">
+            <div class="border-block-end-dashed bg-white rounded-2 p-2">
+              <ul class="nav nav-pills nav-justified tab-style-6" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active" id="activity-tab" data-bs-toggle="tab" data-bs-target="#activity-tab-pane" type="button" role="tab">Opérations effectuées</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="edit-tab" data-bs-toggle="tab" data-bs-target="#edit-tab-pane" type="button" role="tab">Modifier mes informations</button>
+                </li>
+                <li class="nav-item rounded" role="presentation">
+                    <button class="nav-link" id="posts-tab" data-bs-toggle="tab"
+                        data-bs-target="#posts-tab-pane" type="button" role="tab"
+                        aria-controls="posts-tab-pane" aria-selected="false"> <i class="ri-lock-password-line me-1 align-middle fs-16"></i>Modifier le mot de passe</button>
+                </li>
+              </ul>
+            </div>
+
+            <div class="tab-content p-4" id="myTabContent">
+              <div class="tab-pane fade show active" id="activity-tab-pane" role="tabpanel">
+                <ul class="list-unstyled profile-timeline">
+                    {% for action in historique_actions %}
+                    <li>
+                      <span class="fs-12 text-muted fw-semibold profile-timeline-time">
+                        {{ action.date|date:"d M Y H:i" }}
+                      </span>
+                      <div>
+                        <span class="avatar avatar-sm avatar-rounded profile-timeline-avatar">
+                          <img src="{% static 'img/12453549.png' %}" alt="Action">
+                        </span>
+                        <p class="text-muted mb-2">
+                          <b>{{ action.action }}</b><br>
+                          <span class="fs-12 text-muted">Objet : {{ action.objet }}</span><br>
+                          <span class="fs-12 text-muted">{{ action.details }}</span>
+                        </p>
+                      </div>
+                    </li>
+                  {% empty %}
+                    <li><p class="text-muted">Aucune action enregistrée.</p></li>
+                  {% endfor %}
+                </ul>
+            </div>
+
+            <div class="tab-pane fade" id="edit-tab-pane" role="tabpanel">
+                <form method="POST" class="mt-4">
+                    {% csrf_token %}
+                    <input type="hidden" name="update_info" value="1">
+                    <div class="mb-3">
+                        <label for="id_name" class="form-label">Nom</label>
+                        {{ form.name }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_email" class="form-label">Email</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_phone" class="form-label">Téléphone</label>
+                        {{ form.phone }}
+                    </div>
+                      <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                </form>
+            </div>
+                  
+
+            <div class="tab-pane fade p-0 border-0" id="posts-tab-pane" role="tabpanel" aria-labelledby="posts-tab" tabindex="0">
+                <div class="card border-0 shadow-sm rounded-4">
+                  <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0 fw-bold text-dark">
+                      <i class="ri-lock-password-line me-2 text-primary"></i> Mise à jour du mot de passe
+                    </h5>
+                  </div>
+                  <div class="card-body px-4 py-4">
+                    <form method="POST" class="row g-4">
+                      {% csrf_token %}
+                      <input type="hidden" name="change_password" value="1">
+              
+                      <div class="col-12">
+                        <label for="id_old_password" class="form-label text-muted fw-semibold">Mot de passe actuel</label>
+                        <div class="input-group">
+                          <span class="input-group-text bg-light"><i class="ri-key-line text-secondary"></i></span>
+                          {{ password_form.old_password|add_class:"form-control border-start-0 shadow-none" }}
+                        </div>
+                      </div>
+              
+                      <div class="col-md-6">
+                        <label for="id_new_password1" class="form-label text-muted fw-semibold">Nouveau mot de passe</label>
+                        <div class="input-group">
+                          <span class="input-group-text bg-light"><i class="ri-lock-unlock-line text-secondary"></i></span>
+                          {{ password_form.new_password1|add_class:"form-control border-start-0 shadow-none" }}
+                        </div>
+                        <small class="text-muted">Minimum 8 caractères, avec chiffres et lettres.</small>
+                      </div>
+              
+                      <div class="col-md-6">
+                        <label for="id_new_password2" class="form-label text-muted fw-semibold">Confirmer le mot de passe</label>
+                        <div class="input-group">
+                          <span class="input-group-text bg-light"><i class="ri-check-double-line text-secondary"></i></span>
+                          {{ password_form.new_password2|add_class:"form-control border-start-0 shadow-none" }}
+                        </div>
+                      </div>
+              
+                      <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-3">
+                          <i class="ri-refresh-line me-1"></i> Mettre à jour le mot de passe
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

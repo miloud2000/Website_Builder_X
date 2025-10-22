@@ -22,5 +22,7 @@ urlpatterns = [
     path('supports_list_support/',views.supports_list_support, name="supports_list_support"), 
     path('details_support/<int:id>/', views.details_support, name='details_support'),
 
+    path('support/detail/', views.detailSupportTechnique, name='detailSupportTechnique'),
+
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -119,7 +119,7 @@ def get_user_notifications_and_messages(cliente):
 
 
 
-
+############################################################################################################################
 
 
 from django.utils import timezone
@@ -195,6 +195,74 @@ def get_dashboard_notifications_and_messages(request):
     }
 
 
+########################################################################################################
+
+
+def get_support_dashboard_notifications(request):
+    demande_notifications = []
+    ticket_messages = []
+
+    # ✅ demandes à traiter (si le support doit les voir)
+    new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    for demande in new_demandes:
+        time_str = localtime(demande.date_created).strftime("%H:%M")
+        demande_notifications.append({
+            'message': f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}.",
+            'url': 'DemandeRechargerNotDoneyet',
+            'time': time_str,
+            'icon': 'fe-mail',
+            'color': 'warning',
+        })
+
+    # ✅ tickets non traités : créés par le client, sans réponse du support
+    tickets_non_traitées = Ticket.objects.filter(
+        updated_by_ts__isnull=True,
+        conversations__isnull=True
+    ).distinct().order_by('-date_created')[:6]
+
+    for ticket in tickets_non_traitées:
+        time_str = localtime(ticket.date_created).strftime("%H:%M")
+        code = ticket.code_Ticket or f"ID {ticket.id}"
+        type_label = ticket.typeTicket or "Type inconnu"
+        client_name = ticket.cliente.user.username if ticket.cliente and ticket.cliente.user else "Client inconnu"
+
+        ticket_messages.append({
+            'sender': client_name,
+            'message': f"🕒 Nouveau ticket {code} — {type_label} sans réponse",
+            'time': time_str,
+            'avatar': 'img/default-icon.png',
+            'status': 'non_traité',
+            'url': reverse('ticket:details_ticket_ST', args=[ticket.code_Ticket]),
+        })
+
+    # ✅ tickets traités par ce support technique
+    support = getattr(request.user, 'supporttechnique', None)
+    if support:
+        tickets_traitées_par_moi = Ticket.objects.filter(
+            updated_by_ts=support,
+            conversations__isnull=False
+        ).distinct().order_by('-date_created')[:6]
+
+        for ticket in tickets_traitées_par_moi:
+            time_str = localtime(ticket.date_created).strftime("%H:%M")
+            code = ticket.code_Ticket or f"ID {ticket.id}"
+            type_label = ticket.typeTicket or "Type inconnu"
+            client_name = ticket.cliente.user.username if ticket.cliente and ticket.cliente.user else "Client inconnu"
+
+            ticket_messages.append({
+                'sender': client_name,
+                'message': f"✅ Ticket {code} — {type_label} traité par vous",
+                'time': time_str,
+                'avatar': 'img/default-icon.png',
+                'status': 'traité',
+                'url': reverse('ticket:details_ticket_ST', args=[ticket.code_Ticket]),
+            })
+
+    return {
+        'demande_notifications': demande_notifications,
+        'ticket_messages': ticket_messages,
+        'today': now(),
+    }
 
 
 
@@ -368,6 +436,9 @@ def list_ticket_ST(request):
     paginator = Paginator(tickets, per_page)
     page_obj = paginator.get_page(page_number)
 
+    dashboard_data = get_support_dashboard_notifications(request)
+    support_user = SupportTechnique.objects.get(user=request.user)
+
     context = {
         'page_obj': page_obj,
         'per_page': per_page,
@@ -377,6 +448,8 @@ def list_ticket_ST(request):
         'code_demande': code_demande,
         'branche': branche,
         'status_filter': status_filter,
+        **dashboard_data,
+        'support_user':support_user,
     }
 
     return render(request, "Tickets/list_ticket_ST.html", context)
@@ -450,6 +523,8 @@ def list_ticket_GC(request):
 
 
 
+
+
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -504,10 +579,15 @@ def details_ticket_ST(request, code_Ticket):
 
         return redirect('ticket:details_ticket_ST', code_Ticket=code_Ticket)
     
+    dashboard_data = get_support_dashboard_notifications(request)
+    support_user = SupportTechnique.objects.get(user=request.user)
+
     context = {
         'ticket': ticket,
         'conversations': conversations,
         'status_choices': Ticket.STATUS_CHOICES,
+        **dashboard_data,
+        'support_user':support_user,
     }
     return render(request, 'Tickets/details_ticket_ST.html', context)
 

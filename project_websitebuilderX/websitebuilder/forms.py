@@ -32,6 +32,18 @@ class GestionnaireForm(forms.ModelForm):
 
 
 
+class InfoSupportForm(forms.ModelForm): 
+    class Meta:
+        model = SupportTechnique
+        fields = ['name', 'email', 'phone']  
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Téléphone'}),
+        }
+
+
+
 
 class ClienteUpdateForm(forms.ModelForm):
     email = forms.EmailField(label="Email", required=True)

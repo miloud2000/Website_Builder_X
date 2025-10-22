@@ -23,6 +23,7 @@ from websitebuilder.forms import (
     AdditionalInfoForm,
     ClienteUpdateForm,
     ClientePasswordChangeForm,
+    InfoSupportForm,
 )
 
 from websitebuilder.decorators import (  
@@ -57,11 +58,86 @@ from websitebuilder.tokens import account_activation_token
 from django.utils.timezone import now
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.utils.timezone import localtime, now
+from django.urls import reverse
+
+
+
+def get_support_dashboard_notifications(request):
+    demande_notifications = []
+    ticket_messages = []
+
+    # ✅ demandes à traiter (si le support doit les voir)
+    new_demandes = DemandeRecharger.objects.filter(status='Not Done yet').order_by('-date_created')
+    for demande in new_demandes:
+        time_str = localtime(demande.date_created).strftime("%H:%M")
+        demande_notifications.append({
+            'message': f"Demande #{demande.code_DemandeRecharger} de {demande.cliente.user.username} — {demande.solde} MAD à traiter à {time_str}.",
+            'url': 'DemandeRechargerNotDoneyet',
+            'time': time_str,
+            'icon': 'fe-mail',
+            'color': 'warning',
+        })
+
+    # ✅ tickets non traités : créés par le client, sans réponse du support
+    tickets_non_traitées = Ticket.objects.filter(
+        updated_by_ts__isnull=True,
+        conversations__isnull=True
+    ).distinct().order_by('-date_created')[:6]
+
+    for ticket in tickets_non_traitées:
+        time_str = localtime(ticket.date_created).strftime("%H:%M")
+        code = ticket.code_Ticket or f"ID {ticket.id}"
+        type_label = ticket.typeTicket or "Type inconnu"
+        client_name = ticket.cliente.user.username if ticket.cliente and ticket.cliente.user else "Client inconnu"
+
+        ticket_messages.append({
+            'sender': client_name,
+            'message': f"🕒 Nouveau ticket {code} — {type_label} sans réponse",
+            'time': time_str,
+            'avatar': 'img/default-icon.png',
+            'status': 'non_traité',
+            'url': reverse('ticket:details_ticket_ST', args=[ticket.code_Ticket]),
+        })
+
+    # ✅ tickets traités par ce support technique
+    support = getattr(request.user, 'supporttechnique', None)
+    if support:
+        tickets_traitées_par_moi = Ticket.objects.filter(
+            updated_by_ts=support,
+            conversations__isnull=False
+        ).distinct().order_by('-date_created')[:6]
+
+        for ticket in tickets_traitées_par_moi:
+            time_str = localtime(ticket.date_created).strftime("%H:%M")
+            code = ticket.code_Ticket or f"ID {ticket.id}"
+            type_label = ticket.typeTicket or "Type inconnu"
+            client_name = ticket.cliente.user.username if ticket.cliente and ticket.cliente.user else "Client inconnu"
+
+            ticket_messages.append({
+                'sender': client_name,
+                'message': f"✅ Ticket {code} — {type_label} traité par vous",
+                'time': time_str,
+                'avatar': 'img/default-icon.png',
+                'status': 'traité',
+                'url': reverse('ticket:details_ticket_ST', args=[ticket.code_Ticket]),
+            })
+
+    return {
+        'demande_notifications': demande_notifications,
+        'ticket_messages': ticket_messages,
+        'today': now(),
+    }
+
+
 
 #DashbordHome of SupportTechnique
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SupportTechnique']) 
 def dashbordHomeSupportTechnique(request):  
+    dashboard_data = get_support_dashboard_notifications(request)
+        
+        
     support_user = SupportTechnique.objects.get(user=request.user)
     demandes_count = DemandeSupport.objects.filter(updated_by=support_user).count()
     not_done_count = DemandeSupport.objects.filter(status='Not Done yet').count()
@@ -122,6 +198,7 @@ def dashbordHomeSupportTechnique(request):
 
     context = {
         'demandes_count': demandes_count,
+        'support_user':support_user,
         'not_done_count': not_done_count,
         'total_supports': total_supports,
         'demandes_this_month': demandes_this_month,
@@ -133,9 +210,72 @@ def dashbordHomeSupportTechnique(request):
         'page_obj': page_obj,
         'per_page': per_page,
         'search_query': search_query,
+        **dashboard_data,
     }
 
     return render(request, "SupportTechnique/dashbordHomeSupportTechnique.html", context)
+
+
+
+
+
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+
+
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SupportTechnique']) 
+def detailSupportTechnique(request):  
+    support = getattr(request.user, 'supporttechnique', None)
+    support_user = SupportTechnique.objects.get(user=request.user)
+
+    if not support:
+        messages.error(request, "Profil Support Technique introuvable.")
+        return redirect('login')
+
+    # ✅ Formulaire de modification des infos
+    form = InfoSupportForm(instance=support)
+
+    # ✅ Formulaire de changement de mot de passe
+    password_form = PasswordChangeForm(user=request.user)
+
+    if request.method == 'POST':
+        if 'update_info' in request.POST:
+            form = InfoSupportForm(request.POST, instance=support)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Informations mises à jour avec succès.")
+                return redirect('detailSupportTechnique')
+            else:
+                messages.error(request, "Erreur lors de la mise à jour des informations.")
+        
+        elif 'change_password' in request.POST:
+            password_form = PasswordChangeForm(user=request.user, data=request.POST)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, "Mot de passe modifié avec succès.")
+                return redirect('detailSupportTechnique')
+            else:
+                messages.error(request, "Erreur lors de la modification du mot de passe.")
+
+    historique_actions = HistoriqueAction.objects.filter(
+        utilisateur=request.user
+    ).order_by('-date')[:20]
+
+    dashboard_data = get_support_dashboard_notifications(request)
+
+    context = {
+        'support': support,
+        'form': form,
+        'password_form': password_form,
+        'historique_actions': historique_actions,
+        **dashboard_data,
+        'support_user':support_user,
+    }
+
+    return render(request, "SupportTechnique/detailSupportTechnique.html", context)
+
 
 
 
@@ -240,6 +380,10 @@ from django.db.models import Q
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SupportTechnique']) 
 def DemandeSupportNotDoneyet(request): 
+    dashboard_data = get_support_dashboard_notifications(request)
+    
+    support_user = SupportTechnique.objects.get(user=request.user)
+
     query = request.GET.get('q', '')
     status_filter = request.GET.get('status', 'Not Done yet')
     per_page = int(request.GET.get('per_page', 10))
@@ -264,6 +408,8 @@ def DemandeSupportNotDoneyet(request):
         'per_page': per_page,
         'query': query,
         'status_filter': status_filter,
+        'support_user':support_user,
+        **dashboard_data,
     }
 
     return render(request, "SupportTechnique/DemandeSupportNotDoneyet.html", context)
@@ -278,6 +424,8 @@ from django.db.models import Q
 @login_required(login_url='login')
 @allowedUsers(allowedGroups=['SupportTechnique']) 
 def DemandeSupportDone(request): 
+    dashboard_data = get_support_dashboard_notifications(request)
+    
     support_user = SupportTechnique.objects.get(user=request.user)
 
     query = request.GET.get('q', '')
@@ -304,6 +452,8 @@ def DemandeSupportDone(request):
         'per_page': per_page,
         'query': query,
         'status_filter': status_filter,
+        'support_user':support_user,
+        **dashboard_data,
     }
 
     return render(request, "SupportTechnique/DemandeSupportDone.html", context)
@@ -314,7 +464,8 @@ def DemandeSupportDone(request):
 
 
 
-@login_required
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SupportTechnique']) 
 def websites_liste(request):
     status     = request.GET.get('status', '').strip()
     catégorie  = request.GET.get('catégorie', '').strip()
@@ -347,6 +498,9 @@ def websites_liste(request):
     langues_list    = Websites.objects.values_list('langues', flat=True).distinct()
     plans_list      = Websites.objects.values_list('plan', flat=True).distinct()
 
+    dashboard_data = get_support_dashboard_notifications(request)
+    support_user = SupportTechnique.objects.get(user=request.user)
+
     return render(request, "SupportTechnique/websites_liste.html", {
         'websites': page_obj.object_list,
         'page_obj': page_obj,
@@ -359,18 +513,26 @@ def websites_liste(request):
         'cms_list': cms_list,
         'langues_list': langues_list,
         'plans_list': plans_list,
+        'support_user':support_user,
+        **dashboard_data,
     })
 
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SupportTechnique']) 
 def details_website(request, id):
     website = get_object_or_404(Websites, id=id)
-    return render(request, 'SupportTechnique/details_website.html', {'website': website})
+    dashboard_data = get_support_dashboard_notifications(request)
+    support_user = SupportTechnique.objects.get(user=request.user)
+
+    return render(request, 'SupportTechnique/details_website.html', {'website': website,**dashboard_data,'support_user':support_user,
+})
 
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SupportTechnique']) 
 def supports_list_support(request):
     status = request.GET.get('status')
 
@@ -385,17 +547,28 @@ def supports_list_support(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    dashboard_data = get_support_dashboard_notifications(request)
+    support_user = SupportTechnique.objects.get(user=request.user)
+
+
     context = {
         'page_obj': page_obj,  # utilisé dans le template
         'status': status,
         'status_choices': ['Disponible', 'No Disponible'],
+        **dashboard_data,
+        'support_user':support_user,
     }
     return render(request, 'SupportTechnique/supports_list_support.html', context)
 
 
 
-
+@login_required(login_url='login')
+@allowedUsers(allowedGroups=['SupportTechnique']) 
 def details_support(request, id):
     support = get_object_or_404(Supports, id=id)
-    return render(request, 'SupportTechnique/details_support.html', {'support': support})
+    dashboard_data = get_support_dashboard_notifications(request)
+    support_user = SupportTechnique.objects.get(user=request.user)
+
+    return render(request, 'SupportTechnique/details_support.html', {'support': support,**dashboard_data,'support_user':support_user,
+})
 

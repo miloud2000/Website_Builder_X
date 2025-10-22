@@ -921,7 +921,12 @@
             <div class="text-center bg-light p-3 rounded shadow-sm mx-auto" style="max-width: 600px;">
                 <strong>Description:</strong> {{ ticket.description }} <br>
                 <div class="text-center my-3">
+                    {% if ticket.pièce_joint %}
                     <img src="{{ ticket.pièce_joint.url }}" alt="Pièce jointe" class="img-fluid rounded shadow" style="max-width: 400px;">
+                  {% else %}
+                    <p class="text-muted">Aucune pièce jointe disponible.</p>
+                  {% endif %}
+                
                 </div>
             </div>
           {% for conv in conversations %}
